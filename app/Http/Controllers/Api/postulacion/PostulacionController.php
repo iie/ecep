@@ -110,6 +110,20 @@ class PostulacionController extends Controller
         return response()->json(array("respuesta"=>"OK", "descripcion" => $arr));
 	}
 	
+	public function obtenerComunasConAplicaciones(Request $request){
+		$post = $request->all();
+		$comunas = DB::select("SELECT com.id_comuna,com.nombre 
+									FROM core.comuna as com
+									INNER JOIN infraestructura.sede as sd ON (sd.id_comuna = com.id_comuna)
+									WHERE com.id_region=" .$post["region_id"]. "
+									order by id_comuna,com.nombre");
+		$arrComunas = [];
+		foreach ($comunas as $comuna) {
+			$arrComunas[] = $comuna;
+		}
+		return response()->json(array("respuesta"=>"OK", "descripcion" => $arrComunas));
+	}
+
 	public function saveUsuario(Request $request){
 
 		$post = $request->all();
