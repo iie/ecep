@@ -1,0 +1,134 @@
+$(document).ready(function(){
+    //checkKick()
+    //autentificar()
+    //expirada()
+    $("#ingresar").on('click',loginSubmit)
+    var input = document.getElementById("password");
+
+    input.addEventListener("keyup", function(event) {
+    event.preventDefault();
+    if (event.keyCode === 13) {
+        document.getElementById("ingresar").click();
+    }
+});
+
+});
+
+function loginSubmit(){
+    var user = $("#username").val()
+    var passw = $("#password").val()
+    var captcha = $("#g-recaptcha-response").val()
+    
+    if(user != "" && passw != ""){
+        $.ajax({
+            method:'POST',
+            url: webservice+'/usuario/get-token',
+            headers:{
+               't':''
+               // 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+               //"_token": $("meta[name='csrf-token']").attr("content")
+
+            },
+            crossDomain: true,
+            dataType:'text',
+            data:{email:user,password:passw},
+            success: function(data, textStatus, jqXHR) {
+                 if(!isJSON(data)){
+                     //showFeedback("error","Error en los datos ingresados","Datos incorrectos");
+                     console.log("error en los datos ingresados");
+                 }else{
+                     console.log(JSON.parse(data));
+                     console.log(JSON.parse(data).id_tipo_usuario);
+                    if (JSON.parse(data).token != "token invalido") {
+                         if(JSON.parse(data).token == "no existe"){
+                            // //showFeedback("error","Usuario o ContraseÃ±a no validos","Error en ingreso");
+                            console.log("no usuario o contraseña o validos");
+                         }else{
+                             localStorage.user = data
+                             ///    redireccionarCentros();
+                             //}else{
+                                redireccionar(JSON.parse(data).id_tipo_usuario);
+                             //}
+                            console.log(data)
+                        }
+                    } else {
+                      // //  showFeedback("error","El servidor no responde correctamente","Error en el servidor");
+                         console.log("invalidos")
+                     }  
+                }
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                //showFeedback("error","Error en el servidor","Datos incorrectos");
+                //console.log(jqXHR);
+                console.log("error del servidor, datos incorrectos");
+                console.log(JSON.parse(data));
+                console.log(JSON.parse(data).id_tipo_usuario);
+            }
+        })
+    }else{
+        //showFeedback("error","Error en los campos ingresados, hay campos vacios","Datos incorrectos");
+        //console.log(jqXHR);
+        console.log("campos vacios");
+    }
+}
+
+function isJSON (something) {
+    if (typeof something != 'string')
+        something = JSON.stringify(something);
+    try {
+        JSON.parse(something);
+        return true;
+    } catch (e) {
+        return false;
+    }
+}
+
+function redireccionar(tipoUser){
+    
+    switch(tipoUser){
+        case 54:
+            location.href = serverRedirect+'/evaluador.php'
+        break;
+
+        case 55:
+            location.href = serverRedirect+'/supervisor/supervisor.php'
+        break;
+        case 56:
+            location.href = serverRedirect+'/editor.html'
+        break;
+    }
+    
+ }
+
+
+// function redireccionarCentros(){
+ 
+    // location.href = serverRedirect+'/centros.html'
+// }
+
+// function captcha(){
+    // console.log(grecaptcha.getResponse())
+// }
+
+// function checkKick(){
+    // if(localStorage.kick=="true"){
+        // showFeedback("error","Se cuenta ha sido iniciada en otro equipo","Inicio de sesiÃ³n duplicada");
+        // localStorage.clear()
+    // }
+// }
+
+// function autentificar(){
+    // if(localStorage.autentificar=="true"){
+        // showFeedback("error","No ha iniciado sesiÃ³n","Inicio de sesiÃ³n");
+        // localStorage.clear()
+    // }
+// }
+
+// function expirada(){
+    // if(localStorage.expirada=="true"){
+        // showFeedback("error","La sesiÃ³n ha expirado","Inicio de sesiÃ³n");
+        // localStorage.clear()
+    // }
+// }
+ 
+//ingresar presionando enter

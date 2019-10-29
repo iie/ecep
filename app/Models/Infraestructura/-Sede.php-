@@ -1,0 +1,17 @@
+<?php
+namespace App\Models\Infraestructura;
+use Illuminate\Database\Eloquent\Model;
+
+class Sede extends Model
+{
+	protected $table = 'infraestructura.sede';
+	protected $primaryKey  = 'id_sede';
+
+	public function laboratorio(){
+		return $this->hasMany('App\Models\Infraestructura\Laboratorio', 'id_sede');
+	}
+
+	public function institucion(){
+		return $this->belongsTo('App\Models\Infraestructura\Institucion', 'id_institucion');
+	}
+}

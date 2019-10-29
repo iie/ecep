@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="icon" type="image/png" href="img/mineduc.png">
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="css/Estilo.css">
+    <link rel="stylesheet" type="text/css" href="css/jquery-ui.css">
+    <link href="https://fonts.googleapis.com/css?family=Titillium+Web:200,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Lato:300,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
+    <!-- <link rel="stylesheet" type="text/css" href="css/bootstrap-select.min.css"> -->
+    
+    <script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script type="text/javascript" src="js/popper.min.js"></script>
+    <script type="text/javascript" src="js/bootstrap.min.js"></script>
+    <!-- <script type="text/javascript" src="js/bootstrap-select.min.js"></script> -->
+    
+
+    <title>ECEP 2019</title>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+         <div class="col-sm-12 fondo">                          
+            <div class="col-sm-6">                               
+                    <img class="title_img" src="img/title.png">
+                    </div>
+                    <div class="col-sm-6">                                  
+                    <h3 class="title_text"><b style="font-weight: 700;">Trabaja como</b> supervisor,<br>examinador o anfitrión.</h3>
+                </div>
+                </div>
+                </div>
+
+           
+
+        
+            <div class="row col-sm-12">
+                <div class="col-sm-12 contenedor_izq"> 
+                    <div class="texto pt-2">
+                        <div class="col-sm-6">                             
+                            <h3 style="top: 20px;">Buscamos</h3>
+                            <hr class="hr_postular">
+                            <!-- Todos los divs con mb-2 -->
+                              <div class="">
+                           <label id="longlb" class="parrafo"><i class="far fa-check-circle ico_parrafo"></i> Profesionales, titulados, egresados o estudiantes de educación superior (excepto docentes en ejercicio o formación,<br> estudiante, egresado o jubilado de carreras de pedagogía, educación diferencial, educación de párvulos o asistente de párvulo).</label>
+                            </div>
+                            <div class="">
+                                <label class="parrafo"><i class="far fa-check-circle ico_parrafo"></i> Mayores a <b>23 años.</b></label>
+                            </div>
+                            <div class="">
+                                <label class="parrafo"><i class="far fa-check-circle ico_parrafo"></i> Manejo de <b>Herramientas Computacionales.</b></label>
+                            </div>
+                            <div class="">
+                                <label class="parrafo"><i class="far fa-check-circle ico_parrafo"></i> Experiencia en <b>trabajo en equipo.</b></label>
+                            </div>
+                            </div>
+                            <div class="col-sm-6 contenedor_der">
+                                 <h3 style="top: 20px;">Completa el siguiente formulario <b>para postular.</b></h3>
+                                 <h2 style="top: 20px;">Debes completar toda la información requerida antes de enviar tu postulación.</h2>                                 
+                                <a class="btn btn-primary" href="https://pruebadeconocimientos.iie.cl/public/app_postulacion/index.html"> Postula Aquí</a>
+                        </div>
+                    </div>
+
+                      
+
+
+
+                </div>
+            </div>
+        </div>
+
+</div>
+</body>
+</html>

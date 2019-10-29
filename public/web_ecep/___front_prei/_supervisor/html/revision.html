@@ -1,0 +1,418 @@
+ 
+<!-- <div class="container-fluid _tab">		
+		<ul class="nav nav-pills justify-content-center" ">
+		  <li class="nav-item">
+		    <a class="nav-link active"  target="_top" href="http://devprei.iie.cl/front/supervisor/supervisor.php"><i class="fas fa-clipboard-list"></i>  Banco de Ítems</a>
+		  </li>
+		  <li class="nav-item">
+		    <a class="nav-link"  target="_top" href="supervisor-evaluadores.php"><i class="fas fa-glasses"></i>  Evaluadores</a>
+		  </li>
+		  <li class="nav-item">
+		    <a class="nav-link"  target="_top" href="http://devprei.iie.cl/front/supervisor/supervisor-monitoreo.php" ><i class="fas fa-search"></i>  Monitoreo</a>
+		  </li>
+		</ul>
+</div> -->
+<!-- Fin Tab -->
+
+<!-- Contenedor de Info, Opciones y Tabla -->
+<div  class="container-fluid page-content-ce _principal">
+	<div class="page-content _padding-pages _page-banco-items"  >
+		<div  class="container-fluid _card-rounded mt-3" >
+			<!-- Informacion de Items (total y asignados) con opciones -->
+			
+			
+			<div class="row _info-banco pt-3 pb-3 align-items-center">
+				<div class="col-sm-4 _items-total">
+					<div class="row align-items-center">
+						<div class="col-sm-4" style="margin-left: 70px;">
+							<label class="_text-legend">Total Ítems: </label>
+							
+						</div>
+						<div class="col-sm-3 _items-total">
+							<label class="_text-legend _valor-items"  id="total-items"></label>
+						</div>
+						<!-- <div class="col-sm-3">
+							<a class="btn btn-primary" data-toggle="modal" data-target="#cargarItems" role="button"><i class="fas fa-upload"></i>Cargar Ítems</a>
+
+						</div> -->
+						
+					</div>					 
+				</div>
+				<!-- <div class="col-sm-4 _asignar-items">
+					<div class="row align-items-center">
+						<div class="col-sm-5" style="margin-left: 100px;">
+							<label class="_text-legend">Ítems Asignados: </label>
+						</div>
+						<div class="offset-sm col-sm-2 _asignados-total">
+							<label class="_text-legend _valor-asignados" id="items-asignados" ></label>
+						</div>
+						<div class="offset-sm col-sm-3">
+							<a class="btn btn-primary asignar" data-toggle="modal" data-target="#asignarItems" role="button"><i class="fas fa-clipboard-check"></i>Asignar Ítems</a>
+						</div>						
+					</div>					 
+				</div> -->
+				<div class="offset-sm-7 text-right">	
+					<div class="row align-items-center">	
+						<!-- <div class="mr-3">
+							<button class="btn btn-primary datatable-excel btn-acciones"   role="button" id="crear-items" type="button" data-toggle="modal" data-target="#crearModal"><i class="fas fa-upload"></i> Cargar</button>
+						</div>	 -->
+						<!-- <div class="col-sm-4">
+							<button class="btn btn-primary datatable-excel btn-acciones"   role="button" id="asignar-items" type="button"
+							data-toggle="modal" data-target="#asignarModal"><i class="fas fa-user-check"></i> Asignar</button>
+						</div>	 -->
+						<div class="">
+							<button class="btn btn-primary datatable-excel btn-acciones"   role="button" id="descraga-lista-banco-items" type="button"><i class="fas fa-download"></i> Descargar Lista</button>
+						</div>	
+						<!-- <div class="offset-sm-7 col-sm-6">
+							<label class="_text-legend _info-descarga">Mostranto 10 de 80 Ítems </label>
+						</div> -->						
+					</div>		
+				</div>		 
+			</div>
+			<!-- Fin Informacion de Items -->
+
+
+			<!-- Seccion de Filtrado -->
+			<div class="row" id="supervisor-prueba-Table_filters">
+				<div id="filtros_borrar"></div>
+				<div class="offset-sm-4" id="clear-filtros">
+					<button class="btn" role="button" id="limpiar-filtros" type="button">Limpiar Filtros</button>
+				</div>
+			</div>
+			
+			<!-- Fin seccion de filtro -->
+
+			<!-- Seccion Modals -->
+
+			<!-- Modal -->
+<!-- 				<div class="modal fade" id="crearModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+				  <div class="modal-dialog modal-dialog-centered" role="document">
+				    <div class="modal-content">
+				      <div class="modal-header">
+				        <h1 class="modal-title" id="exampleModalCenterTitle">Cargar Items</h1>
+				        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+				          <span aria-hidden="true">&times;</span>
+				        </button>
+				      </div>
+				      <div class="modal-body">
+				      	<div class="row">
+				      		<div class="col-12 mb-4">
+				      			<label for="id_subprueba">Seleccione Asignatura</label>
+							    <select class="form-control" id="id_subprueba">
+							      <option selected>Seleccione Asignatura</option>
+							      <option codigo="4" value="4">Pedagógico</option>
+							      <option codigo="10" value="10">Lenguaje y Comunicación</option>
+							      <option codigo="11" value="11">Matemática</option>
+							      <option codigo="12" value="12">Historia, Geografía y Educación Cívica</option>
+							      <option codigo="13" value="13">Ciencias mención Biología</option>
+							      <option codigo="17" value="17">Inglés</option>
+							      <option codigo="16" value="16">Educación Física, Deportes y Recreación</option>
+							      <option codigo="15" value="15">Ciencias mención Química</option>
+							      <option codigo="14" value="14">Ciencias mención Física</option>
+
+							    </select>
+				      		</div>
+				      		<div class="col-12 mb-4" id="selectColaborador">
+				      			<label for="id_usuario">Seleccione Colaborador</label>
+							    <select class="form-control" id="id_usuario"></select>
+				      		</div>
+				      		<div class="col-12">
+				      			  <div class="form-group">
+								    
+								    <input type="file" class="form-control-file" id="file_cargar_items"
+								    accept=".xlsx, .xls">
+								  </div>			      			
+				      		</div>				      		
+				      	</div>					     
+					  </div>
+				      <div class="modal-footer">
+				        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+				        <button type="button" class="btn btn-primary" id="cargar_archivo">Subir</button>
+				      </div>
+				    </div>
+				  </div>
+				</div>
+ -->
+				<!-- <div class="modal fade bd-example-modal-lg" id="asignarModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+				  <div class="modal-dialog modal-lg">
+				    <div class="modal-content content_asignar" > -->
+				<!-- <div class="modal fade bd-example-modal-lg" id="asignarModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true"> -->
+				  <!-- <div class="modal-dialog modal-dialog-centered" role="document"> -->
+				    <!-- <div class="modal-content" id="modalAsignar"> -->
+				      <!-- <div class="modal-header">
+				        <h1 class="modal-title" id="exampleModalCenterTitle">Asignar Items</h1>
+				        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+				          <span aria-hidden="true">&times;</span>
+				        </button>
+				      </div>
+				      <div class="modal-body">
+				      	<div class="row">
+
+				      		<div>
+				      			<table id="table-info-asignaturas" class="text-left stripe table table-hover _table-link dataTable no-footer ml-4"
+							style="width:100%">
+								<thead>
+									<tr>
+										<th>SELECCIONE</th>
+										<th>ASIGNATURA</th>
+										<th>TOTAL</th>
+										<th>DISPONIBLES</th>
+										<th>ASIGNADOS</th>
+									</tr>
+								</thead>
+								<tbody class="text-left" id="info-asignaturas">
+								</tbody>
+
+							</table>
+				      			
+				      		</div>
+
+				      		<div id="itemsAsignar" class="ml-2">
+				      			<label>Ingrese la cantidad de Items a Asignar</label>
+				      			 <input type="number" name="cantItems" min="1" max="100">
+				      		</div>			      		
+														
+							<table id="table-asignar-colaboradores" class="text-left stripe table table-hover _table-link dataTable no-footer ml-4"
+							style="width:100%">
+								<thead>
+									<tr> -->
+										<!-- <th>SELECCIONE</th>
+										<th>NOMBRE</th>
+										<th>CORREO</th>
+										<th>ASIGNADOS</th>
+										<th>FINALIZADOS</th> -->
+										<!-- <th>PENDIENTES</th> -->
+										<!-- <th>EN PROCESO</th>						
+										<th>AVANCE</th> -->
+										<!-- <th>ESTADO</th> -->
+										<!-- <th>ACCIONES</th> -->
+					<!-- 				</tr>
+								</thead>
+								<tbody class="text-left" id="lista_colaboradores">
+								</tbody>
+
+							</table>
+						      		
+				      	</div>					     
+					  </div>
+				      <div class="modal-footer">
+				        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+				        <button type="button" class="btn btn-primary" id="btn-asignacion">Asignar</button>
+				      </div>
+				    </div>
+				  </div>
+				</div> -->
+
+		<!--REVISAR SI SIRVE-->
+		<!-- Modal Cargar Items-->
+				<!-- <div class="modal fade" id="cargarItems" tabindex="-1" role="dialog" aria-labelledby="modalCargarItems" aria-hidden="true">
+				  <div class="modal-dialog modal-dialog-centered" role="document">
+				    <div class="modal-content">
+				      <div class="modal-header">
+				        <h5 class="modal-title _titulo-modals" id="modalCargarItems">Formulario de Carga</h5>
+					        <div class="offset-sm-2 col-sm-3">
+								<a class="btn btn-primary _btn-descarga-banco" href="#" role="button"></i>Descargar</a>
+							</div>
+					        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					          <span aria-hidden="true">&times;</span>
+					        </button>
+				        
+				      </div>
+				      <div class="modal-body">	      	
+				      	<div class="row pt-3 pb-3 _barra-progreso">
+				      		<div class="line"></div>
+				      		<div class="col-sm-5"><label class="_progreso-1">1</label></div>
+				      		<div class="col-sm-5"><label class="_progreso-2">2</label></div>
+				      		<div class=""><label class="_progreso-3">3</label></div>				      		
+				      	</div>
+				      	<div>
+				      		<label class="_info-modal">Este formulario le permitirá subir items de forma masiva al sistema</label>
+				      	</div>
+				      	<hr>
+				      	<div>
+							<label class="_info-modal">Primero debe generar una plantilla seleccionando cada uno de los siguientes: </label>							
+						</div>
+				      	<div class="row pt-3 pb-3 align-items-center _filtros-carga">
+							<div >
+								
+								<div class="row align-items-center">
+									<div class="btn-group">
+									  <button type="button" class="btn btn-light dropdown-toggle _info-modal" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+									    Selector 1
+									  </button>
+									  <div class="dropdown-menu">
+									    <a class="dropdown-item" href="#">Action</a>
+									    <a class="dropdown-item" href="#">Another action</a>
+									    <a class="dropdown-item" href="#">Something else here</a>
+									    <div class="dropdown-divider"></div>
+									    <a class="dropdown-item" href="#">Separated link</a>
+									  </div>
+									</div>
+									<div class="btn-group">
+									  <button type="button" class="btn btn-light dropdown-toggle _info-modal" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+									    Selector 2
+									  </button>
+									  <div class="dropdown-menu">
+									    <a class="dropdown-item" href="#">Action</a>
+									    <a class="dropdown-item" href="#">Another action</a>
+									    <a class="dropdown-item" href="#">Something else here</a>
+									    <div class="dropdown-divider"></div>
+									    <a class="dropdown-item" href="#">Separated link</a>
+									  </div>
+									</div>
+									<div class="btn-group">
+									  <button type="button" class="btn btn-light dropdown-toggle _info-modal" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+									    Selector 3
+									  </button>
+									  <div class="dropdown-menu">
+									    <a class="dropdown-item" href="#">Action</a>
+									    <a class="dropdown-item" href="#">Another action</a>
+									    <a class="dropdown-item" href="#">Something else here</a>
+									    <div class="dropdown-divider"></div>
+									    <a class="dropdown-item" href="#">Separated link</a>
+									  </div>
+									</div>
+									
+								</div>					 
+							</div>
+							 
+							</div>
+				      	</div>
+				      <div class="modal-footer">
+				        <button type="button" class="btn btn-light _anterior" data-dismiss="modal"><i class="fas fa-chevron-left"></i>Anterior</button>
+				        <button type="button" class="btn btn-primary" data-target="#subirArchivo" data-toggle="modal" data-dismiss="modal" >Siguiente<i class="fas fa-chevron-right" ></i></button>
+				      </div>
+				    </div>
+				  </div>
+				</div> -->
+			<!-- Fin Modal Cargar Items -->
+
+			<!-- Modal Cargar Items 2-->
+				<!-- <div class="modal fade" id="subirArchivo" tabindex="-1" role="dialog" aria-labelledby="modalSubirArchivo" aria-hidden="true">
+				  <div class="modal-dialog modal-dialog-centered" role="document">
+				    <div class="modal-content">
+				      <div class="modal-header">
+				        <h5 class="modal-title _titulo-modals" id="modalSubirArchivo">Formulario de Carga</h5>
+					        <div class="offset-sm-2 col-sm-3">
+								<a class="btn btn-primary _btn-descarga-banco" href="#" role="button"></i>Descargar</a>
+							</div>
+					        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					          <span aria-hidden="true">&times;</span>
+					        </button>
+				        
+				      </div>
+				      <div class="modal-body">	      	
+				      	<div class="row pt-3 pb-3 _barra-progreso">
+				      		<div class="line"></div>
+				      		<div class="col-sm-5"><label class="_progreso-2-1">1</label></div>
+				      		<div class="col-sm-5"><label class="_progreso-2-2">2</label></div>
+				      		<div class=""><label class="_progreso-2-3">3</label></div>				      		
+				      	</div>
+				      	<div>
+				      		<label class="_info-modal">A continuacion, debe subir una plantilla que contenga los ítems que desea subir para revisión.</label>
+				      	</div>
+				      	 <div class=" _upload-file">
+					      	<form> -->
+							  <!-- <div class="custom-file">
+							    <input type="file" class="custom-file-input" id="seleccionarArchivo" lang="es">
+							    <label class="custom-file-label" for="seleccionarArchivo"></label>
+							  </div> -->
+						<!-- 	</form>
+						</div> -->
+				      	<!-- </div>
+				      <div class="modal-footer">
+				        <button type="button" class="btn btn-light _anterior" data-dismiss="modal" data-target="#cargarItems" data-toggle="modal" ><i class="fas fa-chevron-left"></i>Anterior</button>
+				        <button type="button" class="btn btn-primary">Siguiente<i class="fas fa-chevron-right"></i></button>
+				      </div>
+				    </div>
+				  </div>
+				</div> --> 
+			<!-- Fin Modal Cargar Items -->
+
+			<!-- Modal Asignar Items-->
+				<!-- <div class="modal fade" id="asignarItems" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+				  <div class="modal-dialog modal-dialog-centered" role="document">
+				    <div class="modal-content">
+				      <div class="modal-header">
+				        <h5 class="modal-title" id="exampleModalCenterTitle">Modal title</h5>
+				        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+				          <span aria-hidden="true">&times;</span>
+				        </button>
+				      </div>
+				      <div class="modal-body">
+				        <div>
+				        	
+				        </div>
+				        <div>
+							<div class="col-sm-6 _items-total">
+								<div class="row align-items-center">
+									<div class="offset-sm-1 col-sm-2">
+										<label class="_text-legend">Primero debe generar una plantilla seleccionando cada uno de los siguientes: </label>							
+									</div>
+									<div class="btn-group">
+									  <button type="button" class="btn btn-light dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+									    Prueba
+									  </button>
+									  <div class="dropdown-menu">
+									    <a class="dropdown-item" href="#">Action</a>
+									    <a class="dropdown-item" href="#">Another action</a>
+									    <a class="dropdown-item" href="#">Something else here</a>
+									    <div class="dropdown-divider"></div>
+									    <a class="dropdown-item" href="#">Separated link</a>
+									  </div>
+									</div>										
+								</div>					 
+							</div>
+				        </div>
+				      </div>
+				      <div class="modal-footer">
+				        <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+				        <button type="button" class="btn btn-primary">Save changes</button>
+				      </div>
+				    </div>
+				  </div>
+				</div> -->
+			<!-- Fin Modal Asignar Items -->
+
+			<!-- Fin seccion Modals -->
+
+			<!-- Tabla de Items -->
+			<div class="col-sm-12 pt-5 pl-5 pr-5 mb-5" style="padding-top: 1.5rem!important; padding-left: 0px !important; padding-right: 0px !important;">
+														
+				<table id="table-banco-items" class="stripe table table-hover _table-link dataTable no-footer" style="width:100%;">
+					<thead>
+					<!-- id="items" class="display" -->				
+						<tr>
+						  <th>N°</th>
+						  <th>CÓDIGO</th>
+						  <th class="text-left" >PRUEBA</th>
+						  <!-- <th>NIVEL</th> -->
+						  <th class="text-left">ESPECIALIDAD</th>
+						  <th class="text-left" style="width: 328px !important;">TEMA</th>
+						  <th class="text-left">COLABORADOR</th>
+						  <!-- <th>TIPO ITEM</th> -->
+						  <!-- <th>CARGA</th> -->
+						  <th>REVISION</th>
+
+						  <!-- <th>AVANCE</th> -->
+						  <th>OPCIONES</th>						
+						</tr>
+					</thead>
+					<tbody id="lista_items">
+					</tbody>
+					
+				</table>
+			</div>		
+			<!-- Fin Tabla Items  -->
+		</div>
+	</div>	
+</div>
+<!-- Fin Contenedor -->
+<!-- <script >
+	$document.write(
+		$custom-file-text: (
+  en: "Browse",
+  es: "Elegir"
+);
+		)
+</script>  -->

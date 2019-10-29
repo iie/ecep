@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+    <head>
+		<!-- Required meta tags-->
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<meta name="description" content="">
+		<meta name="author" content="">
+		<meta name="keywords" content="">
+
+		<!-- Title Page-->
+		<title>PREI - Plataforma de Revisión y Evaluación de Ítem</title>
+
+		<!-- Main CSS-->
+		<link rel="stylesheet" href="../vendor/bootstrap_v4.3.1/css/bootstrap.min.css">
+	 	<link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
+	 	<link href='https://fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,400italic,500,500italic,700,700italic,900italic,900' rel='stylesheet' type='text/css'>
+	 	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+		<link href="../vendor/jquery-nice-select-1.1.0/css/nice-select.css" rel='stylesheet' type='text/css'>
+		<link href="../vendor/toastr/toastr.css" rel='stylesheet' type='text/css'>
+		<script src="../vendor/ckeditor/ckeditor.js" type="text/javascript"></script>
+		<link href="css/evaluador.css" rel="stylesheet" media="all">
+		<link href="css/correccion-evaluador.css" rel="stylesheet" media="all">
+		<link href="css/estilos.css" rel="stylesheet" media="all">		
+		
+    </head>
+
+    <body id="body">
+    	<div class="loader-page"></div>
+		<div class="encabezado">
+			<div class="row">
+				<div class="col-sm-1">	
+					<a id="redirect" href="#" class="text-white" style="font-size: 27px; display: none;"> <i class="fas fa-arrow-left"></i></a>
+					<div style="border:1px solid; width:40px; height:40px; border-radius:50px; float:right">&nbsp;</div>
+				</div>
+				<div class="col-sm-8" style="padding-top:8px; text-align: left;">		
+					PREI: Plataforma de Revisión y Evaluación de Ítem
+				</div>
+				<div class="col-sm-3 pr-4" style="padding-top:8px; ">
+					<div class="dropdown show text-left" style="float:right; font-size: 15px;">
+                    	Bienvenido, <strong><span id="nombre_usuario"></span></strong>      
+                    	<a class="dropdown-toggle _hide-arrow text-white" href="#" role="button" id="dropdownMenuLink2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      					<i class="fas fa-user-circle"></i>
+                    	</a>
+                    	<div class="dropdown-menu" aria-labelledby="dropdownMenuLink2" style="font-size: 15px;">
+                        <a class="dropdown-item" href="#" onclick="redirectLogin()">Cerrar sesión</a>
+                    </div>
+                </div>
+					
+				</div>
+			</div>
+		</div>
+		

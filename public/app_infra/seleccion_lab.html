@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="icon" type="image/png" href="img/mineduc.png">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="css/Estilo.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.css" integrity="sha256-PF6MatZtiJ8/c9O9HQ8uSUXr++R9KBYu4gbNG5511WE=" crossorigin="anonymous" />
+    <script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="js/jquery.rut.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/sweetalert2@7.17.0/dist/sweetalert2.all.js"></script>
+    <script type="text/javascript" src="js/utils.js"></script>
+    <script type="text/javascript" src="js/datosLab.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.js" integrity="sha256-H9jAz//QLkDOy/nzE9G4aYijQtkLt9FvGmdUTwBk6gs=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/locale/es.js" integrity="sha256-bETP3ndSBCorObibq37vsT+l/vwScuAc9LRJIQyb068=" crossorigin="anonymous"></script>
+<!--     <script type="text/javascript" src="js/accesoRoles.js"></script> -->
+    <title></title>
+</head>
+<body>
+
+
+    <div style="max-width:1366px; margin:auto;">
+ 
+<!-- 
+        <nav class="navbar fixed-top navbar-light pl-2 pr-2" style="background-color:#3D88E9;">
+          <div  class="col-12 p-0" style="max-width:1366px; margin:auto;">
+            <div class="row m-0">
+              <div class="col-10 pl-1 pr-1" >
+                <label class="text-light nav-label mt-2"id="nombre_tecnico" style="text-align: left;"></label>
+                <br>
+                <label class="text-light nav-label mt-2"id="rut_tecnico" style="text-align: left;"></label>
+              </div>
+              <div class="col-2 pl-1 pr-1">
+                <div class="dropdown">
+                  <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-angle-down"></i>
+                  </button>
+                  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <a class="dropdown-item" onclick="redirectLogin()" href="#">Cerrar Sesión</a>
+                  </div>
+                </div>
+              </div>  
+            </div> 
+          </div>
+        </nav> -->
+
+        <div class="row pt-1 pb-1" style="position:fixed; top:0px; background-color:#3D88E9; width:100%; max-width:1366px; margin:auto;z-index:1000 ">      
+          <div class="col-1">
+            <a href="#" onclick="salir()" class="text-primary" style="font-size: 30px">
+              <i class="fas fa-angle-left" style="color: #ffffff;"></i>
+            </a>
+          </div>
+          <div class="col-11" id="nombre_laboratorio" style="color: #ffffff">
+                    <label class="text-light nav-label mt-2"id="nombre_tecnico" style="text-align: left;"></label>
+                    <br>
+                    <label class="text-light nav-label mt-2"id="rut_tecnico" style="text-align: left;"></label>
+          </div>    
+        </div>  
+
+        <div class="container-fluid mt-5 pl-1 pr-1 pt-2">
+            <label class="pt-4 pl-1"><h6 style="color: #5a5a5a">Seleccione laboratorio: </h6></label>
+            <div class="row m-0" id="info_visitas">
+              
+
+             
+
+            </div>   
+        </div> 
+
+    </div>
+</body>
+</html>
+
+
+
+<style type="text/css">
+
+  .card-header{
+    border-bottom: 0px;
+  }
+
+  .card-footer{
+    border-top: 0px;
+  }
+
+  .dropdown-menu{
+    top: 143% !important;
+    left: -104px !important;
+  }
+  .dropdown-toggle::after {
+      display: none;
+  }
+
+  .dropdown-toggle {
+      color:white;
+  }
+ 
+ .buttonVer {
+  background-color: #3D88E9; /* Green */
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  margin-top: 15px;
+} 
+
+.nav-label{
+    margin-top: 0px !important;
+    margin-bottom: 0px !important;
+}
+
+.card-text{
+  color: #3D88E9;
+  margin-bottom: 0px;
+  margin-top: 0px;
+}
+
+.card-text-lab{
+  font-size:14px;
+  color: #A8A8A8;
+}
+.card-footer{
+    color: #3d88e9;
+    text-align: center;
+    cursor: pointer;
+}
+
+.card-footer:hover {   
+    background: #3D88E9;
+    color: white;
+}
+.div-indicador{
+    padding-right: 0px;
+    padding-left: 0px;
+}
+.card-indicador{
+  color: white;
+  width: 100px;
+  font-size: 9px;
+  position: relative;
+  float: right;
+
+}
+.indicador_finalizado{
+  background-color: #43b937;
+}
+.indicador_en_proceso{
+  background-color: #ff9900;
+}
+
+.indicador_pendiente{
+  background-color: #f35374;
+}
+
+</style>
+
+<!-- Datos traidos desde el servicio -->
+<!-- /<script type="text/javascript">
+  
+
+ 
+function cargarDatosApp(){
+var s
+
+  $.ajax({
+
+          method: 'POST',
+          url: 'http://informes.diagnosticafid.cl/public/api/test',
+          /*headers: {
+              't' : JSON.parse(localStorage.user).token,
+          },*/
+          crossDomain: true,
+          dataType: 'text',
+          data: {
+
+
+          }
+
+  })
+
+
+
+} 
+
+
+
+
+</script> -->
+
+<!-- datos_visitas: [{id_laboratorio: 3067, nombre_laboratorio: "Computeca", nombre_sede: "Andrés Bello",…}]
+0: {id_laboratorio: 3067, nombre_laboratorio: "Computeca", nombre_sede: "Andrés Bello",…}
+direccion_laboratorio: "Avenida Francisco Salazar Nº 01145"
+fecha_visita: "2019-08-08 12:00:00"
+id_laboratorio: 3067
+id_tecnico_encargado: 41
+nombre_institucion: "Universidad de La Frontera"
+nombre_laboratorio: "Computeca"
+nombre_sede: "Andrés Bello"
+nombre_tecnico: "Alberto Técnico Paillao" -->

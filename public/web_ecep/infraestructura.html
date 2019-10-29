@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<!-- Required meta tags-->
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<meta name="description" content="">
+		<meta name="author" content="">
+		<meta name="keywords" content="">
+
+		<!-- Title Page-->
+		<title>ECEP</title>
+
+		<!-- Main CSS-->
+		<link href="css/estilos.css" rel="stylesheet" media="all">
+		<link rel="stylesheet" media="all" href="vendor/bootstrap_v4.3.1/css/bootstrap.css">
+		<link
+		href='https://fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,400italic,500,500italic,700,700italic,900italic,900'
+		rel='stylesheet' type='text/css'>
+		<link href="vendor/jquery-nice-select-1.1.0/css/nice-select.css" rel='stylesheet' type='text/css'>
+		<link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
+
+		<!-- Jquery JS-->
+		<script src="vendor/jquery-3.2.1/jquery-3.2.1.min.js"></script>
+
+		<!-- JS-->	
+		<script type="text/javascript" src="vendor/popper/popper.min.js"></script> 
+		<script type="text/javascript" src="vendor/jquery.blockUI.js"></script>
+		<script type="text/javascript" src="vendor/bootstrap_v4.3.1/js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="vendor/datatables/jquery.dataTables.min.js"></script>
+		<script type="text/javascript" src="vendor/utils.js"></script>
+		<script type="text/javascript" src="js/infraestructura.js"></script>
+		<script type="text/javascript" src="vendor/jquery-nice-select-1.1.0/js/jquery.nice-select.js"></script>
+
+		<!-- Toastr -->
+		<script  type="text/javascript" src="vendor/toastr/toastr.js"></script>
+		<link href="vendor/toastr/toastr.css" rel='stylesheet' type='text/css'>
+		<link href="vendor/datatables/jquery.dataTables.min.css" rel='stylesheet' type='text/css'>
+	</head>
+
+	<body>
+		<div class="row encabezado">
+			<div class="col-sm-1">
+				<a id="redirect" href="#" class="text-white" style="font-size: 27px; display: none;">
+					<i class="fas fa-arrow-left"></i>
+				</a>
+				<div style="border:1px solid; width:40px; height:40px; border-radius:50px; float:right">&nbsp;</div>
+			</div>
+			<div class="col-sm-6" style="padding-top:8px; text-align: left;">
+				ECEP
+			</div>
+			<div class="col-sm-5 pr-4" style="padding-top:8px; ">
+				<div class="dropdown show text-left" style="float:right; font-size: 15px;">
+					Bienvenido, <strong><span id="nombre_usuario"></span></strong>
+					<a class="dropdown-toggle _hide-arrow text-white" href="#" role="button" id="dropdownMenuLink2"
+						data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						<i class="fas fa-user-circle"></i>
+					</a>
+					<div class="dropdown-menu" aria-labelledby="dropdownMenuLink2" style="font-size: 15px;">	
+						<!-- <a class="dropdown-item" href="#" onclick="redirectModulo()">Módulos</a> -->	
+						<a class="dropdown-item" href="#" onclick="redirectLogin()">Cerrar sesión</a>
+					</div>
+				</div>
+
+			</div>
+		</div>
+		<div  class="_principal">
+			<div class="page-content _padding-pages"  >
+				<div  class="container-fluid _card-rounded mt-3" >
+					<div class="row pt-3 pb-3 _info">
+						<div class="col-2 text-center">
+							<label class="_text-legend">Necesitadas</label>
+							<p class="_text-dato" id="total_necesitadas">0</label>
+						</div>
+						<div class="col-2 text-center">
+							<label class="_text-legend">Conseguidas</label>
+							<p class="_text-dato" id="total_conseguidas">0</label>
+						</div>
+						<div class="col-2 text-center">
+							<label class="_text-legend">Potenciales</label>
+							<p class="_text-dato" id="total_potenciales">0</label>
+						</div>
+						<div class="col-2 text-center">
+							<label class="_text-legend">Faltantes</label>
+							<p class="_text-dato" id="total_faltantes">0</label>
+						</div>
+						<div class="offset-sm-3 col-1 text-center _descargar">	
+							<div class="row align-items-center">	
+								<div class="mr-3">
+									<button class="btn btn-primary btn-acciones" role="button" id="crear-items" type="button" onclick="nuevaSede()">
+										<i class="fas fa-plus-circle"></i> Nueva</button>
+								</div>	
+								<!-- <div class="">
+									<button class="btn btn-primary datatable-excel btn-acciones"   role="button" id="descargar-lista" type="button"><i class="fas fa-download"></i> Descargar Lista</button>
+								</div> -->				
+							</div>		
+						</div>		 
+					</div>
+
+					<div class="row" id="supervisor-prueba-Table_filters">
+						<div class="row col-8 m-0" id="filtros"></div>
+						<div class="col-4 text-right" id="clear-filtros">
+							<button class="btn limpiar-filtros" role="button" id="limpiar-filtros" type="button">Limpiar Filtros</button>
+						</div>
+					</div>
+
+					<div class="col-sm-12 pt-5 pl-5 pr-5 mb-5" style="padding-top: 1.5rem!important; padding-left: 0px !important; padding-right: 0px !important;">										
+						<table id="table-sede" class="stripe table table-hover _table-link dataTable no-footer" style="width:100%;">
+							<thead>			
+								<tr>
+								  	<th>N°</th>
+								  	<th>REGION</th>	
+									<th>COMUNA</th>	
+									<th>CENTRO</th>
+									<th>RBD</th>
+								  	<th>NOMBRE</th>		
+									<th>DIRECTOR</th>	
+									<th>MAIL</th>	
+									<th>TELEFONO</th>	
+									<th>SALAS REQUERIDAS</th>	
+									<th>SALAS DISPONIBLES</th>	
+									<th>CONFIRMADO</th>		
+									<th>ACCIONES</th>			
+								</tr>
+							</thead>
+							<tbody id="lista_sede">
+							</tbody>
+						</table>
+					</div>		
+				</div>
+			</div>	
+		</div>
+
+		<!-- Modal -->
+		<div class="modal fade" id="nuevaSedeModal" tabindex="-1" role="dialog" aria-hidden="true">
+		  	<div class="modal-dialog  modal-lg" role="document">
+		    	<div class="modal-content">
+		      	<div class="modal-header">
+		        	<h5 class="modal-title" id="titulo_modal">Nueva Sede</h5>
+		        	<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+		          		<span aria-hidden="true">&times;</span>
+		        	</button>
+		      	</div>
+		      	<div class="modal-body">
+		    		<div class="container-fluid">
+		    			<div class="form-row">
+		    				<h5 class="modal-title">Datos Sede</h5>
+		    			</div>
+						<div class="form-row" id="datos_sede">
+							<div class="form-group col-3">
+								<label for="inputRBD">RBD</label>
+								<div class="input-group mb-3">
+								  <input type="text" class="form-control _input-rounded-left" id="inputRBD" onchange="searchRBD()" oninput="this.value=Numeros(this.value)" placeholder="" required="">
+								  <div class="input-group-append" id="div-search">
+								    <button class="btn btn-outline-primary" type="button"  id="btn-search-rbd" onclick="searchRBD()"><i class="fa fa-search" disabled=""></i></button>
+								  </div>
+								</div>
+							</div>
+
+
+							<div class="form-group col-6">
+								<label for="inputNombreEstablecimiento">Nombre establecimiento:</label>
+								<input type="text" class="form-control" id="inputNombreEstablecimiento" oninput="this.value=NumText(this.value)" disabled="disabled">
+							</div>
+
+							<div class="form-group col-3">
+								<label for="inputEstado">Confirmado:</label>
+								<select id="inputEstado" name="inputEstado" class="form-control" disabled="disabled">
+									<option value="null">Elegir...</option>
+									<option value="0">Sin Información</option>
+									<option value="1">NO</option>
+									<option value="2">SI</option>							
+								</select>
+							</div>
+							<div class="form-group col-4">
+								<label for="inputDireccionEstablecimiento">Dirección:</label>
+								<input type="text" class="form-control" id="inputDireccionEstablecimiento" oninput="this.value=NumText(this.value)" disabled="disabled">
+							</div>
+
+							<div class="form-group col-2">
+								<label for="inputNroEstablecimiento">N°:</label>
+								<input type="text" class="form-control" id="inputNroEstablecimiento" oninput="this.value=NumText(this.value)" disabled="disabled">
+							</div>
+
+							<div class="form-group col-3">
+								<label for="inputRegion">Región:</label>
+								<select id="inputRegion" name="inputRegion" class="form-control" disabled="disabled" onchange="cargarComunas(this.value)"></select>
+							</div>
+							<div class="form-group col-3">
+								<label for="inputComuna">Comuna:</label>
+								<select id="inputComuna" class="form-control" name="inputComuna" disabled="disabled">
+									<option value="-1" selected="">Elegir..</option>
+								</select>
+							</div>
+
+							<div class="form-group col-3">
+								<label for="inputDisponibles">Salas Disponibles:</label>
+								<input type="text" class="form-control" id="inputDisponibles" oninput="this.value=Numeros(this.value)" disabled="disabled">
+							</div>
+							<div class="form-group col-3">
+								<label for="inputRequeridas">Salas Requeridas:</label>
+								<input type="text" class="form-control" id="inputRequeridas" oninput="this.value=Numeros(this.value)" disabled="disabled">
+							</div>
+							<div class="form-group col-6">
+								<label for="inputCentro">Centro Operaciones:</label>
+								<select id="inputCentro" class="form-control" name="inputCentro" disabled="disabled">
+								</select>
+							</div>
+
+ 
+						</div>
+						<br>
+						<div class="form-row">
+		    				<h5 class="modal-title">Datos Contacto</h5>
+		    			</div>
+		    			<div class="form-row" id="datos_contacto">
+							<div class="form-group col-3">
+								<label for="inputNombreContacto">Nombre contacto:</label>
+								<input type="text" class="form-control" id="inputNombreContacto" oninput="this.value=NumText(this.value)" disabled="disabled">
+							</div>
+							<div class="form-group col-3">
+								<label for="inputMail">Mail:</label>
+								<input type="text" class="form-control" id="inputMail" oninput="this.value=NumText(this.value)" disabled="disabled">
+							</div>
+							<div class="form-group col-3">
+								<label for="inputTelefono">Teléfono:</label>
+								<input type="text" class="form-control" id="inputTelefono" oninput="this.value=NumText(this.value)" disabled="disabled">
+							</div>
+							<div class="form-group col-3">
+								<label for="inputCargo">Cargo:</label>
+								<input type="text" class="form-control" id="inputCargo" oninput="this.value=NumText(this.value)" disabled="disabled">
+							</div>
+							<div class="form-group col-12">
+								<label for="inputOtros">Otros datos de contacto:</label>
+								<textarea class="form-control" id="inputOtros" oninput="this.value=NumText(this.value)" disabled="disabled"></textarea>
+							</div>
+
+ 						</div>
+					</div>
+		      </div>
+		      <div class="modal-footer">
+		        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+		        <button type="button" class="btn btn-primary" id="guardar_sede" disabled="disabled">Guardar</button>
+		      </div>
+		    </div>
+		  </div>
+		</div>
+
+	</body>
+</html>

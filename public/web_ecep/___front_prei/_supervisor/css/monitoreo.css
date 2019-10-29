@@ -1,0 +1,56 @@
+.nav-tabs .nav-link {
+    border-top-left-radius: 1rem !important;
+    border-top-right-radius: 1rem !important;
+    text-align: center;
+    width: 170px;
+    color: #5E5E5E;
+    background-color: transparent !important;
+}
+ 
+.nav-link.active {
+    color: #267DE1 !important;
+    border-bottom: 3px solid #267de1 !important;
+    border-radius: 0px !important;
+}
+
+.tab-pane.active{ 
+    background-color: transparent !important;
+}
+
+._text-graficos{
+	font-size: 11px;
+}
+
+._info{
+	z-index: 2;
+  	background-color: #f9fafb !important;
+  	background-position: 100%;
+  	margin-top: 10px !important;
+}
+#graficoItems svg.highcharts-root {
+    margin-top: -95px !important;
+}
+
+#graficoEstado svg.highcharts-root {
+    margin-top: -95px !important;
+}
+ 
+.nav-tabs .nav-item .nav-link.active{
+	background-color: transparent !important;
+    /* border: 1px solid #dee2e6 !important; */
+    border-bottom-color: white !important;
+    border-top-left-radius: 15px !important;
+    border-top-right-radius: 15px !important;
+}
+
+.nav-tabs .nav-item .nav-link.active::after {
+    content: "" !important;
+    display: block !important;
+    width: 50% !important;
+    border-bottom: 4px solid #267de1 !important;
+    margin: 0 auto !important;
+    transition: all 0.3s linear 0s !important;
+}
+.nav-tabs .nav-link:focus, .nav-tabs .nav-link:hover {
+    border-color: #e9ecef #e9ecef #fff !important;
+}

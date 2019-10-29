@@ -1,0 +1,471 @@
+ 
+<!-- <div class="container-fluid _tab">		
+		<ul class="nav nav-pills justify-content-center" ">
+		  <li class="nav-item">
+		    <a class="nav-link active"  target="_top" href="http://devprei.iie.cl/front/supervisor/supervisor.php"><i class="fas fa-clipboard-list"></i>  Banco de Ítems</a>
+		  </li>
+		  <li class="nav-item">
+		    <a class="nav-link"  target="_top" href="supervisor-evaluadores.php"><i class="fas fa-glasses"></i>  Evaluadores</a>
+		  </li>
+		  <li class="nav-item">
+		    <a class="nav-link"  target="_top" href="http://devprei.iie.cl/front/supervisor/supervisor-monitoreo.php" ><i class="fas fa-search"></i>  Monitoreo</a>
+		  </li>
+		</ul>
+</div> -->
+<!-- Fin Tab -->
+
+<!-- Contenedor de Info, Opciones y Tabla -->
+<div  class="container-fluid page-content-ce _principal">
+	<div class="page-content _padding-pages _page-banco-items"  >
+		<div  class="container-fluid _card-rounded mt-3" >
+			<!-- Informacion de Items (total y asignados) con opciones -->
+			
+			
+			<!-- <div class="row _info-banco pt-3 pb-3 align-items-center"> -->
+				<!-- <div class="col-sm-3 _items-total"> -->
+					<!-- <div class="row align-items-center"> -->
+						<!-- <div class="offset-sm-1 col-sm-5"> -->
+							<!-- <label class="_text-legend">Total Ítems: </label> -->
+							
+						<!-- </div> -->
+						<!-- <div class="col-sm-3 _items-total"> -->
+							<!-- <label class="_text-legend _valor-items" id="total-items"></label> -->
+						<!-- </div> -->
+					<!-- </div>					  -->
+				<!-- </div> -->
+				<!-- <div class="col-sm-3 _asignar-items"> -->
+					<!-- <div class="row align-items-center"> -->
+						<!-- <div class="offset-sm-2 col-sm-5 "> -->
+							<!-- <label class="_text-legend">En proceso: </label> -->
+						<!-- </div> -->
+						<!-- <div class="offset-sm col-sm-2 _asignados-total"> -->
+							<!-- <label class="_text-legend _valor-asignados" id="items-asignados" ></label> -->
+						<!-- </div> -->
+					<!-- </div>					  -->
+				<!-- </div> -->
+				<!-- <div class="col-sm-3 _descargar">	 -->
+					<!-- <div class="row align-items-center">	 -->
+						<!-- <div class="offset-sm-7 col-sm-4"> -->
+							<!-- <button class="btn btn-primary datatable-excel"   role="button" id="descraga-lista-banco-items" type="button"><i class="fas fa-download"></i> Descargar Lista</button> -->
+						<!-- </div>	 -->
+					<!-- </div>		 -->
+				<!-- </div>		  -->
+			<!-- </div> -->
+			<!-- Fin Informacion de Items -->
+
+
+			<!-- Seccion de Filtrado -->
+			<div class="row" id="supervisor-prueba-Table_filters">
+				<!-- <div class="col-sm-1 text-center">
+					<label style="margin-left: 0px" class="_text-legend _items-total">Filtrar por: </label>
+				</div> -->
+				<div class="offset-sm-1 text-center" id="clear-filtros">
+					<button class="btn" role="button" id="limpiar-filtros" type="button">Limpiar Filtros</button>
+				</div>
+				
+			</div>
+
+
+
+			<!-- Modal Selección Categorias Ítems -->
+
+			<!-- <div class="modal fade" id="categoriasItem" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="font-size: 14px;padding-top: 40px;"> -->
+			  <!-- <div class="modal-dialog" role="document"> -->
+			    <!-- <div class="modal-content"> -->
+			      <!-- <div class="modal-header"> -->
+			        <!-- <h5 class="modal-title" id="exampleModalLabel" style="font-weight: bold; font-size: 16px">Gestión de Carga de Ítems</h5> -->
+			        <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close"> -->
+			          <!-- <span aria-hidden="true">&times;</span> -->
+			        <!-- </button> -->
+			      <!-- </div> -->
+			      <!-- <div class="modal-body"> -->
+			      	<!-- <p>En esta sección puede gestionar la carga de ítems uno a uno</p> -->
+	                    <!-- <ul> -->
+	                        <!-- <li>Debe selecionnar las siguintes categorias para comenzar a subir uno o varios Ítems</li> -->
+	                        
+	                    <!-- </ul> -->
+	                    <!-- <br> -->
+	                    <!-- <div class="form row"> -->
+                			<!-- <div class="form-group col-md"> -->
+						      <!-- <label for="inputTipo" class="labelColaborador">Tipo:</label> -->
+						      <!-- <select id="inputTipo" class="form-control selectColaborador"> -->
+						        <!-- <option selected>Seleccione...</option> -->
+						        <!-- <option>Pedagógico</option> -->
+						        <!-- <option>Disciplinar</option> -->
+						      <!-- </select> -->
+						    <!-- </div> -->
+
+						    <!-- <div class="form-group col-md-8"> -->
+						      <!-- <label for="inputEspecialidad" class="labelColaborador">Habilidad:</label> -->
+						      <!-- <select id="inputEspecialidad" class="form-control selectColaborador"> -->
+						        <!-- <option selected>Seleccione...</option> -->
+						        <!-- <option>Ciencias Mención Bílogia, Química y Física</option> -->
+						      <!-- </select> -->
+						    <!-- </div> -->
+                	<!-- </div> -->
+			      <!-- </div> -->
+			      <!-- <div class="modal-footer"> -->
+			        <!-- <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button> -->
+			        <!-- <button type="button" class="btn btn-primary" id="seccionItem">Continuar</button> -->
+			      <!-- </div> -->
+			    <!-- </div> -->
+			  <!-- </div> -->
+			<!-- </div> -->
+
+			<!-- Fin Modal Selección Categorias Ítems -->
+
+
+
+			<!-- Modal Cargar Items-->
+				<!-- <div class="modal fade" id="cargarItems" tabindex="-1" role="dialog" aria-labelledby="adjuntarRecursoTitle" aria-hidden="true" style="font-size: 14px;padding-top: 40px;"> -->
+			        <!-- <div class="modal-dialog modal-lg modal-dialog-centered" role="document"> -->
+			            <!-- <div class="modal-content"> -->
+			                <!-- <div class="modal-header"> -->
+			                    <!-- <div class="col-md-11"> -->
+			                        <!-- <h5 class="modal-title" id="titulo-gestion-curso" style="font-weight: bold; font-size: 16px">Gestión de Carga de Ítems</h5> -->
+			                    <!-- </div> -->
+			                    <!-- <div class="col-md-1">			                         -->
+			                        <!-- <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span></button> -->
+			                    <!-- </div> -->
+			                <!-- </div> -->
+			                <!-- <div class="modal-body"> -->
+			                    <!-- <p>En esta sección puede gestionar la carga de ítems uno a uno, o mediante una planilla:</p> -->
+			                    <!-- <ul> -->
+			                        <!-- <li>Desde la pestaña <b>Uno a uno</b> usted podrá realizar las acciones de agregar y editar un ítem de manera individual.</li> -->
+			                        <!-- <li>Es posible también subir una planilla completa de los ítems desde la pestaña <b>Subir archivo</b>.</li> -->
+			                    <!-- </ul> -->
+			                    <!-- <br> -->
+			                    <!-- <ul class="nav nav-tabs" role="tablist"> -->
+			                        <!-- <li class="nav-item"> -->
+			                            <!-- <a class="nav-link active" data-toggle="tab" href="#singleAlumno" aria-expanded="true" aria-selected="true" >Uno a uno</a> -->
+			                        <!-- </li> -->
+			                        <!-- <li class="nav-item"> -->
+			                            <!-- <a class="nav-link" data-toggle="tab" href="#fileAlumno" aria-expanded="false">Subir Archivo</a> -->
+			                        <!-- </li> -->
+			                    <!-- </ul> -->
+			                    <!-- <div class="tab-content"> -->
+			                        <!-- <div id="singleAlumno" class="tab-pane fade active in"> -->
+			                            <!-- <div class="container-fluid" id="singleAlumnoContainer"> -->
+			                                <!-- <h1>Gestionar ítem de manera individual</h1> -->
+			                            <!-- </div> -->
+			                            <!-- <div class="container-fluid form-item"> -->
+			                            	<!-- <form> -->
+			                            		<!-- <div class="form-row"> -->
+			                            			<!-- <div class="form-group col-md-3"> -->
+												      <!-- <label for="inputDificultad" class="labelColaborador">Dificultad: </label> -->
+												      <!-- <select id="inputDificultad" class="form-control selectColaborador"> -->
+												        <!-- <option selected>Seleccione...</option> -->
+												        <!-- <option>Alta</option> -->
+												        <!-- <option>Media</option> -->
+												        <!-- <option>Baja</option> -->
+												      <!-- </select> -->
+												    <!-- </div> -->
+												    <!-- <div class="form-group col-md-3"> -->
+												      <!-- <label for="inputHabilidad" class="labelColaborador">Habilidad:</label> -->
+												      <!-- <select id="inputHabilidad" class="form-control selectColaborador"> -->
+												        <!-- <option selected>Seleccione...</option> -->
+												        <!-- <option>Conocer</option> -->
+												      <!-- </select> -->
+												    <!-- </div> -->
+												    <!-- <div class="form-group col-md-3"> -->
+												      <!-- <label for="inputTipo" class="labelColaborador">Tipo:</label> -->
+												      <!-- <select id="inputTipo" class="form-control selectColaborador"> -->
+												        <!-- <option selected>Seleccione...</option> -->
+												        <!-- <option>Pedagógico</option> -->
+												      <!-- </select> -->
+												    <!-- </div> -->
+												    <!-- <div class="form-group col-md-3"> -->
+												      <!-- <label for="inputNivel" class="labelColaborador">Nivel:</label> -->
+												      <!-- <select id="inputNivel" class="form-control selectColaborador"> -->
+												        <!-- <option selected>Seleccione...</option> -->
+												        <!-- <option>Media</option> -->
+												      <!-- </select> -->
+												    <!-- </div> -->
+												<!-- </div> -->
+												    <!-- <div class="form-group col-md"> -->
+												      <!-- <label for="inputEspecialidad" class="labelColaborador">Especialidad:</label> -->
+												      <!-- <select id="inputEspecialidad" class="form-control selectColaborador"> -->
+												        <!-- <option selected>Seleccione...</option> -->
+												        <!-- <option>Ciencias Mención Bílogia, Química y Física</option> -->
+												      <!-- </select> -->
+												    <!-- </div> -->
+												    <!-- <div class="form-group col-md"> -->
+												      <!-- <label for="inputTema" class="labelColaborador">Tema:</label> -->
+												      <!-- <select id="inputTema" class="form-control selectColaborador"> -->
+												        <!-- <option selected>Seleccione...</option> -->
+												        <!-- <option>Aprendizaje y Desarrollo de los Estudiantes de Educación Media</option> -->
+												      <!-- </select> -->
+												    <!-- </div> -->
+												    <!-- <div class="form-group col-md"> -->
+												      <!-- <label for="inputTipoItem" class="labelColaborador">Tipo Item:</label> -->
+												      <!-- <select id="inputTipoItem" class="form-control selectColaborador"> -->
+												        <!-- <option selected>Seleccione...</option> -->
+												        <!-- <option>Abierto</option> -->
+												      <!-- </select> -->
+												    <!-- </div> -->
+												    <!-- <div class="form-group col-md"> -->
+												      <!-- <label for="inputEstandar" class="labelColaborador">Estandar:</label> -->
+												      <!-- <select id="inputEstandar" class="form-control selectColaborador"> -->
+												        <!-- <option selected>Seleccione...</option> -->
+												        <!-- <option>Conoce a los estudiantes de Educacióin Media y sabe comno aprender</option> -->
+												      <!-- </select> -->
+												    <!-- </div> -->
+												    <!-- <div class="form-group col-md"> -->
+												      <!-- <label for="inputIndicador" class="labelColaborador">Indicador:</label> -->
+												      <!-- <select id="inputIndicador" class="form-control selectColaborador"> -->
+												        <!-- <option selected>Seleccione...</option> -->
+												        <!-- <option>Identifica estilos de aprendizaje, motivaciones, necesidades educativas especiales</option> -->
+												      <!-- </select> -->
+												    <!-- </div> -->
+
+												    <!-- <div class="form-row"> -->
+												    <!-- <div class="form-group col-md-12"> -->
+												      <!-- <label for="inputEnunciado" class="labelColaborador">Enunciado: </label> -->
+												      <!-- <input type="text" class="form-control" id="inputEnunciado" placeholder="Ingrese el Enunciado: "> -->
+												    <!-- </div> -->
+
+												    <!-- <div class="form-group col-md-12"> -->
+												      <!-- <label for="inputPregunta" class="labelColaborador">Pregunta: </label> -->
+												      <!-- <input type="text" class="form-control" id="inputPregunta" placeholder="Ingrese la Pregunta: "> -->
+												    <!-- </div> -->
+												  <!-- </div> -->
+
+												  <!-- <div class="form-row"> -->
+												    <!-- <div class="form-group col-md-12"> -->
+												      <!-- <label for="inputAlternativaA" class="labelColaborador">Alternativa A: </label> -->
+												      <!-- <input type="text" class="form-control" id="inputAlternativaA" placeholder="Ingrese la Alternativa A: "> -->
+												    <!-- </div> -->
+												    <!-- <div class="form-group col-md-12"> -->
+												      <!-- <label for="inputAlternativaB" class="labelColaborador">Alternativa B: </label> -->
+												      <!-- <input type="text" class="form-control" id="inputAlternativaB" placeholder="Ingrese la Alternativa B: "> -->
+												    <!-- </div> -->
+												    <!-- <div class="form-group col-md-12"> -->
+												      <!-- <label for="inputAlternativaC" class="labelColaborador">Alternativa C: </label> -->
+												      <!-- <input type="text" class="form-control" id="inputAlternativaC" placeholder="Ingrese la Alternativa C: "> -->
+												    <!-- </div> -->
+												    <!-- <div class="form-group col-md-12"> -->
+												      <!-- <label for="inputAlternativaD" class="labelColaborador">Alternativa D: </label> -->
+												      <!-- <input type="text" class="form-control" id="inputAlternativaD" placeholder="Ingrese la Alternativa D: "> -->
+												    <!-- </div> -->
+												  <!-- </div> -->
+
+												  <!-- <button type="submit" class="btn btn-primary" style="margin-left: 300px">Guardar</button> -->
+											<!-- </form> -->
+			                            	
+			                            <!-- </div> -->
+			                        <!-- </div> -->
+
+			                        <!-- <div id="fileAlumno" class="tab-pane fade"> -->
+			                            <!-- <div class="container-fluid" id="fileAlumnoContainer"> -->
+			                            	<!-- <div style="margin-bottom: 20px"> -->
+			                            		<!-- <h1 style="font-weight: bold">Seleccione las categorías para descargar planilla</h1> -->
+			                            	<!-- </div> -->
+
+			                            	<!-- <div class="form row"> -->
+			                            			<!-- <div class="form-group col-md"> -->
+												      <!-- <label for="inputTipo" class="labelColaborador">Tipo:</label> -->
+												      <!-- <select id="inputTipo" class="form-control selectColaborador"> -->
+												        <!-- <option selected>Seleccione...</option> -->
+												        <!-- <option>Pedagógico</option> -->
+												      <!-- </select> -->
+												    <!-- </div> -->
+
+												    <!-- <div class="form-group col-md"> -->
+												      <!-- <label for="inputEspecialidad" class="labelColaborador">Especialidad:</label> -->
+												      <!-- <select id="inputEspecialidad" class="form-control selectColaborador"> -->
+												        <!-- <option selected>Seleccione...</option> -->
+												        <!-- <option>Ciencias Mención Bílogia, Química y Física</option> -->
+												      <!-- </select> -->
+												    <!-- </div> -->
+
+			                            	<!-- </div> -->
+			                                <!-- <div class="row"> -->
+			                                    <!-- <div class="col-sm-6">			                                          -->
+			                                        <!-- <div class="card-subirArchivos bgimg"> -->
+			                                            <!-- <div class="card-numero">1</div> -->
+			                                            <!-- <div class="card card1-aling"> -->
+			                                                <!-- <div class="card-body"> -->
+			                                                    <!-- <h5 class="card-title">Descargue la plantilla</h5> -->
+			                                                    <!-- <a href="PLANTILLA_NOMINA_CURSO.xlsx" class="btn btn-primary">Descargar</a> -->
+			                                                <!-- </div> -->
+			                                            <!-- </div> -->
+			                                            <!-- <div class="card-icon"><img src="images/descargar.png"></div> -->
+			                                        <!-- </div> -->
+			                                    <!-- </div> -->
+			                                    <!-- <div class="col-sm-6"> -->
+			                                        <!-- <div class="card-subirArchivos bgimg"> -->
+			                                            <!-- <div class="card-numero">2</div> -->
+			                                            <!-- <div class="card card2-aling"> -->
+			                                                <!-- <div class="card-body"> -->
+			                                                    <!-- <h5 class="card-title">Utilice la plantilla para preparar la nómina de estudiantes.</h5> -->
+			                                                <!-- </div> -->
+			                                            <!-- </div> -->
+			                                            <!-- <div class="card-icon"><img src="images/preparar.png"></div> -->
+			                                        <!-- </div> -->
+			                                    <!-- </div> -->
+			                                <!-- </div> -->
+			                                <!-- <div class="row"> -->
+			                                    <!-- <div class="col-sm-6"> -->
+			                                        <!-- <div class="card-subirArchivos bgimg"> -->
+			                                            <!-- <div class="card-numero">3</div> -->
+			                                            <!-- <div class="card card3-aling"> -->
+			                                                <!-- <div class="card-body"> -->
+			                                                    <!-- <h5 class="card-title">Seleccione la nómina que trabajó desde su computador.</h5> -->
+			                                                    <!-- <form id="uploadFile" action="ajaxUpload.php" method="post" enctype="multipart/form-data"> -->
+			                                                        <!-- <div style="position:relative;"> -->
+			                                                            <!-- <a class="btn btn-primary" href="javascript:;">Seleccionar -->
+			                                                                <!-- <input id="seleccionarNomina" type="file" accept="application/xlsm, .xml, .xlsm, .xlsx" class="inputFile" name="file_source" size="40" onchange="nombreArchivo($(this).val());" style="height: 34px !important;"> -->
+			                                                            <!-- </a> &nbsp; -->
+			                                                            <!-- <span class="label label-info" id="upload-file-info" style="background-color: rgb(91, 192, 222);"></span><br> -->
+			                                                        <!-- </div> -->
+			                                                        
+			                                                
+			                                                <!-- </form></div> -->
+			                                            <!-- </div> -->
+			                                            <!-- <div class="card-icon"><img src="images/seleccionar.png"></div> -->
+			                                        <!-- </div> -->
+			                                        
+			                                    <!-- </div> -->
+			                                    <!-- <div class="col-sm-6"> -->
+			                                        <!-- <div class="card-subirArchivos bgimg"> -->
+			                                            <!-- <div class="card-numero">4</div> -->
+			                                            <!-- <div class="card card1-aling"> -->
+			                                                <!-- <div class="card-body"> -->
+			                                                    <!-- <h5 class="card-title">Finalmente presione el botón para subir la nómina al sistema.</h5> -->
+			                                                    <!-- <input id="subirNomina" class="btn btn-primary" type="submit" value="Subir nómina" disabled="disabled"> -->
+			                                                    
+			                                                <!-- </div> -->
+			                                            <!-- </div> -->
+			                                        <!-- </div> -->
+			                                    <!-- </div> -->
+			                                <!-- </div> -->
+			                            <!-- </div> -->
+			                        <!-- </div> -->
+			                    <!-- </div> -->
+			                <!-- </div> -->
+			            <!-- </div> -->
+			        <!-- </div> -->
+			    <!-- </div>  -->
+			<!-- Fin Modal Cargar Items -->
+
+			<!-- Modal Cargar Items 2-->
+				<!-- <div class="modal fade" id="subirArchivo" tabindex="-1" role="dialog" aria-labelledby="modalSubirArchivo" aria-hidden="true"> -->
+				  <!-- <div class="modal-dialog modal-dialog-centered" role="document"> -->
+				    <!-- <div class="modal-content"> -->
+				      <!-- <div class="modal-header"> -->
+				        <!-- <h5 class="modal-title _titulo-modals" id="modalSubirArchivo">Formulario de Carga</h5> -->
+					        <!-- <div class="offset-sm-2 col-sm-3"> -->
+								<!-- <a class="btn btn-primary _btn-descarga-banco" href="#" role="button"></i>Descargar</a> -->
+							<!-- </div> -->
+					        <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close"> -->
+					          <!-- <span aria-hidden="true">&times;</span> -->
+					        <!-- </button> -->
+				        
+				      <!-- </div> -->
+				      <!-- <div class="modal-body">	      	 -->
+				      	<!-- <div class="row pt-3 pb-3 _barra-progreso"> -->
+				      		<!-- <div class="line"></div> -->
+				      		<!-- <div class="col-sm-5"><label class="_progreso-2-1">1</label></div> -->
+				      		<!-- <div class="col-sm-5"><label class="_progreso-2-2">2</label></div> -->
+				      		<!-- <div class=""><label class="_progreso-2-3">3</label></div>				      		 -->
+				      	<!-- </div> -->
+				      	<!-- <div> -->
+				      		<!-- <label class="_info-modal">A continuacion, debe subir una plantilla que contenga los ítems que desea subir para revisión.</label> -->
+				      	<!-- </div> -->
+							  <!-- <div class="custom-file"> -->
+							    <!-- <input type="file" class="custom-file-input" id="seleccionarArchivo" lang="es"> -->
+							    <!-- <label class="custom-file-label" for="seleccionarArchivo"></label> -->
+							  <!-- </div> -->
+				      	<!-- </div> -->
+				      <!-- <div class="modal-footer"> -->
+				        <!-- <button type="button" class="btn btn-light _anterior" data-dismiss="modal" data-target="#cargarItems" data-toggle="modal" ><i class="fas fa-chevron-left"></i>Anterior</button> -->
+				        <!-- <button type="button" class="btn btn-primary">Siguiente<i class="fas fa-chevron-right"></i></button> -->
+				      <!-- </div> -->
+				    <!-- </div> -->
+				  <!-- </div> -->
+				<!-- </div> -->
+			<!-- Fin Modal Cargar Items -->
+
+			<!-- Modal Asignar Items-->
+				<!-- <div class="modal fade" id="asignarItems" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true"> -->
+				  <!-- <div class="modal-dialog modal-dialog-centered" role="document"> -->
+				    <!-- <div class="modal-content"> -->
+				      <!-- <div class="modal-header"> -->
+				        <!-- <h5 class="modal-title" id="exampleModalCenterTitle">Modal title</h5> -->
+				        <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close"> -->
+				          <!-- <span aria-hidden="true">&times;</span> -->
+				        <!-- </button> -->
+				      <!-- </div> -->
+				      <!-- <div class="modal-body"> -->
+				        <!-- <div> -->
+				        	
+				        <!-- </div> -->
+				        <!-- <div> -->
+							<!-- <div class="col-sm-6 _items-total"> -->
+								<!-- <div class="row align-items-center"> -->
+									<!-- <div class="offset-sm-1 col-sm-2"> -->
+										<!-- <label class="_text-legend">Primero debe generar una plantilla seleccionando cada uno de los siguientes: </label>							 -->
+									<!-- </div> -->
+									<!-- <div class="btn-group"> -->
+									  <!-- <button type="button" class="btn btn-light dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> -->
+									    <!-- Prueba -->
+									  <!-- </button> -->
+									  <!-- <div class="dropdown-menu"> -->
+									    <!-- <a class="dropdown-item" href="#">Action</a> -->
+									    <!-- <a class="dropdown-item" href="#">Another action</a> -->
+									    <!-- <a class="dropdown-item" href="#">Something else here</a> -->
+									    <!-- <div class="dropdown-divider"></div> -->
+									    <!-- <a class="dropdown-item" href="#">Separated link</a> -->
+									  <!-- </div> -->
+									<!-- </div>										 -->
+								<!-- </div>					  -->
+							<!-- </div> -->
+				        <!-- </div> -->
+				      <!-- </div> -->
+				      <!-- <div class="modal-footer"> -->
+				        <!-- <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button> -->
+				        <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+				      <!-- </div> -->
+				    <!-- </div> -->
+				  <!-- </div> -->
+				<!-- </div> -->
+			<!-- Fin Modal Asignar Items -->
+
+			<!-- Fin seccion Modals -->
+
+			<!-- Tabla de Items -->
+			<div class="col-sm-12 pt-5 pl-5 pr-5 mb-5" style="padding-top: 1.5rem!important; padding-left: 0px !important; padding-right: 0px !important;">
+														
+				<table id="table-banco-items" class="stripe table table-hover _table-link dataTable no-footer" style="width:100%;">
+					<thead>
+					<!-- id="items" class="display" -->				
+						<tr>
+						  <th>N°</th>
+						  <th>CÓDIGO</th>
+						  <th class="text-left">PRUEBA</th>
+						  <!-- <th>NIVEL</th> -->
+						  <th class="text-left">ESPECIALIDAD</th>
+						  <th class="text-left">TEMA</th>
+						  <!-- <th>TIPO ITEM</th> -->
+						  <!-- <th>ESTADO</th> -->
+						  <th>OPCIONES</th>						
+						</tr>
+					</thead>
+					<tbody id="lista_items">
+					</tbody>
+					
+				</table>
+			</div>		
+			<!-- Fin Tabla Items  -->
+		</div>
+	</div>	
+</div>
+<!-- Fin Contenedor -->
+<!-- <script >
+	$document.write(
+		$custom-file-text: (
+  en: "Browse",
+  es: "Elegir"
+);
+		)
+</script>  -->

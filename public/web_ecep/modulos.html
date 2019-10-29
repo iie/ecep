@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>ECEP</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="icon" href="img/favicon.ico" type="image/x-icon">
+    <!-- JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="vendor/popper/popper.min.js"></script> 
+    <!--FONT-->
+    <link href="https://fonts.googleapis.com/css?family=Muli:300,400,500,700" rel="stylesheet">
+    <!-- CSS -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+    <link href="css/estilos.css" rel="stylesheet" media="all">
+    <link rel="stylesheet" href="vendor/bootstrap_v4.3.1/css/bootstrap.min.css">
+    <link  href='https://fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,400italic,500,500italic,700,700italic,900italic,900'
+        rel='stylesheet' type='text/css'>
+</head>
+
+<body>
+ 
+        <div class="encabezado" style="margin-left: -15px;">
+	        <div class="row">
+	            <div class="col-sm-1">
+	                <a id="redirect" href="#" class="text-white" style="padding-left: 15%; font-size: 27px; display: none;">
+	                    <i class="fas fa-arrow-left"></i>
+	                </a>
+	                <div style="border:1px solid; width:40px; height:40px; border-radius:50px; float:right">&nbsp;</div>
+	            </div>
+	            <div class="col-sm-6" style="padding-top:8px; text-align: left;">
+	                ECEP
+	            </div>
+	            <div class="col-sm-5 pr-4" style="padding-top:8px; ">
+	                <div class="dropdown show text-left" style="float:right; font-size: 15px;">
+	                    Bienvenido, <strong><span id="nombre_usuario"></span></strong>
+	                    <a class="dropdown-toggle _hide-arrow text-white" href="#" role="button" id="dropdownMenuLink2"
+	                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+	                        <i class="fas fa-user-circle"></i>
+	                    </a>
+	                    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink2" style="font-size: 15px;">
+	                        <a class="dropdown-item" href="#" onclick="redirectLogin()">Cerrar sesión</a>
+	                    </div>
+	                </div>
+
+	            </div>
+	        </div>
+	    </div>
+        <div class="_main-container _container-form _max-width" id="containerHTML">
+            <div class="pt-5 pb-5 pl-5 pr-5">
+                <div class="row" id="containerCentros">
+                    <div class="col-sm-6">                        
+                         <div class="card-centros">
+                            <!-- <div class="card card1-aling"> -->
+                                 <div class="card-body card-aling">
+                                  <hr class="cardLinea" align="left" size="2" width="40%" />
+                                      <h5 style="font-size: 1.25rem;"><a class="a-cursos">Módulo de Infraestructura</a></h5>
+                                  </div>
+                       <!-- </div> -->
+                             <div class="card-icon">
+                              <a id="evaluador" name="evaluador" onclick="redirectInfraestructura()" href="#" class="icon-block">
+                                  <i class="fas fa-sign-in-alt"></i>                                   
+                              </a></div>
+                         </div>
+                     </div>
+                     <div class="col-sm-6">                        
+                         <div class="card-centros">
+                                 <div class="card-body card-aling">
+                                  <hr class="cardLinea" align="left" size="2" width="40%" />
+                                      <h5 style="font-size: 1.25rem;"><a class="a-cursos">Módulo de Evaluados</a></h5>
+                                  </div>
+                             <div class="card-icon">
+                              <a id="evaluador" name="evaluador" onclick="redirectEvaluados()" href="#" class="icon-block">
+                                  <i class="fas fa-sign-in-alt"></i>                                   
+                              </a></div>
+                         </div>
+                     </div>
+                     <div class="col-sm-6">                        
+                         <div class="card-centros">
+                                 <div class="card-body card-aling">
+                                  <hr class="cardLinea" align="left" size="2" width="40%" />
+                                      <h5 style="font-size: 1.25rem;"><a class="a-cursos">Centro Operaciones</a></h5>
+                                  </div>
+                             <div class="card-icon">
+                              <a id="evaluador" name="evaluador" onclick="redirectCentro()" href="#" class="icon-block">
+                                  <i class="fas fa-sign-in-alt"></i>                                   
+                              </a></div>
+                         </div>
+                     </div>
+                </div>
+            </div>
+        </div>
+
+   
+    
+</body>
+
+<footer>
+      <!-- Jquery JS-->
+        <script src="vendor/jquery-3.2.1/jquery-3.2.1.min.js" type="text/javascript"></script>    
+
+      <!-- Bootstrap -->
+        <script src="vendor/bootstrap_v4.3.1/js/bootstrap.min.js" type="text/javascript"></script> 
+        <script type="text/javascript" src="js/modulos.js"></script>
+        <script type="text/javascript" src="vendor/utils.js"></script>
+</footer>
+</html>      

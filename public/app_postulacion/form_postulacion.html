@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=1024">
+
+    <link rel="icon" type="image/png" href="img/mineduc.png">
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="css/Estilo.css">
+    <link rel="stylesheet" type="text/css" href="css/jquery-ui.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretty-checkbox@3.0/dist/pretty-checkbox.min.css">
+    <!-- <link rel="stylesheet" type="text/css" href="css/bootstrap-select.min.css"> -->
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+    
+    <script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <!--<script type="text/javascript" src="js/bootstrap-datetimepicker.js"></script> 
+    <script type="text/javascript" src="js/locales/bootstrap-datetimepicker.es.js"></script> -->
+    <script type="text/javascript" src="js/clockpicker.js"></script>
+    <script type="text/javascript" src="js/popper.min.js"></script>
+    <script type="text/javascript" src="js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.js" integrity="sha256-H9jAz//QLkDOy/nzE9G4aYijQtkLt9FvGmdUTwBk6gs=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/locale/es.js" integrity="sha256-bETP3ndSBCorObibq37vsT+l/vwScuAc9LRJIQyb068=" crossorigin="anonymous"></script>
+    <script src="js/jquery.blockUI.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sweetalert2@7.29.1/dist/sweetalert2.all.min.js"></script>
+    <script type="text/javascript" src="js/jquerrut.js"></script>
+    <script src="js/postulacion.js"></script>
+    <!-- <script type="text/javascript" src="js/bootstrap-select.min.js"></script> -->
+    
+
+    <title>ECEP 2019</title>
+</head>
+
+<body>
+<div class="container-fluid">
+    <nav class="row _nav navbar-expand-lg position-static">
+        <div class="_nav-center text-white fuente-gob-regular">
+            <h3 class=""><a href="index.html" class="text-white mt-3 h3"><i class="fa fw fa-arrow-left"></i></a>&nbsp;&nbsp;Formulario de Postulación ECEP 2019</h3>
+        </div>
+
+        <div class="_nav-right text-white"></div>
+
+        <div class="_nav-right text-white ml-auto dropdown"></div>
+    </nav>
+	<div style="padding-top:20px; color:#495057; font-weight:400">
+		<p style="color:#495057; font-weight:400; font-family: 'calibri'; font-size:18px;">Completa el siguiente formulario para postular.</p>
+		<p style="color:#495057; font-weight:400; font-family: 'calibri'; font-size:18px;">Debes completar toda la información requerida antes de enviar tu postulación.</p>
+	</div>
+    <form>
+        <div class="card mt-3 fuente-gob-regular" onchange="validarCambiodatos(event);" onkeypress="validarCambiodatos(event);">
+            <div class="card-header">
+                <h5>Datos Personales</h5> 
+                
+            </div>
+
+            <div class="card-body" id="four">
+                <div class="row" >
+                    <div class="col-sm-6">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text">RUN</div>
+                                    </div>
+
+                                    <input name="run" id="run" type="text" class="form-control" onblur="comprobarRun();"
+                                    oninput="this.value=Rut(this.value)" > <label style="margin-bottom:0px;"  id="luparun" onclick="comprobarRun();"><a href="#"><i class="fas fa-search icon"></i></a></label> 
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-12 text-center">
+                                <img src="img/load.gif" height="10" id="loadRun">
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-12 text-center">
+                                <span class="small _text-red" id="compRun"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6">
+                        <div class="input-group" id="chkpostu" style="font-size: 15px;">
+                            <div class="input-group-prepend" >
+                                <div class="input-group-text">Cargo(s) a postular</div>
+                            </div>
+                            <div style="margin-left: 5px; margin-top: 6px;" class="custom-control custom-checkbox ">    
+                                <input type="checkbox" class="custom-control-input" id="postulaSupervisor">
+                                <label class="custom-control-label" for="postulaSupervisor">Supervisor</label>
+                            </div>
+                            <div style="margin-left: 5px; margin-top: 6px;" class="custom-control custom-checkbox">  
+                                <input type="checkbox" class="custom-control-input" id="postulaExaminador">
+                                <label class="custom-control-label" for="postulaExaminador">Examinador</label>
+                            </div>    
+                            <div style="margin-left: 5px; margin-top: 6px;" class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="postula_examinador_apoyo">
+                                <label class="custom-control-label" for="postula_examinador_apoyo">Examinador de Apoyo</label>
+                            </div> 
+                            <div style="margin-left: 5px; margin-top: 6px;" class="custom-control custom-checkbox">    
+                                <input type="checkbox" class="custom-control-input" id="postula_anfitrion">
+                                <label class="custom-control-label" for="postula_anfitrion">Anfitrión</label> 
+                            </div>
+                            
+                            <!--
+                            <div class="dropdown">
+                                <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown" id="cargoPostulacion">Seleccione Cargo</button>
+                                <div class="dropdown-menu">
+                                    <div class="ml-3 pretty p-default p-curve">
+                                        <input type="checkbox" id="postula_examinador_apoyo">
+                                        <div class="state p-primary">
+                                            <label>Coordinador Zonal</label>
+                                        </div>
+                                    </div>								
+                                    <div class="ml-3 pretty p-default p-curve">
+                                        <input type="checkbox" id="postulaExaminador">
+                                        <div class="state p-primary">
+                                            <label>Examinador</label>
+                                        </div>
+                                    </div>
+
+                                    <div class="ml-3 pretty p-default p-curve">
+                                        <input type="checkbox" id="postulaSupervisor">
+                                        <div class="state p-primary">
+                                            <label>Supervisor</label>
+                                        </div>
+                                    </div>
+
+                                    <div class="ml-3 pretty p-default p-curve">
+                                        <input type="checkbox" id="postulaTécnico">
+                                        <div class="state p-primary">
+                                            <label>Técnico</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>-->
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="separador-novisible">
+
+                <div class="row">
+                    
+                    <div class="col-sm-6">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">Región a postular</div>
+                            </div>
+
+                            <select name="region_Postulacion" id="region_Postulacion" class="form-control custom-select">
+                                <option value="">Seleccionar Región</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">Comuna a postular</div>
+                            </div>
+
+                            <select name="comuna_postulacion" id="comuna_postulacion" class="form-control custom-select">
+                                <option value="">Seleccionar Comuna</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                </div>
+
+                <hr class="separador-novisible">
+
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">Nombres</div>
+                            </div>
+
+                            <input name="nombres" id="nombres" type="text" class="form-control" onkeypress="validate2(event);" >
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">Apellido Paterno</div>
+                            </div>
+
+                            <input name="apellidoPaterno" id="apellidoPaterno" type="text" class="form-control" onkeypress="validate2(event)">
+                        </div>
+                    </div>
+                    
+                </div>
+
+                <hr class="separador-novisible">
+
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">Apellido Materno</div>
+                            </div>
+
+                            <input name="apellidoMaterno" id="apellidoMaterno" type="text" class="form-control" onkeypress="validate2(event)">
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">Fecha Nacimiento</div>
+                            </div>
+                            <input class="form-control" type="date" id="fecha_nacimiento" name="fecha_nacimiento"  min="1900-01-01" max="2011-12-31">
+                            
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="separador-novisible">
+
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">Nacionalidad</div>
+                            </div>
+                                <select class="form-control custom-select" id="nacionalidad" onchange="ocultarCombo()">
+                                <option value="">Seleccionar Nacionalidad</option>
+                                <option value="Chilena">Chilena</option>
+                                <option value="Otra">Otra</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text" id="regionNacimientoTxt">Región de Nacimiento</div>
+                                <div class="input-group-text" hidden id="nacionalidadNacimientoTxt">Indique Nacionalidad</div>
+                            </div>
+                                <select name="regionNacimiento" id="regionNacimiento" class="form-control custom-select">
+                                <option value="">Seleccionar Región</option>
+                                </select>
+                                <input name="nacionalidadNacimiento" hidden="" id="nacionalidadNacimiento" type="text" class="form-control" onkeypress="validate2(event)">
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="separador-novisible">
+
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text" id="comunaNacimientotxt">Comuna de Nacimiento</div>
+                            </div>
+                                <select name="comunaNacimiento" id="comunaNacimiento" class="form-control custom-select">
+                                <option value="">Seleccionar Comuna</option>
+                                </select>
+                            <input name="comunaNacimientoOtra" hidden="" id="comunaNacimientoOtra" type="text" class="form-control" onkeypress="validate2(event)">
+                        </div>
+                    </div>
+                     <div class="col-sm-6">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">Región de Residencia</div>
+                            </div>
+                                <select name="regionResidencia" id="regionResidencia" class="form-control custom-select">
+                                <option value="">Seleccionar Región</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="separador-novisible">
+
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">Comuna de Residencia</div>
+                            </div>
+
+                            <select name="comuna_residencia" id="comuna_residencia" class="form-control custom-select">
+                                <option value="">Seleccionar Comuna</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">Dirección de Residencia</div>
+                            </div>
+
+                            <input name="direccion_residencia" id="direccion_residencia" type="text" class="form-control">
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="separador-novisible">
+
+                <div class="row">
+                    
+
+                    <div class="col-sm-12">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">Sector/Villa/Población</div>
+                            </div>
+							<input name="sector_residencia" id="sector_residencia" type="text" class="form-control">
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="separador-novisible">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">Sexo</div>
+                            </div>
+
+                            <select name="sexo" id="sexo" class="form-control custom-select">
+                                <option value="">Seleccionar Sexo</option>
+                                <option value="81">Masculino</option>
+                                <option value="80">Femenino</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">Estado Civil</div>
+                            </div>
+
+                            <select name="estadoCivil" id="estadoCivil" class="form-control custom-select">
+                                <option value="">Seleccionar Estado Civil</option>
+                                <option value="83">Soltero(a)</option>
+                                <option value="82">Casado(a)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="separador-novisible">
+
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">Correo Electrónico</div>
+                            </div>
+
+                            <input name="correo_electronico_principal" id="correo_electronico_principal" type="text" class="form-control" onkeyup="ValidateEmail();">
+                            <br><span id="lblError" style="color: #dc3545"></span><br>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">Teléfono</div>
+                            </div>
+
+                            <input name="telefono_principal" id="telefono_principal" type="text" class="form-control" onkeypress="validate1(event)">
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="separador-novisible">
+
+
+            </div>
+        </div>
+
+        <div class="card mt-3 fuente-gob-regular">
+            <div class="card-header">
+                <h5>Datos Académicos</h5>
+            </div>
+
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="input-group" >
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">Nivel de Estudios</div>
+                            </div>
+
+                            <select name="nivel_estudios" id="nivel_estudios" class="form-control custom-select" >
+                                <option value="">Seleccione Nivel de Estudios</option>
+                                <option value="1">Estudiante Educación Media</option>
+                                <option value="2">Educación Media Incompleta</option>
+                                <option value="3">Educación Media Completa</option>
+                                <option value="4">Estudiante Educación Superior</option>
+                                <option value="5">Educación Superior Incompleta</option>
+                                <option value="6">Educación Superior Completa</option>
+                                <option value="7">Estudiante Postgrado</option>
+                                <option value="8">Postgrado Incompleto</option>
+                                <option value="9">Postgrado Completo</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">Institución</div>
+                            </div>
+
+                            <select name="universidad" id="universidad" class="form-control custom-select">
+                                <option value="1">Seleccione Universidad</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="separador-novisible">
+
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">Título/Carrera</div>
+                            </div>
+
+                            <input name="profesion" id="profesion" type="text" class="form-control" onkeypress="validate2(event)">
+                        </div>
+                    
+                    </div>
+
+                    <div class="col-sm-6" id="otraInstitucionDiv">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">Indique Institución</div>
+                            </div>
+
+                            <input name="otraInstitucion" id="otraInstitucion" type="text" class="form-control"onkeypress="validate2(event)">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mt-3 fuente-gob-regular">
+            <div class="card-header">
+                <h5>Otros Datos</h5>
+            </div>
+
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-sm-3" id="missLC">
+                        <div class="pretty p-default p-curve" >
+                            <input type="checkbox" name="licencia" id="licencia" onclick="habilitarConduccion();">
+                            <div class="state p-primary">
+                                <label>Poseo Licencia de Conducir</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-3" >
+                        <div class="pretty p-default p-curve">
+                            <input type="checkbox" name="auto" id="auto">
+                            <div class="state p-primary">
+                                <label>Tengo Automóvil</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">Clase</div>
+                            </div>
+
+                           <select name="claseLicencia" id="claseLicencia" class="form-control custom-select">
+                                <option value="">Seleccione Clase de Licencia</option>
+                                <option value="1">Clase A1</option>
+                                <option value="2">Clase A2</option>
+                                <option value="3">Clase A3</option>
+                                <option value="4">Clase A4</option>
+                                <option value="5">Clase A5</option>
+                                <option value="6">Clase B</option>
+                                <option value="7">Clase C</option>
+                                <option value="8">Clase D</option>
+                                <option value="9">Clase E</option>
+                                <option value="10">Clase F</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                
+
+                <div class="row">
+                    <div class="col-sm-4"></div>
+
+                    
+
+                    <div class="col-sm-4"></div>
+                </div>
+
+                <hr class="separador-novisible">
+
+                <div class="row">
+                    <div class="col-sm-4">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">Banco</div>
+                            </div>
+
+                            <select class="form-control custom-select" id="banco">
+                                <option value="">Seleccione Banco</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">Tipo de Cuenta</div>
+                            </div>
+
+                            <select class="form-control custom-select" id="tipoCuenta">
+                                <option value="">Seleccione Cuenta</option>
+                                <option value="1">Cuenta Corriente</option>
+                                <option value="2">Cuenta Vista/Rut</option>
+                                <option value="3">Cuenta de Ahorro</option>
+                                <option value="4">Chequera Electrónica</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">Número de Cuenta</div>
+                            </div>
+
+                            <input type="text" class="form-control" id="numeroCuenta" onkeypress="validate1(event)">
+                             <span class="small _text-grey" >* Si no ingresa cuenta personal, se generará vale vista.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="separador-novisible">
+
+                <div class="row">
+                	<!-- <div class="col-sm-12"> -->
+                		<!--<div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">Disponibilidad Horaria</div>
+                            </div>
+
+                            <textarea class="form-control" id="disponibilidad_horaria" rows="5"></textarea>
+                        </div>-->
+                        <!-- <div class="input-group" id="chkdispo">
+                            <div class="input-group-prepend" >
+                                <div class="input-group-text">Disponibilidad</div>
+                            </div>
+                            
+                            <div class="col-sm-2 custom-control custom-checkbox checkbox-dias">
+                                <input type="checkbox" class="custom-control-input" id="martesChk">
+                                <label class="custom-control-label" for="martesChk">Martes 19 de Noviembre</label>
+                                
+                            </div>  
+                            <div class="col-sm-2 custom-control custom-checkbox checkbox-dias">  
+                                <input type="checkbox" class="custom-control-input" id="miercolesChk">
+                                <label class="custom-control-label" for="miercolesChk">Miercoles 20 de Noviembre</label>
+                            </div>    
+                            <div class="col-sm-2 custom-control custom-checkbox checkbox-dias">    
+                                <input type="checkbox" class="custom-control-input" id="juevesChk">
+                                <label class="custom-control-label" for="juevesChk">Jueves 21 de Noviembre</label>
+                            </div>
+                            <div class="col-sm-2 custom-control custom-checkbox checkbox-dias">    
+                                <input type="checkbox" class="custom-control-input" id="viernesChk">
+                                <label class="custom-control-label" for="viernesChk">Viernes 22 de Noviembre</label>
+                            </div>
+                            
+                        </div> -->
+                       <!--  <span class="small _text-grey" >* Para los días seleccionados debe considerar jornada completa.</span> -->
+                	<!-- </div> -->
+                </div>
+            </div>
+        </div>
+
+        <div class="card mt-3 mb-3" id="ninjaa">
+            <div class="card-header">
+                <h5>Documentos</h5>
+                <small class="">( Formatos soportados: doc, docx, pdf, png o jpg )</small>
+            </div>
+
+            <div class="card-body">
+
+
+
+                <div class="row">
+                    <div class="col-sm-12">
+                        <table class="table table-sm">
+                            <thead class="bg-info text-center text-white">
+                            <tr>
+                                <td>Tipo de Documento</td>
+                                <td>Documento a Cargar</td>
+                                <td></td>
+                            </tr>
+                            </thead>
+
+                            <tbody id="tbodyDocs">
+<tr>
+	<td class="">Cédula de Identidad
+	<!--
+		<select class="form-control custom-select tipoDocumento" id="tipoDocumento_1">
+			<option value="">Seleccione Tipo de Documento</option>
+			<option value="1" selected="selected">Cédula de Identidad</option>
+
+		</select>
+	-->	
+	</td>
+	<td>
+		<div class="input-group"><input type="hidden" id="_token" value="{{ csrf_token() }}">
+			<input type="file" class="form-control documento" id="documento_1" onchange="sub();" accept=".doc, .docx, .pdf, .png, .jpg">
+		</div>
+	</td>
+	<td>
+		<div class="row">
+			
+			<div class="col-sm-6 text-left"><p id="mensajeUpload_1" class="mensajeUpload"></p></div>
+		</div>
+	</td>
+</tr>
+
+<tr>
+	<td class="">Currículum Vitae
+	<!--
+		<select class="form-control custom-select tipoDocumento" id="tipoDocumento_1">
+			<option value="">Seleccione Tipo de Documento</option>
+			<option value="2" selected="selected">Curriculum Vitae</option>
+
+		</select>
+	-->	
+		
+	</td>
+	<td>
+		<div class="input-group" placeholder="holaaaaa"><input type="hidden" id="_token" value="{{ csrf_token() }}" >
+			<input type="file" class="form-control documento" id="documento_2" onchange="sub();" accept=".doc, .docx, .pdf, .png, .jpg" >
+
+            <input  type="hidden" id="_token" value="{{ csrf_token() }}" style="cursor:pointer" />
+            <input type="file" id="file1"  name="file1" style="display:none" />
+		</div>
+	</td>
+	<td>
+		<div class="row">
+			
+			<div class="col-sm-6 text-left"><p id="mensajeUpload_2" class="mensajeUpload"></p></div>
+		</div>
+	</td>
+</tr>		
+<tr>
+	<td class="">Certificado de Antecedentes
+	<!--
+		<select class="form-control custom-select tipoDocumento" id="tipoDocumento_1">
+			<option value="">Seleccione Tipo de Documento</option>
+			<option value="4" selected="selected">Certificado de Antecedentes</option>
+		</select>
+	-->	
+	</td>
+	<td>
+		<div class="input-group"><input type="hidden" id="_token" value="{{ csrf_token() }}">
+			<input type="file" class="form-control documento" id="documento_3" onchange="sub();" accept=".doc, .docx, .pdf, .png, .jpg">
+		</div>
+	</td>
+	<td>
+		<div class="row">
+			
+			<div class="col-sm-6 text-left"><p id="mensajeUpload_3" class="mensajeUpload"></p></div>
+		</div>
+	</td>
+</tr>
+<tr>
+	<td class="">Certificado de Título o Certificado alumno regular
+	<!--
+		<select class="form-control custom-select tipoDocumento" id="tipoDocumento_1">
+			<option value="">Seleccione Tipo de Documento</option>
+			<option value="4" selected="selected">Certificado de título</option>
+		</select>
+	-->	
+	</td>
+	<td>
+		<div class="input-group"><input type="hidden" id="_token" value="{{ csrf_token() }}">
+			<input type="file" class="form-control documento" id="documento_4" onchange="sub();" accept=".doc, .docx, .pdf, .png, .jpg">
+		</div>
+	</td>
+	<td>
+		<div class="row">
+			
+			<div class="col-sm-6 text-left"><p id="mensajeUpload_4" class="mensajeUpload"></p></div>
+		</div>
+	</td>
+</tr>
+							
+							
+							</tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+			<hr class="separador-novisible">
+<!--
+			<div class="row">
+				<div class="col-sm-4">
+					<button class="btn btn-primary" type="button" id="agregarDoc" onclick="agregarDocumento();"><i class="fas fa-plus"></i> Agregar Documento</button>
+				</div>
+			</div>
+-->
+            <div class="card-footer fixed-bottom sin-bordes text-right">
+                <button type="button" class="btn btn-info" onclick="saveUsuario();" id="btnGuardar"><i class="fa fw fa-save"></i> Enviar Postulación</button>
+                <label type="hidden" id="idUsuario">
+                <label type="hidden" id="idPersona">
+            </div>
+        </div>
+
+        <hr class="separador-novisible">
+        <hr class="separador-novisible">
+        <hr class="separador-novisible">
+    </form>
+</div>
+
+<div class="modal fade" id="datosFaltantes" tabindex="-1" role="dialog" aria-labelledby="datosFaltantesScrollableTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="datosFaltantesScrollableTitle"><i class="fas fa-info-circle"></i> Confirmar envío de postulación.</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                       
+                    </button>
+                </div>
+                <div class="modal-body p-0">
+                    <div class="row m-0 pt-2 info_secciones">
+                        <div class="col-12">
+                            <label style="margin-bottom: 40px;" class="titulo-informacion">
+                                Atención, posterior a su envío, la información de su postulación,  no podrá ser editada o actualizada.<br>
+                				¿Está seguro que desea enviar su postulación?
+
+                            </label>
+                            <br>
+                            <button type="button" class="btn btn-success btn-md" id="myBtn" onclick="guardarConfirm()">Enviar</button>
+                            <button type="button" class="btn btn-danger btn-md" id="myBtn2"data-dismiss="modal">Cancelar</button>
+                        </div>               
+                    </div>
+                    <hr class="hr-titulo">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="consultarrut2" tabindex="-1" role="dialog" aria-labelledby="datosFaltantesScrollableTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="datosFaltantesScrollableTitle"><i class="fas fa-info-circle"></i> Verificar Run</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                       
+                    </button>
+                </div>
+                <div class="modal-body p-0">
+                    <div class="row m-0 pt-2 info_secciones">
+                        <div class="col-12">
+                            <label style="margin-bottom: 40px;" class="titulo-informacion">
+                               Al consultar el Run nuevamente se eliminaran los datos que no hayan sido guardados. - 
+                            </label>
+                            <br>
+                            <button type="button" class="btn btn-danger btn-md" onclick="cancell()" data-dismiss="modal">Cancelar</button>
+                            <button type="button" class="btn btn-success btn-md" onclick="rlimpiar()">Confirmar</button>
+                        </div>               
+                    </div>
+                    <hr class="hr-titulo">
+                </div>
+            </div>
+        </div>
+    </div>
+     <div class="modal fade" id="consultarrut3" tabindex="-1" role="dialog" aria-labelledby="datosFaltantesScrollableTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="datosFaltantesScrollableTitle"><i class="fas fa-info-circle"></i> Verificar Run</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                       
+                    </button>
+                </div>
+                <div class="modal-body p-0">
+                    <div class="row m-0 pt-2 info_secciones">
+                        <div class="col-12">
+                            <label style="margin-bottom: 40px;" class="titulo-informacion">
+                               Al consultar el Run nuevamente se eliminaran los datos que no hayan sido guardados. - 
+                            </label>
+                            <br>
+                            <button type="button" class="btn btn-danger btn-md" onclick="cancell()" data-dismiss="modal">Cancelar</button>
+                            <button type="button" class="btn btn-success btn-md" onclick="llimpiaar()">Confirmar</button>
+                        </div>               
+                    </div>
+                    <hr class="hr-titulo">
+                </div>
+            </div>
+        </div>
+    </div>
+     <div class="modal fade" id="noupdate1" tabindex="-1" role="dialog" aria-labelledby="datosFaltantesScrollableTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="datosFaltantesScrollableTitle"><i class="fas fa-info-circle"></i> Verificar Run</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                       
+                    </button>
+                </div>
+                <div class="modal-body p-0">
+                    <div class="row m-0 pt-2 info_secciones">
+                        <div class="col-12">
+                            <label style="margin-bottom: 40px;" class="titulo-informacion">
+                               Nuestro sistema ya cuenta con una postulación asociada al RUN ingresado. 
+                               <br>Si requiere actualizar o modificar alguno de sus datos, contactar a: postulaciones@iie.cl
+                            </label>
+                            <br>
+                            <button type="button" class="btn btn-danger btn-md" data-dismiss="modal">Cerrar</button>
+                        </div>               
+                    </div>
+                    <hr class="hr-titulo">
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+<style type="text/css">
+    
+    
+    .div_is-invalid{
+        border: 1px solid #dc3545 !important;
+    }
+</style>

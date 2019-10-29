@@ -1,0 +1,82 @@
+._container-form {
+    padding-top: 20px;
+    /* padding-left: 50px; */
+    /* padding-right: 50px; */
+    padding-left: 0px;
+    padding-right: 0px;
+}
+
+.card-centros{
+    background: #fff;
+    height: 240px; 
+    /* width: 75em; */
+    box-shadow: 0px 1px 15px rgba(0,0,0,0.2);
+    border-radius: 25px;
+    padding: 8px 30px;
+    margin-bottom: 20px;
+    padding-left: 5% !important;
+}
+
+.card-icon{
+    position: relative;
+    top: 40%;
+    /* left: 88%; */
+    font-size: 50px;
+    color: #03A9F4;
+    /* width: 15%; */
+    float: right;0
+}
+
+.card-aling{
+    position: absolute;
+    top: 44%;
+    left: 25%;
+    /* height: 30%; */
+    width: 70%;
+    margin: -11% -9px 4px -17%;
+}
+
+#containerCentros{
+    padding-left: 7%;
+    padding-right: 7%;
+    padding-top: 25px;
+}
+
+/*.icon-block{
+    color: #03A9F4 !important; 
+}*/
+
+.cardLinea{
+    margin-bottom: 0.5rem !important;
+    /*border-top: 3px solid #03a9f4;*/
+    border-top: 3px solid #267de1;
+}
+
+/* Let's get this party started */
+/*::-webkit-scrollbar {
+    width: 10px;
+    
+}*/
+
+/* Track */
+/*::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.1); 
+    -webkit-border-radius: 8px;
+    border-radius: 7px;
+    padding: 10px; 
+    margin-top: 6px;
+    margin-bottom: 2px;
+    margin-right: 15px;
+}*/
+ 
+/* Handle */
+/*::-webkit-scrollbar-thumb {
+    -webkit-border-radius: 10px;
+    border-radius: 7px;
+    background: hsla(200, 61%, 86%, 0.87); 
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.1); 
+}*/
+/*::-webkit-scrollbar-thumb:window-inactive {
+	background: hsla(200, 61%, 86%, 0.10); 
+}
+*/

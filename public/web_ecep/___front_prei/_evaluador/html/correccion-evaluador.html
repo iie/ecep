@@ -1,0 +1,280 @@
+<div class="container-fluid page-content-ce" >
+    <div class="container-fluid _padding-paginacion" >
+        <ul class="pagination" id="pagination"></ul>
+    </div>
+	
+    <div class="row m-0" style="background-color:#F9FAFB;padding-top: 120px;">
+        <div class="page-wrapper chiller-theme">
+            <nav id="sidebar" class="sidebar-wrapper">
+                <div class="sidebar-content">
+                    <div class="sidebar-header pr-4 pl-4 pb-4 pt-4">
+                        <div class="row">
+                            <div class="col-sm-4 text-left">
+                                <p class="_color-subtitulos">CÓDIGO</p>
+                                <label class="_color-titulos" id="codigo"></label>
+                            </div>
+                            <div class="col-sm-4 text-center">
+                                <p class="_color-subtitulos">DIFICULTAD</p>
+                                <label class="_color-titulos" id="dificultad"></label>
+                            </div>
+                            <div class="col-sm-4 text-right">
+                                <p class="_color-subtitulos">HABILIDAD</p>
+                                <label class="_color-titulos" id="habilidad"></label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm text-center mt-3 _color-titulos">
+                                <div>
+                                    <h5 id="tipo_area"></h5>
+                                </div>
+                                <hr class="cardLinea" align="center" size="2" width="20%">
+                                <div id="tipo_item" style="display: none;">
+                                    <label>Especialidad</label>:
+                                    <label id="tipo_prueba"></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="sidebar-menu pb-3">
+                        <div class="row">
+                            <div class="col-sm-12 pl-5 pt-2 pb-2 _background-titulos">
+                                <label class="_titulos-nav-lateral"><i class="fas fa-book _icon-nav-lateral"></i> Tema</label>
+                            </div>
+                        </div>
+                        <div class="row pt-3 pl-5 pr-5">
+                            <div class="col-sm pl-5" id="tema"></div>
+                        </div>
+                        <div class="row pt-5">
+                            <div class="col-sm-12 pl-5 pt-2 pb-2 _background-titulos">
+                                <label class="_titulos-nav-lateral"><i class="fas fa-book _icon-nav-lateral"></i> Estándar</label>
+                            </div>
+                        </div>
+                        <div class="row pt-3 pl-5 pr-5">
+                            <div class="col-sm pl-5" id="estandar"></div>
+                        </div>
+                        <div class="row pt-5">
+                            <div class="col-sm-12 pl-5 pt-2 pb-2 _background-titulos">
+                                <label class="_titulos-nav-lateral"><i class="fas fa-book _icon-nav-lateral"></i>Indicador</label>
+                            </div>
+                        </div>
+                        <div class="row pt-3 pl-5 pr-5">
+                            <div class="col-sm pl-5" id="indicador"></div>
+                        </div>
+                    </div>
+                </div>
+                <div style="float: right; margin-right: 24px;">
+                    <a id="show-sidebar" class="btn btn-sm" href="#">
+                        <i id="icon_sidebar" class="fas fa-chevron-right icon-side"></i>
+                    </a>
+                </div>
+            </nav>
+            
+        </div>
+        
+        <div class="_max-width container-fluid _container-form">
+            <div class="_card-rounded mt-5 mb-5 pl-5 pr-5 _contenedor-item" >
+                <div class="row">
+                    <div class="col-sm-6 divborder-right">
+                        <div class="row">
+                            <div class="col-sm-9 _color-titulos">
+                                <h1><i class="fas fa-eye"></i> Enunciado</h1>
+                            </div>
+                            <div class="col-sm-3 text-right" id="indicador_estimulo"></div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div id="enunciado"></div>
+                                <div class="pl-5 pr-5 mt-2 divborder-bottom" id="enunciado"></div>
+                                <div class="col-sm-9 _color-titulos mt-4">
+                                	 <h1 style="margin-left: -14px;"><i class="fas fa-image"></i> Estimulo</h1>
+                                	 <div id="estimulo"></div>
+                                </div>
+                                <div id="div-seccion-img">
+                                        <div class="file-upload">                                            
+                                            
+                                            <div id="div_upload0" class="image-upload-wrap">
+                                                <div class="drag-text">
+                                                    
+                                                </div>
+                                            </div>
+                                            <div id="div_file_upload_content0" class="file-upload-content">
+                                                <img class="file-upload-image img-fluid center" src="#" id="img0"/>
+                                                <!-- <div class="image-title-wrap">
+                                                    <button type="button" id="button_archivo_adjunto0" onclick="eliminarImg(this, 'add-image')" class="remove-image">Eliminar Imagen <span id = "image-title0" class="image-title"></span></button>
+                                                </div> -->
+                                            </div>
+                                            <!-- <div id="div_file_upload_content0" class="file-upload-content">
+                                                <img class="file-upload-image img-fluid" src="#" id="img0"/>
+                                                <div class="image-title-wrap">
+                                                    <button type="button" id="button_archivo_adjunto0" onclick="eliminarImg(this, 'add-image')" class="remove-image">Eliminar Imagen <span id = "image-title0" class="image-title"></span></button>
+                                                </div>
+                                            </div> -->
+                                        </div>
+                                    </div>
+                                <!-- <div id="recurso_enunciado"></div> -->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="row mb-2 _contenedor-pregunta" >
+                            <div class="col-sm-9 _color-titulos">
+                                <h1><i class="fas fa-question"></i> Pregunta</h1>
+                            </div>
+                            <div class="col-sm-3 text-right" id="indicador_pregunta"></div>
+							<br/>
+                            <div class="col-sm-12 pl-5 pr-5" id="pregunta"></div>
+                        </div>
+                        <div class="row divborder-top">
+                            <div class="col-sm-9 pt-5 _color-titulos _padding-alternativas">
+                                <h1><i class="fas fa-list-ul"></i> Alternativa</h1>
+                            </div>
+                            <div class="col-sm-3 pt-5 text-right" id="indicador_alternativa">
+                            </div>
+                            <div class="col-sm-12 pt-4 _padding-alternativas-tabla">
+                                <table>
+                                    <tbody id="bodyAlternativas"></tbody>
+                                    
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <footer class="pb-0 mb-0">
+            <div class="_bg-pink text-white _nav-footer" id="nav-footer">
+                <div class="row" id="r-nav-footer">
+                    <div class="col text-left" id="footer_izq"></div>
+                    <div class="col text-center align-middle pr-5 pt-1" id="footer_ctr">
+                        <div class="col-sm-12" style="padding-top: 6px !important;">
+                                <!-- ESTADO: <span id="status"></span> -->
+                         
+                                <button id="foot_mid" class="btn _btn_evaluar _bg-pink text-white ml-3" onclick="resizeFooter(2);" style="    padding-top: 2px; padding-bottom: 2px;">Evaluación 
+                                    <i class="fas fa-angle-up" id="icon_animation"></i>
+                                </button>
+                              
+                            </div>
+
+                    </div>
+                    <div class="col text-right align-middle pr-5 pt-1" id="footer_der">
+                        <div class="row">
+                            <div class="col-sm-12" style="padding-top: 6px !important;">
+                                ESTADO: <span id="status"></span>
+                         
+                                <!-- <button id="foot_mid" class="btn _btn_evaluar _bg-pink text-white ml-3" onclick="resizeFooter(2);" style="    padding-top: 2px; padding-bottom: 2px;">Evaluación 
+                                    <i class="fas fa-angle-up" id="icon_animation"></i>
+                                </button> -->
+                              
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="contenido-footer">
+                <div class="tab-content _tab-content-heigth m-0 p-0" id="tabs">
+                    <div class="tab-pane fade show active _input-rounded container-fluid page-content-ce" id="tabResultados" role="tabpanel" aria-labelledby="resultados-tab">
+                        <div class="row" id="tab-row-res-1">
+                            <div class="col-sm-12">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <div class="row">
+                                            <div class="col-sm-4" id="select-estimulo-texto">
+                                                <div class="row" style="align-items: center;">
+                                                    <div class="col-sm-6 _color-titulos">
+                                                        <div class="col-sm-12">
+                                                            <h6><i class="fas fa-eye"></i> Enunciado / Estímulo</h6>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-6" style="text-align: left;">
+                                                        <div class="col-sm-12">
+                                                            <select id="select-estimulo">
+                                                                <option value="-1">Seleccione...</option>
+                                                                <option value="aprobado">Aprobado</option>
+                                                                <option value="observado">Observado</option>
+                                                                <option value="rechazado">Rechazado</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4" id="select-pregunta-texto">
+                                                <div class="row" style="align-items: center;">
+                                                    <div class="col-sm-4 _color-titulos">
+                                                        <div class="col-sm-12">
+                                                            <h6><i class="fas fa-question"></i> Pregunta</h6>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-8" style="text-align: left;">
+                                                        <div class="col-sm-12">
+                                                            <select id="select-pregunta">
+                                                                <option value="-1">Seleccione...</option>
+                                                                <option value="aprobado">Aprobado</option>
+                                                                <option value="observado">Observado</option>
+                                                                <option value="rechazado">Rechazado</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4" id="select-alternativas-texto">
+                                                <div class="row" style="align-items: center;">
+                                                    <div class="col-sm-5 _color-titulos">
+                                                        <div class="col-sm-12">
+                                                            <h6><i class="fas fa-list-ul"></i> Alternativas</h6>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-7" style="text-align: left;">
+                                                        <div class="col-sm-12">
+                                                            <select id="select-alternativas">
+                                                                <option value="-1">Seleccione...</option>
+                                                                <option value="aprobado">Aprobado</option>
+                                                                <option value="observado">Observado</option>
+                                                                <option value="rechazado">Rechazado</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-body _card-body" id="card-body-observacion">
+                                        <div class="row">
+                                            <div class="col-sm-4">
+                                                <div class="col-sm-12">
+                                                    <textarea class="form-control _input-rounded _border-textarea" rows="5" id="estimulo_obs" placeholder="Redacte observaciones..."></textarea>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <div class="col-sm-12">
+                                                    <textarea class="form-control _input-rounded _border-textarea" rows="5" id="pregunta_obs" placeholder="Redacte observaciones..."></textarea>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <div class="col-sm-12">
+                                                    <textarea class="form-control _input-rounded _border-textarea" rows="5" id="alternativa_obs" placeholder="Redacte observaciones..."></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-4 offset-md-4 mt-2 mb-2" style="text-align: center;">
+                                                <button type="button" class="btn _btn-outline" id="guardar">Guardar</button>
+                                                <button type="button" class="btn _btn-finalizar" id="finalizar">Finalizar</button>
+                                                <button type="button" class="btn _btn-infoFinalizado" id="info_finalizado" style="display: none;" disabled=""></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12 mb-3">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- FIN: ANALISIS - OBSERVACION-->
+            </div>
+        </footer>
+    </div>
+</div>

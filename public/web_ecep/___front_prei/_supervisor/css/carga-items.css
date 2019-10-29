@@ -1,0 +1,59 @@
+
+.content_asignar{
+	width: 800px !important;
+	margin-top: 150px !important;
+}
+
+#table-asignar-colaboradores {
+  /*font-family: "Times New Roman", Times;*/
+  font-size: 13px;
+  font-weight: 500px;
+  /*color: #585858;*/
+  text-align: left; !important;
+}
+
+#table-asignar-colaboradores thead tr th {
+  font-weight: normal;
+  font-size: 12px;
+}
+
+#lista_colaboradores tr:nth-child(even) {
+  background-color: #f9fafb;
+}
+
+#lista_colaboradores tr td button{
+  background-color: #267de1;
+  border: none;
+  color: white;
+  border-radius: 15px;
+  font-size: 12px;
+  width:90px;
+}
+#lista_colaboradores{
+  text-align: center !important;
+}
+
+._filtro2{
+  max-width: 120px !important;
+
+}
+
+._filtro3{
+min-width: 120px !important;
+}
+
+._filtro4{
+max-width: 572px !important;
+}
+
+._filtro6{
+max-width: 100px !important;
+}
+
+._filtro7{
+max-width: 100px !important;
+}
+
+/*table.dataTable thead .sorting_asc{
+
+}*/

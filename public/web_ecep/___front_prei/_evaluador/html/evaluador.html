@@ -1,0 +1,111 @@
+<!-- <script src="http://code.highcharts.com/highcharts.js"></script> -->
+<!-- <link rel="stylesheet" type="text/css" href="vendor/datatables/jquery.dataTables.css"> -->
+<!-- <script type="text/javascript" src="vendor/datatables/jquery.dataTables.js"></script> -->
+<!-- <link href="css/evaluador.css" rel="stylesheet" media="all"> -->
+<!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous"> -->
+<!-- id="items" class="display" 
+<div style="width:100%; margin-top:20px; background-color:#F9FAFB">
+	<div style="width:98%; margin:auto;">
+		<div class="content _card-rounded">
+			<div class="row">
+				<div class="col-sm-4" style="max-height: 250px;height: 250px;">
+					<div id="grafico1">-->	
+<div id="principal" >
+	<div class="page-content _padding-pages" >
+		<div class="container-fluid _card-rounded" >
+			<div class="row _card-graficos" >
+				<div class="col-sm-4" style="max-height: 250px;height: 250px;">
+					<div id="graficoAvance">
+
+						
+					</div>
+				</div>
+				<div class="col-sm-4" style=" display: flex;align-items: center;justify-content: center;">
+					<div class="row" style="    position: relative;top: -15%;">
+						<div class="col-sm-12">
+							<h6 class="text-center" id="tipo"  style="margin-bottom: 0px;">
+								TIPO 
+							</h6>
+						</div>
+						<div class="col-sm-12">
+							<h5 class="text-center" id="area"> 					 
+							
+							<!-- DISCIPLINAR -->
+							</h5>
+						</div>
+						<div class="col-sm-12"  style="margin-top: 5px;">
+							<h6 class="text-center" id="especialidad" style="margin-bottom: 0px;"> 					 
+							ESPECIALIDAD 
+							</h6>
+						</div>
+						<div class="col-sm-12">
+							<h5 class="text-center" id="asignatura"> 					 
+							<!-- CIENCIAS MENCION BIOLOGIA, QUIMICA Y FISICA -->
+
+							</h5>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-4" style="max-height: 250px;height: 250px;">
+					<div id="graficoEvaluacion">
+						
+					</div>
+				</div>
+			</div>
+			<div class="row _info-graficos pt-3 pb-3">
+				<div class="col-sm-5 ">
+					<div class="row">
+						<div class="offset-sm-2 col-sm-10">
+							<label class="_text-legend">PENDIENTE </label>
+							<i class="fa fa-circle" aria-hidden="true" style="color: #ffc400; font-size: 12px; padding-right: 3%;"></i>		
+							<label class="_text-legend">EN PROCESO</label>
+							<i class="fa fa-circle" aria-hidden="true" style="color: #ef8963; font-size: 12px; padding-right: 3%;"></i>	
+							<label class="_text-legend">FINALIZADO</label>
+							<i class="fa fa-circle" aria-hidden="true" style="color: #7e2161; font-size: 12px;"></i>							
+						</div>
+					</div>					 
+				</div>
+				<div class="offset-sm-2 col-sm-5">	
+					<div class="row">	
+						<div class="offset-sm-2 col-sm-10" style="margin-left: 185px;">
+							<label class="_text-legend">APROBADO </label>
+							<i class="fa fa-circle" aria-hidden="true" style="color: #32c2a0; font-size: 12px; padding-right: 3%;"></i>
+							<label class="_text-legend text-left _observaciones">OBSERVADO</label>
+							<i class="fa fa-circle" aria-hidden="true" style="color: #7b58c2; font-size: 12px;padding-right: 3%;"></i>
+							<label class="_text-legend text-left">RECHAZADO</label>
+							<i class="fa fa-circle" aria-hidden="true" style="color: #e9215e; font-size: 12px; "></i>
+							
+							
+						</div>		
+					</div>		
+				</div>		 
+			</div>
+
+			<div class="col-sm-12 pt-5 mb-5" >
+														
+				<table id="table-lista" class="stripe table table-hover _table-link dataTable no-footer" style="width:100%">
+					<thead>
+					<!-- id="items" class="display" -->				
+						<tr>
+							<th style="width: 6%">N°</th>
+						  	<th style="width: 8%">COD. ÍTEM</th>
+						  	<th style="width: 30%">TEMA</th>
+						  	<th style="width: 10%">ESTÁNDAR</th>
+						  	<th style="width: 10%">ASIGNACIÓN</th>
+						 	<th style="width: 12%">FECHA ENTREGA</th>
+						  	<th style="width: 8%">AVANCE</th>
+						  	<th style="width: 8%">EVALUACIÓN</th>
+						  	<th style="width: 8%">OPCIONES</th>						
+						</tr>
+					</thead>
+					<tbody id="lista_items">
+					</tbody>
+					
+				</table>
+			</div>			
+		</div>
+		<!-- <div class="container-fluid _padding-pagination" >
+        	<p id="paginacion-items"></p>
+    	</div> -->
+	</div>	
+</div>

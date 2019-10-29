@@ -1,0 +1,109 @@
+<div class="container-fluid page-content-ce _principal">
+	<div class="page-content _padding-pages" >
+		<!-- <div class="container-fluid _card-rounded mt-3" > -->
+			<!-- <div class="row _card-graficos" >
+				<div class="col-sm-3" style="max-height: 120px;height: 120px;">
+					<div id="graficoItems">						
+					</div>
+				</div> -->
+				
+				<!-- <div class="col-sm-6 pl-0 pr-0 text-center" style=" display: flex;align-items: center;justify-content: center;padding-top: 46px;">
+					<div class="col-sm-4">
+						<labal>Fecha de Inicio</labal><label class="titulos" id="fecha_inicio"></label>
+					</div>
+					<div class="col-sm-4">
+						<labal>Fecha de Término</labal><label class="titulos" id="fecha_termino"></label>
+					</div>
+					<div class="col-sm-4">
+						<labal>Días Disponibles</labal><br><label class="titulos" id="dias_disponibles"></label>
+					</div>
+				</div> -->
+
+				<!-- <div class="col-sm-3" style="max-height: 120px;height: 120px;">
+					<div id="graficoEstado">
+						
+					</div>
+				</div>
+			</div> -->
+			<!-- <div class="row _info pt-3 pb-3">
+				<div class="col-sm-5 ">
+					<div class="row">
+						<div class="offset-sm-1 col-sm-10">
+							<label class="_text-graficos>PENDIENTES </label>
+							<i class="fa fa-circle" aria-hidden="true" style="color: #ffc400; font-size: 12px; padding-right: 3%;"></i>		
+							<label class="_text-graficos">EN PROCESO</label>
+							<i class="fa fa-circle" aria-hidden="true" style="color: #ef8963; font-size: 12px; padding-right: 3%;"></i>	
+							<label class="_text-graficos">FINALIZADOS</label>
+							<i class="fa fa-circle" aria-hidden="true" style="color: #7e2161; font-size: 12px;"></i>							
+						</div>
+					</div>					 
+				</div>
+				<div class="offset-sm-2 col-sm-5">	
+					<div class="row text-right">	
+						<div class="offset-sm-1 col-sm-10">
+							<label class="_text-graficos">APROBADOS </label>
+							<i class="fa fa-circle" aria-hidden="true" style="color: #32c2a0; font-size: 12px; padding-right: 3%;"></i>
+							<label class="_text-graficos text-left">RECHAZADOS</label>
+							<i class="fa fa-circle" aria-hidden="true" style="color: #e9215e; font-size: 12px; padding-right: 3%;"></i>
+							<label class="_text-graficos text-left">OBSERVADOS</label>
+							<i class="fa fa-circle" aria-hidden="true" style="color: #ffc400; font-size: 12px;"></i>
+							
+						</div>		
+					</div>		
+				</div>		 
+			</div> -->		
+		<!-- </div> -->
+
+		<div class="mt-4 container-fluid _card-rounded" >
+			
+			<ul class="nav nav-tabs pt-4" id="myTab" role="tablist">
+			    <li class="nav-item">
+			    	<a class="nav-item nav-link active" id="nav_avance-tab" data-toggle="tab" href="#nav_avance" role="tab" aria-controls="nav_avance" aria-selected="true">Avance</a>
+			    </li>
+
+			    <li class="nav-item">
+			    	<a class="nav-item nav-link" id="nav_resultado-tab" data-toggle="tab" href="#nav_resultado" role="tab" aria-controls="nav_resultado" aria-selected="false">Resultados</a>
+			   </li>			 
+			</ul>
+
+
+			<div class="tab-content" id="nav-tabContent">
+				<!-- NAV AVANCE -->
+			  <div class="tab-pane fade show active" id="nav_avance" role="tabpanel" aria-labelledby="nav_avance-tab">
+			  		<!-- <div class="container-fluid _card-rounded mt-3" > -->
+					  	<div class="row _card-graficos" style="padding-top: 20px; padding-bottom: 20px;" >
+					  		<div class="col-sm-4" style="max-height: 120px;height: 120px;"></div>
+							
+							<div class="col-sm-4" style="max-height: 120px;height: 120px;">
+								<div id="graficoItems"></div>
+							</div>
+
+							<div class="col-sm-4" style="max-height: 120px;height: 120px;"></div>
+						</div>
+					<!-- </div> -->
+			  		<div id="detalle_avance" style="max-height: 800px;height: auto; margin: 0 auto"></div>
+			  </div>
+			  <!-- FIN NAV AVANCE -->
+
+
+			  <!-- NAV RESULTADO -->
+			  <div class="tab-pane fade" id="nav_resultado" role="tabpanel" aria-labelledby="nav_resultado-tab">
+			  		<!-- <div class="container-fluid _card-rounded mt-3" > -->
+					  	<div class="row _card-graficos" style="padding-top: 20px; padding-bottom: 20px;">
+					  		<div class="col-sm-4" style="max-height: 120px;height: 120px;"></div>
+
+					  		<div class="col-sm-4" style="max-height: 120px;height: 120px;">
+								<div id="graficoEstado"></div>
+							</div>
+
+							<div class="col-sm-4" style="max-height: 120px;height: 120px;"></div>
+						</div>
+					<!-- </div> -->
+			  		<div id="detalle_resultado" style="max-height: 800px;height: auto; margin: 0 auto"></div>
+			  </div>
+			  <!-- FIN NAV RESULTADO -->
+
+			</div>
+		</div>
+	</div>	
+</div>

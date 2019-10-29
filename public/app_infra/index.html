@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="icon" type="image/png" href="img/mineduc.png">
+    
+    <!-- JS -->
+    <script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="js/jquery.rut.js"></script>
+    <script type="text/javascript" src="js/jquery.mask.js"></script>
+    <script type="text/javascript" src="js/login.js"></script>
+    <script type="text/javascript" src="js/utils.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <!-- CSS -->
+  
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="css/Estilo.css">
+    <link rel="stylesheet" href="css/all.css">
+   <!--  <link href="toastr.css" rel="stylesheet"/> -->
+    <title>ENDFID 2018</title>
+</head>
+
+<body class="">
+    <div class="container p-0">
+		<div class="row align-items-center m-0">
+			
+			<div class="row header m-0">				 
+	            <a class="pl-1" href="https://www.mineduc.cl"><img src="img/logo_mineduc2.png"></a>
+	            <div class="col-12 titulo">
+	            	<h4>Evaluación Nacional Diagnóstica <br>de la Formación Inicial Docente</h4>
+	            </div>
+	        </div>
+
+    		<div class="mx-auto">
+        		<div class="text-center">             
+            		<p id="profile-name" class="profile-name-card"></p>
+            		<div class="card sin-bordes pl-2 pr-2 mt-5">
+			            <h1 class="sesion">Iniciar sesión</h1>
+			            <div class="row pt-4">
+			                <div class="col-md-12 form-group">
+			                    <input id="InputRun" name="usuario" class="required form-control input_rut" tabindex="1" accesskey="n" type="text" placeholder="RUN DEL TÉCNICO" autocomplete="false" >
+			                </div>
+			            </div>
+
+			            <div class="row">
+			                <div class="col-md-12 form-group">
+			                     
+			                    <a  class="btn btn_ingresar" onclick="loginSubmit()" >Ingresar</a>
+			                    <span id="mensajeError" class="small _text-red"></span>
+			                </div>
+			            </div>
+			        </div>
+        		</div>
+    		</div>
+		</div>
+	</div>
+</body>
+</html>
+
+<style type="text/css">
+	body,html {
+	    background-color: white;
+	    height: 100%;
+	}
+	.header{
+		background-image: url(img/navbar.png);
+	    background-size: 100% 100%;
+	    width: 100%;
+	    height: 150px;
+	}
+	.titulo{
+		color: white;
+		text-align: center;
+	 
+	}
+	.titulo h4{
+	 /*	text-align: justify;*/
+		font-weight:300 !important;
+	}
+
+	@media (max-width: 700px) {
+	 	.titulo h4{
+		 	font-size: 20px;
+		}
+	}
+
+	@media (max-width: 600px) {
+	 	.titulo h4{
+		 	font-size: 18px;
+		}
+	}
+
+	.input_rut{
+	    border: none;
+	    border-bottom: 1px solid #3d88e9 !important;
+	    border-radius: inherit;
+	}
+
+	.sesion{
+		color: #3d88e9;
+		font-weight:300 !important;
+	}
+
+	.btn_ingresar{
+		background-color: #3d88e9;
+	    color: white !important;
+	    width: 100%;
+	}
+
+	.btn_ingresar:hover {
+	    color: #fff !important;
+	    background-color: #0069d9 !important;
+	    border-color: #0062cc !important;
+	}
+
+	#profile-img {
+	    height:180px;
+	}
+	.h-80 {
+	    height: 80% !important;
+	}
+</style>

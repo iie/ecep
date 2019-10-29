@@ -1,0 +1,182 @@
+<!-- COMIENZO BARRA PRINCIPAL -->
+<div class="container-fluid page-content-ce _principal">
+	<div class="page-content _padding-pages _page-editores">
+		<div class="container-fluid _card-rounded mt-3">
+			<div class="row _info-banco pt-3 pb-3 align-items-center">
+				<!-- <div class="col-sm-4 _evaluadores-total">
+					<div class="row _detalles">
+						<div class="col-sm-5 ">
+							<label class="_text-legend">Total Evaluadores: </label>
+						</div>
+						<div class="col-sm-1 pl-0 pr-0">
+							<label class="_text-legend _valor-items" id="total_evaluadores" style="margin-left: -40px;"></label>
+						</div> -->
+						<!-- <div class="col-sm-3">
+							<a class="btn btn-primary _xd" data-toggle="modal"
+								data-target="#agregarEvaluadores"><i class="fas fa-plus-circle"></i> Agregar</a>
+						</div>
+					</div>
+				</div> -->
+				<div class="col-sm-5 _editores-listado text-center">
+					<div class="row _detalles" style="justify-content:left;">		 
+							
+						<div class="col-sm-3 pr-0">
+							<label class="_text-legend">Total Editores: </label>
+						</div>
+						<div class="col-sm-1 pl-0 pr-0">
+							<label class="_text-legend _valor-items" id="total_editores"></label>
+						</div>
+						<!-- <div class="col-sm-3">
+												<a class="btn btn-primary total-editores _xd" data-toggle="modal"
+													data-target="#agregarEditores"><i class="fas fa-plus-circle"></i> Agregar</a>
+											</div>	 -->					
+						 
+				 	</div>	 
+				</div>
+				<div class="offset-sm-5 _editores-total text-right">
+					<div class="row">
+						<div class="col-sm-12">			 
+							<a class="btn btn-primary _xd" data-toggle="modal" data-target="#descargarEvaluadores"><i class="fas fa-download"></i> Descargar
+							Lista</a>
+						</div>
+						 
+						<!-- <div class="col-sm-12">
+							<label class="_text-legend _info-descarga">Mostrando 8 de 20 evaluadores</label>
+						</div> -->
+						 
+					</div>
+					
+				</div>
+				
+ 
+			</div>
+
+
+			<!-- INICIO FILTROS -->
+
+			<div class="row" id="evaluadoresTable_filters" style="padding-bottom: 15px;padding-top: 30px">
+				<div class="col-sm-1 text-center">
+					<label class="_text-legend _items-total">Filtar por: </label>
+				</div>
+			</div>
+			<!-- INICIO TABLA DE EVALUADORES -->
+			<table id="table-banco-items" class="text-left stripe table table-hover _table-link dataTable no-footer"
+				style="width:100%">
+				<thead>
+					<tr>
+						<th>NOMBRE</th>
+						<th>CORREO</th>
+						<th>PRUEBA</th>
+						<th>ASIGNADOS</th>
+						<th>PENDIENTES</th>
+						<th>AVANCE</th>
+						<th>APROBADOS</th>
+						<th>RECHAZADOS</th>
+						<!-- <th>ESTADO</th> -->
+						<!-- <th>ACCIONES</th> -->
+					</tr>
+				</thead>
+				<tbody class="text-left" id="lista_banco_items">
+				</tbody>
+
+			</table>
+		</div>
+
+		<!-- MODAL AGREGAR EVALUADORES -->
+		<!-- <div class="modal fade" id="agregarEditores" tabindex="-1" role="dialog" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-centered" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title center _titulo-modals">Formulario de Evaluadores</h5>
+					</div>
+					<div class="modal-body">
+						<div class="form-group">
+							<label for="nombre">Nombre:</label>
+							<input type="text" class="form-control" id="nombre-evaluador">
+						</div>
+						<div class="form-group">
+							<label for="apellido">Apellido:</label>
+							<input type="text" class="form-control" id="apellido-evaluador">
+						</div>
+						<div class="form-group">
+							<label for="email">Email:</label>
+							<input type="text" class="form-control" id="email-evaluador">
+						</div>
+						<div class="form-group">
+							<label for="pwd">Contraseña:</label>
+							<input type="text" class="form-control" id="contrasena-evaluador">
+						</div>
+						<div class="form-check">
+							<label class="form-check-label">
+								<input type="checkbox" class="form-check-input" value="">Inactivo
+							</label>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary _boton-cerrar"
+							data-dismiss="modal">Cerrar</button>
+						<button type="button" class="btn btn-primary" id="agregar-evaluador">Agregar</button>
+					</div>
+				</div>
+			</div>
+		</div> -->
+		<!-- MODAL AGREGAR EDITORES -->
+		<div class="modal fade" id="agregarEditores" tabindex="-1" role="dialog" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-centered" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title _titulo-modals">Formulario de Editores</h5>
+					</div>
+					<div class="modal-body">
+						<div class="form-group">
+							<label for="nombre">Nombre:</label>
+							<input type="text" class="form-control" id="nombre-editor">
+						</div>
+						<div class="form-group">
+							<label for="apellido">Apellido:</label>
+							<input type="text" class="form-control" id="apellido-editor">
+						</div>
+						<div class="form-group">
+							<label for="email">Email:</label>
+							<input type="text" class="form-control" id="email-editor">
+						</div>
+						<div class="form-group">
+							<label for="pwd">Contraseña:</label>
+							<input type="text" class="form-control" id="contrasena-editor">
+						</div>
+						<div class="form-check">
+							<label class="form-check-label">
+								<input type="checkbox" class="form-check-input" value="">Inactivo
+							</label>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary _boton-cerrar"
+							data-dismiss="modal">Cerrar</button>
+						<button type="button" class="btn btn-primary" id="agregar-editor">Agregar</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- INICIO MODAL DESCRGAR PLANILLA DE EVALUADORES -->
+		<div class="modal fade" id="descargarEvaluadores" tabindex="-1" role="dialog" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-centered" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title _titulo-modals">Planilla de Evaluadores</h5>
+					</div>
+					<div class="modal-body">
+						...
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary _boton-cerrar"
+							data-dismiss="modal">Close</button>
+						<button type="button" class="btn btn-primary">Save changes</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+ 

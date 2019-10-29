@@ -1,0 +1,1133 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="icon" type="image/png" href="img/mineduc.png">
+
+    <script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="js/utils.js"></script>
+    <script type="text/javascript" src="js/app1.js"></script>
+    <script type="text/javascript" src="js/blockUI.js"></script>
+    <script type="text/javascript" src="js/jquery.rut.js"></script>
+    <script src="https://unpkg.com/sweetalert2@7.17.0/dist/sweetalert2.all.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+    <link href="https://fonts.googleapis.com/css?family=Montserrat%7CTitillium+Web&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="css/Estilo.css">
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0-12/css/all.css" integrity="sha256-qQHUQX+gGGYfpC7Zdni08sr+h0ymXr0avmIASucY4FM=" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.js" integrity="sha256-H9jAz//QLkDOy/nzE9G4aYijQtkLt9FvGmdUTwBk6gs=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/locale/es.js" integrity="sha256-bETP3ndSBCorObibq37vsT+l/vwScuAc9LRJIQyb068=" crossorigin="anonymous"></script>
+
+<!--     <script type="text/javascript" src="js/accesoRoles.js"></script> -->
+    <title>InfraLab</title>
+</head>
+<body>
+	<div style="max-width:1366px; margin:auto;">
+		<div class="row pt-1 pb-1" style="position:fixed; top:0px; background-color:#3D88E9; width:100%; max-width:1366px; margin:auto;z-index:1000 ">      
+			<div class="col-1">
+				<a href="#" onclick="volver()" class="text-primary" style="font-size: 30px">
+					<i class="fas fa-angle-left" style="color: #ffffff;"></i>
+				</a>
+			</div>
+			<div class="col-8" id="nombre_laboratorio" style="color: #ffffff">
+              	<label class="text-light nav-label mt-2"id="nombre_tecnico" style="text-align: left;"></label>
+                <br>
+                <label class="text-light nav-label mt-2"id="rut_tecnico" style="text-align: left;"></label>
+			</div>    
+			                  
+			<div class="col-3 text-right">
+				<button id="info" type="button" class="btn btn-primary btn_small btn_info " data-toggle="modal" data-target="#infoModal" style="height: 45px">
+					<i class="fas fa-info-circle"></i>
+				</button>
+			</div> 
+
+		</div>  
+		<br>
+		<div class="container-fluid mt-4 mb-5 pl-1 pr-1">
+			<div class="row m-0" id="card-infraestructura">
+				<div class="col-12 mt-2 pl-1 pr-1 pt-2">
+					<div class="card fuente-preguntas">
+						<div class="card-header title-card pb-1" id="headInfraestructura" style="color: #3D88E9">
+							<h5><i class="far fa-building" style="color: #3D88E9;"></i> Infraestructura</h5>
+						</div>
+						<div class="card-body text-left">
+		                    <div class="row pb-2 mb-3">
+		                        <div class="col-12 pr-1 pl-1 color_text">
+								    <label for="r8">A 1. Nombre referencia del laboratorio.</label>
+								    <input type="text" class="form-control" onchange="guardarRespuesta()" id="r8">
+								</div>
+		                    </div>
+						
+		                    <div class="row pb-2 mb-3">
+	                            <!-- <div class="row"> -->
+	                                <div class="col-12 pr-1 pl-1 color_text">
+	                                    <label class="_margin-label">A 2. Acceso al laboratorio desde 07:30.</label>
+	                                </div>
+	                           <!--  </div>-->
+	                            <!-- <div class="text-center"> -->
+									<div class="col-3 pr-1 pl-1 p-0">
+				        				<button type="button" id="b_r2_SI" name="b_r2" class="btn btn-disable btn-radio btn-radio-txt"  >Si</button>
+				        				<input type="checkbox" id="r2_c" name="r2" class="hidden" value="SI">
+				        			</div>
+				        			<div class="col-6 pr-1 pl-1">
+				        				
+				        			</div>	
+				        			<div class="col-3 pr-1 pl-1 p-0">
+				        				<button type="button" id="b_r2_NO" name="b_r2" class="btn btn-disable btn-radio btn-radio-txt"  >No</button>
+				        				<input type="checkbox" id="r2_nc" name="r2" class="hidden" value="NO">
+				        			</div>	
+	                           <!--  </div> -->
+		                    </div>
+
+		                    <div id="hora_acceso" class="row pb-2 mb-3" style="display: none">
+		                        <div class="col-12 pr-1 pl-1 color_text">
+								    <label for="a11">A 2-2. Indicar Hora.</label>
+								    <input type="time" class="form-control" onblur="guardarRespuesta()" id="a11" disabled>
+								</div>
+		                    </div> 
+														
+
+		                    <div class="row pb-2 mb-3">
+		                        <div class="col-12 pr-1 pl-1 color_text">
+								    <label for="r7">A 3. Nombre y celular de contacto encargado de apertura del laboratorio.</label>
+								    <input type="text" class="form-control" onchange="guardarRespuesta()" id="r7">
+								</div>
+		                    </div> 
+							
+							<div class="row pb-2 mb-3">
+	                            <!-- <div class="row"> -->
+	                                <div class="col-12 pr-1 pl-1">
+	                                    <label class="_margin-label color_text">A 4. Cuenta con condiciones adecuadas de iluminación, ventilación, aislamiento acústico.</label>
+	                                </div>
+	                            <!-- </div>
+	                            <div class="row text-center"> -->
+									<div class="col-3 pr-1 pl-1 p-0">
+				        				<button type="button" id="b_a1_C" name="b_a1" class="btn btn-disable btn-radio btn-radio-txt" >Cumple</button>
+				        				<input type="checkbox" id="a1_c" name="a1" class="hidden" value="C">
+				        			</div>
+				        			<div class="col-6 pr-1 pl-1">
+				        				<button type="button" id="b_a1_CO" name="b_a1" class="btn btn-disable btn-radio btn-radio-txt"  >Cumple con observación</button>
+				        				<input type="checkbox" id="a1_co" name="a1" class="hidden" value="CO">
+				        			</div>	
+				        			<div class="col-3 pr-1 pl-1 p-0">
+				        				<button type="button" id="b_a1_NC" name="b_a1" class="btn btn-disable btn-radio btn-radio-txt"  >No Cumple</button>
+				        				<input type="checkbox" id="a1_nc" name="a1" class="hidden" value="NC">
+				        			</div>	
+	                            <!-- </div> -->
+		                    </div> 
+
+		                    <div class="row pb-2 mb-3">
+	                            <!-- <div class="row"> -->
+	                                <div class="col-12 pr-1 pl-1">
+	                                    <label class="_margin-label color_text">A 5. Cuenta con condiciones de seguridad en puertas y ventanas (restricción acceso a alumnos posterior a visita previa).</label>
+	                                </div>
+	                            <!-- </div>
+	                            <div class="row  text-center"> -->
+									<div class="col-3 pr-1 pl-1 p-0">
+				        				<button type="button"  id="b_a2_C"name="b_a2" class="btn btn-disable btn-radio btn-radio-txt"   >Cumple</button>
+				        				<input type="checkbox" id="a2_c" name="a2" class="hidden" value="C">
+				        			</div>
+				        			<div class="col-6 pr-1 pl-1">
+				        				<button type="button" id="b_a2_CO" name="b_a2" class="btn btn-disable btn-radio btn-radio-txt"   style="white-space: inherit;">Cumple con observación</button>
+				        				<input type="checkbox" id="a2_co" name="a2" class="hidden" value="CO">
+				        			</div>	
+	                            <!-- </div> -->
+		                    </div> 
+
+		                    <div class="row pb-2 mb-3">
+	                            <!-- <div class="row"> -->
+	                                <div class="col-12 pr-1 pl-1 color_text">
+	                                    <label class="_margin-label">A 6. Existen servicios higiénicos habilitados cercanos al laboratorio.</label>
+	                                </div>
+	                            <!-- </div>
+	                            <div class="row  text-center"> -->
+									<div class="col-3 pr-1 pl-1 p-0">
+				        				<button type="button" id="b_a3_C" name="b_a3" class="btn btn-disable btn-radio btn-radio-txt"  >Cumple</button>
+				        				<input type="checkbox" id="a3_c"  name="a3" class="hidden" value="C">
+				        			</div>
+				        			<div class="col-6 pr-1 pl-1">
+				        				<button type="button" id="b_a3_CO" name="b_a3" class="btn btn-disable btn-radio btn-radio-txt"   style="white-space: inherit;">Cumple con observación</button>
+				        				<input type="checkbox" id="a3_co"  name="a3" class="hidden" value="CO">
+				        			</div>	
+	                            <!-- </div> -->
+		                    </div> 
+
+		                    <div class="row pb-2 mb-3">
+	                            <!-- <div class="row"> -->
+	                                <div class="col-12 pr-1 pl-1 color_text">
+	                                    <label class="_margin-label">A 7. Es accesible mediante transporte público u otros.</label>
+	                                </div>
+	                            <!-- </div>
+	                            <div class="row  text-center"> -->
+									<div class="col-3 pr-1 pl-1 p-0">
+				        				<button type="button" id="b_a4_C"name="b_a4" class="btn btn-disable btn-radio btn-radio-txt"  >Cumple</button>
+				        				<input type="checkbox" id="a4_c" name="a4" class="hidden" value="C">
+				        			</div>
+				        			<div class="col-6 pr-1 pl-1">
+				        				<button type="button" id="b_a4_CO" name="b_a4" class="btn btn-disable btn-radio btn-radio-txt"   style="white-space: inherit;">Cumple con observación</button>
+				        				<input type="checkbox" id="a4_co" name="a4" class="hidden" value="CO">
+				        			</div>	
+				        			<!-- <div class="col-3 p-0">
+				        				<button type="button"  id="b_a4_NC" name="b_a4" class="btn btn-disable btn-radio btn-radio-txt"  >No Cumple</button>
+				        				<input type="checkbox" id="a4_nc" name="a4" class="hidden" value="NC">
+				        			</div>	 -->
+	                            <!-- </div> -->
+		                    </div> 
+
+		                    <div class="row pb-2 mb-3">
+	                            <!-- <div class="row"> -->
+	                                <div class="col-12 pr-1 pl-1 color_text">
+	                                    <label class="_margin-label">A 8. Existe enfermería habilitada y estará disponible los días de aplicación de la prueba.</label>
+	                                </div>
+	                            <!-- </div>
+	                            <div class="row  text-center"> -->
+									<div class="col-3 pr-1 pl-1 p-0">
+				        				<button type="button" id="b_a5_C" name="b_a5" class="btn btn-disable btn-radio btn-radio-txt"  >Cumple</button>
+				        				<input type="checkbox" id="a5_c" name="a5" class="hidden" value="C">
+				        			</div>
+				        			<div class="col-6 pr-1 pl-1">
+				        				<button type="button" id="b_a5_CO"name="b_a5" class="btn btn-disable btn-radio btn-radio-txt"   style="white-space: inherit;">Cumple con observación</button>
+				        				<input type="checkbox" id="a5_co" name="a5" class="hidden" value="CO">
+				        			</div>	
+	                            <!-- </div> -->
+		                    </div> 		                     
+
+		                    <div class="row pb-2 mb-3">
+	                            <!-- <div class="row"> -->
+	                                <div class="col-12 pr-1 pl-1 color_text">
+	                                    <label class="_margin-label">A 9. Hay locales comerciales cercanos que expendan alimentos y bebidas (máximo 300 metros).</label>
+	                                </div>
+	                            <!-- </div>
+	                            <div class="row  text-center"> -->
+									<div class="col-3 pr-1 pl-1 p-0">
+				        				<button type="button" id="b_a6_C" name="b_a6" class="btn btn-disable btn-radio btn-radio-txt"  >Cumple</button>
+				        				<input type="checkbox" id="a6_c" name="a6" class="hidden" value="C">
+				        			</div>
+				        			<div class="col-6 pr-1 pl-1">
+				        				<button type="button" id="b_a6_CO"name="b_a6" class="btn btn-disable btn-radio btn-radio-txt"   style="white-space: inherit;">Cumple con observación</button>
+				        				<input type="checkbox" id="a6_co" name="a6" class="hidden" value="CO">
+				        			</div>	
+				        			<div class="col-3 pr-1 pl-1 p-0">
+				        				<button type="button" id="b_a6_NC" name="b_a6" class="btn btn-disable btn-radio btn-radio-txt"  >No Cumple</button>
+				        				<input type="checkbox" id="a6_nc" name="a6" class="hidden" value="NC">
+				        			</div>	
+	                            <!-- </div> -->
+		                    </div> 
+
+		                    <div class="row pb-2 mb-3">
+	                            <!-- <div class="row"> -->
+	                                <div class="col-12 pr-1 pl-1 color_text">
+	                                    <label class="_margin-label">A 10. ¿Existe la señaletica adecuada para las vías de evacuación?.</label>
+	                                </div>
+	                            <!-- </div>
+	                            <div class="row  text-center"> -->
+									<div class="col-3 pr-1 pl-1 p-0">
+				        				<button type="button" id="b_a7_C" name="b_a7" class="btn btn-disable btn-radio btn-radio-txt"  >Cumple</button>
+				        				<input type="checkbox" id="a7_c" name="a7" class="hidden" value="C">
+				        			</div>
+				        			<div class="col-6 pr-1 pl-1">
+				        				<button type="button" id="b_a7_CO" name="b_a7" class="btn btn-disable btn-radio btn-radio-txt"   style="white-space: inherit;">Cumple con observación</button>
+				        				<input type="checkbox" id="a7_co" name="a7" class="hidden" value="CO">
+				        			</div>	
+				        			<div class="col-3 pr-1 pl-1 p-0">
+				        				<button type="button" id="b_a2_NC" name="b_a7" class="btn btn-disable btn-radio btn-radio-txt"  >No Cumple</button>
+				        				<input type="checkbox" id="a7_nc" name="a7" class="hidden" value="NC">
+				        			</div>	
+	                            <!-- </div> -->
+		                    </div> 
+
+  							<div class="row pb-2 mb-3">
+		                        <div class="col-12 pr-1 pl-1 color_text">
+								    <label for="a8">A 11-1. Distancia desde acceso principal a laboratorio</label>
+								    <input type="text" class="form-control" id="a8_acceso1" onchange="guardarRespuesta()">
+								    <!-- <div class="input-group mb-3">
+									  	<input type="text" class="form-control" id="a8_acceso1" onchange="guardarRespuesta()">
+									  	<div class="input-group-append">
+									    	<span class="input-group-text">metros</span>
+									  	</div>
+									</div> -->
+								</div>
+		                    </div> 
+
+		                    <div class="row pb-2 mb-3">
+		                        <div class="col-12 pr-1 pl-1 color_text">
+								    <label for="a8-2">A 11-2. Distancia desde acceso alternativo a laboratorio</label>
+								    <input type="text" class="form-control" id="a8_acceso2" onchange="guardarRespuesta()">
+								   <!--  <div class="input-group mb-3">
+									  	<input type="text" class="form-control" id="a8_acceso2" onchange="guardarRespuesta()">
+									  	<div class="input-group-append">
+									    	<span class="input-group-text">metros</span>
+									  	</div>
+									</div> -->
+								</div>
+		                    </div> 
+
+		                    <div class="row pb-2 mb-3">
+		                        <div class="col-12 pr-1 pl-1 color_text">
+								    <label for="a10">A 12. ¿En qué piso se encuentra el laboratorio?</label>
+								    <input type="number" class="form-control" id="a10" onchange="guardarRespuesta()">
+								</div>
+		                    </div> 
+
+		                    <div class="row pb-2 mb-3">
+	                            <!-- <div class="row"> -->
+	                                <div class="col-12 pr-1 pl-1">
+	                                    <label class="_margin-label color_text">A 13. La infraestructura posee acceso a personas con capacidades limitadas de desplazamiento (Ascensor).</label>
+	                                </div>
+	                            <!-- </div>
+	                            <div class="row  text-center"> -->
+									<div class="col-3 pr-1 pl-1 p-0">
+				        				<button type="button" id="b_a9_C"name="b_a9" class="btn btn-disable btn-radio btn-radio-txt"   >Cumple</button>
+				        				<input type="checkbox" id="a9_c" name="a9" class="hidden" value="C">
+				        			</div>
+				        			<div class="col-6 pr-1 pl-1">
+				        				
+				        			</div>
+				        			<div class="col-3 pr-1 pl-1 p-0">
+				        				<button type="button" id="b_a9_NC"name="b_a9" class="btn btn-disable btn-radio btn-radio-txt"   style="white-space: inherit;">No cumple</button>
+				        				<input type="checkbox" id="a9_nc" name="a9" class="hidden" value="NC">
+				        			</div>		
+	                            <!-- </div> -->
+		                    </div>
+
+		                    <div class="row pb-2 mb-3">
+	                            <!-- <div class="row"> -->
+	                                <div class="col-12 pr-1 pl-1">
+	                                    <label class="_margin-label color_text">A 14. ¿Existen rampas de acceso a minusválidos?.</label>
+	                                </div>
+	                            <!-- </div>
+	                            <div class="row  text-center"> -->
+									<div class="col-3 pr-1 pl-1 p-0">
+				        				<button type="button" id="b_a12_C"name="b_a12" class="btn btn-disable btn-radio btn-radio-txt"   >Cumple</button>
+				        				<input type="checkbox" id="a12_c" name="a12" class="hidden" value="C">
+				        			</div>
+				        			<div class="col-6 pr-1 pl-1">
+				        				
+				        			</div>
+				        			<div class="col-3 pr-1 pl-1 p-0">
+				        				<button type="button" id="b_a12_NC"name="b_a12" class="btn btn-disable btn-radio btn-radio-txt"   style="white-space: inherit;">No cumple</button>
+				        				<input type="checkbox" id="a12_nc" name="a12" class="hidden" value="NC">
+				        			</div>		
+	                            <!-- </div> -->
+		                    </div>
+
+		                    <div class="row pb-3">
+		                        <div class="col-12 pr-1 pl-1 color_text">
+								    <label for="infra_observaciones">A 15. Observaciones</label>
+								    <textarea type="text" class="form-control" id="infra_observaciones" onchange="guardarRespuesta()" ></textarea> 
+								</div>
+		                    </div> 
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row m-0" id="card-red">
+				<div class="col-12 mt-2 pl-1 pr-1">
+					<div class="card fuente-preguntas">
+						<div class="card-header title-card pb-1" id="headRed" style="color: #3D88E9;">
+							<h5><i class="fas fa-plug" style="color: #3D88E9;"></i> Red Eléctrica y Conectividad</h5>
+						</div>
+					
+						<div class="card-body text-left">
+
+							<div class="row pb-2 mb-3">
+	                            <!-- <div class="row"> -->
+	                                <div class="col-12 pr-1 pl-1 color_text">
+	                                    <label class="_margin-label">B 1. La inspección visual de los puntos y módulos eléctricos indica que se encuentran en buen estado.</label>
+	                                </div>
+	                            <!-- </div>
+	                            <div class="row  text-center"> -->
+									<div class="col-3 pr-1 pl-1 p-0">
+				        				<button type="button" id="b_b1_C"name="b_b1" class="btn btn-disable btn-radio btn-radio-txt"  >Cumple</button>
+				        				<input type="checkbox" id="b1_c" name="b1" class="hidden" value="C">
+				        			</div>
+				        			<div class="col-6 pr-1 pl-1">
+				        				<button type="button" id="b_b1_CO" name="b_b1" class="btn btn-disable btn-radio btn-radio-txt"   style="white-space: inherit;">Cumple con observación</button>
+				        				<input type="checkbox" id="b1_co" name="b1" class="hidden" value="CO">
+				        			</div>	
+				        			<div class="col-3 pr-1 pl-1 p-0">
+				        				<button type="button" id="b_b1_NC" name="b_b1" class="btn btn-disable btn-radio btn-radio-txt"  >No Cumple</button>
+				        				<input type="checkbox" id="b1_nc" name="b1" class="hidden" value="NC">
+				        			</div>	
+	                            <!-- </div> -->
+		                    </div> 
+
+		                    <div class="row pb-2 mb-3">
+	                            <!-- <div class="row"> -->
+	                                <div class="col-12 pr-1 pl-1 color_text">
+	                                    <label class="_margin-label">B 2. Se encuentran energizados todos los puntos eléctricos en donde existan computadores conectados.</label>
+	                                </div>
+	                            <!-- </div>
+	                            <div class="row  text-center"> -->
+									<div class="col-3 pr-1 pl-1 p-0">
+				        				<button type="button" id="b_b2_C" name="b_b2" class="btn btn-disable btn-radio btn-radio-txt"  >Cumple</button>
+				        				<input type="checkbox" id="b2_c" name="b2" class="hidden" value="C">
+				        			</div>
+				        			<div class="col-6 pr-1 pl-1">
+				        				<button type="button" id="b_b2_CO" name="b_b2" class="btn btn-disable btn-radio btn-radio-txt"   style="white-space: inherit;">Cumple con observación</button>
+				        				<input type="checkbox" id="b2_co" name="b2" class="hidden" value="CO">
+				        			</div>	
+				        			<div class="col-3 pr-1 pl-1 p-0">
+				        				<button type="button" id="b_b2_NC" name="b_b2" class="btn btn-disable btn-radio btn-radio-txt"  >No Cumple</button>
+				        				<input type="checkbox" id="b2_nc" name="b2" class="hidden" value="NC">
+				        			</div>	
+	                            <!-- </div> -->
+		                    </div> 
+
+		                    <div class="row pb-2 mb-3">
+	                            <!-- <div class="row"> -->
+	                                <div class="col-12 pr-1 pl-1 color_text">
+	                                    <label class="_margin-label">B 3-1. Existen puntos eléctricos suficientes para todo el equipamiento. Indicar cuántos existen disponibles.</label>
+	                                </div>
+	                            <!-- </div>
+	                            <div class="row  text-center"> -->
+									<div class="col-3 pr-1 pl-1 p-0">
+				        				<button type="button" id="b_b3_C" name="b_b3" class="btn btn-disable btn-radio btn-radio-txt"  >Cumple</button>
+				        				<input type="checkbox" id="b3_c" name="b3" class="hidden"  value="C">
+				        			</div>
+				        			<div class="col-6 pr-1 pl-1">
+				        				<button type="button" id="b_b3_CO" name="b_b3" class="btn btn-disable btn-radio btn-radio-txt"   style="white-space: inherit;">Cumple con observación</button>
+				        				<input type="checkbox" id="b3_co" name="b3" class="hidden"  value="CO">
+				        			</div>	
+				        			<div class="col-3 pr-1 pl-1 p-0">
+				        				<button type="button"  id="b_b3_NC" name="b_b3" class="btn btn-disable btn-radio btn-radio-txt"  >No Cumple</button>
+				        				<input type="checkbox" id="b3_nc" name="b3" class="hidden"  value="NC">
+				        			</div>	
+	                            <!-- </div> -->
+		                    </div> 
+
+		                    <div class="row pb-2 mb-3">
+		                        <div class="col-12 pr-1 pl-1 color_text">
+								    <label for="b32">B 3-2. Cantidad puntos eléctricos.</label>
+								    <input type="number" class="form-control" id="b3_cantidad" onchange="guardarRespuesta()" oninput="this.value=Numeros(this.value)" min="0">
+								</div>
+		                    </div> 
+
+		                    <div class="row pb-2 mb-3">
+	                            <!-- <div class="row">  -->
+	                                <div class="col-12 pr-1 pl-1 color_text">
+	                                    <label class="_margin-label">B 4-1. Existen puntos eléctricos cercanos (máx 25 metros) y fuera del Laboratorio, que sean alternativos para uso en caso de contingencia. Indicar referencia ubicación y distancia.</label>
+	                                </div>
+	                            <!-- </div>
+	                            <div class="row  text-center"> -->
+									<div class="col-3 pr-1 pl-1 p-0">
+				        				<button type="button" id="b_b4_C" name="b_b4" class="btn btn-disable btn-radio btn-radio-txt"  >Cumple</button>
+				        				<input type="checkbox" id="b4_c" name="b4" class="hidden" value="C">
+				        			</div>
+				        			<div class="col-6 pr-1 pl-1">
+				        				<button type="button" id="b_b4_CO"name="b_b4" class="btn btn-disable btn-radio btn-radio-txt"   style="white-space: inherit;">Cumple con observación</button>
+				        				<input type="checkbox" id="b4_co" name="b4" class="hidden" value="CO">
+				        			</div>		
+	                            <!-- </div> -->
+		                    </div> 
+
+		                    <div class="row pb-2 mb-3">
+		                        <div class="col-12 pr-1 pl-1 color_text">
+								    <label for="b4-2">B 4-2. Ubicación y distancia.</label>
+								    <input type="text" class="form-control" onchange="guardarRespuesta()" id="b4_ubicacion">
+								</div>
+							</div> 
+		                    <div class="row pb-2 mb-3">
+	                            <!-- <div class="row">  -->
+	                                <div class="col-12 pr-1 pl-1 color_text">
+	                                    <label class="_margin-label">B 5-1. Los computadores poseen acceso a Internet.</label>
+	                                </div>
+	                            <!-- </div>
+	                             <div class="row  text-center"> -->
+									<div class="col-3 pr-1 pl-1 p-0">
+				        				<button type="button" id="b_b5_C" name="b_b5" class="btn btn-disable btn-radio btn-radio-txt"  >Cumple</button>
+				        				<input type="checkbox" id="b5_c" name="b5" class="hidden"  value="C">
+				        			</div>
+				        			<div class="col-6 pr-1 pl-1">
+				        				<button type="button" id="b_b5_CO" name="b_b5" class="btn btn-disable btn-radio btn-radio-txt"   style="white-space: inherit;">Cumple con observación</button>
+				        				<input type="checkbox" id="b5_co" name="b5" class="hidden"  value="CO">
+				        			</div>	
+				        			<div class="col-3 pr-1 pl-1 p-0">
+				        				<button type="button"  id="b_b5_NC" name="b_b5" class="btn btn-disable btn-radio btn-radio-txt"  >No Cumple</button>
+				        				<input type="checkbox" id="b5_nc" name="b5" class="hidden"  value="NC">
+				        			</div>	
+	                            <!-- </div> -->
+		                    </div>
+
+		                    <div class="row pb-2 mb-3">
+		                        <div class="col-12 pr-1 pl-1  color_text">
+								    <label for="b5">B 5-2. Cantidad de computadores con cable de red.</label>
+								    <input type="number" class="form-control" id="b5_cantidad_cableada" onchange="guardarRespuesta()" oninput="this.value=Numeros(this.value)" min="0">
+								</div>
+		                    </div> 
+
+		                    <div class="row pb-2 mb-3">
+		                        <div class="col-12 pr-1 pl-1  color_text">
+								    <label for="b5-2">B 5-3. Cantidad de computadores con red inalámbrica.</label>
+								    <input type="number" class="form-control" id="b5_cantidad_inalambrica" onchange="guardarRespuesta()" oninput="this.value=Numeros(this.value)" min="0">
+								</div>
+		                    </div> 
+
+	                        <div class="row pb-2 mb-3">
+	                                <div class="col-12 pr-1 pl-1  color_text ">
+	                                    <label class="_margin-label">B 6. Indicar cantidad de puntos de red de datos libres factibles de ser utilizados.</label>
+	                                    <input type="number" class="form-control" id="b6" onchange="guardarRespuesta()" oninput="this.value=Numeros(this.value)" min="0">
+	                                </div>
+	                        </div>
+
+		                    <div class="row pb-2 mb-3">
+		                        <div class="col-12 pr-1 pl-1  color_text">
+								    <label for="b7">B 7. Indicar cantidad de computadores presentes en el laboratorio (sin considerar el del Docente).</label>
+								    <input type="number" class="form-control" id="b7" onchange="guardarRespuesta()" oninput="this.value=Numeros(this.value)" min="0">
+								</div>
+		                    </div> 
+
+		                    <div class="row pb-2 mb-3">
+		                        <div class="col-12 pr-1 pl-1  color_text">
+								    <label for="b8">B 8. Usuario y clave con atributos de administrador.</label>
+								    <input type="text" class="form-control" id="b8" onchange="guardarRespuesta()" >
+								</div>
+		                    </div> 
+
+		                    <div class="row pb-2 mb-3">
+		                        <div class="col-12 pr-1 pl-1 color_text">
+								    <label for="red_observaciones">B 9. Observaciones</label>
+								    <textarea type="text" class="form-control" id="red_observaciones" onchange="guardarRespuesta()" ></textarea> 
+								</div>
+		                    </div> 
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row m-0" id="card-mobiliario">
+				<div class="col-12 mt-2 pl-1 pr-1">
+					<div class="card fuente-preguntas">
+						<div class="card-header title-card pb-1" id="headMobiliario" style="color: #3D88E9;">
+							<h5><i class="fas fa-chair" style="color: #3D88E9;"></i> Mobiliario</h5>
+						</div>
+					
+						<div class="card-body text-left">
+							<div class="row pb-2 mb-3">
+	                            <!-- <div class="row"> -->
+	                                <div class="col-12 pr-1 pl-1  color_text">
+	                                    <label class="_margin-label">C 1. Existe el espacio mínimo requerido para los computadores habilitados en el Laboratorio, de modo que los alumnos se encuentren cómodamente sentados (referencia: 80 cm de ancho aprox).</label>
+	                                </div>
+	                            <!-- </div>
+	                            <div class="row  text-center"> -->
+									<div class="col-3 pr-1 pl-1 p-0">
+				        				<button type="button" id="b_c1_C"name="b_c1" class="btn btn-disable btn-radio btn-radio-txt"  >Cumple</button>
+				        				<input type="checkbox" id="c1_c" name="c1" class="hidden" value="C">
+				        			</div>
+				        			<div class="col-6 pr-1 pl-1">
+				        				<button type="button" id="b_c1_CO" name="b_c1" class="btn btn-disable btn-radio btn-radio-txt"   style="white-space: inherit;">Cumple con observación</button>
+				        				<input type="checkbox" id="c1_co" name="c1" class="hidden" value="CO">
+				        			</div>	
+				        			<div class="col-3 pr-1 pl-1 p-0">
+				        				<button type="button" id="b_c1_NC" name="b_c1" class="btn btn-disable btn-radio btn-radio-txt"  >No Cumple</button>
+				        				<input type="checkbox" id="c1_nc" name="c1" class="hidden" value="NC">
+				        			</div>	
+	                            <!-- </div> -->
+		                    </div>
+
+		                    <div class="row pb-2 mb-3">
+	                            <!-- <div class="row"> -->
+	                                <div class="col-12 pr-1 pl-1 color_text">
+	                                    <label class="_margin-label">C 2. El mobiliario habilitado cumple las condiciones requeridas para la prueba (mesa y silla separadas, cómodas y en buen estado).</label>
+	                                </div>
+	                            <!-- </div>
+	                            <div class="row  text-center"> -->
+									<div class="col-3 pr-1 pl-1 p-0">
+				        				<button type="button" id="b_c2_C" name="b_c2" class="btn btn-disable btn-radio btn-radio-txt"  >Cumple</button>
+				        				<input type="checkbox" id="c2_c" name="c2" class="hidden" value="C">
+				        			</div>
+				        			<div class="col-6 pr-1 pl-1">
+				        				<button type="button" id="b_c2_CO" name="b_c2" class="btn btn-disable btn-radio btn-radio-txt"    style="white-space: inherit;">Cumple con observación</button>
+				        				<input type="checkbox" id="c2_co" name="c2" class="hidden" value="CO">
+				        			</div>	
+				        			<div class="col-3 pr-1 pl-1 p-0">
+				        				<button type="button"  id="b_c2_NC" name="b_c2" class="btn btn-disable btn-radio btn-radio-txt"  >No Cumple</button>
+				        				<input type="checkbox" id="c2_nc" name="c2" class="hidden" value="NC">
+				        			</div>	
+	                            <!-- </div> -->
+		                    </div>
+
+		                    <div class="row pb-2 mb-3">
+		                    	<!-- <div class="row"> -->
+		                    		 <div class="col-12 pr-1 pl-1 color_text">
+								    	<label for="c3">C 3-1. Existe espacio adicional para ubicar una nueva mesa, silla y computador.</label>
+									</div>
+		                    	<!-- </div>
+		                    	<div class="row  text-center"> -->
+									<div class="col-3 pr-1 pl-1 p-0">
+				        				<button type="button" id="b_c3_C" name="b_c3" class="btn btn-disable btn-radio btn-radio-txt"  >Cumple</button>
+				        				<input type="checkbox" id="c3_c" name="c3" class="hidden" value="C">
+				        			</div>
+				        			<div class="col-6 pr-1 pl-1">
+				        				<button type="button" id="b_c3_CO"name="b_c3" class="btn btn-disable btn-radio btn-radio-txt"   style="white-space: inherit;">Cumple con observación</button>
+				        				<input type="checkbox" id="c3_co" name="c3" class="hidden" value="CO">
+				        			</div>	
+				        			<div class="col-3 pr-1 pl-1 p-0">
+				        				<button type="button" id="b_c3_NC" name="b_c3" class="btn btn-disable btn-radio btn-radio-txt"  >No Cumple</button>
+				        				<input type="checkbox" id="c3_nc" name="c3" class="hidden" value="NC">
+				        			</div>	
+	                            <!-- </div> -->		                       
+		                    </div> 
+
+		                    <div class="row pb-2 mb-3">
+                                <div class="col-12 pr-1 pl-1 color_text">
+                                    <label class="_margin-label">C 3-2. Cantidad espacios adicionales.</label>
+                                    <input type="number" class="form-control" id="c3_cantidad" onchange="guardarRespuesta()" oninput="this.value=Numeros(this.value)" min="0">
+                                </div>	                            	                          
+		                    </div>
+
+		                    <div class="row pb-2 mb-3">
+	                            <!-- <div class="row"> -->
+	                                <div class="col-12 pr-1 pl-1 color_text">
+	                                    <label class="_margin-label">C 4. Existe mobiliario disponible para el examinador (mesa, silla y pizarra).</label>
+	                                </div>
+	                            <!-- </div>
+	                            <div class="row  text-center"> -->
+									<div class="col-3 pr-1 pl-1 p-0">
+				        				<button type="button" id="b_c4_C" name="b_c4" class="btn btn-disable btn-radio btn-radio-txt"  >Cumple</button>
+				        				<input type="checkbox" id="c4_c" name="c4" class="hidden" value="C">
+				        			</div>
+				        			<div class="col-6 pr-1 pl-1">
+				        				<button type="button" id="b_c4_CO"name="b_c4" class="btn btn-disable btn-radio btn-radio-txt"   style="white-space: inherit;">Cumple con observación</button>
+				        				<input type="checkbox" id="c4_co" name="c4" class="hidden" value="CO">
+				        			</div>	
+	                            <!-- </div> -->
+		                    </div>
+
+		                     <div class="row pb-3">
+		                        <div class="col-12 pr-1 pl-1 color_text">
+								    <label for="a11">C 5. Observaciones</label>
+								    <textarea type="text" class="form-control" id="mobiliario_observaciones" onchange="guardarRespuesta()" ></textarea> 
+								</div>
+		                    </div> 
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row m-0" id="card-resultados">
+				<div class="col-12 mt-2 pl-1 pr-1">
+					<div class="card fuente-preguntas">
+						<div class="card-header title-card pb-1" id="headResultado" style="color: #3D88E9">
+							<h5><i class="fas fa-clipboard-check" style="color: #3D88E9"></i> Resultado del chequeo</h5>
+						</div>
+					
+						<div class="card-body text-left">
+							<div class="row pb-2 mb-3">
+	                            <!-- <div class="row"> -->
+	                                <div class="col-12 pr-1 pl-1 color_text">
+	                                    <label class="_margin-label">D 1. Resultado chequeo laboratorio.</label>
+	                                </div>
+	                            <!-- </div>
+	                            <div class="row  text-center"> -->
+									<div class="col-3 pr-1 pl-1 p-0">
+				        				<button type="button" id="b_r1_C" name="b_r1" class="btn btn-disable btn-radio btn-radio-txt"  >Cumple</button>
+				        				<input type="checkbox" id="r1_c" name="r1" class="hidden" value="C">
+				        			</div>
+				        			<div class="col-6 pr-1 pl-1">
+				        				<button type="button" id="b_r1_CO" name="b_r1" class="btn btn-disable btn-radio btn-radio-txt"   style="white-space: inherit;">Cumple con observación</button>
+				        				<input type="checkbox" id="r1_co" name="r1" class="hidden" value="CO">
+				        			</div>	
+				        			<div class="col-3 pr-1 pl-1 p-0">
+				        				<button type="button" id="b_r1_NC" name="b_r1" class="btn btn-disable btn-radio btn-radio-txt"  >No Cumple</button>
+				        				<input type="checkbox" id="r1_nc" name="r1" class="hidden" value="NC">
+				        			</div>	
+	                            <!-- </div> -->
+		                    </div>
+
+
+
+		                    <div class="row pb-2 mb-3">
+		                        <div class="col-12 pr-1 pl-1 color_text">
+								    <label for="r3">D 2. Número de equipos operativos.</label>
+								    <input type="number" class="form-control" id="r3" onchange="guardarRespuesta()" oninput="this.value=Numeros(this.value)">
+								</div>
+		                    </div> 
+
+		                    <div class="row pb-2 mb-3">
+		                        <div class="col-12 pr-1 pl-1 color_text">
+								    <label for="r4">D 3. Número de equipos no operativos.</label>
+								    <input type="number" class="form-control" id="r4" onchange="guardarRespuesta()" oninput="this.value=Numeros(this.value)">
+								</div>
+		                    </div> 
+		                    <!-- BORRAR RENE -->
+		                    <!-- <div class="row pb-3">
+		                        <div class="col-12 pr-1 pl-1 color_text">
+								    <label for="r5">D 5. Número de equipos Contingencia.</label>
+								    <input type="number" class="form-control" id="r5" onchange="guardarRespuesta()" oninput="this.value=Numeros(this.value)">
+								</div>
+		                    </div>  -->
+
+		                    <div class="row pb-2 mb-3">
+		                        <div class="col-12 pr-1 pl-1 color_text">
+								    <label for="resultado_observaciones">D 4. Observaciones</label>
+								    <textarea type="text" class="form-control" id="resultado_observaciones" onchange="guardarRespuesta()" ></textarea> 
+								</div>
+		                    </div> 
+
+		                    <!-- <div class="row pb-2 mb-3"> -->
+	                            <!-- <div class="row"> -->
+	                                <!-- <div class="col-12 pr-1 pl-1 color_text"> -->
+	                                    <!-- <label class="_margin-label">D 6. Estado lanzadera.</label> -->
+	                                <!-- </div> -->
+	                            <!-- </div> -->
+	                            <!-- <div class="row  text-center"> -->
+									<!-- <div class="col-3 p-0"> -->
+				        				<!-- <button type="button" id="b_r6_C" name="b_r6" class="btn btn-disable btn-radio btn-radio-txt"  >Cumple</button> -->
+				        				<!-- <input type="checkbox" id="r6_c" name="r6" class="hidden" value="C"> -->
+				        			<!-- </div> -->
+				        			<!-- <div class="col-6 pr-1 pl-1"> -->
+				        				
+				        			<!-- </div>	 -->
+				        			<!-- <div class="col-3 p-0"> -->
+				        				<!-- <button type="button" id="b_r6_NC" name="b_r6" class="btn btn-disable btn-radio btn-radio-txt"  >No Cumple</button> -->
+				        				<!-- <input type="checkbox" id="r6_nc" name="r6" class="hidden" value="NC"> -->
+				        			<!-- </div>	 -->
+	                            <!-- </div> -->
+		                    <!-- </div> -->
+
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>	
+
+		<div class="row pt-1 pb-1" style="position:fixed; max-width:1366px ;bottom:0px; background-color:#3D88E9; width:100%; margin:auto;  color:white;">  
+
+			<div class="col-2">
+				<div class="btn-group-toggle" data-toggle="buttons">
+				  <label class="btn btn-redirect btn_small active" id="btn-infra" name="options">
+				    <input type="radio" id="option2" autocomplete="off" ><i class="far fa-building"></i>
+				  </label>
+				</div>	
+			</div>
+			<div class="col-2">	
+				<div class="btn-group-toggle" data-toggle="buttons">
+				  <label class="btn btn-redirect btn_small" id="btn-red" name="options">
+				    <input type="radio" id="option2" autocomplete="off" ><i class="fas fa-plug"></i>
+				  </label>
+				</div>			
+			</div>
+			<div class="col-2">
+				<div class="btn-group-toggle" data-toggle="buttons">
+				  <label class="btn btn-redirect btn_small" id="btn-mobiliario" name="options">
+				    <input type="radio" id="option3" autocomplete="off" ><i class="fas fa-chair"></i>
+				  </label>
+				</div>
+			</div>
+			<div class="col-2">
+				<div class="btn-group-toggle" data-toggle="buttons">
+				  <label class="btn btn-redirect btn_small" id="btn-resul" name="options">
+				    <input type="radio" id="option4" autocomplete="off" > <i class="fas fa-clipboard-check" style="color: #FFFFFF"></i>
+				  </label>
+				</div>
+			</div>
+			<div class="col-4 text-right">
+				<button type="button" class="btn btn-fin" id="btnFinalizar" >Finalizar</button>
+			</div>			
+		</div> 
+
+	</div>
+ 
+	<!-- Modal -->
+	<div class="modal fade" id="infoModal" tabindex="-1" data-backdrop="static" role="dialog" aria-labelledby="infoModalScrollableTitle" aria-hidden="true">
+	  	<div class="modal-dialog modal-dialog-scrollable" role="document">
+	   		<div class="modal-content">
+	      		<div class="modal-header">
+	        		<h5 class="modal-title" id="infoModalScrollableTitle"><i class="fas fa-info-circle"></i> Información</h5>
+	       	 		<button type="button" id="close_modal" class="close" data-dismiss="modal" aria-label="Close">
+	          			<span aria-hidden="true">&times;</span>
+	        		</button>
+	      		</div>
+	      		<div class="modal-body pl-0 pr-0">
+	      			<div class="row m-0 info_secciones">
+					  	<div class="col-12">
+					    	<label class="titulo-seccion">DATOS VISITA</label>
+					    </div>
+						<div class="col-1 pr-0">
+	        				<i class="far fa-user"></i> 
+	        			</div>
+	        			<div class="col-11 pl-2">
+	        				<label id="nombre_tecnico_modal"></label> 
+	        				<label> | </label>
+	        				<label id="rut_tecnico_modal"></label>
+	        			</div>
+
+	        			<div class="col-1 pr-0">
+	        				<i class="far fa-calendar"></i>
+	        			</div>
+	        			<div class="col-11 pl-2">
+	        				<label id="fecha_visita"></label>
+	        			</div>
+	        			<!-- <div class="col-1 pr-0"> -->
+	        				<!-- <i class="far fa-file"></i> -->
+	        			<!-- </div> -->
+	        			<!-- <div class="col-11 pl-2"> -->
+	        				<!-- <label id="objetivo_visita"> Asegurar las condiciones para el correcto funcionamiento de la plataforma online de la aplicación de pruebas en versiones digitales, para la evaluación de competencias docentes en estudiantes de pedagogía.</label> -->
+	        			<!-- </div>  				  -->
+					</div>
+					<hr>
+	        		<div class="row m-0 info_secciones">
+					  	<div class="col-12">
+					    	<label class="titulo-seccion">DATOS DEL LABORATORIO</label>
+					    </div>
+					    <div class="col-1 pr-0">
+	        				<i class="fas fa-desktop"></i>
+	        			</div>
+	        			<div class="col-11 pl-2">
+	        				<label id="nombre_laboratorio_modal"></label>
+	        			</div>
+
+
+				   		<div class="col-1 pr-0">
+	        				<i class="fas fa-university"></i>
+	        			</div>
+	        			<div class="col-11 pl-2">
+	        				<label id="datos_institucion"></label>
+	        			</div>
+
+
+	        			<div class="col-1 pr-0">
+	        				<i class="fas fa-school"></i> 
+	        			</div>
+	        			<div class="col-11 pl-2">
+	        				<label id="datos_sede"></label>
+	        			</div>
+
+	        			<div class="col-1 pr-0">
+	        				<i class="fas fa-map-marker-alt"></i>
+	        			</div>
+	        			<div class="col-11 pl-2">
+	        				<label id="direccion_laboratorio"></label>
+	        			</div>
+
+					</div>
+					<hr>
+	        		<div class="row m-0 info_secciones">
+					  	<div class="col-12">
+					    	<label class="titulo-seccion">DATOS DE CONTACTO</label>
+					 	</div>
+					 	<div class="col-1 pr-0">
+	        				<i class="far fa-user"></i> 
+	        			</div>
+	        			<div class="col-11 pl-2">
+	        				<label id="nombre_contacto"></label>
+	        			</div>
+	        			<div class="col-1 pr-0">
+	        				<i class="fab fa-black-tie"></i>
+	        			</div>
+	        			<div class="col-11 pl-2">
+	        				<label id="cargo_contacto"></label>
+	        			</div>
+	        			<div class="col-1 pr-0">
+	        				<i class="fas fa-phone" style="transform: rotate(90deg);"></i>
+	        			</div>
+	        			<div class="col-11 pl-2">
+	        				<label id="telefono_contacto"></label>
+	        			</div>
+	        				<div class="col-1 pr-0">
+	        				<i class="far fa-envelope"></i>
+	        			</div>
+	        			<div class="col-11 pl-2">
+	        				<label id="mail_contacto"></label>
+	        			</div>
+
+					</div>
+					<!-- <hr> -->
+					<div class="row m-0 info_secciones">
+					  	<div class="col-12">
+					    	<label>Si los datos no corresponden, ingrese los correctos a continuación.</label>
+					 	</div>
+					 	<div class="col-12">
+					    	<textarea class="form-control" id="observaciones-datos" rows="4" onchange="guardarRespuesta()" ></textarea>
+					 	</div>
+					</div>
+	      		</div>
+    		</div>
+  		</div>
+	</div>
+
+	<div class="modal fade" id="datosFaltantes" tabindex="-1" role="dialog" aria-labelledby="datosFaltantesScrollableTitle" aria-hidden="true">
+	  	<div class="modal-dialog modal-dialog-scrollable" role="document">
+	   		<div class="modal-content">
+	   			<div class="modal-header">
+	        		<h5 class="modal-title" id="datosFaltantesScrollableTitle"><i class="fas fa-info-circle"></i> Campos incompletos</h5>
+	       	 		<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	          			<span aria-hidden="true">&times;</span>
+	        		</button>
+	      		</div>
+	      		<div class="modal-body p-0">
+	      			<div class="row m-0 pt-2 info_secciones">
+					  	<div class="col-12">
+					    	<label class="titulo-informacion">
+					    		Para poder finalizar la visita debe completar los campos descritos en el siguiente resumen:
+					    	</label>
+					    	 
+					    </div> 				 
+					</div>
+					<hr class="hr-titulo">
+
+					<div id="row_infra" style="display: none;"> 
+						<div class="row m-0 pt-2 info_secciones">
+						  	<div class="col-12">
+						    	<label class="titulo-seccion"><i class="far fa-building" style="color: #3D88E9;"></i> 
+									Infraestructura: Contestadas <label id="faltantes_infraestructura" class="titulo-seccion"></label> de 16</label>
+						    	 
+						    </div>
+							<div class="col-12 pr-1 pl-1 color_text">
+								<label class="pl-4 label-pendiente" >Pendientes:</label>
+	                            <ul id="li_infra">
+	                            	
+	                            </ul>
+	                        </div>  				 
+						</div>
+						<hr>
+					</div>
+					<div id="row_red" style="display: none;"> 
+						<div class="row m-0 info_secciones">
+						  	<div class="col-12">
+						    	<label class="titulo-seccion"><i class="fas fa-plug" style="color: #3D88E9;"></i> 
+									Red Eléctrica y Conectividad: Contestadas <label id="faltantes_red" class="titulo-seccion"></label> de 13</label> 	
+							</div>				
+							<div class="col-12 pr-1 pl-1 color_text">
+								<label class="pl-4 label-pendiente" >Pendientes:</label>
+	                            <ul id="li_red">
+	                            	
+	                            </ul>
+	                        </div>  				 
+						</div>
+						<hr>
+					</div>
+
+					<div id="row_mobiliario" style="display: none;"> 
+						<div class="row m-0 info_secciones">
+						  	<div class="col-12">
+						    	<label class="titulo-seccion"><i class="fas fa-chair" style="color: #3D88E9;"></i> 
+									Mobiliario: Contestadas <label id="faltantes_mobiliario" class="titulo-seccion"></label> de 6</label>
+						    </div>
+							<div class="col-12 pr-1 pl-1 color_text">
+								<label class="pl-4 label-pendiente" >Pendientes:</label>
+	                            <ul id="li_mobiliario">
+	                            	
+	                            </ul>
+	                        </div>  				 
+						</div>
+						<hr>
+					</div>
+
+					<div id="row_resultado" style="display: none;"> 
+						<div class="row m-0 info_secciones">
+						  	<div class="col-12">
+						    	<label class="titulo-seccion"><i class="fas fa-clipboard-check" style="color: #3D88E9"></i> 
+									Resultado del chequeo: Contestadas  <label id="faltantes_resultado" class="titulo-seccion"></label> de 4</label>
+						    </div>
+							<div class="col-12 pr-1 pl-1 color_text">
+								<label class="pl-4 label-pendiente" >Pendientes:</label>
+	                            <ul id="li_resultado">
+	                            	
+	                            </ul>
+	                        </div>  				 
+						</div>
+					</div>
+	      		</div>
+    		</div>
+  		</div>
+	</div>
+
+</body>
+</html>
+
+<style type="text/css">
+	.hr-titulo{
+			    margin-top: 5px;
+	}
+	.card-header{
+		border-bottom: 0px;
+	}
+	input{
+		border-radius: 0px !important;
+		color: #A8A8A8 !important;
+	}
+
+	textarea{
+		border-radius: 0px !important;
+		color: #A8A8A8 !important;
+	}
+
+	.input-group-text{
+		border-radius: 0px !important;
+	}
+
+	.label-pendiente{
+		font-size: 15px;
+	}
+
+	.info_secciones li{
+		font-size: 14px;
+	}
+	.info_secciones i{
+		color: #3d88e9;	
+	}
+	.info_secciones label{
+		color: #A8A8A8;	
+		font-size: 14px;
+	}
+	.titulo-seccion{
+		color: #3d88e9 !important;
+		font-size: 15px !important;
+		margin-bottom: 0px !important;
+	}
+
+	.titulo-informacion{
+		color: #A8A8A8 !important;
+    	font-size: 14px !important;
+	}
+
+	.modal-title{
+		font-family: 'Titillium Web', sans-serif;
+		color: #3d88e9;
+	}
+
+	.modal-header{
+		background: #f7f8fa;
+	}
+	 
+
+	.is-invalid_check{
+		border-color: #dc3545 !important;
+	}
+
+	.nav-label{
+	    margin-top: 0px !important;
+	    margin-bottom: 0px !important;
+	}
+
+	.btn-redirect{
+		padding-bottom: 0px;
+		border-radius: 2px;
+	}
+
+	.btn-redirect i{
+	    font-size: 21px;
+	    color: white;
+	}
+
+	.btn-redirect.active {
+	    border-top: 2px solid #87e2dc;
+	}
+
+	.title-card{
+		font-family: 'Titillium Web', sans-serif;
+
+	}
+
+	.btn{
+	 	white-space: inherit; 
+    	padding-left: 2px;
+    	padding-right: 2px;
+    	font-size: 15px;
+    	border-radius: 0px;
+ 
+	}
+	
+
+	.btn-primary:not(:disabled):not(.disabled).active {
+	    background-color: #3D88E9 !important;
+	    /*border: 2px solid #87E2DC !important;*/
+	}
+	.btn-primary:not(:disabled):not(.disabled).active:focus, .btn-primary:not(:disabled):not(.disabled):active:focus, .show>.btn-primary.dropdown-toggle:focus{
+		/*box-shadow: #28A745;*/
+		/*box-shadow: none !important;*/
+	}
+
+	.btn_small{
+	 	padding-right: 12px;
+    	padding-left: 12px;
+ 
+	}
+	.btn-fin{
+		color: #3d88e9;
+	    /*font-weight: 600;*/
+	    background-color: #87e2dc;
+	    /*border-color: #ffffff;*/
+	    padding-left: 15px;
+	    padding-right: 15px;
+
+	}
+
+	.btn-fin:hover {
+	    color: #3D88E9;
+	    background-color: #fff;
+	    border-color: #ffffff;
+	    padding-left: 15px;
+	    padding-right: 15px;
+	}
+
+	.btn-disable{
+		color: #3D88E9;
+    	background-color: #DFEDFF;
+    	border-color: #DFEDFF;
+	}
+
+	.btn_info{
+		position: absolute;
+	    top: 0;
+	    bottom: 0px;
+	    right: 16px;
+	    height: 80%;
+	    margin: auto;
+	    background-color: #3D88E9;
+	    border: none;
+	}
+
+	.btn_info i{
+ 		font-size: 26px;
+	}
+
+	.card-modal{
+		border-radius: 0px !important;
+
+	}
+
+	.hidden{
+		display: none!important;
+    	visibility: hidden!important;
+	}
+	.btn-radio {
+		max-width: 170px;
+		width: 100%;
+	}
+	.space-20 {
+	    margin-top: 20px;
+	}
+	.color_text{
+		color: #A8A8A8;
+	}
+
+	.border-cumple{
+		border: 0px !important;
+		box-shadow: 0px 0px 3px 1px rgba(103, 212, 128) !important;
+		/*border: 3px solid #67d480 !important;*/
+	}
+	.border-cumpleObs{
+		border: 0px !important;
+		box-shadow: 0px 0px 3px 1px rgba(247, 223, 68) !important;
+		/*border: 3px solid #f7df44 !important;*/
+	}
+	.border-noCumple{
+		border: 0px !important;
+		box-shadow: 0px 0px 3px 1px rgba(218,101,101,1) !important;
+		/*border: 3px solid #da6565 !important;*/
+	}
+	.modal-content{
+		border-radius: 0px !important;
+	}
+
+	.div_is-invalid{
+		border: 1px solid #dc3545 !important;
+	}
+
+</style>

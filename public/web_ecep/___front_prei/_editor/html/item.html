@@ -1,0 +1,890 @@
+<!-- <div class="container-fluid page-content-ce" >
+    <div class="container-fluid _padding-paginacion" >
+        <ul class="pagination" id="pagination"></ul>
+    </div>
+    
+    <div class="row m-0" style="background-color:#F9FAFB;padding-top: 120px;">
+        <div class="page-wrapper chiller-theme">
+            <nav id="sidebar" class="sidebar-wrapper">
+                <div class="sidebar-content">
+                    <div class="sidebar-header pr-4 pl-4 pb-4 pt-4">
+                        <div class="row">
+                            <div class="col-sm-4 text-left">
+                                <p class="_color-subtitulos">CÓDIGO</p>
+                                <label class="_color-titulos" id="codigo"></label>
+                            </div>
+                            <div class="col-sm-4 text-center">
+                                <p class="_color-subtitulos">DIFICULTAD</p>
+                                <label class="_color-titulos" id="dificultad"></label>
+                            </div>
+                            <div class="col-sm-4 text-right">
+                                <p class="_color-subtitulos">HABILIDAD</p>
+                                <label class="_color-titulos" id="habilidad"></label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm text-center mt-3 _color-titulos">
+                                <div>
+                                    <h5 id="tipo_area"></h5>
+                                </div>
+                                <hr class="cardLinea" align="center" size="2" width="20%">
+                                <div id="tipo_item" style="display: none;">
+                                    <label>Especialidad</label>:
+                                    <label id="tipo_prueba"></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="sidebar-menu pb-3">
+                        <div class="row">
+                            <div class="col-sm-12 pl-5 pt-2 pb-2 _background-titulos">
+                                <label class="_titulos-nav-lateral"><i class="fas fa-book _icon-nav-lateral"></i> Tema</label>
+                            </div>
+                        </div>
+                        <div class="row pt-3 pl-5 pr-5">
+                            <div class="col-sm pl-5" id="tema"></div>
+                        </div>
+                        <div class="row pt-5">
+                            <div class="col-sm-12 pl-5 pt-2 pb-2 _background-titulos">
+                                <label class="_titulos-nav-lateral"><i class="fas fa-book _icon-nav-lateral"></i></i> Estándar</label>
+                            </div>
+                        </div>
+                        <div class="row pt-3 pl-5 pr-5">
+                            <div class="col-sm pl-5" id="estandar"></div>
+                        </div>
+                        <div class="row pt-5">
+                            <div class="col-sm-12 pl-5 pt-2 pb-2 _background-titulos">
+                                <label class="_titulos-nav-lateral"><i class="fas fa-book _icon-nav-lateral"></i></i> Indicador</label>
+                            </div>
+                        </div>
+                        <div class="row pt-3 pl-5 pr-5">
+                            <div class="col-sm pl-5" id="indicador"></div>
+                        </div>
+                    </div>
+                </div>
+                <div style="float: right; margin-right: 24px;">
+                    <a id="show-sidebar" class="btn btn-sm" href="#">
+                        <i id="icon_sidebar" class="fas fa-chevron-right icon-side"></i>
+                    </a>
+                </div>
+            </nav>
+            
+        </div>
+        
+        <div class="_max-width container-fluid _container-form">
+            <div class="_card-rounded mt-5 mb-5 pl-5 pr-5 _contenedor-item" >
+            	<div class="row justify-content-end">
+            		<button class="btn btn-primary _btn-editar"><i class="fas fa-pen"></i>Editar</button>
+                    <button class="btn btn-primary _btn-guardar" style="display: none;"><i class="fas fa-pen"></i>Guardar</button>
+            	</div>
+                <div class="row">
+                    <div class="col-sm-6 divborder-right">
+                        <div class="row">
+                            <div class="col-sm-9 _color-titulos">
+                                <h1><i class="fas fa-eye"></i> Estímulo</h1>
+                            </div> -->
+                            <!-- <div class="col-sm-3 text-right" id="indicador_estimulo">
+                            </div> -->
+                       <!--  </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div id="enunciado"></div>
+                                <div id="estimulo"></div>
+                                <div id="recurso_enunciado"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="row pb-5 _contenedor-pregunta" >
+                            <div class="col-sm-9 _color-titulos">
+                                <h1><i class="fas fa-question"></i> Pregunta</h1>
+                            </div> -->
+                            <!-- <div class="col-sm-3 text-right" id="indicador_pregunta">
+                            </div> -->
+                            <!-- <br/>
+                            <div class="col-sm-12 pl-5 pr-5" id="pregunta"></div>
+                        </div>
+                        <div class="row divborder-top">
+                            <div class="col-sm-9 pt-5 _color-titulos _padding-alternativas">
+                                <h1><i class="fas fa-list-ul"></i> Alternativa</h1>
+                            </div> -->
+                            <!-- <div class="col-sm-3 pt-5 text-right" id="indicador_alternativa">
+                            </div> -->
+                           <!--  <div class="col-sm-12 pt-4 _padding-alternativas-tabla">
+                                <table>
+                                    <tbody id="bodyAlternativas"></tbody> -->
+                                    <!-- <td id="letra"></td>
+                                    <td id="alternativa"></td> -->
+                                    
+                                <!-- </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <footer class="pb-0 mb-0">
+            <div class="_bg-pink text-white _nav-footer" id="nav-footer">
+                <div class="row" id="r-nav-footer">
+                    <div class="col text-left" id="footer_izq"></div>
+                    <div class="col text-center" id="footer_ctr">
+                    </div>
+                    <div class="col text-right align-middle pr-5 pt-1" id="footer_der">
+                        <div class="row">
+                            <div class="col-sm-12" style="padding-top: 6px !important;">
+                                ESTADO: <span id="status"></span>
+                         
+                                <button id="foot_mid" class="btn _btn_evaluar _bg-pink text-white ml-3" onclick="resizeFooter(2);" style="    padding-top: 2px; padding-bottom: 2px;">Evaluación 
+                                    <i class="fas fa-angle-up" id="icon_animation"></i>
+                                </button>
+                              
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="contenido-footer" >
+                <div class="tab-content _tab-content-heigth m-0 p-0" id="tabs">
+                    <div class="tab-pane fade show active _input-rounded container-fluid page-content-ce" id="tabResultados" role="tabpanel" aria-labelledby="resultados-tab">
+                        <div class="row" id="tab-row-res-1">
+                            <div class="col-sm-12">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <div class="row">
+                                            <div class="col-sm-4" id="select-estimulo-texto">
+                                                <div class="row" style="align-items: center;">
+                                                    <div class="col-sm-4 _color-titulos">
+                                                        <div class="col-sm-12">
+                                                            <h6><i class="fas fa-eye"></i> Estímulo</h6>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-8" style="text-align: left;">
+                                                        <div class="col-sm-12">
+                                                            <select id="select-estimulo">
+                                                                <option value="-1">Seleccione...</option>
+                                                                <option value="aprobado">Aprobado</option>
+                                                                <option value="aprobado_observacion">Aprobado con observaciones</option>
+                                                                <option value="rechazado">Rechazado</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4" id="select-pregunta-texto">
+                                                <div class="row" style="align-items: center;">
+                                                    <div class="col-sm-4 _color-titulos">
+                                                        <div class="col-sm-12">
+                                                            <h6><i class="fas fa-question"></i> Pregunta</h6>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-8" style="text-align: left;">
+                                                        <div class="col-sm-12">
+                                                            <select id="select-pregunta">
+                                                                <option value="-1">Seleccione...</option>
+                                                                <option value="aprobado">Aprobado</option>
+                                                                <option value="aprobado_observacion">Aprobado con observaciones</option>
+                                                                <option value="rechazado">Rechazado</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4" id="select-alternativas-texto">
+                                                <div class="row" style="align-items: center;">
+                                                    <div class="col-sm-4 _color-titulos">
+                                                        <div class="col-sm-12">
+                                                            <h6><i class="fas fa-list-ul"></i> Alternativas</h6>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-8" style="text-align: left;">
+                                                        <div class="col-sm-12">
+                                                            <select id="select-alternativas">
+                                                                <option value="-1">Seleccione...</option>
+                                                                <option value="aprobado">Aprobado</option>
+                                                                <option value="aprobado_observacion">Aprobado con observaciones</option>
+                                                                <option value="rechazado">Rechazado</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-body _card-body" id="card-body-observacion">
+                                        <div class="row">
+                                            <div class="col-sm-4">
+                                                <div class="col-sm-12">
+                                                    <textarea class="form-control _input-rounded _border-textarea" rows="5" id="estimulo_obs" placeholder="Redacte observaciones..."></textarea>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <div class="col-sm-12">
+                                                    <textarea class="form-control _input-rounded _border-textarea" rows="5" id="pregunta_obs" placeholder="Redacte observaciones..."></textarea>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <div class="col-sm-12">
+                                                    <textarea class="form-control _input-rounded _border-textarea" rows="5" id="alternativa_obs" placeholder="Redacte observaciones..."></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-4 offset-md-4 mt-2 mb-2" style="text-align: center;">
+                                                <button type="button" class="btn _btn-outline" id="guardar">Guardar</button>
+                                                <button type="button" class="btn _btn-finalizar" id="finalizar">Finalizar</button>
+                                                <button type="button" class="btn _btn-infoFinalizado" id="info_finalizado" style="display: none;" disabled=></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12 mb-3">
+                            </div>
+                        </div>
+                    </div>
+                </div> -->
+                <!-- FIN: ANALISIS - OBSERVACION-->
+
+           <!--  </div>
+        </footer>
+    </div>
+</div>
+
+ -->
+
+
+
+<!-- Copia item html supervisor revision -->
+
+<div class="container-fluid page-content-ce" >
+    <div class="container-fluid _padding-paginacion" >
+        <ul class="pagination" id="pagination"></ul>
+    </div>
+    <div class="row m-0" style="background-color:#F9FAFB;padding-top: 120px;">
+        <div class="_max-width container-fluid _container-form">
+            <div class="_card-rounded pl-5 pr-5 _contenedor-item" style="margin-top: 10px !important">
+                <div class="row" style="margin-top: 20px;">
+                    <div class="row col-sm-12 pb-2 divborder-bottom" >
+                         <div class="col-4 text-left _color-titulos pl-0">
+                            <div>
+                                <h5 id="tipo_area"></h5>
+                            </div>
+                             
+                            <div id="tipo_item" style="display: none;">
+                                <label>Especialidad</label>:
+                                <label id="tipo_prueba"></label>
+                            </div>
+                        </div>
+                        <div class="row col-8 mt-3">
+                            <div class="col-sm-6 text-right">
+                                <label class="_color-subtitulos">HABILIDAD</label>
+                                <label class="_color-titulos mb-0" id="habilidad"></label>
+                            </div>
+                            <div class="col-sm-3 text-right">
+                                <label class="_color-subtitulos">DIFICULTAD</label>
+                                <label class="_color-titulos mb-0" id="dificultad"></label>
+                            </div>
+                            <div class="col-sm-3 text-right">
+                                <label class="_color-subtitulos">CÓDIGO</label>
+                                <label class="_color-titulos mb-0" id="codigo"></label>
+                            </div>
+                        </div>
+                    </div>
+                
+                    <div class="row col-sm-12 pt-3">
+                        <div class="col-sm-1 pl-0  pr-0">
+                            <label class="_titulos-nav-lateral">
+                                <i class="fas fa-book _icon-nav-lateral"></i> Tema
+                            </label>
+                        </div>
+                        <div class="col-sm-11">  
+                            <label id="tema" style="display: inline-flex;"></label>
+                        </div>
+                        <div class="col-sm-1 pl-0  pr-0">
+                            <label class="_titulos-nav-lateral">
+                                <i class="fas fa-book _icon-nav-lateral"></i> Estándar
+                            </label>
+                        </div>
+                        <div class="col-sm-11">  
+                            <label id="estandar" style="display: inline-flex;"></label>
+                        </div>
+                        <div class="col-sm-1 pl-0 pr-0">
+                            <label class="_titulos-nav-lateral">
+                                <i class="fas fa-book _icon-nav-lateral"></i> Indicador
+                            </label>
+                        </div>
+                        <div class="col-sm-11">  
+                            <label id="indicador" style="display: inline-flex;"></label>
+                        </div>
+                    </div>                         
+                </div>
+            </div>
+
+            <div class="_card-rounded mb-5 pl-5 pr-5 _contenedor-item" >
+                <div class="row">
+                    <div class="col-sm-6 divborder-right">
+                        <div class="row">
+                            <div class="col-sm-12 _color-titulos">
+                                <!-- <h1><i class="fas fa-eye"></i> Estímulo</h1> -->
+                                <h1><i class="fas fa-eye"></i> Enunciado</h1>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="pl-5 pr-5 mt-2 divborder-bottom" id="enunciado">
+                                    <!-- <textarea id="enunciado" rows="3" class="form-control"></textarea> -->
+                                </div>
+                                <div class="pl-3 pr-3 pt-3 pb-3" style="font-size: 14px; ">
+                                    <div class="col-sm-12 _color-titulos pl-0 ">
+                                        <h1 style="margin-left: -14px;"><i class="fas fa-image"></i> Estimulo</h1>
+                                    </div>
+                                    <div class="pl-0 pt-2 pb-2" id="estimulo"></div>
+                                    <div id="div-seccion-img">
+                                        <div class="file-upload">                                            
+                                            <button class="file-upload-btn mx-auto" id="add-image" name="archivo_adjunto0" type="button" data-toggle="modal" data-target="#adjuntarRecurso" data-tipo_recurso="Estímulo">Agregar Imagen</button>
+                                            <div id="div_upload0" class="image-upload-wrap">
+                                                <div class="drag-text">
+                                                    <h3>Aquí verá la imagen una vez que la seleccione</h3>
+                                                </div>
+                                            </div>
+                                            <div id="div_file_upload_content0" class="file-upload-content">
+                                                <img class="file-upload-image img-fluid" src="#" id="img0"/>
+                                                <div class="image-title-wrap">
+                                                    <button type="button" id="button_archivo_adjunto0" onclick="eliminarImg(this, 'add-image')" class="remove-image">Eliminar Imagen <span id = "image-title0" class="image-title"></span></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <!-- <div class="text-center" id="recurso_enunciado">
+                                    
+                                </div> -->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="row pb-0" >
+                            <div class="col-sm-12 _color-titulos">
+                                <h1><i class="fas fa-question"></i> Pregunta</h1>
+                            </div>
+                                          <br/>
+                            <div class="col-sm-12 pl-5 pr-5 mt-2" id="pregunta">
+                            </div>
+                        </div>
+                        <div class="row divborder-top">
+                            <div class="col-sm-9 pt-5 _color-titulos _padding-alternativas">
+                                <h1><i class="fas fa-list-ul"></i></i> Alternativas</h1>
+                            </div>
+                            <div class="col-sm-12 pt-4 _padding-alternativas-tabla">
+                                <table width="94%">
+                                    <tbody id="bodyAlternativas"></tbody>
+                                    
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <footer class="pb-0 mb-0" id="footer-finalizar">
+            <div class="_bg-pink text-white _nav-footer" id="nav-footer">
+                <div class="row" id="r-nav-footer">
+                    <div class="col text-left" id="footer_izq"></div>
+                    <div class="col text-center" id="footer_ctr" style="padding-top: 6px;">
+                        <!-- <button type="button" class="btn _btn-outline" id="guardar">Guardar</button> -->
+                        <button type="button" class="btn _btn-finalizar" id="finalizar">Finalizar</button>
+                        <!-- <button type="button" class="btn _btn-infoFinalizado" id="info_finalizado" style="display: none;" disabled=""></button> -->
+                    </div>
+                    <div class="col text-right align-middle pr-5 pt-1" id="footer_der">
+                        <div class="row">
+                            <div class="col-sm-12" style="padding-top: 6px !important;">
+                                <!-- ESTADO: <span id="status"></span> -->
+                         
+                                <!-- <button id="foot_mid" class="btn _btn_evaluar _bg-pink text-white ml-3" onclick="resizeFooter(2);" style="    padding-top: 2px; padding-bottom: 2px;">Evaluación 
+                                    <i class="fas fa-angle-up" id="icon_animation"></i>
+                                </button> -->
+                              
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+ 
+        </footer>
+    </div>
+    <!-- Modal -->
+    <div class="modal fade bd-example-modal-lg" id="adjuntarRecurso" tabindex="-1" role="dialog" aria-labelledby="adjuntarRecursoTitle" aria-hidden="true" >
+      <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document" style="    max-width: 80% !important;">
+        <div class="modal-content">
+          <div class="modal-header">
+
+            <h1 class="modal-title" id="adjuntarRecursoTitle"></h1>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+                
+            <div class="row">
+                <div class="col-3" style="border-right: 1px solid #dee2e6;">
+                    <ul id="arbolDisciplinar">
+                        <li><span class="caret">Disciplinar</span>
+                            <ul class="" id="disciplinar">
+                               <!--  <li onclick="carpeta()"><span class="carpeta">Castellano y Comunicación</span></li>
+                                <li onclick="carpeta()"><span class="carpeta">Historia, Geografía y Educación Cívica</span></li>
+                                <li onclick="carpeta()"><span class="carpeta">Matemática</span></li>
+                                <li onclick="carpeta()"><span class="carpeta">Ciencias mencion Biología, Química, Física</span></li>
+                                <li onclick="carpeta()"><span class="carpeta">Educación Física, Deportes y Recreación</span></li>
+                                <li onclick="carpeta()"><span class="carpeta">Inglés</span></li>
+                                <li onclick="carpeta()"><span class="carpeta">Sin Subprueba</span></li> -->
+                            </ul>
+                        </li>
+                    </ul>
+                    <ul id="arbolPedagogico">
+                        <li><span class="caret" onclick="carpeta('pedagogico')">Pedagogico</span>
+                            <ul class="nested" id="pedagogico"></ul>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-9 row" id="images">
+                        <!-- <input type="image" src="https://www.mikogo.es/wp-content/uploads/2011/10/iphone-hand.png" onclick="imagen(this)"/>
+                        <input type="image" src="https://www.mikogo.es/wp-content/uploads/2011/10/iphone-hand.png" onclick="imagen(this)"/>
+                        <input type="image" src="https://www.mikogo.es/wp-content/uploads/2011/10/iphone-hand.png" onclick="imagen(this)"/>
+                        <input type="image" src="https://www.mikogo.es/wp-content/uploads/2011/10/iphone-hand.png" onclick="imagen(this)"/> -->
+                  
+                </div>
+            </div>
+          </div>
+          <div class="modal-footer align-self-center">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+            <button type="button" class="btn btn-primary" id="btn_seleccionar">Seleccionar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+</div>
+        <footer class="pb-0 mb-0">
+            <div class="_bg-pink text-white _nav-footer" id="nav-footer">
+                <div class="row" id="r-nav-footer">
+                    <div class="col text-left" id="footer_izq"></div>
+                    <div class="col text-center" id="footer_ctr"></div>
+                    <div class="col text-right align-middle pr-5 pt-1" id="footer_der">
+                        <div class="row">
+                            <div class="col-sm-12" style="padding-top: 6px !important;">
+                                <!-- ESTADO: <span id="status"></span> -->
+                                <button id="foot_mid" class="btn _btn_evaluar _bg-pink text-white ml-3" onclick="resizeFooter(2);" style="    padding-top: 2px; padding-bottom: 2px;">Evaluación 
+                                    <i class="fas fa-angle-up" id="icon_animation"></i>
+                                </button>
+                              
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="contenido-footer" >
+                <div class="tab-content _tab-content-heigth m-0 p-0" id="tabs">
+                    <div class="tab-pane fade show active _input-rounded container-fluid page-content-ce" id="tabResultados" role="tabpanel" aria-labelledby="resultados-tab">
+                        <div class="row" id="tab-row-res-1">
+                            <div class="col-sm-12">
+                                <div class="card">
+                                    <!-- Card Header -->
+                                    <div class="card-header divborder-bottom">
+                                        <div class="row">
+                                            <div class="col-sm-2" id="select-estimulo-texto">
+                                                <div class="row" style="align-items: center; ">
+                                                    <div class="col-sm-4 _color-titulos _align-titulos" style="margin-left: -4px;" >
+                                                        <div class="col-sm-12">
+                                                            <h6>Evaluador 1: </h6>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-6 _align-data" >
+                                                        <div class="col-sm-12" id="nombre-evaluador1" style="margin-top: -9px;">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-2" id="select-pregunta-texto">
+                                                <div class="row" style="align-items: center;">
+                                                    <div class="col-sm-6 _color-titulos _align-titulos" style="margin-left: -13px;" >
+                                                        <div class="col-sm-12">
+                                                            <h6>Fecha Revisión: </h6>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-4 _align-data" style="margin-top: -9px;">
+                                                        <div class="col-sm-12" id="fecha-evaluacion" >
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-2 divborder-right-footer" id="select-alternativas-texto" >
+                                                <div class="row" style="align-items: center;">
+                                                    <div class="col-sm-4 _color-titulos _align-titulos" style="margin-left: 10px;" >
+                                                        <div class="col-sm-12">
+                                                            <h6>Evaluación:</h6>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-4 _align-data" >
+                                                        <div class="col-sm-12" id="evaluacion-estimulo" style="margin-top: -2px">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-2" id="evaluador2">
+                                                <div class="row" style="align-items: center;">
+                                                    <div class="col-sm-4 _color-titulos _align-titulos" style="margin-left: 26px;" >
+                                                        <div class="col-sm-14" >
+                                                            <h6>Evaluador 2: </h6>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-5 _align-data" >
+                                                        <div class="col-sm-12" id="nombre-eval2" style="margin-top: -9px;">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-2" id="fecha-evaluado2">
+                                                <div class="row" style="align-items: center;">
+                                                    <div class="col-sm-5 _color-titulos _align-titulos" style="margin-left: 36px;" >
+                                                        <div class="col-sm-12">
+                                                            <h6>Fecha Revisión:</h6>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-4 _align-data" style="margin-top: -9px;">
+                                                        <div class="col-sm-12" id="fecha-eval2" >
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-2" id="estado-evaluador2">
+                                                <div class="row" style="align-items: center;">
+                                                     <div class="col-sm-4 _color-titulos _align-titulos" style="margin-left: 34px;" >
+                                                        <div class="col-sm-12" >
+                                                            <h6>Evaluación:</h6>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-6 _align-data" >
+                                                        <div class="col-sm-12" id="evaluacion-eval2" style="margin-top: -2px;">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Fin Card Header -->
+
+                                    <!-- Card Body -->
+                                    <div class="card-body _card-body" id="card-body-observacion">
+                                        <div class="row">
+                                            <div class="col-sm-2" id="select-estimulo-texto">
+                                                <div class="row" style="align-items: center;    margin-top: 5px;">
+                                                    <div class="col-sm-5 _color-titulos _iconos-evaluaciones">
+                                                        <div class="col-sm-12">
+                                                            <h6><i class="fas fa-eye"></i> / <i class="fas fa-image"></i></h6>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-7 _evaluaciones-div" style="text-align: left;">
+                                                        <div class="col-sm-12 _evaluaciones" id="evaluacion-enunciado">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-2" id="select-pregunta-texto">
+                                                <div class="row" style="align-items: center;    margin-top: 5px;">
+                                                    <div class="col-sm-2 _color-titulos _iconos-evaluaciones">
+                                                        <div class="col-sm-12" >
+                                                            <h6><i class="fas fa-question"></i></h6>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-8 _evaluaciones-div" style="text-align: left;">
+                                                        <div class="col-sm-12 _evaluaciones" id="evaluacion-pregunta" >
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-2 divborder-right-footer" id="select-alternativas-texto">
+                                                <div class="row" style="align-items: center;    margin-top: 5px;">
+                                                    <div class="col-sm-2 _color-titulos _iconos-evaluaciones">
+                                                        <div class="col-sm-12">
+                                                            <h6><i class="fas fa-list-ul"></i></h6>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-8 _evaluaciones-div" style="text-align: left;">
+                                                        <div class="col-sm-12 _evaluaciones" id="evaluacion-alternativas">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-2" id="estimulo-evaluador2">
+                                                <div class="row" style="align-items: center;    margin-top: 5px;">
+                                                    <div class="col-sm-5 _color-titulos _iconos-evaluaciones">
+                                                        <div class="col-sm-12">
+                                                            <h6><i class="fas fa-eye"></i> / <i class="fas fa-image"></i></h6>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-7 _evaluaciones-div" style="text-align: left;">
+                                                        <div class="col-sm-12 _evaluaciones" id="evaluacion-enunciado-eval2">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-2" id="pregunta-evaluador2">
+                                                <div class="row" style="align-items: center;    margin-top: 5px;">
+                                                    <div class="col-sm-2 _color-titulos _iconos-evaluaciones">
+                                                        <div class="col-sm-12">
+                                                            <h6><i class="fas fa-question"></i></h6>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-8 _evaluaciones-div" style="text-align: left;">
+                                                        <div class="col-sm-12 _evaluaciones" id="evaluacion-pregunta-eval2">
+                                                        </div> 
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-2" id="alternativas-evaluador2">
+                                                <div class="row" style="align-items: center;    margin-top: 5px;">
+                                                    <div class="col-sm-2 _color-titulos _iconos-evaluaciones">
+                                                        <div class="col-sm-12">
+                                                            <h6><i class="fas fa-list-ul"></i></h6>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-8 _evaluaciones-div" style="text-align: left;">
+                                                        <div class="col-sm-12 _evaluaciones" id="evaluacion-alternativas-eval2">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-sm-2 _text-areas-div">
+                                                <div class="col-sm-12 _text-areas">
+                                                    <textarea class="form-control _input-rounded _border-textarea" rows="5" id="estimulo_obs" placeholder="Sin Observaciones..."></textarea>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-2 _text-areas-div">
+                                                <div class="col-sm-12 _text-areas">
+                                                    <textarea class="form-control _input-rounded _border-textarea" rows="5" id="pregunta_obs" placeholder="Sin Observaciones..."></textarea>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-2 _text-areas-div divborder-right-footer">
+                                                <div class="col-sm-12 _text-areas">
+                                                    <textarea class="form-control _input-rounded _border-textarea" rows="5" id="alternativa_obs" placeholder="Sin Observaciones..."></textarea>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-2 _text-areas-div">
+                                                <div class="col-sm-12 _text-areas">
+                                                    <textarea class="form-control _input-rounded _border-textarea" rows="5" id="estimulo_obs_eval2" placeholder="Sin Observaciones..."></textarea>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-2 _text-areas-div">
+                                                <div class="col-sm-12 _text-areas">
+                                                    <textarea class="form-control _input-rounded _border-textarea" rows="5" id="pregunta_obs_eval2" placeholder="Sin Observaciones..."></textarea>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-2 _text-areas-div">
+                                                <div class="col-sm-12 _text-areas">
+                                                    <textarea class="form-control _input-rounded _border-textarea" rows="5" id="alternativa_obs_eval2" placeholder="Sin Observaciones..."></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Fin Card Body -->
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12 mb-3">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- FIN: ANALISIS - OBSERVACION-->
+
+            </div>
+        </footer>
+    </div>
+</div>
+
+<!-- Fin Copia item html supervisor revision -->
+
+<style type="text/css">
+    .file-upload {
+  background-color: #ffffff;
+/*  width: 600px;*/
+  margin: 0 auto;
+ /* padding: 20px;*/
+}
+
+.file-upload-btn {
+  width: 200px;
+  display: block;
+  margin: 0;
+  color: #fff;
+  background: #267de1;
+  border: none;
+  padding: 2px;
+  border-radius: 4px;
+  /*border-bottom: 4px solid #055bbd;*/
+  transition: all .2s ease;
+  outline: none;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.file-upload-btn:hover {
+  background: #1b61b1;
+  color: #ffffff;
+  transition: all .2s ease;
+  cursor: pointer;
+}
+
+.file-upload-btn:active {
+  border: 0;
+  transition: all .2s ease;
+}
+
+.file-upload-content{
+  display: none;
+  text-align: center;
+}
+
+.file-upload-input {
+  position: absolute;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  outline: none;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.image-upload-wrap{
+  margin-top: 20px;
+  border: 4px dashed #267de1;
+  position: relative;
+}
+
+.image-dropping,
+.image-upload-wrap:hover{
+  background-color: #267de1;
+  border: 4px dashed #ffffff;
+}
+
+.image-title-wrap {
+  padding: 0 15px 15px 15px;
+  color: #222;
+}
+
+.drag-text {
+  text-align: center;
+}
+
+.drag-text h3 {
+  font-weight: 100;
+  text-transform: uppercase;
+  color: #fff;
+  padding: 60px 0;
+}
+
+.file-upload-image {
+  max-height: 500px;
+ /* max-width: 200px;*/
+  margin: auto;
+  padding: 20px;
+}
+
+.remove-image {
+  width: 200px;
+  margin: 0;
+  color: #fff;
+  background: #cd4535;
+  border: none;
+  padding: 2px;
+  border-radius: 4px;
+  /*border-bottom: 4px solid #b02818;*/
+  transition: all .2s ease;
+  outline: none;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.remove-image:hover {
+  background: #c13b2a;
+  color: #ffffff;
+  transition: all .2s ease;
+  cursor: pointer;
+}
+
+.remove-image:active {
+  border: 0;
+  transition: all .2s ease;
+}
+ 
+ul, #myUL {
+  list-style-type: none;
+    padding-left: 10px !important;
+        font-size: 14px;
+}
+
+#myUL {
+  margin: 0;
+  padding: 0;
+}
+
+.caret {
+  cursor: pointer;
+  -webkit-user-select: none; /* Safari 3.1+ */
+  -moz-user-select: none; /* Firefox 2+ */
+  -ms-user-select: none; /* IE 10+ */
+  user-select: none;
+}
+
+.caret::before {
+  content: "\25B6";
+  color: black;
+  display: inline-block;
+  margin-right: 6px;
+      font-size: 10px;
+}
+
+.caret-down::before {
+  font-size: 10px;
+  -ms-transform: rotate(90deg); /* IE 9*/ 
+  -webkit-transform: rotate(90deg); /* Safari */
+  transform: rotate(90deg);  
+}
+
+.carpeta {
+  cursor: pointer;
+  -webkit-user-select: none; /* Safari 3.1+ */
+  -moz-user-select: none;  /*Firefox 2+ */
+  -ms-user-select: none; /* IE 10+ */
+  user-select: none;
+}
+
+.carpeta::before {
+  content: "\25CF";
+  color: black;
+  display: inline-block;
+  margin-right: 6px;
+      font-size: 10px;
+}
+
+.nested {
+  display: none;
+}
+
+.active {
+  display: block;
+}
+
+.div_select{
+    border: 2px solid red;
+}
+</style>
+
+

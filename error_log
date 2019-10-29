@@ -1,0 +1,1 @@
+[20-Jun-2019 19:28:52 America/Santiago] PHP Warning:  proc_open(): fork failed - Cannot allocate memory in phar:///opt/cpanel/composer/bin/composer/vendor/symfony/console/Application.php on line 959

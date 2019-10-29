@@ -1,0 +1,4 @@
+AuthType Basic
+AuthName "Protegido"
+AuthUserFile "/home/diag2018fid/.htpasswds/public_html/public/protected/passwd"
+require valid-user

@@ -1,0 +1,175 @@
+ 
+<!-- <div class="container-fluid _tab">		
+		<ul class="nav nav-pills justify-content-center" ">
+		  <li class="nav-item">
+		    <a class="nav-link active"  target="_top" href="http://devprei.iie.cl/front/supervisor/supervisor.php"><i class="fas fa-clipboard-list"></i>  Banco de Ítems</a>
+		  </li>
+		  <li class="nav-item">
+		    <a class="nav-link"  target="_top" href="supervisor-evaluadores.php"><i class="fas fa-glasses"></i>  Evaluadores</a>
+		  </li>
+		  <li class="nav-item">
+		    <a class="nav-link"  target="_top" href="http://devprei.iie.cl/front/supervisor/supervisor-monitoreo.php" ><i class="fas fa-search"></i>  Monitoreo</a>
+		  </li>
+		</ul>
+</div> -->
+<!-- Fin Tab -->
+
+<!-- Contenedor de Info, Opciones y Tabla -->
+<div  class="container-fluid page-content-ce _principal">
+	<div class="page-content _padding-pages _page-banco-items"  >
+		<div  class="container-fluid _card-rounded mt-3" >
+			<!-- Informacion de Items (total y asignados) con opciones -->
+			<div class="row _info-banco pt-3 pb-3 align-items-center">
+				<div class="col-sm-4 _items-total">
+					<div class="row align-items-center">
+						<div class="offset-sm-1 col-sm-3" style="margin-left: 70px;">
+							<label class="_text-legend">Total Ítems: </label>
+						</div>
+						<div class="col-sm-3 _items-total">
+							<label class="_text-legend _valor-items" id="total-items"></label>
+						</div>
+					</div>					 
+				</div>
+				<div class="col-sm-4 _asignar-items">
+					<div class="row align-items-center">
+						<div class="offset-sm-2 col-sm-4" style="margin-left: 140px;">
+							<label class="_text-legend">Ítems Asignados: </label>
+						</div>
+						<div class="offset-sm col-sm-2 _asignados-total">
+							<label class="_text-legend _valor-asignados" id="items-asignados" ></label>
+						</div>
+						<div class="offset-sm col-sm-2">
+							<a class="btn btn-primary asignar" data-toggle="modal" data-target="#asignarItems" role="button" type="button"><i class="fas fa-clipboard-check"></i>  Asignar Ítems</a>
+						</div>						
+					</div>					 
+				</div>
+				<div class="col-sm-4 _descargar">	
+					<div class="row align-items-center">	
+						<div class="offset-sm-7 col-sm-4">
+							<button class="btn btn-primary datatable-excel"   role="button" id="descraga-lista-banco-items" type="button"><i class="fas fa-download"></i> Descargar Lista</button>
+						</div>						
+					</div>		
+				</div>		 
+			</div>
+			<!-- Fin Informacion de Items -->
+
+
+			<!-- Seccion de Filtrado -->
+			<div class="row" id="supervisor-prueba-Table_filters">
+				<div class="offset-sm-1 text-center" id="clear-filtros">
+					<button class="btn" role="button" id="limpiar-filtros" type="button">Limpiar Filtros</button>
+				</div>
+			</div>
+			<!-- Fin seccion de filtro -->
+
+			<!-- Seccion Modals -->
+
+			<!-- Modal Asignar Items-->
+				<div class="modal fade" id="asignarItems" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+				  <div class="modal-dialog modal-dialog-centered modal-asignacion" role="document">
+				    <div class="modal-content">
+				      <div class="modal-header">
+				        <h5 class="modal-title _titulo-modals" >Asignacion de Ítems</h5>
+				        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+				          <span aria-hidden="true">&times;</span>
+				        </button>
+				      </div>
+				      <div class="modal-body">
+				        <div class="container-fluid">
+				        	<div class="col-12 mb-4 ">
+				      			<label class="row" for="id_subprueba">Asignatura</label>
+							    <select class="form-control" id="id_subprueba" required="required">
+							      <option value="-1" selected>Seleccione Asignatura</option>
+							      <option value="4">Pedagógico</option>
+							      <option value="10">Lenguaje y Comunicación</option>
+							      <option value="11">Matemática</option>
+							      <option value="12">Historia, Geografía y Educación Cívica</option>
+							      <option value="13">Ciencias mención Biología</option>
+							      <option value="17">Inglés</option>
+							      <option value="16">Educación Física, Deportes y Recreación</option>
+							      <option value="15">Ciencias mención Química</option>
+							      <option value="14">Ciencias mención Física</option>
+							    </select>
+				      		</div>
+
+				        	<div  id="tabla-items" class="col-sm-12 pt-5 pl-5 pr-5 " style="padding-top: 1.5rem!important; padding-left: 0px !important; padding-right: 0px !important;">
+				        		<table id="table-lista-items" class="stripe table table-hover _table-link dataTable no-footer" style="width:100%;">
+									<thead>		
+										<tr>
+											<th>SELECCIONADOS</th>
+											<th>N°</th>
+											<th>ÍTEM</th>
+											<th>PRUEBA</th>						
+										</tr>
+									</thead>
+									<tbody id="lista_items_asignar">
+									</tbody>
+								</table>
+				        	</div>
+
+				        	<div  id="tabla-evaluadores" class="col-sm-12 pt-5 pl-5 pr-5 " style="padding-top: 1.5rem!important; padding-left: 0px !important; padding-right: 0px !important;">
+				        		<table id="table-lista-evaluadores" class="stripe table table-hover _table-link dataTable no-footer" style="width:100%;">
+									<thead>			
+										<tr>
+											<th>SELECCIONADOS</th>
+											<th>N°</th>
+											<th>NOMBRE</th>
+											<th>EMAIL</th>
+											<th>PRUEBA</th>
+											<th>ASIGNADOS</th>
+										</tr>
+									</thead>
+									<tbody id="lista_evaluadores_asignar">
+									</tbody>
+								</table>
+				        	</div>
+				        	
+				        </div>
+				     </div>
+				      <div class="modal-footer">
+				        <button type="button" class="btn btn-secondary _boton-cerrar"
+							data-dismiss="modal">Cerrar</button>
+				        <button type="button" class="btn btn-primary" id="asignar-items">Asignar</button>
+				      </div>
+				    </div>
+				  </div>
+				</div>
+			<!-- Fin Modal Asignar Items -->
+
+			<!-- Fin seccion Modals -->
+
+			<!-- Tabla de Items -->
+			<div class="col-sm-12 pt-5 pl-5 pr-5 mb-5" style="padding-top: 1.5rem!important; padding-left: 0px !important; padding-right: 0px !important;">
+														
+				<table id="table-banco-items" class="stripe table table-hover _table-link dataTable no-footer" style="width:100%;">
+					<thead>
+					<!-- id="items" class="display" -->				
+						<tr>
+						  <th>N°</th>
+						  <th>ÍTEM</th>
+						  <th class="text-left">PRUEBA</th>
+						  <!-- <th>FECHA TÉRMINO</th> -->
+						  <th class="text-left">EVALUADOR 1</th>
+						  <th class="text-left">EVALUADOR 2</th>
+						  <th class="text-left">EVALUACIÓN</th>
+						  <th>OPCIONES</th>						
+						</tr>
+					</thead>
+					<tbody id="lista_items">
+					</tbody>
+					
+				</table>
+			</div>		
+			<!-- Fin Tabla Items  -->
+		</div>
+	</div>	
+</div>
+<!-- Fin Contenedor -->
+<!-- <script >
+	$document.write(
+		$custom-file-text: (
+  en: "Browse",
+  es: "Elegir"
+);
+		)
+</script>  -->
