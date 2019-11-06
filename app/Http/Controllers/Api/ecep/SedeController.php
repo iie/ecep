@@ -3,6 +3,7 @@ namespace App\Http\Controllers\Api\ecep;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Infraestructura\Sede;
+use App\Models\Infraestructura\Estimacion;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -63,15 +64,15 @@ class SedeController extends Controller
 		}
 
 		$centros = DB::table('infraestructura.centro_operaciones')
-					->select('infraestructura.centro_operaciones.id_centro_operaciones','infraestructura.centro_operaciones.nombre')
+					->leftJoin('core.comuna','infraestructura.centro_operaciones.id_comuna','=','core.comuna.id_comuna')
+					->select('infraestructura.centro_operaciones.id_centro_operaciones' /*,'infraestructura.centro_operaciones.nombre'*/,'core.comuna.nombre')
 					->where('infraestructura.centro_operaciones.confirmado','=',2)
-					->orderBy('infraestructura.centro_operaciones.nombre', 'asc')
+					->orderBy('core.comuna.nombre', 'asc')
 					->get();
 
 		$datos['sedes'] = $sede;
 		$datos['regiones'] = $listaFinal;
 		$datos['centros'] = $centros;
- 
 		return response()->json($datos);	
     }
 
@@ -154,6 +155,8 @@ class SedeController extends Controller
     	$sede->salas_requeridas = $post['salas_requeridas'];
 
     	$sede->id_centro_operaciones = $post['id_centro_operaciones'];
+
+    	$sede->id_estimacion = $post['cupo'];
     	
 		DB::beginTransaction();
 		try{
@@ -187,11 +190,16 @@ class SedeController extends Controller
             ->where('id_sede', '=',  $post["id_sede"])
             ->first();
 
+		$estimacion = Estimacion::leftJoin('core.comuna','infraestructura.estimacion.id_comuna','=','core.comuna.id_comuna')
+						->select('infraestructura.estimacion.*','core.comuna.nombre as comuna')
+						->where('infraestructura.estimacion.id_comuna',$sede->id_comuna)
+						->get();
+
 		if (empty($sede)) {
             return response()->json(['resultado'=>'error','descripcion'=>'No se encuentra la Sede']);
         }else{
         	$datos['sede'] = $sede;
-			//$datos['centros'] = $centros;
+			$datos['estimacion'] = $estimacion;
         	return response()->json($datos);	
         }
     }

@@ -3,7 +3,8 @@ $(document).ready(function(){
     $('#redirect').css('display','');
     $('#redirect').on('click',redirectModulo);
     getSede()
-    $('#guardar_sede').click(guardarSede);  
+    $('#guardar_sede').click(guardarSede); 
+    $('#inputEstado').on('change',estadoSede); 
 });
 
 var region = '';
@@ -233,6 +234,7 @@ function nuevaSede(){
     limpiarNueva()
     $('#titulo_modal').html('Nueva Sede');
     $('#btn-search-rbd').prop('disabled',false)
+    $('#divInputCupo').css('display','none')
     $('#nuevaSedeModal').modal({backdrop: 'static', keyboard: false},'show')
 }
 
@@ -297,13 +299,22 @@ function completarDatos(datos) {
     $.unblockUI();
 }
 
+function estadoSede(){
+    if($(this).val() == 2){
+        $('#inputCupo').prop('disabled',false)
+    }else{
+        $('#inputCupo').val(-1)
+        $('#inputCupo').prop('disabled',true)
+    }
+}
+
 function guardarSede(){
 
     rbd = $('#inputRBD').val()
     nombre = $('#inputNombreEstablecimiento').val()
     direccion = $('#inputDireccionEstablecimiento').val()
     nro = $('#inputNroEstablecimiento').val()
-    estado = $('#inputEstado').val()
+    estado = $('#inputEstado').val() == 'null' ? 0 : $('#inputEstado').val()
     comuna = $('#inputComuna').val()
 
     nombreContacto = $('#inputNombreContacto').val()
@@ -315,7 +326,8 @@ function guardarSede(){
     disponibles = $('#inputDisponibles').val()
     requeridas = $('#inputRequeridas').val()
 
-    centro = $('#inputCentro').val()
+    centro = $('#inputCentro').val() == -1 ? null : $('#inputCentro').val()
+    cupo = $('#inputCupo').val() == -1 ? null : $('#inputCupo').val()
 
     if(validar() == true){
         $.ajax({
@@ -342,7 +354,8 @@ function guardarSede(){
                     contacto_otro: otros,
                     salas_disponibles:disponibles,
                     salas_requeridas:requeridas,
-                    id_centro_operaciones: centro
+                    id_centro_operaciones: centro,
+                    cupo: cupo
                 },
             success: function(data, textStatus, jqXHR) {
                 console.log(data)
@@ -425,6 +438,19 @@ function cargarDatos(data){
     //cargarCentros(data.centros);
     $('#inputCentro').val(data.sede.id_centro_operaciones == null ? -1 : data.sede.id_centro_operaciones).prop('disabled',false);
 
+    $('#divInputCupo').css('display','') 
+    $('#inputCupo').html('')
+    $('#inputCupo').append('<option value="-1" selected="">Elegir...</option>') 
+
+    for(i = 0; i < data.estimacion.length; i++){
+        $('#inputCupo').append('<option value="'+data.estimacion[i].id_estimacion+'">Docentes: '+data.estimacion[i].docentes+', Salas: '+data.estimacion[i].salas+'</option>') 
+    }
+    if(data.sede.estado == 2){
+        $('#inputCupo').prop('disabled',false)
+    }else{
+        $('#inputCupo').prop('disabled',true)
+    }
+    $('#inputCupo').val(data.sede.id_estimacion == null ? -1 : data.sede.id_estimacion)
     $('#btn-search-rbd').prop('disabled',true)
     $('#nuevaSedeModal').modal({backdrop: 'static', keyboard: false},'show')
     $('#guardar_sede').prop('disabled',false)
@@ -435,7 +461,7 @@ function cargarCentros(data){
     $('#inputCentro').append('<option value="-1" selected="">Elegir...</option>') 
 
     for(i = 0; i < data.length; i++){
-        $('#inputCentro').append('<option value="'+data[i].id_centro_operaciones+'">'+data[i].nombre+'</option>') 
+        $('#inputCentro').append('<option value="'+data[i].id_centro_operaciones+'">Centro '+data[i].nombre+'</option>') 
     }
      
 }
@@ -501,6 +527,7 @@ function disabledData(){
     $('#inputRegion').prop('disabled',false)
     $('#inputComuna').prop('disabled',false)
     $('#inputCentro').prop('disabled',false)
+    $('#inputCupo').prop('disabled',false)
 }
 
 function limpiar(){
@@ -537,6 +564,7 @@ function limpiarNueva(){
     $('#inputRegion').val('-1').prop('disabled',true)
     $('#inputComuna').val('-1').prop('disabled',true)
     $('#inputCentro').val('-1').prop('disabled',true)
+    $('#inputCupo').val('-1').prop('disabled',true)
 
     $('#inputOtros').val('').prop('disabled',true)
 

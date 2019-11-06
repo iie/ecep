@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <!-- Required meta tags-->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="">
+
+    <!-- Title Page-->
+    <title>ECEP</title>
+
+    <!-- Main CSS-->
+    <link href="css/estilos.css" rel="stylesheet" media="all">
+    <link rel="stylesheet" media="all" href="vendor/bootstrap_v4.3.1/css/bootstrap.css">
+    <link href='https://fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,400italic,500,500italic,700,700italic,900italic,900' rel='stylesheet' type='text/css'>
+    <link href="vendor/jquery-nice-select-1.1.0/css/nice-select.css" rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" />
+
+    <!-- Jquery JS-->
+    <script src="vendor/jquery-3.2.1/jquery-3.2.1.min.js"></script>
+
+    <!-- JS-->
+    <script type="text/javascript" src="vendor/popper/popper.min.js"></script>
+    <script type="text/javascript" src="vendor/jquery.blockUI.js"></script>
+    <script type="text/javascript" src="vendor/bootstrap_v4.3.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="vendor/datatables/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="vendor/utils.js"></script>
+    <script type="text/javascript" src="js/material.js"></script>
+    <script type="text/javascript" src="vendor/jquery-nice-select-1.1.0/js/jquery.nice-select.js"></script>
+
+    <!-- Toastr -->
+    <script type="text/javascript" src="vendor/toastr/toastr.js"></script>
+    <link href="vendor/toastr/toastr.css" rel='stylesheet' type='text/css'>
+    <link href="vendor/datatables/jquery.dataTables.min.css" rel='stylesheet' type='text/css'>
+</head>
+
+<body>
+    <div class="row encabezado">
+        <div class="col-sm-1">
+            <a id="redirect" href="#" class="text-white" style="font-size: 27px; display: none;">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+            <div style="border:1px solid; width:40px; height:40px; border-radius:50px; float:right">&nbsp;</div>
+        </div>
+        <div class="col-sm-6" style="padding-top:8px; text-align: left;">
+            ECEP: Evaluación de Conocimientos Específicos y Pedagógicos Docentes 2019
+        </div>
+        <div class="col-sm-5 pr-4" style="padding-top:8px; ">
+            <div class="dropdown show text-left" style="float:right; font-size: 15px;">
+                Bienvenido, <strong><span id="nombre_usuario"></span></strong>
+                <a class="dropdown-toggle _hide-arrow text-white" href="#" role="button" id="dropdownMenuLink2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="fas fa-user-circle"></i>
+                </a>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuLink2" style="font-size: 15px;">
+                    <!-- <a class="dropdown-item" href="#" onclick="redirectModulo()">Módulos</a> -->
+                    <a class="dropdown-item" href="#" onclick="redirectLogin()">Cerrar sesión</a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="_principal">
+        <div class="page-content _padding-pages">
+            <div class="row m-0">
+                <div class="col-6 form-row align-items-center">
+                    <h2><i class="fas fa-box-open"></i></h2>
+                    <h4 class="nombre_modulo">Materiales</h4>
+                </div>
+                <div class="col-6 pr-0 text-right">
+                    <button class="btn btn-volver" onclick="redirectModulo()">Volver</button>
+                </div>
+
+            </div>
+            <div class="container-fluid _card-rounded mt-3 p-0" >
+			
+             	<iframe id="imprenta" src="https://edocente.amf.cl/bin/login.php?user=ufro&pass=ufro" 
+                    frameborder="0" scrolling="yes" seamless="seamless" style="display:none; width:100vw; height:2000px;">
+                </iframe>  
+        	</div>
+    	</div>
+    </div>
+</body>
+
+</html>

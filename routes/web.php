@@ -14,6 +14,6 @@
 Route::get('/', function () {
     //return view('welcome');
 	//header("location:./public/app_postulacion/index.html");
-	header("location:http://www.evaluacionconocimientos.cl/");
+	header("location:./public/web_ag/index.html");
 	exit;	
 });

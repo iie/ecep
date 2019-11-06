@@ -206,6 +206,14 @@ h6, .h6 {
   font-weight: 300 !important;
 }
 
+._padding-pages{
+  padding-top: 5%;
+  padding-bottom: 15%;
+  height: 70%;
+  max-height: 70%;
+  max-width: 1366px;
+}
+
 /*ENCABEZADO*/
 .encabezado {
     background-color: #267DE1;
@@ -245,7 +253,7 @@ h6, .h6 {
 
     .card-centros{
         background: #fff;
-        height: 240px; 
+        height: 24vmin;
         /* width: 75em; */
         box-shadow: 0px 1px 15px rgba(0,0,0,0.2);
         border-radius: 25px;
@@ -258,7 +266,7 @@ h6, .h6 {
         position: relative;
         top: 40%;
         /* left: 88%; */
-        font-size: 50px;
+        font-size: 8vmin;
         color: #03A9F4;
         /* width: 15%; */
         float: right;0
@@ -284,21 +292,25 @@ h6, .h6 {
         /*border-top: 3px solid #03a9f4;*/
         border-top: 3px solid #267de1;
     }
+    .nombre_modulo{
+        color: #5E5E5E;
+        margin: 0px;
+    }
 
 /*LISTAS*/
     ._principal {
         width: 100%;
         background-color: #F9FAFB;
-        padding: 60px 20px 60px 20px;
+        padding: 60px 2vmin 6vmin 2vmin;
     }
     ._padding-pages {
         width: 100%;
         margin: auto;
         padding-top: 1%;
-        padding-bottom: 15%;
+        /* padding-bottom: 15%; */
         height: 70%;
         max-height: 70%;
-        /*max-width: 1366px;*/
+        /*max-width: 95%;*/
     }
 
     ._filtros {
@@ -331,6 +343,11 @@ h6, .h6 {
         font-weight: bold;
         color: #007bff !important;
         margin-bottom: 0px;
+    }
+
+    .ver-docs{
+        width:100% !important;
+        min-height:70.6vmin !important;
     }
 /*TABLE*/
     .search{
@@ -374,9 +391,20 @@ h6, .h6 {
         padding: 10px 10px;
         border-bottom: 1px solid #dfdfdf !important;
         border-top: 0px !important;
+        vertical-align: middle;
     }
 
     
     .word-break{
         word-break: break-all;
     }
+table.dataTable.no-footer {
+    border-bottom: 0px solid #111!important;
+}	
+
+.isDisabled {
+  color: currentColor;
+  cursor: not-allowed;
+  opacity: 0.5;
+  text-decoration: none;
+}

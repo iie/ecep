@@ -65,17 +65,27 @@
 		</div>
 		<div  class="_principal">
 			<div class="page-content _padding-pages"  >
+				<div class="row m-0">
+	                <div class="col-6 form-row align-items-center">
+	                   <!--  <h2><i class="far fa-building"></i></h2> -->
+	                    <h4 class="nombre_modulo">Centro Operaciones</h4>
+	                </div>
+	            </div>
 				<div  class="container-fluid _card-rounded mt-3 pt-4" >
-					<ul class="nav nav-tabs" id="myTab" role="tablist">
+
+					<!-- <ul class="nav nav-tabs" id="myTab" role="tablist">
 						<li class="nav-item">
 						    <a class="nav-link active" id="tab-confirmado" data-toggle="tab" href="#tabConfirmado" role="tab" aria-controls="tabConfirmado" aria-selected="true">Confirmados</a>
 						</li>
 						<li class="nav-item">
 						    <a class="nav-link" id="tab-pendiente" data-toggle="tab" href="#tabPendiente" role="tab" aria-controls="tabPendiente" aria-selected="false">No Confirmados</a>
 						</li>
-					</ul>
-					<div class="tab-content" id="myTabContent">
-						<div class="tab-pane fade show active" id="tabConfirmado" role="tabpanel" aria-labelledby="tab-confirmado">
+					</ul> -->
+
+
+
+					<!-- <div class="tab-content" id="myTabContent">
+						<div class="tab-pane fade show active" id="tabConfirmado" role="tabpanel" aria-labelledby="tab-confirmado"> -->
 							<div class="row _info pt-3 pb-3 align-items-center">
 								<div class="col-sm-4">
 									<div class="row align-items-center">
@@ -105,10 +115,11 @@
 										  	<th>REGION</th>	
 										  	<th>PROVINCIA</th>	
 										  	<th>COMUNA</th>	
-										  	<th>NOMBRE CENTRO</th>	
-										  	<th>COORDINADOR ZONAL</th>
-										  	<th>COORDINADOR REGIONAL</th>											  	
+										  	<!-- <th>NOMBRE CENTRO</th>	 -->
+										  	<!-- <th>COORDINADOR ZONAL</th> -->
+										  	<!-- <th>COORDINADOR REGIONAL</th>			 -->								  	
 										  	<th>ENCARGADO</th>	
+										  	<th width="5%">CONFIRMADO</th>
 										  	<th width="5%">CAMARA OPERATIVA</th>	
 										  	<th>ACCIONES</th>		
 										</tr>
@@ -117,62 +128,56 @@
 									</tbody>
 								</table>
 							</div>		
-						</div>
+						<!-- </div>
 						<div class="tab-pane fade" id="tabPendiente" role="tabpanel" aria-labelledby="tab-pendiente">
-							<div class="tab-pane fade show active" id="tabConfirmado" role="tabpanel" aria-labelledby="tab-confirmado">
-								<div class="row _info pt-3 pb-3 align-items-center">
-									<div class="col-sm-4">
-										<div class="row align-items-center">
-											<div class="col-sm-4" style="margin-left: 70px;">
-												<label class="_text-legend">Total Centros: </label>	
-											</div>
-											<div class="col-sm-3 _items-total">
-												<label class="_text-dato" id="total-centro-pendiente"></label>
-											</div>							
-										</div>					 
-									</div>
-									<div class="offset-sm-7 col-1 text-center _descargar">	
-										<div class="row align-items-center">	
-											<div class="mr-3">
-												<button class="btn btn-primary btn-acciones" role="button" id="crear-items" type="button" onclick="nuevoCentro()">
-													<i class="fas fa-plus-circle"></i> Nuevo</button>
-											</div>	
-											<!-- <div class="">
-												<button class="btn btn-primary datatable-excel btn-acciones"   role="button" id="descargar-lista" type="button"><i class="fas fa-download"></i> Descargar Lista</button>
-											</div> -->				
-										</div>		
-									</div>	
+							<div class="row _info pt-3 pb-3 align-items-center">
+								<div class="col-sm-4">
+									<div class="row align-items-center">
+										<div class="col-sm-4" style="margin-left: 70px;">
+											<label class="_text-legend">Total Centros: </label>	
+										</div>
+										<div class="col-sm-3 _items-total">
+											<label class="_text-dato" id="total-centro-pendiente"></label>
+										</div>							
+									</div>					 
 								</div>
-
-								<div class="row" id="supervisor-prueba-Table_filters">
-									<div class="row col-8 m-0" id="filtros_pendiente"></div>
-									<div class="col-4 text-right" id="clear-filtros">
-										<button class="btn limpiar-filtros" role="button" id="limpiar-filtros-pendiente" type="button">Limpiar Filtros</button>
-									</div>
-								</div>
-
-								<div class="col-sm-12 pt-5 pl-5 pr-5 mb-5" style="padding-top: 1.5rem!important; padding-left: 0px !important; padding-right: 0px !important;">										
-									<table id="table-centro-pendiente" class="stripe table table-hover _table-link dataTable no-footer" style="width:100%;">
-										<thead>			
-											<tr>
-											  	<th>N°</th>	
-											  	<th>REGION</th>	
-											  	<th>PROVINCIA</th>	
-											  	<th>COMUNA</th>	
-											  	<th>NOMBRE CENTRO</th>	
-											  	<th>CONTACTO</th>
-											  	<th>FONO</th>	
-											  	<th>MAIL</th>	
-											  	<th>ACCIONES</th>		
-											</tr>
-										</thead>
-										<tbody id="lista_centro_pendiente">
-										</tbody>
-									</table>
-								</div>		
+								<div class="offset-sm-7 col-1 text-center _descargar">	
+									<div class="row align-items-center">	
+										<div class="mr-3">
+											<button class="btn btn-primary btn-acciones" role="button" id="crear-items" type="button" onclick="nuevoCentro()">
+												<i class="fas fa-plus-circle"></i> Nuevo</button>
+										</div>				
+									</div>		
+								</div>	
 							</div>
-						</div>
-					</div>				
+
+							<div class="row" id="supervisor-prueba-Table_filters">
+								<div class="row col-8 m-0" id="filtros_pendiente"></div>
+								<div class="col-4 text-right" id="clear-filtros">
+									<button class="btn limpiar-filtros" role="button" id="limpiar-filtros-pendiente" type="button">Limpiar Filtros</button>
+								</div>
+							</div>
+
+							<div class="col-sm-12 pt-5 pl-5 pr-5 mb-5" style="padding-top: 1.5rem!important; padding-left: 0px !important; padding-right: 0px !important;">										
+								<table id="table-centro-pendiente" class="stripe table table-hover _table-link dataTable no-footer" style="width:100%;">
+									<thead>			
+										<tr>
+										  	<th>N°</th>	
+										  	<th>REGION</th>	
+										  	<th>PROVINCIA</th>	
+										  	<th>COMUNA</th>	
+										  	<th>CONTACTO</th>
+										  	<th>FONO</th>	
+										  	<th>MAIL</th>	
+										  	<th>ACCIONES</th>		
+										</tr>
+									</thead>
+									<tbody id="lista_centro_pendiente">
+									</tbody>
+								</table>
+							</div>									
+						</div> 
+					</div> -->				
 				</div>
 			</div>	
 		</div>
@@ -191,6 +196,11 @@
 		    		<div class="container-fluid">
 						<div class="form-row">
 							<div class="form-group col-4">
+								<label for="inputZona">Zona:</label>
+								<select class="form-control" id="inputZona">
+								</select>
+							</div>
+							<!-- <div class="form-group col-4">
 								<label for="inputCoordinadorZonal">Coordinador Zonal:</label>
 								<select class="form-control" id="inputCoordinadorZonal">
 								</select>
@@ -206,12 +216,12 @@
 								<label for="inputEncargado">Encargado:</label>
 								<select class="form-control" id="inputEncargado">
 								</select>
-							</div>
+							</div> -->
 
-							<div class="form-group col-4">
+							<!-- <div class="form-group col-4">
 								<label for="inputNombre">Nombre Centro:</label>
 								<input type="text" class="form-control" id="inputNombre" oninput="this.value=NumText(this.value)" >
-							</div>
+							</div> -->
 
 							<div class="form-group col-4">
 								<label for="inputRegion">Región:</label>
@@ -248,8 +258,8 @@
 							<div class="form-group col-4">
 								<label for="inputConfirmado">Confirmado:</label>
 								<select class="form-control" id="inputConfirmado">
-									<option value="-1">Seleccione...</option>
-									<option value="0">Sin Información</option>
+									<option value="0">Seleccione...</option>
+									<!-- <option value="0">Sin Información</option> -->
 									<option value="1">NO</option>
 									<option value="2">SI</option>
 								</select>
@@ -262,7 +272,7 @@
 									<option value="true">SI</option>
 								</select>
 							</div>
-							<div class="form-group col-8">
+							<div class="form-group col-12">
 								<label for="inputOtroContacto">Otros datos Contacto:</label>
 								<input type="text" class="form-control" id="inputOtroContacto" oninput="this.value=NumText(this.value)" >
 							</div>
@@ -282,6 +292,5 @@
 		    </div>
 		  </div>
 		</div>
-
 	</body>
 </html>

@@ -1,11 +1,12 @@
 var serverRedirect = "https://ecep2019.iie.cl/public/web_ecep";
+var serverRedirectAgencia = "https://ecep2019.iie.cl/public/web_ag"; 
  
 //var webservice = "https://pruebadeconocimientos.iie.cl/routes/api/ecep";
 var webservice = "https://ecep2019.iie.cl/api/web";
 
 function redirectLogin() {
     localStorage.clear()
-    location.href = serverRedirect + '/'
+    location.href = serverRedirectAgencia + '/'
 }
 
 function redirectModulo() {
@@ -26,6 +27,10 @@ function redirectEvaluados() {
 
 function redirectCentro() {
     location.href = serverRedirect + '/centro_operaciones.html'
+} 
+
+function redirectPersonal() {
+    location.href = serverRedirect + '/personal.html'
 } 
 function ocultarLoading(){
     $(".loader-page").css({visibility:"hidden",opacity:"0"})

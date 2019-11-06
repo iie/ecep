@@ -3,6 +3,8 @@ $(document).ready(function(){
     $('#redirect').css('display','');
     $('#redirect').on('click',redirectModulo);
     $('#guardar_centro').click(guardarCentro);
+    
+   
     getCentro()  
 });
 var region = '';
@@ -31,6 +33,7 @@ function getCentro(){
 
 }
 
+var encargadoZonal = ''
 function llenarVista(data){
     data = JSON.parse(data)
     region = data.regiones;
@@ -66,10 +69,10 @@ function llenarVista(data){
         ordering: true, 
         order: [],
         search: true,
-        data: data.centros_confirmados,
+        data: data.centros,
         responsive: true, 
         columnDefs: [{
-            targets: 9,
+            targets: 6,
             orderable: false
         }],
         columns:[
@@ -81,10 +84,20 @@ function llenarVista(data){
             {data: "region"},
             {data: "provincia"},
             {data: "comuna"},
-            {data: "nombre"},
-            {data: "coordinador_zonal"},
-            {data: "coordinador_regional"},
+           /* {data: "nombre"},*/
+            /*{data: "coordinador_zonal"},*/
+            /*{data: "coordinador_regional"},*/
             {data: "encargado"},
+            {data: "confirmado", className: "text-center",
+                render: function(data, type, row){
+                    if(data == 2){
+                        return 'SI';
+                    }else{
+                        return 'NO';
+                    }
+
+                }
+            },
             {data: "camara_operativa", className: "text-center",
                 render: function(data, type, row){
                     if(data == false){
@@ -102,8 +115,8 @@ function llenarVista(data){
             }
         ],
         "initComplete": function(settings, json) {
-            var placeholder = ["","Región","Provincia","Comuna"]
-            this.api().columns([1,2,3]).every( function (index) {
+            var placeholder = ["","Región","Provincia","Comuna","","Confirmado"]
+            this.api().columns([1,2,3,5]).every( function (index) {
                 var column = this;
                 var select = $('<select class="form-control col-sm-2 small _filtros"  id="select'+index+'" >'+
                     '<option value="" selected="selected">'+placeholder[index]+'</option></select>')
@@ -118,7 +131,12 @@ function llenarVista(data){
                             .draw();
                     } );
                 column.data().unique().each( function ( d, j ) {
-                    $('#select'+index).append( '<option value="'+d+'">'+d+'</option>' )     
+                    if(index == 5 ){
+                        d = (d == 2 ? 'SI' : 'NO')
+                    }  
+                    $('#select'+index).append( '<option value="'+d+'">'+d+'</option>' )  
+
+                        
                 } );
                  $('#select'+index).niceSelect();        
             })   
@@ -126,14 +144,18 @@ function llenarVista(data){
             $('.dataTables_length select').addClass('nice-select small');         
         },
         "drawCallback": function(){
-            var placeholder = ["","Región","Provincia","Comuna"]
-            this.api().columns([1,2,3]).every( function (index) {
+            var placeholder = ["","Región","Provincia","Comuna","","Confirmado"]
+            this.api().columns([1,2,3,5]).every( function (index) {
                 var columnFiltered = this;
                 var selectFiltered = $("#select"+index)
                 if(selectFiltered.val()===''){
                     selectFiltered.empty()
                     selectFiltered.append('<option value="">'+placeholder[index]+'</option>')
                     columnFiltered.column(index,{search:'applied'}).data().unique().each( function ( d, j ) {
+                         
+                        if(index == 5 ){
+                            d = (d == 2 ? 'SI' : 'NO')
+                        }
                         selectFiltered.append( '<option value="'+d+'">'+d+'</option>' )
 
                     } );
@@ -141,17 +163,17 @@ function llenarVista(data){
                 $('select').niceSelect('update');
             })
         }
-  });
+    });
 
     $("#descargar-lista").on("click", function() {
         tablaD.button( '.buttons-excel' ).trigger();
     });
 
     $('#limpiar-filtros').click(btnClearFilters);
-    $('#total-centro').html(data.centros_confirmados.length);
+    $('#total-centro').html(data.centros.length);
     $("#table-centro").show(); 
 
-    llenarVista2(data)
+    //llenarVista2(data)
 
     $('#inputRegion').html('')
     $('#inputRegion').append('<option value="-1" selected="">Elegir...</option>') 
@@ -159,13 +181,13 @@ function llenarVista(data){
         $('#inputRegion').append('<option value="'+data.regiones[i].id_region+'">'+data.regiones[i].nombre+'</option>');
     }
 
-    $('#inputCoordinadorZonal').html('')
-    $('#inputCoordinadorZonal').append('<option value="-1" selected="">Elegir...</option>') 
-    for(i = 0; i < data.encargadoZonal.length; i++){
-        $('#inputCoordinadorZonal').append('<option value="'+data.encargadoZonal[i].id_persona+'">'+data.encargadoZonal[i].nombres+' '+data.encargadoZonal[i].apellido_paterno+'</option>');
+    $('#inputZona').html('')
+    $('#inputZona').append('<option value="-1" selected="">Elegir...</option>') 
+    for(i = 0; i < data.zonas.length; i++){
+        $('#inputZona').append('<option value="'+data.zonas[i].id_zona_region+'">'+data.zonas[i].zona_nombre+', '+data.zonas[i].region+'</option>');
     }
 
-    $('#inputCoordinadorRegional').html('')
+    /*$('#inputCoordinadorRegional').html('')
     $('#inputCoordinadorRegional').append('<option value="-1" selected="">Elegir...</option>') 
     for(i = 0; i < data.encargadoRegional.length; i++){
         $('#inputCoordinadorRegional').append('<option value="'+data.encargadoRegional[i].id_persona+'">'+data.encargadoRegional[i].nombres+' '+data.encargadoRegional[i].apellido_paterno+'</option>');
@@ -176,6 +198,7 @@ function llenarVista(data){
     for(i = 0; i < data.encargadoCentro.length; i++){
         $('#inputEncargado').append('<option value="'+data.encargadoCentro[i].id_persona+'">'+data.encargadoCentro[i].nombres+' '+data.encargadoCentro[i].apellido_paterno+'</option>');
     }
+    encargadoZonal = data.encargadoZonal*/
 }
 
 function llenarVista2(data){
@@ -201,7 +224,7 @@ function llenarVista2(data){
         data: data.centros_no_confirmados,
         responsive: true, 
         columnDefs: [{
-            targets: 8,
+            targets: 7,
             orderable: false
         }],
         columns:[
@@ -213,7 +236,7 @@ function llenarVista2(data){
             {data: "region"},
             {data: "provincia"},
             {data: "comuna"},
-            {data: "nombre"},
+            /*{data: "nombre"},*/
             {data: "contacto_nombre"},
             {data: "contacto_fono"},
             {data: "contacto_email"},
@@ -278,22 +301,23 @@ function btnClearFilters(){
     $('#select1').val("").niceSelect('update');
     $('#select2').val("").niceSelect('update');
     $('#select3').val("").niceSelect('update');
+    $('#select5').val("").niceSelect('update');
 
-    $('#select2_1').val("").niceSelect('update');
+  /*  $('#select2_1').val("").niceSelect('update');
     $('#select2_2').val("").niceSelect('update');
-    $('#select2_3').val("").niceSelect('update');
+    $('#select2_3').val("").niceSelect('update');*/
  
     var table = $('#table-centro').DataTable();
         table
          .search( '' )
          .columns().search( '' )
          .draw();
-
+/*
     var table = $('#table-centro-pendiente').DataTable();
         table
          .search( '' )
          .columns().search( '' )
-         .draw();
+         .draw();*/
 
 }
 
@@ -312,14 +336,15 @@ function limpiar(){
         input[i].value = '';
 
     }
-    $('#inputNombre').removeClass('is-invalid')
+    //$('#inputNombre').removeClass('is-invalid')
     $('#inputRegion').val(-1)
     $('#inputComuna').val(-1).prop('disabled',true)
-
-    $('#inputCoordinadorZonal').val(-1)
+ 
+    $('#inputZona').val(-1)
+    /*$('#inputCoordinadorZonal').val(-1)
     $('#inputCoordinadorRegional').val(-1)
-    $('#inputEncargado').val(-1)
-    $('#inputConfirmado').val(-1)
+    $('#inputEncargado').val(-1)*/
+    $('#inputConfirmado').val(0)
     $('#inputCamara').val(-1)
     
 }
@@ -338,9 +363,10 @@ function guardarCentro(){
             data :{ 
                     id_usuario: JSON.parse(localStorage.user).id_usuario,
                     id_centro_operaciones: localStorage.id_centro_operaciones,
-                    id_coordinador_zonal: $('#inputCoordinadorZonal').val(),
+                    id_zona_region: $('#inputZona').val() == -1 ? null : $('#inputZona').val(),
+                    /*id_coordinador_zonal: $('#inputCoordinadorZonal').val(),
                     id_coordinador_regional: $('#inputCoordinadorRegional').val(),
-                    id_encargado: $('#inputEncargado').val(),
+                    id_encargado: $('#inputEncargado').val(),*/
                     direccion: $('#inputDireccion').val(),
                     contacto_nombre: $('#inputNombreContacto').val(),
                     contacto_cargo: $('#inputCargoContacto').val(),
@@ -349,9 +375,9 @@ function guardarCentro(){
                     confirmado: $('#inputConfirmado').val(),
                     contacto_otro: $('#inputOtroContacto').val(),
                     comentario: $('#inputComentarios').val(),
-                    nombre: $('#inputNombre').val(),
+                    //nombre: $('#inputNombre').val(),
                     id_comuna: $("#inputComuna").val(),
-                    camara_operativa: $('#inputCamara').val() == -1 ? false : true
+                    camara_operativa: $('#inputCamara').val() == -1 ? false : $('#inputCamara').val()
 
                 },
             success: function(data, textStatus, jqXHR) {
@@ -413,10 +439,11 @@ function cargarDatos(data){
 	$('#titulo_modal').html('Modificar Centro');
     localStorage.id_centro_operaciones = data.id_centro_operaciones;
     limpiar()
-    $('#inputCoordinadorZonal').val(data.id_coordinador_zonal == null ? -1 : data.id_coordinador_zonal)
+    $('#inputZona').val(data.id_zona_region == null ? -1 : data.id_zona_region)
+   /* $('#inputCoordinadorZonal').val(data.id_coordinador_zonal == null ? -1 : data.id_coordinador_zonal)
     $('#inputCoordinadorRegional').val(data.id_coordinador_regional == null ? -1 : data.id_coordinador_regional)
-    $('#inputEncargado').val(data.id_encargado == null ? -1 :data.id_encargado)
-    $('#inputNombre').val(data.nombre)
+    $('#inputEncargado').val(data.id_encargado == null ? -1 :data.id_encargado)*/
+    //$('#inputNombre').val(data.nombre)
     $('#inputDireccion').val(data.direccion)
     $('#inputNombreContacto').val(data.contacto_nombre)
     $('#inputCargoContacto').val(data.contacto_cargo)
@@ -447,12 +474,12 @@ function cargarComunas(id){
 function validar(){
     var input = document.getElementsByTagName("input");
     valida = true
-    if($('#inputNombre').val().length < 1){
+   /* if($('#inputNombre').val().length < 1){
         valida = false
         $('#inputNombre').addClass('is-invalid')
     }else{
         $('#inputNombre').removeClass('is-invalid')
-    }
+    }*/
 
     if($('#inputRegion').val() == -1){
         valida = false

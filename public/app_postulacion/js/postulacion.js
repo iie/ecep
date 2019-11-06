@@ -112,6 +112,39 @@ $(document).ready(function() {
     
    // mostrarInstrucciones();
 
+   $(document).on('change','input[type="file"]',function(){
+    // this.files[0].size recupera el tamaño del archivo
+    // alert(this.files[0].size);
+    
+    var fileName = this.files[0].name;
+    var fileSize = this.files[0].size;
+
+    if(fileSize > 3000000){
+        
+        showFeedback("error"," ","El archivo no debe superar los 3MB");
+        this.value = '';
+        this.files[0].name = '';
+    }else{
+        // recuperamos la extensión del archivo
+        var ext = fileName.split('.').pop();
+
+        // console.log(ext);
+        switch (ext) {
+             
+            case 'doc':
+            case 'docx':
+            case 'jpg':
+            case 'jpeg':
+            case 'png':
+            case 'pdf': break;
+            default:
+                alert('El archivo no tiene la extensión adecuada');
+                this.value = ''; // reset del valor
+                this.files[0].name = '';
+        }
+    }
+});
+
 });
 
 
@@ -205,7 +238,7 @@ function comunasNR(idComunaN, idComunaR) {
             getRegionesResidencia(data.descripcion.id_region_residencia);
             comunas_n=idComunaN
             comunas_r=idComunaR
-            
+            //consultaInformacionRegion ()
             llenarFormulario(datosPost)
         },
         error: function(jqXHR, textStatus, errorThrown) {
@@ -223,6 +256,72 @@ function sub(){
     valdoc4=$("#documento_4").val()==""?valdoc4="":valdoc4=4;
      return  valdoc1, valdoc2, valdoc3, valdoc4
 };
+
+
+/*function consultaInformacionRegion (){
+   
+    function consulta(){
+        return new Promise(function (resolve,reject){
+            
+            consultaComunas()
+            function consultaComunas(){
+                
+                var id_comuna = 11201
+                
+                $.ajax({
+                    method: 'POST',
+                    url: 'https://ecep2019.iie.cl/public/api/regiones/obtener-region-por-comuna',
+                    crossDomain: true,
+                    dataType: 'json',
+                    data: {
+                        id_comuna: id_comuna,
+                        
+
+                    },
+                    success: function (data, textStatus, jqXHR) {
+                        test = data
+                        
+                        $("#region_Postulacion").val(data.descripcion.id_region);
+                        console.log(data.respuesta)
+                        if(data.respuesta == 'OK'){
+            
+                                resolve()
+                        }else{
+                            
+                            $.unblockUI();
+                        }
+
+                       
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        alert(JSON.stringify(JSON.parse(jqXHR.responseText).descripcion))
+                        reject()
+                        console.log(errorThrown)
+                        $.unblockUI();                        
+                    }
+                });
+                
+
+            }
+
+
+        })
+     
+    }
+
+    consulta().then(function(){
+        console.log("pasaa 1")
+        setTimeout(function(){
+            console.log("pasaa 2")
+        }, 3000);
+     
+    }).catch(function(){
+        
+        setTimeout(function(){
+            
+        }, 3000);
+    })
+}*/
 
 /*
 const myPromise = new Promise(function(resolve, reject) {
@@ -444,7 +543,8 @@ function llenarFormulario(data){
         enableds()
         ocultarCombo()
         $("#compRun").removeClass();
-        $("#compRun").html("El RUN ingresado ya se encuentra en el sistema de postulación. Si es necesario actualice sus datos y envíe su postulación.");
+        $("#compRun").html(" Revise y/o actualice sus datos, luego envíe su postulación.");
+        //$("#compRun").html("El RUN ingresado ya se encuentra en el sistema de postulación. Si es necesario actualice sus datos y envíe su postulación.");
         $("#compRun").addClass("small _text-red");
         $("#nombres").val(data[0].nombres);
         $("#apellidoPaterno").val(data[0].apellido_paterno);
@@ -1113,10 +1213,12 @@ function guardarConfirm() {
             if (data.descripcion=="Se ha creado el usuario") {
                 showFeedback("success","Postulación enviada con éxito.");
                 usuario_global = null;
-                valdoc1==""?valdoc1="":encodeDocumento(valdoc1);
-                valdoc2==""?valdoc2="":encodeDocumento(valdoc2);
-                valdoc3==""?valdoc3="":encodeDocumento(valdoc3);
-                valdoc4==""?valdoc4="":encodeDocumento(valdoc4);
+                valdoc1==""?"":encodeDocumento(valdoc1);
+                console.log("van archivos")
+                valdoc2==""?"":encodeDocumento(valdoc2);
+                valdoc3==""?"":encodeDocumento(valdoc3);
+                valdoc4==""?"":encodeDocumento(valdoc4);
+                console.log(valdoc1+valdoc2+valdoc3+valdoc4)
             disableds()
             
 
@@ -1414,7 +1516,7 @@ function subirDocumento(contador) {
     $.ajax({
         method: 'POST',
 		
-        url: 'https://pruebadeconocimientos.iie.cl/public/api/personas/subirarchivos',
+        url: 'https://ecep2019.iie.cl/public/api/personas/subirarchivos',
         crossDomain: true,
         headers: {
             '_token': $("#_token")
@@ -1586,7 +1688,7 @@ function getComunasPostulacion() {
     $("#region_Postulacion").val()==""? $.unblockUI() :
     $.ajax({
         method: 'POST',
-        url: 'https://pruebadeconocimientos.iie.cl/public/api/comunas/comunas-aplicacion',
+        url: 'https://ecep2019.iie.cl/public/api/comunas/comunas-aplicacion',
         crossDomain: true,
         dataType: 'json',
         data: {
@@ -1599,8 +1701,8 @@ function getComunasPostulacion() {
             /*var found5= data.find(function(element2) {
                 if (element2.id==comunas_r) {return element2} else {}
             });
-            found5==null? found5==null : $("#comuna_postulacion").val(found5.id); */
-
+            found5==null? found5==null : $("#comuna_postulacion").val(found5.id); 
+*/
         },
         error: function(jqXHR, textStatus, errorThrown) {
             //console.log(errorThrown)
