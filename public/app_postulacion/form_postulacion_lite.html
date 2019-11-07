@@ -28,6 +28,7 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sweetalert2@7.29.1/dist/sweetalert2.all.min.js"></script>
     <script type="text/javascript" src="js/jquerrut.js"></script>
     <script src="js/postulacion_lte.js"></script>
+    <script src="js/utils.js"></script>
     <!-- <script type="text/javascript" src="js/bootstrap-select.min.js"></script> -->
     
 
@@ -50,9 +51,10 @@
 		<p style="color:#495057; font-weight:400; font-family: 'calibri'; font-size:18px;">Debes completar toda la información requerida antes de enviar tu postulación.</p>
 	</div>
     <form>
-        <div class="card mt-3 fuente-gob-regular" onchange="validarCambiodatos(event);" onkeypress="validarCambiodatos(event);">
-            <div class="card-header">
-                <h5>Datos Personales</h5> 
+        <div class="card mt-3 fuente-gob-regular" onchange="validarCambiodatos(event);" onkeypress="validarCambiodatos(event);"  >
+            <!--onfocusout="validarCambiodatos2(event);"-->
+            <div class="card-header" style="background: #CFD4DA;">
+                <h5 style="font-weight: bolder;color: darkslategrey;">Datos Personales</h5> 
                 
             </div>
 
@@ -84,68 +86,6 @@
                             </div>
                         </div>
                     </div>
-
-                    <div class="col-sm-6">
-                        <div class="input-group" id="chkpostu" style="font-size: 15px;">
-                            <div class="input-group-prepend" >
-                                <div class="input-group-text">Cargo(s) a postular</div>
-                            </div>
-                            <div style="margin-left: 5px; margin-top: 6px;" class="custom-control custom-checkbox ">    
-                                <input type="checkbox" class="custom-control-input" id="postulaSupervisor">
-                                <label class="custom-control-label" for="postulaSupervisor">Supervisor</label>
-                            </div>
-                            <div style="margin-left: 5px; margin-top: 6px;" class="custom-control custom-checkbox">  
-                                <input type="checkbox" class="custom-control-input" id="postulaExaminador">
-                                <label class="custom-control-label" for="postulaExaminador">Examinador</label>
-                            </div>    
-                            <div style="margin-left: 5px; margin-top: 6px;" class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input" id="postula_examinador_apoyo">
-                                <label class="custom-control-label" for="postula_examinador_apoyo">Examinador de Apoyo</label>
-                            </div> 
-                            <div style="margin-left: 5px; margin-top: 6px;" class="custom-control custom-checkbox">    
-                                <input type="checkbox" class="custom-control-input" id="postula_anfitrion">
-                                <label class="custom-control-label" for="postula_anfitrion">Anfitrión</label> 
-                            </div>
-                            
-                            <!--
-                            <div class="dropdown">
-                                <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown" id="cargoPostulacion">Seleccione Cargo</button>
-                                <div class="dropdown-menu">
-                                    <div class="ml-3 pretty p-default p-curve">
-                                        <input type="checkbox" id="postula_examinador_apoyo">
-                                        <div class="state p-primary">
-                                            <label>Coordinador Zonal</label>
-                                        </div>
-                                    </div>								
-                                    <div class="ml-3 pretty p-default p-curve">
-                                        <input type="checkbox" id="postulaExaminador">
-                                        <div class="state p-primary">
-                                            <label>Examinador</label>
-                                        </div>
-                                    </div>
-
-                                    <div class="ml-3 pretty p-default p-curve">
-                                        <input type="checkbox" id="postulaSupervisor">
-                                        <div class="state p-primary">
-                                            <label>Supervisor</label>
-                                        </div>
-                                    </div>
-
-                                    <div class="ml-3 pretty p-default p-curve">
-                                        <input type="checkbox" id="postulaTécnico">
-                                        <div class="state p-primary">
-                                            <label>Técnico</label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>-->
-                        </div>
-                    </div>
-                </div>
-
-                <hr class="separador-novisible">
-
-                <div class="row">
                     <div class="col-sm-6">
                         <div class="input-group">
                             <div class="input-group-prepend">
@@ -155,21 +95,12 @@
                             <input name="nombres" id="nombres" type="text" class="form-control" onkeypress="validate2(event);" >
                         </div>
                     </div>
-                    <div class="col-sm-6">
-                        <div class="input-group">
-                            <div class="input-group-prepend">
-                                <div class="input-group-text">Región de Postulación</div>
-                            </div>
-
-                            <select name="region_Postulacion" id="region_Postulacion" class="form-control custom-select">
-                                <option value="">Seleccionar Región</option>
-                            </select>
-                        </div>
-                    </div>
                     
                 </div>
 
                 <hr class="separador-novisible">
+
+                
 
                 <div class="row">
                 	<div class="col-sm-6">
@@ -184,37 +115,41 @@
                     <div class="col-sm-6">
                         <div class="input-group">
                             <div class="input-group-prepend">
-                                <div class="input-group-text">Comuna de Postulación</div>
-                            </div>
-
-                            <select name="comuna_postulacion" id="comuna_postulacion" class="form-control custom-select">
-                                <option value="">Seleccionar Comuna</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-
-                <hr class="separador-novisible">
-
-                <div class="row">
-                	<div class="col-sm-6">
-                        <div class="input-group">
-                            <div class="input-group-prepend">
                                 <div class="input-group-text">Apellido Materno</div>
                             </div>
 
                             <input name="apellidoMaterno" id="apellidoMaterno" type="text" class="form-control" onkeypress="validate2(event)">
                         </div>
                     </div>
-					<div class="col-sm-6">
+                    
+                </div>
+
+                <hr class="separador-novisible">
+
+                <div class="row">
+                	
+                    <div class="col-sm-6">
                         <div class="input-group">
                             <div class="input-group-prepend">
-                                <div class="input-group-text">Fecha Nacimiento</div>
+                                <div class="input-group-text">Región de Residencia</div>
                             </div>
-                            <input class="form-control" type="date" id="fecha_nacimiento" name="fecha_nacimiento"  min="1900-01-01" max="2011-12-31">
-                            
+                                <select name="regionResidencia" id="regionResidencia" class="form-control custom-select">
+                                <option value="">Seleccionar Región</option>
+                            </select>
                         </div>
                     </div>
+                    <div class="col-sm-6">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">Comuna de Residencia</div>
+                            </div>
+
+                            <select name="comuna_residencia" id="comuna_residencia" class="form-control custom-select">
+                                <option value="">Seleccionar Comuna</option>
+                            </select>
+                        </div>
+                    </div>
+					
                 </div>
 
                 <hr class="separador-novisible">
@@ -262,27 +197,29 @@
                         </div>
                     </div>
                 -->
-                	 <div class="col-sm-6">
-                        <div class="input-group">
-                            <div class="input-group-prepend">
-                                <div class="input-group-text">Región de Residencia</div>
-                            </div>
-								<select name="regionResidencia" id="regionResidencia" class="form-control custom-select">
-                                <option value="">Seleccionar Región</option>
-                            </select>
-                        </div>
-                    </div>
                     <div class="col-sm-6">
                         <div class="input-group">
                             <div class="input-group-prepend">
-                                <div class="input-group-text">Comuna de Residencia</div>
+                                <div class="input-group-text">Fecha Nacimiento</div>
                             </div>
-
-                            <select name="comuna_residencia" id="comuna_residencia" class="form-control custom-select">
-                                <option value="">Seleccionar Comuna</option>
-                            </select>
+                            <input class="form-control" type="date" id="fecha_nacimiento" name="fecha_nacimiento"  min="1900-01-01" max="2011-12-31">
+                            
                         </div>
                     </div>
+                	 <div class="col-sm-6">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">Sexo</div>
+                            </div>
+
+                            <select name="sexo" id="sexo" class="form-control custom-select">
+                                <option value="">Seleccionar Sexo</option>
+                                <option value="81">Masculino</option>
+                                <option value="80">Femenino</option>
+                            </select>
+                        </div>
+                    </div> 
+                    
                 </div>
 
                 <hr class="separador-novisible">
@@ -319,17 +256,14 @@
                  -->
                 <hr class="separador-novisible">
                 <div class="row">
-                    <div class="col-sm-6">
+                   <div class="col-sm-6">
                         <div class="input-group">
                             <div class="input-group-prepend">
-                                <div class="input-group-text">Sexo</div>
+                                <div class="input-group-text">Correo Electrónico</div>
                             </div>
 
-                            <select name="sexo" id="sexo" class="form-control custom-select">
-                                <option value="">Seleccionar Sexo</option>
-                                <option value="81">Masculino</option>
-                                <option value="80">Femenino</option>
-                            </select>
+                            <input name="correo_electronico_principal" id="correo_electronico_principal" type="text" class="form-control" onkeyup="ValidateEmail();">
+                            <br><span id="lblError" style="color: #dc3545"></span><br>
                         </div>
                     </div>
                     <div class="col-sm-6">
@@ -338,7 +272,7 @@
                                 <div class="input-group-text">Teléfono</div>
                             </div>
 
-                            <input name="telefono_principal" id="telefono_principal" type="text" class="form-control" onkeypress="validate1(event)">
+                            <input name="telefono_principal" id="telefono_principal" type="text" placeholder="56 9 98765432" class="form-control" onkeypress="validate1(event)">
                         </div>
                     </div>
                    <!--
@@ -360,33 +294,170 @@
 
                 <hr class="separador-novisible">
 
+                
+
+            </div>
+        </div>
+        
+        <div class="card mt-3 fuente-gob-regular">
+            <div class="card-header" style="background: #CFD4DA;">
+                <h5 style="font-weight: bolder;">Datos Académicos</h5>
+            </div>
+
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="input-group" >
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">Nivel de Estudios</div>
+                            </div>
+
+                            <select name="nivel_estudios" id="nivel_estudios" class="form-control custom-select" >
+                                <option value="">Seleccione Nivel de Estudios</option>
+                                <!--<option value="1">Estudiante Educación Media</option>
+                                <option value="2">Educación Media Incompleta</option>
+                                <option value="3">Educación Media Completa</option>-->
+                                <option value="4">Estudiante Educación Superior</option>
+                                <!--<option value="5">Educación Superior Incompleta</option>-->
+                                <option value="6">Educación Superior Completa</option>
+                                <option value="7">Estudiante Postgrado</option>
+                                <!--<option value="8">Postgrado Incompleto</option>-->
+                                <option value="9">Postgrado Completo</option>
+                            </select>
+                        </div>
+                    </div>
+                    <!--
+                    <div class="col-sm-6">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">Institución</div>
+                            </div>
+
+                            <select name="universidad" id="universidad" class="form-control custom-select">
+                                <option value="1">Seleccione Universidad</option>
+                            </select>
+                        </div>
+                    </div>
+                -->
+                <div class="col-sm-6">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">Título/Carrera</div>
+                            </div>
+
+                            <input name="profesion" id="profesion" type="text" class="form-control" onkeypress="validate2(event)">
+                        </div>
+                    
+                    </div>
+                </div>
+
+                <hr class="separador-novisible">
+
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text" style="min-width: 319px;font-size: 15px;">Certificado de Título o Certificado alumno regular</div>
+                                
+                            </div>
+                            <div class="input-group" style="max-width: 302px;"><input type="hidden" id="_token" value="{{ csrf_token() }}">
+
+                                <input type="file" class="form-control documento" id="documento_4" onchange="sub();" style="font-size: 14px;padding-top: 2px;margin-top: 0.5px;" accept=".doc, .docx, .pdf, .png, .jpg">
+                                
+                                </div>
+                                
+                                <div class="col-sm-12 text-right"><small id="mensajeUpload_4" class="mensajeUpload"></small></div>
+
+                        </div>
+                    </div>
+                
+                </div>
+                <hr class="separador-novisible">
+            </div>
+        </div>
+        <div class="card mt-3 fuente-gob-regular">
+            <div class="card-header" style="background: #CFD4DA;">
+                <h5 style="font-weight: bolder;color: darkslategrey;">Datos de Postulación</h5>
+            </div>
+
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-sm-6" >
+                        <div class="input-group" id="chkpostu" style="font-size: 13px;border: 1px solid #E9ECEF" >
+                            <div class="input-group-prepend" >
+                                <div class="input-group-text">Cargo(s) a postular</div>
+                            </div>
+                            <div style="margin-left: 5px; margin-top: 6px;" class="custom-control custom-checkbox ">    
+                                <input type="checkbox" class="custom-control-input" id="postulaSupervisor">
+                                <label class="custom-control-label" for="postulaSupervisor">Supervisor</label>
+                            </div>
+                            <div style="margin-left: 5px; margin-top: 6px;" class="custom-control custom-checkbox">  
+                                <input type="checkbox" class="custom-control-input" id="postulaExaminador">
+                                <label class="custom-control-label" for="postulaExaminador">Examinador</label>
+                            </div>    
+                            <div style="margin-left: 5px; margin-top: 6px;" class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="postula_examinador_apoyo">
+                                <label class="custom-control-label" for="postula_examinador_apoyo">Examinador de Apoyo</label>
+                            </div> 
+                            <div style="margin-left: 5px; margin-top: 6px;" class="custom-control custom-checkbox">    
+                                <input type="checkbox" class="custom-control-input" id="postula_anfitrion">
+                                <label class="custom-control-label"  for="postula_anfitrion">Anfitrión</label> 
+                            </div>
+                        </div>
+                    </div>
+                   <div class="col-sm-6">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">Región de Postulación</div>
+                            </div>
+
+                            <select name="region_Postulacion" id="region_Postulacion" class="form-control custom-select">
+                                <option value="">Seleccionar Región</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <hr class="separador-novisible">
                 <div class="row">
                     <div class="col-sm-6">
                         <div class="input-group">
                             <div class="input-group-prepend">
-                                <div class="input-group-text">Correo Electrónico</div>
+                                <div class="input-group-text">Comuna de Postulación</div>
                             </div>
 
-                            <input name="correo_electronico_principal" id="correo_electronico_principal" type="text" class="form-control" onkeyup="ValidateEmail();">
-                            <br><span id="lblError" style="color: #dc3545"></span><br>
+                            <select name="comuna_postulacion" id="comuna_postulacion" class="form-control custom-select">
+                                <option value="">Seleccionar Comuna</option>
+                            </select>
                         </div>
                     </div>
-
                     
                 </div>
 
                 <hr class="separador-novisible">
 
+                <!--<div class="row">
+                    
+                    
+                    <div class="col-sm-6" id="otraInstitucionDiv">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">Indique Institución</div>
+                            </div>
 
+                            <input name="otraInstitucion" id="otraInstitucion" type="text" class="form-control"onkeypress="validate2(event)">
+                        </div>
+                    </div>
+                
+                </div>-->
             </div>
         </div>
          <div class="card mt-3" hidden="true" id="cardExamapp">
-            <div class="card-header">
-                <h5>Examinador de Apoyo</h5>
+            <div class="card-header" style="background: #CFD4DA;">
+                <h5 style="font-weight: bolder;color: darkslategrey;">Examinador de Apoyo</h5>
             </div>
 
             <div class="card-body" >
-            	<p>En caso de postular al cargo de examinador de apoyo seleccione sus competencias según el tipo de discapacidad que usted puede atender:</p>
+                <p>En caso de postular al cargo de examinador de apoyo seleccione sus competencias según el tipo de discapacidad que usted puede atender:</p>
                 <div class="row">
                     <div class="col-md-6">
                         <div class="input-group" id="chkexamap" style="font-size: 15px;">
@@ -415,76 +486,6 @@
                     </div>
                 -->
                 
-                </div>
-
-                <hr class="separador-novisible">
-
-                <!--<div class="row">
-                    
-                    
-                    <div class="col-sm-6" id="otraInstitucionDiv">
-                        <div class="input-group">
-                            <div class="input-group-prepend">
-                                <div class="input-group-text">Indique Institución</div>
-                            </div>
-
-                            <input name="otraInstitucion" id="otraInstitucion" type="text" class="form-control"onkeypress="validate2(event)">
-                        </div>
-                    </div>
-                
-                </div>-->
-            </div>
-        </div>
-        <div class="card mt-3 fuente-gob-regular">
-            <div class="card-header">
-                <h5>Datos Académicos</h5>
-            </div>
-
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-sm-6">
-                        <div class="input-group" >
-                            <div class="input-group-prepend">
-                                <div class="input-group-text">Nivel de Estudios</div>
-                            </div>
-
-                            <select name="nivel_estudios" id="nivel_estudios" class="form-control custom-select" >
-                                <option value="">Seleccione Nivel de Estudios</option>
-                                <!--<option value="1">Estudiante Educación Media</option>
-                                <option value="2">Educación Media Incompleta</option>
-                                <option value="3">Educación Media Completa</option>-->
-                                <option value="4">Estudiante Educación Superior</option>
-                                <option value="5">Educación Superior Incompleta</option>
-                                <option value="6">Educación Superior Completa</option>
-                                <option value="7">Estudiante Postgrado</option>
-                                <option value="8">Postgrado Incompleto</option>
-                                <option value="9">Postgrado Completo</option>
-                            </select>
-                        </div>
-                    </div>
-                    <!--
-                    <div class="col-sm-6">
-                        <div class="input-group">
-                            <div class="input-group-prepend">
-                                <div class="input-group-text">Institución</div>
-                            </div>
-
-                            <select name="universidad" id="universidad" class="form-control custom-select">
-                                <option value="1">Seleccione Universidad</option>
-                            </select>
-                        </div>
-                    </div>
-                -->
-                <div class="col-sm-6">
-                        <div class="input-group">
-                            <div class="input-group-prepend">
-                                <div class="input-group-text">Título/Carrera</div>
-                            </div>
-
-                            <input name="profesion" id="profesion" type="text" class="form-control" onkeypress="validate2(event)">
-                        </div>
-                    
-                    </div>
                 </div>
 
                 <hr class="separador-novisible">
@@ -645,7 +646,7 @@
             </div>
         </div>
 
-        <div class="card mt-3 mb-3" id="ninjaa">
+   <!--     <div class="card mt-3" id="ninjaa">
             <div class="card-header">
                 <h5>Documentos</h5>
                 <small class="">( Formatos soportados: doc, docx, pdf, png o jpg )</small>
@@ -658,16 +659,12 @@
                 <div class="row">
                     <div class="col-sm-12">
                         <table class="table table-sm">
-                            <thead class="bg-info text-center text-white">
-                            <tr>
-                                <td>Tipo de Documento</td>
-                                <td>Documento a Cargar</td>
-                                <td></td>
-                            </tr>
+                            <thead class="">
+                            
                             </thead>
 
                             <tbody id="tbodyDocs">
-<!--
+
 <tr>
 	<td class="">Cédula de Identidad
 	
@@ -738,6 +735,7 @@
 		</div>
 	</td>
 </tr>-->
+<!--
 <tr>
 	<td class="">Certificado de Título o Certificado alumno regular
 	
@@ -748,6 +746,7 @@
 		<div class="input-group"><input type="hidden" id="_token" value="{{ csrf_token() }}">
 			<input type="file" class="form-control documento" id="documento_4" onchange="sub();" accept=".doc, .docx, .pdf, .png, .jpg">
 		</div>
+        <div class="col-sm-6 text-left"><p id="mensajeUpload_4" class="mensajeUpload"></p></div>
 	</td>
 	<td>
 		<div class="row">
@@ -764,7 +763,6 @@
                 </div>
             </div>
 			
-<!--
 			<div class="row">
 				<div class="col-sm-4">
 					<button class="btn btn-primary" type="button" id="agregarDoc" onclick="agregarDocumento();"><i class="fas fa-plus"></i> Agregar Documento</button>
@@ -772,6 +770,7 @@
 			</div>
 -->
             <div class="card-footer fixed-bottom sin-bordes text-right">
+                <button type="button" class="btn btn-info" onclick="validaGuardaPrev()" id="btnPreGuardar"><i class="fa fw fa-save"></i> Guardar y seguir más tarde</button>
                 <button type="button" class="btn btn-info" onclick="saveUsuario();" id="btnGuardar"><i class="fa fw fa-save"></i> Enviar Postulación</button>
                 <label type="hidden" id="idUsuario">
                 <label type="hidden" id="idPersona">

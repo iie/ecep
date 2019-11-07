@@ -79,8 +79,9 @@ $(document).ready(function() {
     $("#documento_3").attr("disabled",true);
     $("#documento_4").attr("disabled",true);
     $("#btnGuardar").attr("disabled", true);
-    $("#examinadorDVT").attr("disabled", false);
-    $("#examinadorDA").attr("disabled", false);
+    $("#examinadorDVT").attr("disabled", true);
+    $("#examinadorDA").attr("disabled", true);
+    $("#btnPreGuardar").attr("disabled", true);
     //$("input").on('blur', verificarCamposVacios);
     //$("select").on('blur', verificarCamposVacios);
     getBancos();
@@ -200,21 +201,24 @@ function ValidateEmail() {
         	return mailState=true}
     }
 var lblError1;
-function comunasNR(idComunaN, idComunaR) {
+var comunas_postulacion=null;
+function comunasNR(idComunaN, idComunaR, idcomunaPostula) {
     $.ajax({
         method: 'POST',
-        url: 'https://ecep2019.iie.cl/public/api/regiones/idregionbyidcomuna',
+        url: webservice+'/regiones/idregionbyidcomuna',
         crossDomain: true,
         data: {
-            id_comuna_n: idComunaN,
+            id_comuna_n: idcomunaPostula,
             id_comuna_r: idComunaR,
         },
         success: function(data, textStatus, jqXHR) {
-            getRegionesNacimiento(data.descripcion.id_region_nacimiento);
+            
+            //getRegionesNacimiento(data.descripcion.id_region_nacimiento);
             getRegionesResidencia(data.descripcion.id_region_residencia);
+            getRegionesPostulacion(data.descripcion.id_region_nacimiento)
             comunas_n=idComunaN
             comunas_r=idComunaR
-            
+            comunas_postulacion=idcomunaPostula;
             llenarFormulario(datosPost)
         },
         error: function(jqXHR, textStatus, errorThrown) {
@@ -332,7 +336,8 @@ function comprobarRun() {
                                 rutIngresado()
                             }else{ datosPost = data;
                                 $("#nacionalidad").val(data[0].nacionalidad)
-                                comunasNR(data[0].id_comuna_nacimiento, data[0].id_comuna_residencia);
+
+                                comunasNR(data[0].id_comuna_nacimiento, data[0].id_comuna_residencia, data[0].id_comuna_postulacion);
                                 getUniversidades(data[0].id_institucion) }
                         }   
                        
@@ -359,7 +364,7 @@ function comprobarRun() {
 
 
 var datosch=false;
-
+var datoscambiados=false;
 function validarCambiodatos(evt) {
   var theEvent = evt || window.event;
 
@@ -373,9 +378,71 @@ function validarCambiodatos(evt) {
   }
   var id = $(theEvent.target).attr("id");
   
-  id=="run"? "" :  datosch =true;
+  id=="run"? "" :  (datosch =true, datoscambiados=true);
   
-  return datosch
+  return datosch,datoscambiados;
+}
+
+var idcambiado="";
+function validarCambiodatos2(evt) {
+  var theEvent = evt || window.event;
+
+  // Handle paste
+  if (theEvent.type === 'paste') {
+      key = event.clipboardData.getData('text/plain');
+  } else {
+  // Handle key press
+      var key = theEvent.keyCode || theEvent.which;
+      key = String.fromCharCode(key);
+  }
+  var id = $(theEvent.target).attr("id");
+  datoscambiados==true?(idcambiado=id,guardaUsuarioPrev()):idcambiado=null;
+  console.log(idcambiado);
+   
+}
+function guardaUsuarioPrev(){
+    // var arc1 = doc1_b64 != null ? doc1_b64 : null;
+    // var arc2 = doc2_b64 != null ? doc2_b64 : null;
+    // var arc3 = doc3_b64 != null ? doc3_b64 : null;
+    var arc4 = doc4_b64 != null ? doc4_b64 : null;
+    
+    var t_json = '{"cedula_identidad" : null,' +
+                '"curriculum" : null,' +
+                '"certificado_antecedentes" : null,' +
+                '"certificado_titulo" : "' + arc4 + '"' +
+                '}';
+    
+    var runp= $("#run").val()
+
+    runp= runp.replace(/\./g,'')
+    $.blockUI({ message: 'Enviando datos al servidor. Espere un momento...' });  
+    $.ajax({
+    method: 'POST',
+    url: webservice+'/usuarios/saveusuariolites',
+    crossDomain: true,
+    headers: {
+        '_token': $("#_token")
+    },
+
+    data: {
+        idcambiado:$('#'+idcambiado).val()
+    },
+            
+    
+    
+    success: function(data, textStatus, jqXHR) {
+        $.unblockUI();
+        datoscambiados=false;
+        showFeedback("success","Postulación enviada con éxito.");
+        
+        },
+    error: function(jqXHR, textStatus, errorThrown) {
+        $.unblockUI();
+        //console.log(errorThrown);
+        showFeedback("error",errorThrown,"Error al realizar el envío de informacion");
+    }
+    });
+   
 }
 
 function rutNuevo(){
@@ -502,11 +569,11 @@ function llenarFormulario(data){
         data[0].postula_anfitrion ==true ? document.getElementById("postula_anfitrion").checked = true :  document.getElementById("postula_anfitrion").checked = false
         
         $("#postula_examinador_apoyo").is(":checked") ? ($("#cardExamapp").attr("hidden", false),$("#examinadorDVT").attr("disabled", false),$("#examinadorDA").attr("disabled", false)) : ($("#cardExamapp").attr("hidden", true),$("#examinadorDVT").attr("disabled", true),$("#examinadorDA").attr("disabled", true));
-        
+
         data[0].apoyo_discapacidad_visual == true ? $('#examinadorDVT').prop('checked', true) : $('#examinadorDVT').prop('checked', false);
-        data[0].apoyo_discapacidad_auditiva == true ? $('#examinadorDA').prop('checked', true) : $('#examinadorDA').prop('checked', false);
-        data[0].licencia_clase==true ? (document.getElementById("licencia").checked = true,  habilitarConduccion(), $("#claseLicencia").val(data[0].licencia_clase))   : document.getElementById("licencia").checked = false
-        data[0].automovil==true?document.getElementById("auto").checked = true: document.getElementById("auto").checked = false
+        data[0].apoyo_discapacidad_auditiva == true ? $('#examinadorDA').prop('checked', true): $('#examinadorDA').prop('checked', false);
+        //data[0].licencia_clase==true ? (document.getElementById("licencia").checked = true,  habilitarConduccion(), $("#claseLicencia").val(data[0].licencia_clase))   : document.getElementById("licencia").checked = false
+        //data[0].automovil==true?document.getElementById("auto").checked = true: document.getElementById("auto").checked = false
         getBancos(data[0].banco_nombre);
         var tipCuenta = data[0].banco_tipo_cuenta
         if (tipCuenta=="Cuenta Corriente") {$("#tipoCuenta").val(1)} 
@@ -519,8 +586,7 @@ function llenarFormulario(data){
         regs1 = data[0].archivos.curriculum
         regs2 = data[0].archivos.certificado_antecedentes
         regs3 = data[0].archivos.certificado_titulo 
-        
-        ////console.log("UNO   :"+regs+"DOS  :"+regs1+"TRES  :"+regs2+"CUAtRO  :"+regs3)
+        console.log("UNO   :"+regs+"DOS  :"+regs1+"TRES  :"+regs2+"CUAtRO  :"+regs3)
        	regs==null?($("#mensajeUpload_1").text("") , regs=-1) : $("#mensajeUpload_1").text("Cédula de Identidad Ingresada")
         regs1==null?($("#mensajeUpload_2").text("") , regs1=-1) : $("#mensajeUpload_2").text("Currículum Vitae  Ingresado")
         regs2==null?($("#mensajeUpload_3").text("") , regs2=-1) : $("#mensajeUpload_3").text("Certificado de Antecedentes  Ingresado")
@@ -532,6 +598,8 @@ function llenarFormulario(data){
 
 
 function enableds() {
+
+    $("#btnPreGuardar").attr("disabled", false);
     $("#region_Postulacion").attr("disabled",false);
     $("#comuna_postulacion").attr("disabled",false);
 	$("#cargoPostulacion").attr("disabled", false);
@@ -577,6 +645,8 @@ function enableds() {
 }
 
 function cleandat() {
+    valdoc4=null;
+    regs3=-1;
     $("#region_Postulacion").val("");
     $("#comuna_postulacion").val("");
     $("#nombres").val("");
@@ -637,6 +707,7 @@ function cleandat() {
 }
 
 function disableds() {
+    $("#btnPreGuardar").attr("disabled", true);
     $("#region_Postulacion").attr("disabled",true);
     $("#comuna_postulacion").attr("disabled",true);
 	$("#cargoPostulacion").attr("disabled", true);
@@ -738,7 +809,7 @@ function validar() {
             $(this).addClass('div_is-invalid')
             texto_infra += "<li>"+this.name+"</li>"
             resultado = false
-           
+            
         }else{
             $(this).removeClass('div_is-invalid')
             //$(this).removeClass('is-invalid')
@@ -774,19 +845,7 @@ function validar() {
         }
         })
 
-        $("input[id='nacionalidad']").each(function() {
-        if (this.disabled == false && (this.value == "" || this.value == undefined)) {
-            //$(this).addClass('is-invalid')
-            $(this).addClass('div_is-invalid')
-            texto_infra += "<li>"+this.name+"</li>"
-            resultado = false
-           
-        }else{
-            $(this).removeClass('div_is-invalid')
-            //$(this).removeClass('is-invalid')
-            
-        }
-        })
+        
 
         $("input[id='direccion_residencia']").each(function() {
         if (this.disabled == false && (this.value == "" || this.value == undefined)) {
@@ -794,7 +853,7 @@ function validar() {
             $(this).addClass('div_is-invalid')
             texto_infra += "<li>"+this.name+"</li>"
             resultado = false
-           
+            
         }else{
             $(this).removeClass('div_is-invalid')
             //$(this).removeClass('is-invalid')
@@ -822,7 +881,7 @@ function validar() {
             $(this).addClass('div_is-invalid')
             texto_infra += "<li>"+this.name+"</li>"
             resultado = false
-           
+            
         }else{
             $(this).removeClass('div_is-invalid')
             //$(this).removeClass('is-invalid')
@@ -836,6 +895,7 @@ function validar() {
             $(this).addClass('div_is-invalid')
             texto_infra += "<li>"+this.name+"</li>"
             resultado = false
+            
         }else{
             $(this).removeClass('div_is-invalid')
             //$(this).removeClass('is-invalid')
@@ -859,7 +919,7 @@ function validar() {
             
         }
     	})
-        $("select[id='universidad']").each(function() {
+        /*$("select[id='universidad']").each(function() {
         if (this.disabled == false && (this.value == "1" || this.value == undefined)) {
             //$(this).addClass('is-invalid')
             $(this).addClass('div_is-invalid')
@@ -871,11 +931,12 @@ function validar() {
             //$(this).removeClass('is-invalid')
             
         }
-        })
+        })*/
     	
     	if (mails==false) {
             $("#correo_electronico_principal").addClass('div_is-invalid')
     		resultado = false
+            console.log("correo_electronico_principal")
     	}else{
             $("#correo_electronico_principal").removeClass('div_is-invalid')  
     	}
@@ -894,7 +955,7 @@ function validar() {
             
             
         }
-
+        if(!$("#examinadorDVT").is(":hidden")){
         if ($("input[id='examinadorDVT']:checked").length == 0 && $("input[id='examinadorDA']:checked").length == 0) {
             //$("button[name='b_r2']").addClass('is-invalid_check')
              $("#chkexamap").addClass('div_is-invalid')
@@ -907,7 +968,7 @@ function validar() {
             
             
         }
-
+        }
         /*if ($("input[id='martesChk']:checked").length == 0 && $("input[id='miercolesChk']:checked").length == 0 && $("input[id='juevesChk']:checked").length == 0 && $("input[id='viernesChk']:checked").length == 0) {
             //$("button[name='b_r2']").addClass('is-invalid_check')
              $("#chkdispo").addClass('div_is-invalid')
@@ -948,7 +1009,7 @@ function validar() {
     	})*/
 
         
-        $("input[id='documento_1']").each(function() {
+       /* $("input[id='documento_1']").each(function() {
         if (this.disabled == false && (this.value == "" || this.value == undefined)) {
             //$(this).addClass('is-invalid')
            if(regs==-1){ $(this).addClass('div_is-invalid')
@@ -989,7 +1050,7 @@ function validar() {
             //$(this).removeClass('is-invalid')
            
         }
-        })
+        })*/
 
         $("input[id='documento_4']").each(function() {
         if (this.disabled == false && (this.value == "" || this.value == undefined)) {
@@ -997,7 +1058,7 @@ function validar() {
             if(regs3==-1){ $(this).addClass('div_is-invalid')
             texto_infra += "<li>"+this.name+"</li>"
             resultado = false}else{ $(this).removeClass('div_is-invalid')}
-             
+             console.log("doc 4")
         }else{
             $(this).removeClass('div_is-invalid')
             //$(this).removeClass('is-invalid')
@@ -1005,7 +1066,7 @@ function validar() {
         }
         })
 
-        $("input[id='nacionalidadNacimiento']").each(function() {
+        /*$("input[id='nacionalidadNacimiento']").each(function() {
         if (this.disabled == false && (this.value == "" || this.value == undefined)) {
             //$(this).addClass('is-invalid')
             $(this).addClass('div_is-invalid')
@@ -1031,7 +1092,7 @@ function validar() {
             //$(this).removeClass('is-invalid')
            
         }
-        })
+        })*/
 
         if (resultado==false){
         	showFeedback("error"," Complete los datos marcados en rojo","Favor completar datos");
@@ -1056,7 +1117,6 @@ function saveUsuario() {
 }
 
 function guardarConfirm() {
-    console.log("ENRTTRO");
        /* var ma=$("#martesChk").is(":checked") ? "true" : "false" 
         var mi=$("#miercolesChk").is(":checked") ? "true" : "false"
         var ju=$("#juevesChk").is(":checked") ? "true" : "false"
@@ -1066,7 +1126,11 @@ function guardarConfirm() {
 /*        valdoc1 == null ? null : encodeDocumento(valdoc1);
         valdoc2 == null ? null : encodeDocumento(valdoc2);
         valdoc3 == null ? null : encodeDocumento(valdoc3);*/
+        console.log(regs3)
+        console.log(valdoc4)
         valdoc4 == null ? null : encodeDocumento(valdoc4);
+         
+        //valdoc4 == null ? null : encodeDocumento(valdoc4);
         
         let esperarSubida = new Promise((resolve, reject) => {
           $.blockUI({ message: 'Procesando archivos. Espere un momento...' });  
@@ -1100,18 +1164,20 @@ function guardaUsuario(){
     // var arc3 = doc3_b64 != null ? doc3_b64 : null;
     var arc4 = doc4_b64 != null ? doc4_b64 : null;
     
+    arc4 ==null?arc4 =':' + null:arc4 =':"' + arc4 + '"';
+            
     var t_json = '{"cedula_identidad" : null,' +
-                '"curriculum" : null,' +
-                '"certificado_antecedentes" : null,' +
-                '"certificado_titulo" : "' + arc4 + '"' +
-                '}';
+                        '"curriculum" : null,' +
+                        '"certificado_antecedentes" : null,' +
+                        '"certificado_titulo" ' + arc4  +
+                        '}';
     
     var runp= $("#run").val()
     runp= runp.replace(/\./g,'')
     $.blockUI({ message: 'Enviando datos al servidor. Espere un momento...' });  
     $.ajax({
     method: 'POST',
-    url: 'https://ecep2019.iie.cl/public/api/usuarios/saveusuariolite',
+    url: webservice+'/usuarios/saveusuariolite',
     crossDomain: true,
     headers: {
         '_token': $("#_token")
@@ -1124,7 +1190,7 @@ function guardaUsuario(){
         postula_supervisor: $("#postulaSupervisor").is(":checked") ? true : false,
         postula_anfitrion: $("#postula_anfitrion").is(":checked") ? true : false,
         postula_examinador_apoyo: $("#postula_examinador_apoyo").is(":checked") ? true : false,
-        modificado: true,
+        modificado: 1,
 
         nombres: $("#nombres").val(),
         apellido_paterno: $("#apellidoPaterno").val(),
@@ -1166,6 +1232,183 @@ function guardaUsuario(){
     }
     });
    disableds()
+}
+
+function validaGuardaPrev(){
+    var resultado2=true;
+        var mails=ValidateEmail()
+        $("input[id='nombres']").each(function() {
+        if (this.disabled == false && (this.value == "" || this.value == undefined)) {
+            //$(this).addClass('is-invalid')
+            $(this).addClass('div_is-invalid')
+            
+            resultado = false
+             
+        }else{
+            $(this).removeClass('div_is-invalid')
+            //$(this).removeClass('is-invalid')
+            
+        }
+        })
+
+        $("input[id='apellidoPaterno']").each(function() {
+        if (this.disabled == false && (this.value == "" || this.value == undefined)) {
+            //$(this).addClass('is-invalid')
+            $(this).addClass('div_is-invalid')
+            
+            resultado2 = false
+            
+        }else{
+            $(this).removeClass('div_is-invalid')
+            //$(this).removeClass('is-invalid')
+            
+        }
+        })
+
+        $("input[id='apellidoMaterno']").each(function() {
+        if (this.disabled == false && (this.value == "" || this.value == undefined)) {
+            //$(this).addClass('is-invalid')
+            $(this).addClass('div_is-invalid')
+            
+            resultado2 = false
+            
+        }else{
+            $(this).removeClass('div_is-invalid')
+            //$(this).removeClass('is-invalid')
+            
+        }
+        })
+        
+        if (mails==false) {
+            $("#correo_electronico_principal").addClass('div_is-invalid')
+            resultado2 = false
+             
+        }else{
+            $("#correo_electronico_principal").removeClass('div_is-invalid')  
+        }
+        console.log(resultado2)
+        if (resultado2==false){
+            showFeedback("error"," Complete los datos marcados en rojo","Favor completar datos");
+            
+        }else{
+            guardarConfirm2()
+        }
+}
+
+function guardarConfirm2() {
+    console.log(valdoc4)
+       /* var ma=$("#martesChk").is(":checked") ? "true" : "false" 
+        var mi=$("#miercolesChk").is(":checked") ? "true" : "false"
+        var ju=$("#juevesChk").is(":checked") ? "true" : "false"
+        var vi=$("#viernesChk").is(":checked") ? "true" : "false"*/
+        
+        $('#datosFaltantes').modal('hide')
+/*        valdoc1 == null ? null : encodeDocumento(valdoc1);
+        valdoc2 == null ? null : encodeDocumento(valdoc2);
+        valdoc3 == null ? null : encodeDocumento(valdoc3);*/
+        valdoc4 == null ? null : encodeDocumento(valdoc4);
+        
+        let esperarSubida = new Promise((resolve, reject) => {
+          $.blockUI({ message: 'Procesando archivos. Espere un momento...' });  
+          setTimeout(function(){
+            if(valdoc4 != null){
+                if(doc4_b64 == null){
+                    reject("Archivo 4 mal subido");
+                }
+            }
+            resolve(true);
+          }, 3000);
+        });
+
+        esperarSubida.then((successMessage) => {
+            $.unblockUI();
+            if(successMessage == true){
+                guardaUsuario2();
+            }
+        })
+        .catch(
+            function(reason) {
+                $.unblockUI();
+                /* TODO: En caso de fallar mostrar alerta y permitir reintentar*/
+                console.log('Sin éxito: ('+reason+').');
+        });
+}
+
+function guardaUsuario2(){
+        
+            var arc4 = doc4_b64 != null ? doc4_b64 : null;
+                arc4 ==null?arc4 =':' + null:arc4 =':"' + arc4 + '"';
+            var t_json = '{"cedula_identidad" : null,' +
+                        '"curriculum" : null,' +
+                        '"certificado_antecedentes" : null,' +
+                        '"certificado_titulo" ' + arc4  +
+                        '}';
+            
+            var runp= $("#run").val()
+            runp= runp.replace(/\./g,'')
+            $.blockUI({ message: 'Enviando datos al servidor. Espere un momento...' });  
+            $.ajax({
+            method: 'POST',
+            url: webservice+'/usuarios/saveusuariolite',
+            crossDomain: true,
+            headers: {
+                '_token': $("#_token")
+            },
+
+            data: {
+                usuario: usuario_global,
+                run: runp || null,
+                postula_examinador: $("#postulaExaminador").is(":checked") ? true : false,
+                postula_supervisor: $("#postulaSupervisor").is(":checked") ? true : false,
+                postula_anfitrion: $("#postula_anfitrion").is(":checked") ? true : false,
+                postula_examinador_apoyo: $("#postula_examinador_apoyo").is(":checked") ? true : false,
+                modificado: 0,
+
+                nombres: $("#nombres").val(),
+                apellido_paterno: $("#apellidoPaterno").val(),
+                apellido_materno: $("#apellidoMaterno").val(),
+                fecha_nacimiento: moment($("#fecha_nacimiento").val()).format('DD/MM/YYYY'),
+                id_comuna_nacimiento: $("#nacionalidad").val()=="Chilena"?$("#comunaNacimiento").val():null,
+                id_comuna_residencia: $("#comuna_residencia").val(),
+                id_comuna_postulacion: $("#comuna_postulacion").val(),
+                id_sexo: $("#sexo").val(),
+                correo_electronico_principal: $("#correo_electronico_principal").val(),
+                telefono_principal: $("#telefono_principal").val(),
+                id_usuario: $("#idUsuario").val(),
+                nivel_estudios: $("#nivel_estudios :selected").text(),
+                profesion: $("#profesion").val(),
+                apoyo_visual: $("#examinadorDVT").is(":checked") ? true : false,
+                apoyo_auditivo: $("#examinadorDA").is(":checked") ? true : false,
+                json_archivos: t_json
+            },
+                    
+            
+            
+            success: function(data, textStatus, jqXHR) {
+                $.unblockUI();
+                //datosch=false;
+                if (data.respuesta == "ok") {
+                    showFeedback("success","Postulación guardada con éxito.");
+                    usuario_global = null;
+                disableds()//
+                } else {
+                    showFeedback("error", data.descripcion, "Datos no enviados: ");enableds();
+                    if (data.descripcion=="Ya existe un usuario registrado con el correo enviado.") {
+                        $("#correo_electronico_principal").addClass('div_is-invalid')}
+                    }
+                },
+            error: function(jqXHR, textStatus, errorThrown) {
+                $.unblockUI();
+                //console.log(errorThrown);
+                showFeedback("error",errorThrown,"Error al realizar el envío de informacion");
+            }
+            });
+           disableds()
+        
+    // var arc1 = doc1_b64 != null ? doc1_b64 : null;
+    // var arc2 = doc2_b64 != null ? doc2_b64 : null;
+    // var arc3 = doc3_b64 != null ? doc3_b64 : null;
+    
 }
 // function saveUsuarioRol() {
 
@@ -1464,7 +1707,7 @@ function subirDocumento(contador) {
     $.ajax({
         method: 'POST',
 		
-        url: 'https://ecep2019.iie.cl/public/api/personas/subirarchivos',
+        url: webservice+'/personas/subirarchivos',
         crossDomain: true,
         headers: {
             '_token': $("#_token")
@@ -1569,8 +1812,8 @@ function getRegionesPostulacion(id) {
         dataType: 'json',
         success: function(data, textStatus, jqXHR) {
             id== null?$.unblockUI():id;
-            
-            if(id==null){listarRegionesPostulacion(data);;}else{$("#region_Postulacion").val(id);getComunasPostulacion();}
+            console.log(id);
+            if(id==null){listarRegionesPostulacion(data);}else{$("#region_Postulacion").val(id);getComunasPostulacion();console.log(id);}
            
         },
         error: function(jqXHR, textStatus, errorThrown) {
@@ -1620,6 +1863,7 @@ function getComunasResidencia() {
             $.unblockUI();
             listarComunasResidencia(data);
             var found5= data.find(function(element2) {
+                //console.log(element2)
                 if (element2.id==comunas_r) {return element2} else {}
             });
             found5==null? found5==null : $("#comuna_residencia").val(found5.id); 
@@ -1635,7 +1879,7 @@ function getComunasPostulacion() {
     $("#region_Postulacion").val()==""? $.unblockUI() :
     $.ajax({
         method: 'POST',
-        url: 'https://ecep2019.iie.cl/public/api/comunas/comunas-aplicacion',
+        url: webservice+'/comunas/comunas-aplicacion',
         crossDomain: true,
         dataType: 'json',
         data: {
@@ -1644,11 +1888,13 @@ function getComunasPostulacion() {
         success: function(data, textStatus, jqXHR) {
             $.unblockUI();
             listarComunasPostulacion(data);
-            // console.log(data)
-            /*var found5= data.find(function(element2) {
-                if (element2.id==comunas_r) {return element2} else {}
+            //console.log(data.descripcion)
+            var found6= data.descripcion.find(function(element3) {
+               
+                if (element3.id_comuna==comunas_postulacion) {return element3} else {}
             });
-            found5==null? found5==null : $("#comuna_postulacion").val(found5.id); */
+             console.log(found6)
+            found6==null? found6==null : $("#comuna_postulacion").val(found6.id_comuna); 
 
         },
         error: function(jqXHR, textStatus, errorThrown) {

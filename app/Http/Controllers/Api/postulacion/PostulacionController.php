@@ -237,18 +237,21 @@ class PostulacionController extends Controller
 			
 			/* ETAPA 2 Subir Archivos*/
 			$arr_arch = json_decode($post["json_archivos"], 1);
-		 	$subidas["cedula_identidad"] = false;
-			$subidas["certificado_antecedentes"] = false;
-			$subidas["curriculum"] = false;
 			$subidas["certificado_titulo"] = false;
 
 		 	foreach ($arr_arch as $_tipo => $dato_b64) {
+				$chkArchivo = PersonaArchivo::where("id_persona", $persona->id_persona)->where("tipo", $_tipo)->first();
+				if(isset($chkArchivo->id_persona_archivo)){
+					$id_pers_archivo = $chkArchivo->id_persona_archivo;
+				}else{
+					$id_pers_archivo = null;
+				}
 				if($dato_b64 != null){
-					$subidas[$_tipo] = $this->subirArchivos2($dato_b64, $persona->id_persona, $_tipo, null);
+					$subidas[$_tipo] = $this->subirArchivos2($dato_b64, $persona->id_persona, $_tipo, $id_pers_archivo);
 				}
 			}
 
-			if ($editar == false){
+			if ($editar == false && $post["modificado"] == true){
 				foreach ($subidas as $tipo_ => $bool) {
 					if($bool == false){
 						return response()->json(array("respuesta"=>"error", "descripcion"=>"Falló la carga del archivo de tipo: " . $tipo_ . ". Intente subir nuevamente.")); 
@@ -256,33 +259,9 @@ class PostulacionController extends Controller
 				}
 			}
 				
-			$subject = "Postulación - Evaluación Conocimientos Específicos y Pedagógicos";
-			$html = "
-				<p>Estimado/a " . $nombre_completo . " </p>
-				<p>Agradecemos su interés en participar en Evaluación Conocimientos Específicos y Pedagógicos, como " . $cargo . ". Su postulación ha sido registrada. Revisaremos sus antecedentes y en caso de ser preseleccionado será contactado/a para coordinar la fecha y lugar de capacitación.</p>
-				<br>
-				<p>Saludos cordiales</p>
-				<p>Equipo de Aplicación ECEP</p>";
-		
-			$mail = new PHPMailer(true); 
-			$mail->isSMTP(); // tell to use smtp
-			$mail->CharSet = "utf-8"; // set charset to utf8
-			// $mail->SMTPDebug = 3;
-			//$mail->Debugoutput = 'html';
-
-			$mail->SMTPSecure = "ssl"; // tls or ssl
-			$mail->SMTPAuth = true;  // use smpt auth
-			$mail->Host = "mail.smtp2go.com"; 
-			$mail->Port = 443;//2525; //443; 
-			$mail->Username = "postulaciones-ecep@iie.cl";
-			$mail->Password = "K1lL@iie2019@k1lL@;Hola@2019";
-			$mail->setFrom("postulaciones-ecep@iie.cl", "ECEP");
-			$mail->Subject = $subject;
-			$mail->MsgHTML($html);
-			$mail->addAddress($post["correo_electronico_principal"], $nombre_completo);
-			$mail->addBCC("alberto.paillao@iie.cl", "Alberto Paillao");
-			// $mail->addBCC("roberto.novoa@iie.cl", "Pul Ento");
-			$mail->send();
+			if($post["modificado"] == true){
+				$this->enviarNotificacionPostulacion($post["correo_electronico_principal"], $nombre_completo, $cargo);
+			}
 			
 			return response()->json(["respuesta"=>"ok","descripcion"=>"Se ha creado el usuario"]);	
 		}
@@ -693,7 +672,7 @@ class PostulacionController extends Controller
         if(isset($archivo) && isset($idPersona) && isset($tipo)){
 	    	if (isset($idPersonaArchivo)){
     		 	$arc = PersonaArchivo::find($idPersonaArchivo);
-	    	 	if(isset($arc->id_persona_archivo)){
+	    	 	if(!isset($arc->id_persona_archivo)){
 	    	 		$arc = new PersonaArchivo();
 	    	 	}
     		}else{
@@ -762,26 +741,23 @@ class PostulacionController extends Controller
 	}
 
 	function enviarNotificacionPostulacion($correo, $nombre, $cargo) {
-		exit;
 		$subject = "Postulación - Evaluación Conocimientos Específicos y Pedagógicos";
 		$html = "
 		<p>Estimado/a " . $nombre . " </p>
-		<p>Agradecemos su interés en participar en Evaluación Conocimientos Específicos y Pedagógicos, como " . $cargo . ".Su postulación ha sido registrada. Revisaremos sus antecedentes y en caso de ser preseleccionado será contactado/a para coordinar la fecha y lugar de capacitación.</p>
+		<p>Agradecemos su interés en participar en Evaluación Conocimientos Específicos y Pedagógicos, como " . $cargo . ". Su postulación ha sido registrada. Revisaremos sus antecedentes y en caso de ser preseleccionado será contactado/a para coordinar la fecha y lugar de capacitación.</p>
 		<br>
 		<p>Saludos cordiales</p>
 		<p>Equipo de Aplicación ECEP</p>";
-		
-		//arreglo($html);
-		
+
 		$mail = new PHPMailer(true); 
-		// arreglo($mail);exit;
+
 		try {
 			$mail->isSMTP(); // tell to use smtp
 			$mail->CharSet = "utf-8"; // set charset to utf8
-			$mail->SMTPDebug = 0;
-			$mail->Debugoutput = 'html';
+			// $mail->SMTPDebug = 0;
+			// $mail->Debugoutput = 'html';
 
-			$mail->SMTPSecure = "tls"; // tls or ssl
+			$mail->SMTPSecure = "ssl"; // tls or ssl
 			$mail->SMTPAuth = true;  // use smpt auth
 			$mail->Host = "mail.smtp2go.com"; 
 			$mail->Port = 443;//2525; //443; 
@@ -792,14 +768,12 @@ class PostulacionController extends Controller
 			$mail->MsgHTML($html);
 			$mail->addAddress($correo, $nombre);
 			$mail->addBCC("alberto.paillao@iie.cl", "Alberto Paillao");
-			// $mail->addBCC("roberto.novoa@iie.cl", "Pul Ento");
+			$mail->addBCC("roberto.novoa@iie.cl", "Pul Ento");
 			$mail->send();
 		} catch (phpmailerException $e) {
-			//echo($e);
-			// arreglo($e->errorMessage());exit;
+			return;
 		} catch (Exception $e) {
-			//echo($e);
-			// arreglo($e->errorMessage());exit;				
+			return;			
 		}
 		return true;
 	}
@@ -886,8 +860,6 @@ class PostulacionController extends Controller
 			//echo($e);				
 		}
 	}
-
-	
 
 	public function subirArchivos(Request $request){
         $post = $request->all();

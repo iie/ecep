@@ -51,7 +51,7 @@ foreach($res as $pers){
     ];
     $sql = "SELECT * FROM rrhh.persona_archivo WHERE id_persona = ".$pers["id_persona"];
     $archivos = select($dbX, $sql);
-    if(sizeof($post)>0){
+    if(sizeof($archivos)>0){
         foreach ($archivos as $_arch) {
             if($_arch["tipo"] == "cedula_identidad"){
                 $arch["cedula_identidad"] = $_arch["id_persona_archivo"];

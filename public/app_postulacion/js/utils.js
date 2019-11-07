@@ -1,0 +1,1 @@
+var webservice = "https://ecep2019.iie.cl/public/api";

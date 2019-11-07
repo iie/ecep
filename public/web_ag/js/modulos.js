@@ -3,10 +3,10 @@ $(document).ready(function(){
  	$('#ingresaInfraestructura').on('click', ingresaInfraestructura)
  	$('#ingresaMateriales').on('click', ingresaMateriales) 
  	$('#ingresMP3').on('click', ingresMP3)
+ 	$('#ingresaTracking').on('click', ingresaTracking)  
  	/*
  	
- 	$('#ingresaCallCenter').on('click', ingresaCallCenter) 
- 	$('#ingresaTracking').on('click', ingresaTracking)  	 
+ 	$('#ingresaCallCenter').on('click', ingresaCallCenter) 	 
  	$('#ingresaAplicacion').on('click', ingresaAplicacion) 
  	$('#ingresaDigitalizacion').on('click', ingresaDigitalizacion) 
  	  */
