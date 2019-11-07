@@ -16,7 +16,7 @@ function getDatos(){
 	    crossDomain: true,
 	    dataType:'text',
 	    data:{ 
-	        //id_usuario: JSON.parse(localStorage.user).id_usuario,
+	        id_usuario: JSON.parse(localStorage.user).id_usuario,
 	    },
 	    success: function(data, textStatus, jqXHR) {
 	        var dosobt = JSON.parse(data);
@@ -43,7 +43,7 @@ totalEtiquetados = 0;
 totalAvance = 0;
 
 function llenarVista(data){
-    //grafico()
+    grafico()
     $('#filtros').empty();
     data= data.mp3
     if(data.length != 0){
@@ -78,11 +78,11 @@ function llenarVista(data){
             {data: "grabado",className: "text-center"},
             {data: "revisado",className: "text-center"},
             {data: "etiquetado",className: "text-center"},
-            /*{data: "avance",className: "text-center",
+            {data: "avance",className: "text-center",
             	render: function(data, type, full, meta){
-                    return  '0%';
+                    return  '67%';
                 }
-        	},*/
+        	},
 
         ],
         "rowCallback": function( row, data ) {
@@ -197,7 +197,7 @@ function grafico(){
             margin: [0, 0, 0, 0]
         },
         title: {
-            text: 'AVANCE',
+            text: 'Avance Total',
             align: 'center',
             verticalAlign: 'middle',
             y: 30
@@ -223,11 +223,11 @@ function grafico(){
         
         series: [{
             type: 'pie',
-            name: '',
+            name: 'Total',
             innerSize: '70%',
             data: [
-                ['Avance', 0],
-                ['Pendiente', 100],
+                ['Avance', 67],
+                ['Pendiente', 33],
             ]
         }]
     });

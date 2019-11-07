@@ -307,17 +307,29 @@ class CentroController extends Controller
 
         $validacion = Validator::make($post, [
             'id_usuario' => 'required|int', 
+            'id_cargo' => 'required|int'
         ]); 
 
         if ($validacion->fails()) {
             return response()->json(array("resultado"=>"error","descripcion"=>$validacion->errors()), 422); 
         }
 
-        $zona = Zona::leftJoin('infraestructura.zona_region','infraestructura.zona.id_zona','=','infraestructura.zona_region.id_zona')
+        if($post['id_cargo'] == 1003){
+            $zona = Zona::leftJoin('infraestructura.zona_region','infraestructura.zona.id_zona','=','infraestructura.zona_region.id_zona')
+            ->leftJoin('core.region','infraestructura.zona_region.id_region','=','core.region.id_region')
+            ->leftJoin('rrhh.persona_cargo','infraestructura.zona.id_coordinador','=','rrhh.persona_cargo.id_persona_cargo')
+            ->where('rrhh.persona_cargo.id_persona',$post['id_persona'])
+            ->where('rrhh.persona_cargo.id_cargo',$post['id_cargo'])
+            ->select('infraestructura.zona.id_zona','infraestructura.zona.nombre','infraestructura.zona_region.id_zona_region','infraestructura.zona_region.id_region','core.region.nombre as region','infraestructura.zona_region.id_coordinador')            
+            ->orderBy('infraestructura.zona.nombre','asc')
+            ->get();
+        }else{
+            $zona = Zona::leftJoin('infraestructura.zona_region','infraestructura.zona.id_zona','=','infraestructura.zona_region.id_zona')
             ->leftJoin('core.region','infraestructura.zona_region.id_region','=','core.region.id_region')
             ->select('infraestructura.zona.id_zona','infraestructura.zona.nombre','infraestructura.zona_region.id_zona_region','infraestructura.zona_region.id_region','core.region.nombre as region','infraestructura.zona_region.id_coordinador')            
             ->orderBy('infraestructura.zona.nombre','asc')
             ->get();
+        }
 
         $encargadoRegional = DB::table('rrhh.persona')
             ->leftJoin('rrhh.persona_cargo', 'rrhh.persona.id_persona','=','rrhh.persona_cargo.id_persona')

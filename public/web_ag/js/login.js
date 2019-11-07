@@ -75,10 +75,14 @@ function isJSON (something) {
 }
 
 function redireccionar(){
-    
+
     if(JSON.parse(localStorage.user).id_tipo_usuario == 1040){
         redirectModulo()
-    }else{
+    }
+	else if(JSON.parse(localStorage.user).id_tipo_usuario == 1042){
+        redirectSistemaInfraestructura()
+    }
+	else{
         redirectSistema()
     }
     

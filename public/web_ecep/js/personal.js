@@ -26,7 +26,7 @@ $(document).ready(function(){
         $('#tabRegional').remove();
         $('#tabCentro').remove();
 
-        $('#btn-zonasRegion').remove();
+        $('#btn-zonas').remove();
         $('#btn-zonas-nuevaPersona').remove();
         $('#btn-zonasRegion').remove();
         $('#btn-region-nuevaPersona').remove();
@@ -38,9 +38,9 @@ $(document).ready(function(){
         $('#tabZonal').remove();
         $('#tabCentro').remove();
         
-        $('#btn-zonasRegion').remove();
+        $('#btn-zonas').remove();
         $('#btn-zonas-nuevaPersona').remove();
-        $('#btn-zonasRegion').remove();
+        /*$('#btn-zonasRegion').remove();*/
         /*$('#btn-region-nuevaPersona').remove();*/
 
     }else{
@@ -301,7 +301,7 @@ function llenarVista(data){
 
             $('.dataTables_length select').addClass('nice-select small');         
         },
-        "drawCallback": function(){
+        "drawCallback": function(settings){
             if(JSON.parse(localStorage.user).id_cargo == 1004){
                 var api = new $.fn.dataTable.Api(settings);
                 api.columns([1]).visible(false);
@@ -958,7 +958,7 @@ function searchRUN() {
                     showFeedback("warning", mensaje["descripcion"], "");
                     enabledData()
                     $.unblockUI();
-                    console.log("incorrecto!")
+                    console.log("no existe!")
                 }
             }
         },
@@ -1211,14 +1211,26 @@ function cargarDatos(data){
             for (var j = 0; j < checkbox.length; j++) {                 
                 if(checkbox[j].value == data.cargos[i].id_cargo){
                     checkbox[j].checked = true;
+                    if(data.cargos[i].estado == 'contratado'){
+                        checkbox[j].disabled = true;
+                    }
                 }                 
             }             
         }
     }
  
 
-    /*$('#inputEstado').val(data.estado)*/
-    //$('#inputRolAsignado').val(data.id_cargo == null ? -1 : data.id_cargo)
+   /* if(JSON.parse(localStorage.user).id_cargo == 1003){
+        var checkbox = $('input:checkbox[name=inputRolAsignado]')
+        for (var i = 0; i < checkbox.length; i++) {
+            checkbox[i].disabled = true
+            console.log(checkbox[i])
+             
+        }
+        $('#encargadoRegional').checked = true;
+
+
+    }*/
     $('#inputUsuario').val(data.usuario)
  
     $('#personalModal').modal({backdrop: 'static', keyboard: false},'show')
@@ -1345,6 +1357,7 @@ function validar(){
     }
 
     if($('#divRol').is(":visible")){
+
         if($('input:checkbox[name=inputRolAsignado]').is(':checked') == false){
             $("#rol-no-select").show()
             valida = false
@@ -1353,14 +1366,14 @@ function validar(){
 
         }
 
-        if($('#inputUsuario').length < 1){
+        if($('#inputUsuario').val().length < 1){
             valida = false
             $('#inputUsuario').addClass('is-invalid')
         }else{
             $('#inputUsuario').removeClass('is-invalid')
         }
 
-        if($('#inputContrasena').length < 1){
+        if($('#inputContrasena').val().length < 1){
             valida = false
             $('#inputContrasena').addClass('is-invalid')
         }else{
@@ -1427,6 +1440,14 @@ function enabledData(){
     $('#personalModal').find('select').each(function(){
         this.disabled = false
     });
+
+    if(JSON.parse(localStorage.user).id_cargo == 1003){
+        var checkbox = $('input:checkbox[name=inputRolAsignado]')
+        for (var i = 0; i < checkbox.length; i++) {
+            checkbox[i].disabled = true             
+        }
+        $('#encargadoRegional').prop('checked',true)
+    }
  
 }
 
@@ -1552,6 +1573,8 @@ function verZonasRegion(){
         dataType:'text',
         data :{ 
                 id_usuario: JSON.parse(localStorage.user).id_usuario,
+                id_cargo: JSON.parse(localStorage.user).id_cargo,
+                id_persona: JSON.parse(localStorage.user).id_persona
         },
         success: function(data, textStatus, jqXHR) {
             data = JSON.parse(data) 
@@ -1681,11 +1704,13 @@ function cambiarCoordinadorRegional(){
             },
         success: function(data, textStatus, jqXHR) {
             data = JSON.parse(data) 
-            console.log(data)
-
             if (data.resultado != "error") {
                 showFeedback("success", data.descripcion, "Guardado");
-                getPersonal();
+                if(JSON.parse(localStorage.user).id_cargo == 1003){
+                    getPersonalCoordinadorZonal();
+                }else{
+                    getPersonal();
+                }
             } else {
                 showFeedback("error","Error al guardar","Error");
                 console.log("invalidos");

@@ -23,6 +23,7 @@ class MonitoreoMP3Controller extends Controller
 
         $mp3 = MP3::leftJoin('evaluado.asignatura','material.grabado_mp3.id_asignatura','=','evaluado.asignatura.id_asignatura')
             ->select('material.grabado_mp3.*','evaluado.asignatura.asignatura as asignatura')
+            ->orderBy('evaluado.asignatura.asignatura')
             ->get();
 
  

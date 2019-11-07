@@ -1,7 +1,10 @@
 $(document).ready(function(){
     $('#nombre_usuario').html(JSON.parse(localStorage.user).nombres+' '+JSON.parse(localStorage.user).apellidos+' ')
-    $('#redirect').css('display','');
-    $('#redirect').on('click',redirectModulo);
+    if(JSON.parse(localStorage.user).id_tipo_usuario != 1042){
+        $('#redirect').css('display','');
+        $('#redirect').on('click',redirectModulo);
+    }
+     
     getSede()
     $('#guardar_sede').click(guardarSede); 
     $('#inputEstado').on('change',estadoSede); 

@@ -1,5 +1,6 @@
 $(document).ready(function(){
-    $("#ingresar").on('click',loginSubmit)
+    location.href = 'https://ecep2019.iie.cl/'
+/*    $("#ingresar").on('click',loginSubmit)
     var input = document.getElementById("password");
 
     input.addEventListener("keyup", function(event) {
@@ -7,10 +8,10 @@ $(document).ready(function(){
         if (event.keyCode === 13) {
             document.getElementById("ingresar").click();
         }
-    });
+    });*/
 });
 
-function loginSubmit(){
+/*function loginSubmit(){
     var user = $("#username").val()
     var passw = $("#password").val()
     var captcha = $("#g-recaptcha-response").val()
@@ -81,34 +82,4 @@ function redireccionar(){
  }
 
 
-// function redireccionarCentros(){
- 
-    // location.href = serverRedirect+'/centros.html'
-// }
-
-// function captcha(){
-    // console.log(grecaptcha.getResponse())
-// }
-
-// function checkKick(){
-    // if(localStorage.kick=="true"){
-        // showFeedback("error","Se cuenta ha sido iniciada en otro equipo","Inicio de sesiÃ³n duplicada");
-        // localStorage.clear()
-    // }
-// }
-
-// function autentificar(){
-    // if(localStorage.autentificar=="true"){
-        // showFeedback("error","No ha iniciado sesiÃ³n","Inicio de sesiÃ³n");
-        // localStorage.clear()
-    // }
-// }
-
-// function expirada(){
-    // if(localStorage.expirada=="true"){
-        // showFeedback("error","La sesiÃ³n ha expirado","Inicio de sesiÃ³n");
-        // localStorage.clear()
-    // }
-// }
- 
-//ingresar presionando enter
+*/

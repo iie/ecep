@@ -253,7 +253,8 @@ h6, .h6 {
 
     .card-centros{
         background: #fff;
-        height: 24vmin;
+        /*height: 24vmin;*/
+        height: 11.5vmax;
         /* width: 75em; */
         box-shadow: 0px 1px 15px rgba(0,0,0,0.2);
         border-radius: 25px;
@@ -266,7 +267,8 @@ h6, .h6 {
         position: relative;
         top: 40%;
         /* left: 88%; */
-        font-size: 8vmin;
+        /*font-size: 8vmin;*/
+        font-size: 3.5vmax;
         color: #03A9F4;
         /* width: 15%; */
         float: right;0

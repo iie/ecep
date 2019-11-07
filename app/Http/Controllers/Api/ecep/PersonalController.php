@@ -205,43 +205,45 @@ class PersonalController extends Controller
         $persona->otra_nacionalidad = $post['otra_nacionalidad'];
         $persona->id_comuna_postulacion = $post['id_comuna_postulacion'];
 
-        foreach ($post['cargos_postulante'] as $cargos) {
-            $personaCargo = PersonaCargo::where('id_persona',$post['id_persona'])
-                            ->where('id_cargo',$cargos['id_cargo'])
-                            ->first();
-     
-            if(isset($personaCargo)){
-                if($cargos['cargo'] == 1){
-                    $personaCargo->borrado = false;
-                }else{
-                    $personaCargo->borrado = true;
+        if(isset($post['cargos_postulante'])){
+            foreach ($post['cargos_postulante'] as $cargos) {
+                $personaCargo = PersonaCargo::where('id_persona',$post['id_persona'])
+                                ->where('id_cargo',$cargos['id_cargo'])
+                                ->first();
+         
+                if(isset($personaCargo)){
+                    if($personaCargo->estado != 'contratado'){
+                        if($cargos['cargo'] == 1){
+                            $personaCargo->borrado = false;
+                        }else{
+                            $personaCargo->borrado = true;
+                        }
+
+                         try{
+                            $personaCargo->save();
+                        }catch (\Exception $e){
+                            DB::rollback();
+                            return response()->json(['resultado'=>'error','descripcion'=>'Error al modificar el cargo. ()'. $e->getMessage()]);
+                        }
+                    }
+                }else if($cargos['cargo'] == 1){
+                    $newPersonaCargo = new PersonaCargo;
+                    $newPersonaCargo->id_persona = $post['id_persona'];
+                    $newPersonaCargo->id_cargo = $cargos['id_cargo'];
+
+                    try{
+                        $newPersonaCargo->save();
+                    }catch (\Exception $e){
+                        DB::rollback();
+                        return response()->json(['resultado'=>'error','descripcion'=>'Error al guardar Nuevo Cargo. ()'. $e->getMessage()]);
+                    }
                 }
+                /* 
 
-                try{
-                    $personaCargo->save();
-                }catch (\Exception $e){
-                    DB::rollback();
-                    return response()->json(['resultado'=>'error','descripcion'=>'Error al modificar el cargo. ()'. $e->getMessage()]);
-                }
-
-
-            }else if($cargos['cargo'] == 1){
-                $newPersonaCargo = new PersonaCargo;
-                $newPersonaCargo->id_persona = $post['id_persona'];
-                $newPersonaCargo->id_cargo = $cargos['id_cargo'];
-
-                try{
-                    $newPersonaCargo->save();
-                }catch (\Exception $e){
-                    DB::rollback();
-                    return response()->json(['resultado'=>'error','descripcion'=>'Error al guardar Nuevo Cargo. ()'. $e->getMessage()]);
-                }
+                $personaCargo->id_persona = $persona->id_persona;
+                $personaCargo->id_cargo = $cargo;
+                $personaCargo->save(); */
             }
-            /* 
-
-            $personaCargo->id_persona = $persona->id_persona;
-            $personaCargo->id_cargo = $cargo;
-            $personaCargo->save(); */
         }
         
         DB::beginTransaction();
@@ -324,7 +326,7 @@ class PersonalController extends Controller
             $persona['id_region_postulacion'] = $persona->id_comuna_postulacion == null ? null : $comuna[$persona->id_comuna_postulacion];
             $persona['cargos'] = PersonaCargo::where('id_persona',$post["id_persona"])
                                     ->where('borrado',false)
-                                    ->select('id_persona_cargo','id_cargo')
+                                    ->select('id_persona_cargo','id_cargo','estado')
                                     ->get();
         }
  
@@ -567,7 +569,7 @@ class PersonalController extends Controller
         return response()->json($datos);    
     }
 
-     public function listaCoordinador(Request $request)
+    public function listaCoordinador(Request $request)
     {
         
         $post = $request->all();    
@@ -625,39 +627,39 @@ class PersonalController extends Controller
         foreach ($comunas as $com) {             
             $comuna[$com->id_comuna] = $com->nombre;
         }
-        $cargo= DB::table('rrhh.persona_cargo')
-                ->leftJoin('infraestructura.zona','rrhh.persona_cargo.id_persona_cargo','=','infraestructura.zona.id_coordinador')
+		
+        $cargo = DB::table('rrhh.persona_cargo')
+                ->leftJoin('infraestructura.zona_region','rrhh.persona_cargo.id_persona_cargo','=','infraestructura.zona_region.id_coordinador')
+                ->leftJoin('infraestructura.zona','infraestructura.zona_region.id_zona','=','infraestructura.zona.id_zona')
                 ->where('rrhh.persona_cargo.id_persona',$post['id_persona'])
                 ->where('rrhh.persona_cargo.id_cargo',$post['id_cargo'])
                 ->get();
-				
+
+		$zonas = array();
 		foreach($cargo as $cargoAux){
 			$zonas[] = $cargoAux->id_zona;
 		}				
- 
-           /*$personaP = DB::table('rrhh.persona')
-            ->join('rrhh.persona_cargo' , 'rrhh.persona.id_persona','=','rrhh.persona_cargo.id_persona')
-            ->leftJoin('rrhh.cargo' , 'rrhh.persona_cargo.id_cargo','=','rrhh.cargo.id_cargo')
-            ->leftJoin('core.comuna' , 'rrhh.persona.id_comuna_postulacion','=','core.comuna.id_comuna')
-            ->leftJoin('core.region' , 'core.comuna.id_region','=','core.region.id_region')
-            ->select('rrhh.persona.*','core.comuna.nombre as comuna','core.region.nombre as region','rrhh.persona_cargo.id_persona_cargo','rrhh.persona_cargo.estado','rrhh.cargo.nombre_rol','rrhh.cargo.id_cargo')
-            ->where('rrhh.cargo.id_cargo','!=',1003)
-            ->where('rrhh.cargo.id_cargo','!=',1004)
-            ->where('rrhh.cargo.id_cargo','!=',13)
-            ->where('rrhh.persona.borrado','=', false)
-            ->where('rrhh.persona.modificado','=',true)
-            ->orderBy('core.region.orden_geografico','asc')
-            ->orderBy('core.comuna.nombre','asc')
-            ->get();*/
-        $personaP = DB::select("select rrhh.persona.*,persona_cargo.*,cargo.*,comuna.nombre as comuna,region.nombre as region, zona.nombre as nombre_zona from rrhh.persona, rrhh.persona_cargo as persona_cargo, rrhh.cargo as cargo, core.comuna as comuna, core.region as region, infraestructura.zona as zona where persona.borrado = false and persona.modificado = true and id_comuna_postulacion in (
+		$personaP = array(); 
+        
+		if($zonas[0] != ""){
+			$personaP = DB::select("select rrhh.persona.*,persona_cargo.*,cargo.*,comuna.nombre as comuna,region.nombre as region , zona.nombre as nombre_zona 
+            from rrhh.persona, rrhh.persona_cargo as persona_cargo, rrhh.cargo as cargo, core.comuna as comuna, core.region as region, infraestructura.zona as zona , infraestructura.zona_region as zona_region 
+            where persona.borrado = false and persona.modificado = true and id_comuna_postulacion in (
             select id_comuna from infraestructura.zona as zona, infraestructura.zona_region as zona_region, core.region as region , core.comuna as comuna
             where zona.id_zona = zona_region.id_zona
             and zona_region.id_region =  region.id_region
             and region.id_region =  comuna.id_region
-            and zona.id_zona in (".implode($zonas,",").")) and persona_cargo.id_persona = persona.id_persona and persona_cargo.id_cargo = cargo.id_cargo
+            and zona.id_zona in (".implode($zonas,",").") ) 
+            and persona_cargo.id_persona = persona.id_persona 
+            and persona_cargo.id_cargo = cargo.id_cargo
             and id_comuna_postulacion = comuna.id_comuna
-            and region.id_region = comuna.id_region");
-/*
+            and region.id_region = comuna.id_region
+            and zona_region.id_region =  region.id_region
+            and zona.id_zona = zona_region.id_zona
+            and zona_region.id_coordinador = ". $cargo[0]->id_persona_cargo."
+            ");
+		}	
+        /*
         foreach ($personaP as $index => $per) {
             $personaP[$index]->id_institucion = $personaP[$index]->id_institucion == null ? null : $inst[$personaP[$index]->id_institucion];
             $personaP[$index]->id_estado_civil = $personaP[$index]->id_estado_civil == null ? null : $civil[$personaP[$index]->id_estado_civil];
@@ -678,3 +680,5 @@ class PersonalController extends Controller
     }
 
 }
+
+

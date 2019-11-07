@@ -105,6 +105,10 @@ function redirectSistema() {
     location.href = serverRedirectSistema + '/modulos.html'
 }
 
+function redirectSistemaInfraestructura() {
+    location.href = serverRedirectSistema + '/infraestructura.html'
+}
+
 function ocultarLoading(){
     $(".loader-page").css({visibility:"hidden",opacity:"0"})
 }
