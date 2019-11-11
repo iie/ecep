@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\Bitacora;
 use Illuminate\Http\Request;
+use App\Models\Evaluado\Aplicacion;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -53,32 +54,37 @@ class aplicacionController extends Controller{
          $post = $request->all();
          $sedes = array();
         //$sedes = CentroAplicacion::where("centro_institucion_id", $post["centro_institucion_id"])->get();
-        $deps= DB::select("SELECT lb.id_laboratorio, lb.nombre_laboratorio, lb.nro_equipos_operativos, lb.observacion_visita, lb.contacto_nombre as encargado_apertura, lb.contacto_telefono as telefono_encargado_apertura, lb.contacto_email as email_encargado_lab, lb.direccion as direccion_lab, 
-                                    sd.contacto_nombre as encargado_sede, sd.contacto_email, sd.contacto_telefono, sd.observacion,vs.acceso_desde_0730 ,c.nombre as nombre_comuna, r.nombre as nombre_region
-                                from infraestructura.laboratorio lb
+        $deps= DB::select("SELECT lb.id_laboratorio ,lb.nombre_laboratorio,lb.nro_equipos_operativos, lb.observacion_visita,lb.contacto_nombre as encargado_apertura,lb.contacto_telefono as telefono_encargado_apertura, lb.contacto_email as email_encargado_lab,lb.direccion as direccion_lab, 
+                                lb.observacion_vp, lb.nro_equipos_operativos_vp, vs.acceso_desde_0730, vs.id_laboratorio_visita
+                                FROM infraestructura.laboratorio lb
                                 INNER JOIN infraestructura.sede sd ON (sd.id_sede = lb.id_sede) 
                                 INNER JOIN infraestructura.laboratorio_visita vs ON (vs.id_laboratorio = lb.id_laboratorio) 
-                                INNER JOIN core.comuna c ON (c.id_comuna = sd.id_comuna) 
-                                INNER JOIN core.region r ON (r.id_region = c.id_region)
-                                WHERE lb.id_sede = " .$post["centrosaplicacion_id"]. "GROUP BY lb.id_laboratorio, lb.nombre_laboratorio, lb.nro_equipos_operativos, lb.observacion_visita, lb.contacto_nombre, lb.contacto_telefono, lb.direccion, lb.contacto_email, sd.contacto_nombre, sd.contacto_email, sd.contacto_telefono, sd.observacion,vs.acceso_desde_0730, c.nombre, r.nombre ORDER BY lb.updated_at asc");
+                                WHERE lb.id_sede = " .$post["centrosaplicacion_id"]. " 
+                                AND vs.id_laboratorio_visita in (select id_laboratorio_visita  
+                                from infraestructura.laboratorio_visita 
+                                where id_laboratorio = lb.id_laboratorio
+                                order by id_laboratorio_visita DESC limit 1)
+                                GROUP BY lb.id_laboratorio,lb.nombre_laboratorio,lb.nro_equipos_operativos, lb.observacion_visita,lb.contacto_nombre,lb.contacto_telefono,lb.contacto_email,lb.direccion, 
+                                lb.observacion_vp, lb.nro_equipos_operativos_vp, vs.acceso_desde_0730, vs.id_laboratorio_visita ORDER BY lb.updated_at asc");
         
         if(sizeof($deps)>0){
+
                 foreach ($deps as $u) {
+
+                    $app = Aplicacion::where("id_laboratorio", $u->id_laboratorio)->where("id_tipo_aplicacion", 60)->orderBy('fecha_agendada', 'asc')->get();
                     $aux["id_laboratorio"] = $u->id_laboratorio;
                     $aux["nombre_laboratorio"] = $u->nombre_laboratorio;
                     $aux["nro_equipos_operativos"] = $u->nro_equipos_operativos;
                     $aux["observacion_visita"] = $u->observacion_visita;
-                    $aux["nombre_region"] = $u->nombre_region;
-                    $aux["nombre_comuna"] = $u->nombre_comuna;
                     $aux["direccion_lab"] = $u->direccion_lab;
                     $aux["encargado_apertura"] = $u->encargado_apertura;
                     $aux["telefono_encargado_apertura"] = $u->telefono_encargado_apertura;
                     $aux["email_encargado_lab"] = $u->email_encargado_lab;
-                    $aux["encargado_sede"] = $u->encargado_sede;
-                    $aux["email_encargado_sede"] = $u->contacto_email;
-                    $aux["contacto_telefono_sede"] = $u->contacto_telefono;
-                    $aux["observacion_sede"] = $u->observacion;
                     $aux["acceso_desde_0730"] = $u->acceso_desde_0730;
+                    $aux["obs_vistp"] = $u->observacion_vp;
+                    $aux["nro_equip_vistp"] = $u->nro_equipos_operativos_vp;
+                    $aux["aplicacion"] = $app;
+                    $aux["aplicacion_complementaria"] = $app;
                     $sedes[] = $aux;
                 }
             }

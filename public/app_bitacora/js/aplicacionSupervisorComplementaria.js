@@ -1,32 +1,85 @@
 $(document).ready(function () {
     ocultar();
+     $('#nombre_usuario').html(localStorage.getItem('nombre_tecnico')+' ')
+     loginvalid(localStorage.getItem('nombre_tecnico'))
     
-    getRegiones();
+
+});
+
+function loginvalid(id_tec){
+    
+    if (id_tec==null) {
+         showFeedback("error","Debes iniciar sesion con la cuenta vinculada al sistema","Datos incorrectos");
+         redirectLogin(2)
+    } else {
+        $("#wad").removeClass('blackout');
+        $('#nombre_tecnico').html(localStorage.nombre_tecnico)
+       getRegiones();
 
     $("#selectRegion").change(function () {
+        cleanLabdia()
         ocultar();
         $("#universidad").empty();
         $("#sede").empty();
-        $("#universidad").append("<option value=''>SELECCIONE UNIVERSIDAD</option>")
-        $("#sede").append("<option value=''>SELECCIONE SEDE</option>")
+         $("#sede").append("<option value=''>Seleccione Sede</option>")
+        $("#universidad").append("<option value=''>Seleccione UNIVERSIDAD</option>")
         getUniversidades();
     });
 
     $("#universidad").change(function () {
+        cleanLabdia()
         ocultar();
         $("#sede").empty();
-        $("#sede").append("<option value=''>SELECCIONE SEDE</option>")
+        $("#sede").append("<option value=''>Seleccione Sede</option>")
         getSedes();
     });
 
     $("#sede").change(function () {
+        cleanLabdia()
         ocultar();
         if($('#sede').val() > 0){
-            informacionSede();
+            //informacionSede();
             getDependencias();
         }
     });
-});
+    $("#dia").change(function () {
+       
+         getDependencias()
+        ocultar();
+        $("#laboratorio").empty();
+        $("#laboratorio").append("<option value=''>Seleccione Laboratorio</option>")
+        listarLaboratorios($('#dia').val())
+
+       
+    });
+
+    $("#laboratorio").change(function () {
+        
+        ocultar();
+         getDependencias()
+       if($('#sede').val() > 0){
+            //informacionSede();
+
+            listerDependencias(dep);
+        }
+      
+    });
+    
+
+
+    
+    
+    }
+}
+
+function cleanLabdia(){
+    $("#dia").empty();
+    $("#dia").append("<option value=''>Selecione Día</option>")
+    $("#laboratorio").empty();
+    $("#laboratorio").append("<option value=''>Selecione Laboratorio</option>")
+}
+
+
 
 var test;
 var sedes;
@@ -35,7 +88,7 @@ function getRegiones() {
 
     $.ajax({
         method: 'GET',
-        url: 'https://2019.diagnosticafid.cl/public/api/regiones/indexcomplementaria',
+        url: 'https://dev.diagnosticafid.cl/public/api/regiones/indexcomplementaria',
         crossDomain: true,
         dataType: 'json',
         success: function (data, textStatus, jqXHR) {
@@ -53,7 +106,7 @@ function getUniversidades() {
 
     $.ajax({
         method: 'GET',
-        url: 'https://2019.diagnosticafid.cl/public/api/universidades/indexbyidregion',
+        url: 'https://dev.diagnosticafid.cl/public/api/universidades/indexbyidregion',
         crossDomain: true,
         dataType: 'json',
         data: {
@@ -73,7 +126,7 @@ function getSedes() {
     $.blockUI({ message: '<img src="img/carga.svg">' });
     $.ajax({
         method: 'GET',
-        url: 'https://2019.diagnosticafid.cl/public/api/sedes/indexbyid',
+        url: 'https://dev.diagnosticafid.cl/public/api/sedes/indexbyid',
         crossDomain: true,
         dataType: 'json',
         data: {
@@ -89,12 +142,12 @@ function getSedes() {
         }
     });
 }
-
+var dep;
 function getDependencias() {
     $.blockUI({ message: '<img src="img/carga.svg">' });
     $.ajax({
         method: 'GET',
-        url: 'https://2019.diagnosticafid.cl/public/api/aplicaciones/indexcomplementariabysedeid',
+        url: 'https://dev.diagnosticafid.cl/public/api/aplicaciones/indexcomplementariabysedeid',
         crossDomain: true,
         dataType: 'json',
         data: {
@@ -102,7 +155,9 @@ function getDependencias() {
         },
         success: function (data, textStatus, jqXHR) {
             $.unblockUI();
-            listerDependencias(data);
+            dep=data;
+            
+            listarDias(data);
         },
         error: function (jqXHR, textStatus, errorThrown) {
             console.log(errorThrown)
@@ -110,7 +165,7 @@ function getDependencias() {
     });
 }
 
-function informacionSede(){
+/*function informacionSede(){
     console.log(sedes)
     for (var i = 0; i < sedes.length; i++) {
         if (sedes[i].id == $("#sede").val()) {
@@ -125,7 +180,7 @@ function informacionSede(){
              
         }
     }
-}
+}*/
 
 function verArray() {
     return test;
@@ -199,10 +254,87 @@ function listarSedes(response) {
     if(localStorage.sede != 'undefined' && !isNaN(localStorage.sede)){
         $('#sede').val(localStorage.sede);
         //getDependencias();
-        informacionSede();
+        
         localStorage.sede = null;
     }
     
+}
+
+function removeDuplicateOptions(selectNode) {
+    if (typeof selectNode === "string") {
+    selectNode = document.getElementById(selectNode);
+    }
+
+    var seen = {},
+    options = [].slice.call(selectNode.options),
+    length = options.length,
+    previous,
+    option,
+    value,
+    text,
+    i;
+
+    for (i = 0; i < length; i += 1) {
+    option = options[i];
+    value = option.value,
+    text = option.firstChild.nodeValue;
+    previous = seen[value];
+        if (typeof previous === "string" && text === previous) {
+        selectNode.removeChild(option);
+        } else {
+        seen[value] = text;
+
+        }
+    }
+}
+
+
+
+function listarDias(response){
+    
+    for (var i = 0; i < response.length; i++) {
+        var e= i+1;
+        console.log(e)
+        for (var j = 0; j < response[i].aplicacion.length; j++) {
+            
+            var fecha = "Día: "+moment(response[i].aplicacion[j].fecha_agendada).format("DD-MM-YYYY");
+            
+            
+            $("#dia").append("<option value='" + fecha + "'>"+fecha + "</option>");
+            removeDuplicateOptions("dia");
+
+        }
+    }
+    if(localStorage.dia != 'undefined' && !isNaN(localStorage.dia)){
+        $('#dia').val(localStorage.dia);
+        //getDependencias();
+        listarLaboratorios(response);
+        localStorage.dia = null;
+    }
+
+}
+function listarLaboratorios(response){
+    
+    
+
+    for (var i = 0; i < dep.length; i++) {
+
+        for (var j = 0; j < dep[i].aplicacion.length; j++) {
+           
+             if (response=="Día: "+moment(dep[i].aplicacion[j].fecha_agendada).format("DD-MM-YYYY")) {
+                
+                 $("#laboratorio").append("<option value='" + dep[i].id_laboratorio + "'>" +dep[i].nombre_laboratorio + "</option>");
+
+             }
+        }
+    }
+    if(localStorage.lab != 'undefined' && !isNaN(localStorage.lab)){
+        $('#sede').val(localStorage.lab);
+        //getDependencias();
+        //listarLaboratorios(response);
+        localStorage.lab = null;
+    }
+
 }
 
 function removerClases(){
@@ -218,6 +350,13 @@ function removerClases(){
     $("#diaComplementario").removeClass('active show')
 }
 
+function showmod(id){
+    console.log(id.id)
+    $("#"+id.id).modal('show');
+
+}  
+
+var respse;
 
 function listerDependencias(response) {
     $("#divLabsDia1").empty();
@@ -229,932 +368,314 @@ function listerDependencias(response) {
 
     //Nombres Dependencias
     for (var i = 0; i < response.length; i++) {
-        console.log(response[i])
+        
         //Aplicaciones
-        for (var j = 0; j < response[i].aplicaciones.length; j++) {
-
-            //Día 1
-            if (response[i].aplicaciones[j].fecha_agendada == "2018-12-18") {
-                
+        for (var j = 0; j < response[i].aplicacion.length; j++) {
+            console.log($("#laboratorio").val())
+            //Día 
+            var dia1=$("#dia").val();
+            var dia2="Día: "+moment(response[i].aplicacion[j].fecha_agendada).format("DD-MM-YYYY");
+            console.log(dia1+dia2)
+            if($("#laboratorio").val()== response[i].id_laboratorio){
+            if (dia1 == dia2) {
+                console.log(response[i])
                 $("#linkDia1").show();
-                var idAplicacion = response[i].aplicaciones[j].id;
-
+                var idAplicacion = response[i].aplicacion[j].id_aplicacion;
+                respse= response[i].aplicacion[j].id_aplicacion;
+                getContingencias();
+                getTipoContingencia();
                 $("#divLabsDia1").append(
-                    "<div class='panel-heading card-header'>" +
-                        "<input type='hidden' id='idAplicacionDia1_" + j + "' value='" + response[i].aplicaciones[j].id + "'>" +
+                    "<div class='panel-heading card-header sin-bordes'>" +
+                        "<input type='hidden' id='idAplicacionDia1_" + j + "' value='" + response[i].aplicacion[j].id_aplicacion + "'>" +
 
-                        "<h5 class='panel-title'>" +
-                        "<a data-toggle='collapse' id='btn" + response[i].aplicaciones[j].id + "' class='nav-link text-dark' href='#collapse" + response[i].aplicaciones[j].id + "'>" + response[i].nombre_dependencia + "  <i class='more-less fa fa-chevron-down'></i></a>" +
+                        "<h5 class='panel-title '>" +
+                        "<a id='btn" + response[i].aplicacion[j].id_aplicacion + "' ><b class='_tex_mora'><i class='fas fa-desktop mr-1'></i> " + response[i].nombre_laboratorio + "  </b><button id='laboratorio_btn' type='button' class='btn btn-default _tex_mora' style='float: right; margin-top:-10px; border: 1px solid #715BCC;'onclick='showmod(confirmar_"+ response[i].aplicacion[j].id_aplicacion +");'><i class='fas fa-info-circle'></i></button></a>" +
                         "</h5>" +
-
                     "</div>" +
 
-                    "<div id='collapse" + response[i].aplicaciones[j].id + "' class='panel-collapse collapse pt-2'>" +
-                        "<div class='panel-body'>" +
+                            
 
-                            "<div class='pt-3 pb-3 col-sm-12'>"+
-
-                                "<div class='panel-heading card-header _bg-verdeClaro' style='padding-top: 0px;padding-bottom: 0px;'>" +
-                                    "<input type='hidden' id='idAplicacionDia1_" + j + "' value='" + response[i].aplicaciones[j].id + "'>" +
-
-                                    "<h5 class='panel-title'>" +
-                                    "<a data-toggle='collapse' id='btn" + response[i].aplicaciones[j].id + "' class='nav-link text-dark' href='#collapseInfoLab" + response[i].aplicaciones[j].id + "'> Información Laboratorio <i class='more-less fa fa-chevron-down'></i></a>" +
-                                    "</h5>" +
-
-                                "</div>" +
-
-                                "<div id='collapseInfoLab" + response[i].aplicaciones[j].id + "' class='card panel-collapse collapse pt-2'>" +
-                                    "<div class='panel-body'>" +
-                                        "<div class='pt-3 col-sm-12'>"+
-                                         
-                                            "<div class='row'>" +
-                                                "<div class='col-sm-4'>"+
-                                                    "<label>Encargado Apertura</label>"+
-                                                    "<h5 id='encargado_"+response[i].aplicaciones[j].id +"'><b>"+(response[i].persona_disponible_apertura == null ? '-' : response[i].persona_disponible_apertura)+"</b></h5>"+
-                                                "</div>"+
-                                                "<div class='col-sm-4'>"+
-                                                    "<label>Teléfono Encargado</label>"+
-                                                    "<h5 id='telefonoEncargado_"+response[i].aplicaciones[j].id +"'><b>"+(response[i].telefono_persona_apertura == null ? '-' : response[i].telefono_persona_apertura)+"</b></h5>"+
-                                                "</div>"+
-                                                
-                                                "<div class='col-sm-4'>"+
-                                                    "<label>Horario Apertura</label>"+
-                                                    "<h5 id='horarioApertura_"+response[i].aplicaciones[j].id +"'><b>"+(response[i].horario_apertura == null ? '-' : response[i].horario_apertura.slice(0,-3))+"</b></h5>"+
-                                                "</div>"+
-                                            "</div>" +
-                                            "<div class='row pt-2'>" +
-                                                "<div class='col-sm-6'>"+
-                                                    "<label>Dirección</label>"+
-                                                    "<h5 id='encargado_"+response[i].aplicaciones[j].id +"'><b>"+(response[i].direccion_dep == null ? '-' : response[i].direccion_dep)+"</b></h5>"+
-                                                "</div>"+
-                                                "<div class='col-sm-6'>"+
-                                                    "<label>Facultad</label>"+
-                                                    "<h5 id='encargado_"+response[i].aplicaciones[j].id +"'><b>"+(response[i].facultad_sector == null ? '-' : response[i].facultad_sector)+"</b></h5>"+
-                                                "</div>"+
-                                            "</div>" +
-                                            "<div class='row pt-2'>" +
-                                                "<div class='col-sm-12 pt-2'>" +
-                                                    "<label>Observaciones Visita Previa</label>" +
-                                                    "<h5 id='observacionesLab_"+response[i].aplicaciones[j].id +"'><b>"+(response[i].observaciones == null ? '-' : response[i].observaciones)+"</b></h5>"+
-                                                "</div>" +
-                                            "</div>" +
-                                        "</div>" +      
-                                    "</div>" +
-                                "</div>"+
-
-                            "</div>"+
-
+                     "<div class='panel-body card sin-bordes' style='padding:10px;'>" +
                             "<div class='row mt-2 mb-2'>" +
                                 "<div class='col-sm-12'>" +
-                                "<a class='btn _bg-red text-light' id='"+response[i].aplicaciones[j].fecha_agendada+"' onclick='verContingencias("+response[i].aplicaciones[j].id+", this.id);'><i class='fas fa-exclamation-triangle'_bg-red></i>  Registro de Contingencias</a>" +
+                                
                                 "</div>" +
                             "</div>" +
 
-                            "<div class='card'>" +
-                                "<div class='card-header'>" +
-                                    "<h6>Bloque 1 - Prueba de Conocimientos Pedagógicos Generales</h6>" +
+                             "<div class=''>" +
+                                    `<select style='margin-top: -50px;text-align: center;margin-bottom: 54px;' class="form-control custom-select _tex_mora" name="selectbloque" id="selectbloque">
+                                        <option class="_tex_mora" value="">Seleccione Bloque</option>
+                                        <option class="_tex_mora" value="1">Bloque 1 - Prueba de Conocimientos Pedagógicos Generales</option>
+                                        <option class="_tex_mora" value="2">Bloque 2 - Prueba de Conocimientos Disciplinarios y Didácticos</option>
+                                    </select>`+
                                 "</div>" +
 
-                                "<div class='card-body'>" +
-                                    "<div class='row'>" +
-                                        "<div class='col-sm-4'>" +
-                                            "<label>Hora Inicio</label>" +
+                            "<div class='' hidden id='bloqueuno'>" +
+                                "<div class=''>" +
+                                    "<div class='row card-header sin-bordes' style='margin:0%; border-radius: 5px;'>" +
+                                        "<div class='col-sm-4  pt-3'>" +
+                                            "<label class='_tex_mora'><i class='fas fa-clock'> </i> Hora Inicio</label>" +
                                             "<div class='input-group clockpicker'>"+
-                                                "<input type='text' class='form-control' name='horaInicioBloque1_dia1_" + response[i].aplicaciones[j].id + "' id='horaInicioBloque1_dia1_" + response[i].aplicaciones[j].id + "'  value='" + (response[i].aplicaciones[j].hora_inicio_b1 == null ? '' : response[i].aplicaciones[j].hora_inicio_b1.slice(0,-3)) + "' onchange='validateHhMm(this);' oninput='this.value=hora(this.value)'>"+
+                                                "<input type='text' class='form-control' disabled name='horaInicioBloque1_dia1_" + response[i].aplicacion[j].id_aplicacion + "' id='horaInicioBloque1_dia1_" + response[i].aplicacion[j].id_aplicacion + "'  value='" + (response[i].aplicacion[j].b1_hora_inicio == null ? '' : response[i].aplicacion[j].b1_hora_inicio.slice(0,-3)) + "' onchange='validateHhMm(this);' oninput='this.value=hora(this.value)'>"+
                                                 "<span class='input-group-addon'>"+
                                                 "<span class='glyphicon glyphicon-time'></span>"+
                                                 "</span>"+
                                             "</div>"+
-                                            "<span class='error_show' id='formError_horaInicioBloque1_dia1_"+response[i].aplicaciones[j].id+"'></span>"+
+                                            "<span class='error_show' id='formError_horaInicioBloque1_dia1_"+response[i].aplicacion[j].id_aplicacion+"'></span>"+
                                         "</div>" +
 
-                                        "<div class='col-sm-4'>" +
-                                            "<label>Hora Termino</label>" +
-                                            /*"<input type='time' name='horaTerminoBloque1_dia1_" + response[i].aplicaciones[j].id + "' id='horaTerminoBloque1_dia1_" + response[i].aplicaciones[j].id + "' class='form-control' value='" + response[i].aplicaciones[j].hora_terminoB1 + "'>" +*/
+                                        "<div class='col-sm-4 pt-3'>" +
+                                            "<label class='_tex_mora'><i class='fas fa-clock'> </i> Hora Termino</label>" +
+                                            /*"<input type='time' name='horaTerminoBloque1_dia1_" + response[i].aplicacion[j].id + "' id='horaTerminoBloque1_dia1_" + response[i].aplicacion[j].id + "' class='form-control' value='" + response[i].aplicacion[j].hora_terminoB1 + "'>" +*/
                                             "<div class='input-group clockpicker'>"+
-                                                "<input type='text' class='form-control' name='horaTerminoBloque1_dia1_" + response[i].aplicaciones[j].id + "' id='horaTerminoBloque1_dia1_" + response[i].aplicaciones[j].id + "'  value='" + (response[i].aplicaciones[j].hora_termino_b1 == null ? '' : response[i].aplicaciones[j].hora_termino_b1.slice(0,-3)) + "' onchange='validateHhMm(this);' oninput='this.value=hora(this.value)'>"+
+                                                "<input type='text' class='form-control' disabled name='horaTerminoBloque1_dia1_" + response[i].aplicacion[j].id_aplicacion + "' id='horaTerminoBloque1_dia1_" + response[i].aplicacion[j].id_aplicacion + "'  value='" + (response[i].aplicacion[j].b1_hora_termino == null ? '' : response[i].aplicacion[j].b1_hora_termino.slice(0,-3)) + "' onchange='validateHhMm(this);' oninput='this.value=hora(this.value)'>"+
                                                 "<span class='input-group-addon'>"+
                                                 "<span class='glyphicon glyphicon-time'></span>"+
                                                 "</span>"+
                                             "</div>"+
-                                            "<span class='error_show' id='formError_horaTerminoBloque1_dia1_"+response[i].aplicaciones[j].id+"'></span>"+
+                                            "<span class='error_show' id='formError_horaTerminoBloque1_dia1_"+response[i].aplicacion[j].id_aplicacion+"'></span>"+
                                                             
                                         "</div>" +
 
-                                        "<div class='col-sm-4'>" +
-                                            "<label>Estudiantes Presentes</label>" +
-                                            "<input type='text' oninput='this.value=cantidadEstudiantes(this.value)' oninput='this.value=cantidadEstudiantes(this.value)' name='estudiantesPresentesBloque1_dia1_" + response[i].aplicaciones[j].id + "' id='estudiantesPresentesBloque1_dia1_" + response[i].aplicaciones[j].id + "' class='form-control' value='" + (response[i].aplicaciones[j].presentes_b1 == null ? '' :response[i].aplicaciones[j].presentes_b1) + "'>" +
+                                        "<div class='col-sm-4 pt-3'>" +
+                                            "<label class='_tex_mora' style='white-space: nowrap;'><i class='fas fa-user' > </i> Estudiantes Presentes</label>" +
+                                            "<input type='text' disabled oninput='this.value=cantidadEstudiantes(this.value)' oninput='this.value=cantidadEstudiantes(this.value)' name='estudiantesPresentesBloque1_dia1_" + response[i].aplicacion[j].id_aplicacion + "' id='estudiantesPresentesBloque1_dia1_" + response[i].aplicacion[j].id_aplicacion + "' class='form-control' value='" + (response[i].aplicacion[j].b1_presentes == null ? '' :response[i].aplicacion[j].b1_presentes) + "'>" +
                                         "</div>" +
                                     "</div>" +
                                     "<div class='row'>" +
-                                        "<div class='col-sm-12 pt-2'>" +
-                                            "<label>Observaciones Examinador</label>" +
-                                            "<textarea rows='4' class='form-control' name='observacionesBloque1_dia1_"+response[i].aplicaciones[j].id+"' id='observacionesBloque1_dia1_"+response[i].aplicaciones[j].id+"'>"+(response[i].aplicaciones[j].observaciones_b1 == null ? '' : response[i].aplicaciones[j].observaciones_b1)+"</textarea>" +
+                                        "<div class='col-sm-12 pt-4'>" +
+                                            "<label class='_tex_mora'><i class='fas fa-comments'> </i> Observaciones Examinador</label>" +
+                                            "<textarea rows='4' disabled class='form-control' name='observacionesBloque1_dia1_"+response[i].aplicacion[j].id_aplicacion+"' id='observacionesBloque1_dia1_"+response[i].aplicacion[j].id_aplicacion+"'>"+(response[i].aplicacion[j].b1_observaciones == null ? '' : response[i].aplicacion[j].b1_observaciones)+"</textarea>" +
+                                            "<button hidden disabled id='laboratorio_btn1_"+response[i].aplicacion[j].id_aplicacion+"' type='button' class='btn ' style='float: right; margin-top:15px; background: #6850C9;color: #fff;'onclick='guardabloque(1);'><i class='fas fa-save'></i> Guardar Bloque 1</button>"+
                                         "</div>" +
                                     "</div>" +  
                                 "</div>" +
                             "</div>" +
 
-                            "<hr class='separador-novisible'>" +
+                            
 
-                            "<div class='card mb-2'>" +
-                                "<div class='card-header'>" +
-                                    "<h6>Bloque 2 - Prueba de Conocimientos Disciplinarios y Didácticos</h6>" +
-                                "</div>" +
-
-                                "<div class='card-body'>" +
-                                    "<div class='row'>" +
+                            "<div class='' hidden disabled id='bloquedos'>" +
+                                "<div class=''>" +
+                                    "<div class='row card-header sin-bordes' style='margin:2%; border-radius: 5px;'>" +
                                         "<div class='col-sm-4'>" +
-                                            "<label>Hora Inicio</label>" +
-                                            /*"<input type='time' name='horaInicioBloque2_dia1_" + response[i].aplicaciones[j].id + "' id='horaInicioBloque2_dia1_" + response[i].aplicaciones[j].id + "' class='form-control' value='" + response[i].aplicaciones[j].hora_inicioB2 + "'>" +*/
+                                            "<label class='_tex_mora'><i class='fas fa-clock'> </i> Hora Inicio</label>" +
+                                            /*"<input type='time' name='horaInicioBloque2_dia1_" + response[i].aplicacion[j].id + "' id='horaInicioBloque2_dia1_" + response[i].aplicacion[j].id + "' class='form-control' value='" + response[i].aplicacion[j].hora_inicioB2 + "'>" +*/
                                             "<div class='input-group clockpicker'>"+
-                                                "<input type='text' class='form-control' name='horaInicioBloque2_dia1_" + response[i].aplicaciones[j].id + "' id='horaInicioBloque2_dia1_" + response[i].aplicaciones[j].id + "'  value='" + (response[i].aplicaciones[j].hora_inicio_b2 == null ? '' : response[i].aplicaciones[j].hora_inicio_b2.slice(0,-3)) + "' onchange='validateHhMm(this);' oninput='this.value=hora(this.value)'>"+
+                                                "<input disabled type='text' class='form-control' name='horaInicioBloque2_dia1_" + response[i].aplicacion[j].id_aplicacion + "' id='horaInicioBloque2_dia1_" + response[i].aplicacion[j].id_aplicacion + "'  value='" + (response[i].aplicacion[j].b2_hora_inicio == null ? '' : response[i].aplicacion[j].b2_hora_inicio.slice(0,-3)) + "' onchange='validateHhMm(this);' oninput='this.value=hora(this.value)'>"+
                                                 "<span class='input-group-addon'>"+
                                                 "<span class='glyphicon glyphicon-time'></span>"+
                                                 "</span>"+
                                             "</div>"+
-                                            "<span class='error_show' id='formError_horaInicioBloque2_dia1_"+response[i].aplicaciones[j].id+"'></span>"+
+                                            "<span class='error_show' id='formError_horaInicioBloque2_dia1_"+response[i].aplicacion[j].id_aplicacion+"'></span>"+
                                         "</div>" +
 
                                         "<div class='col-sm-4'>" +
-                                            "<label>Hora Termino</label>" +
-                                            /*"<input type='time' name='horaTerminoBloque2_dia1_" + response[i].aplicaciones[j].id + "' id='horaTerminoBloque2_dia1_" + response[i].aplicaciones[j].id + "' class='form-control' value='" + response[i].aplicaciones[j].hora_terminoB2 + "'>" +*/
+                                            "<label class='_tex_mora'><i class='fas fa-clock'> </i> Hora Termino</label>" +
+                                            /*"<input type='time' name='horaTerminoBloque2_dia1_" + response[i].aplicacion[j].id + "' id='horaTerminoBloque2_dia1_" + response[i].aplicacion[j].id + "' class='form-control' value='" + response[i].aplicacion[j].hora_terminoB2 + "'>" +*/
                                             "<div class='input-group clockpicker'>"+
-                                                "<input type='text' class='form-control' name='horaTerminoBloque2_dia1_" + response[i].aplicaciones[j].id + "' id='horaTerminoBloque2_dia1_" + response[i].aplicaciones[j].id + "'  value='" + (response[i].aplicaciones[j].hora_termino_b2 == null ? '' : response[i].aplicaciones[j].hora_termino_b2.slice(0,-3)) + "' onchange='validateHhMm(this);' oninput='this.value=hora(this.value)'>"+
+                                                "<input disabled type='text' class='form-control' name='horaTerminoBloque2_dia1_" + response[i].aplicacion[j].id_aplicacion + "' id='horaTerminoBloque2_dia1_" + response[i].aplicacion[j].id_aplicacion + "'  value='" + (response[i].aplicacion[j].b2_hora_termino == null ? '' : response[i].aplicacion[j].b2_hora_termino.slice(0,-3)) + "' onchange='validateHhMm(this);' oninput='this.value=hora(this.value)'>"+
                                                 "<span class='input-group-addon'>"+
                                                 "<span class='glyphicon glyphicon-time'></span>"+
                                                 "</span>"+
                                             "</div>"+
-                                            "<span class='error_show' id='formError_horaTerminoBloque2_dia1_"+response[i].aplicaciones[j].id+"'></span>"+
+                                            "<span class='error_show' id='formError_horaTerminoBloque2_dia1_"+response[i].aplicacion[j].id_aplicacion+"'></span>"+
                                         "</div>" +
 
                                         "<div class='col-sm-4'>" +
-                                            "<label>Estudiantes Presentes</label>" +
-                                            "<input type='text' oninput='this.value=cantidadEstudiantes(this.value)' oninput='this.value=cantidadEstudiantes(this.value)' name='estudiantesPresentesBloque2_dia1_" + response[i].aplicaciones[j].id + "' id='estudiantesPresentesBloque2_dia1_" + response[i].aplicaciones[j].id + "' class='form-control' value='" + (response[i].aplicaciones[j].presentes_b2 == null ? '' : response[i].aplicaciones[j].presentes_b2) + "'>" +
+                                            "<label class='_tex_mora' style='white-space: nowrap;'><i class='fas fa-user' > </i> Estudiantes Presentes</label>" +
+                                            "<input disabled type='text' oninput='this.value=cantidadEstudiantes(this.value)' oninput='this.value=cantidadEstudiantes(this.value)' name='estudiantesPresentesBloque2_dia1_" + response[i].aplicacion[j].id_aplicacion + "' id='estudiantesPresentesBloque2_dia1_" + response[i].aplicacion[j].id_aplicacion + "' class='form-control' value='" + (response[i].aplicacion[j].b2_presentes == null ? '' : response[i].aplicacion[j].b2_presentes) + "'>" +
                                         "</div>" +
                                     "</div>" +
                                     "<div class='row'>" +
                                         "<div class='col-sm-12 pt-2'>" +
-                                            "<label>Observaciones Examinador</label>" +
-                                            "<textarea rows='4' class='form-control' name='observacionesBloque2_dia1_"+response[i].aplicaciones[j].id+"' id='observacionesBloque2_dia1_"+response[i].aplicaciones[j].id+"'>"+(response[i].aplicaciones[j].observaciones_b2 == null ? '' : response[i].aplicaciones[j].observaciones_b2)+"</textarea>" +
+                                            "<label class='_tex_mora'><i class='fas fa-comments'> </i> Observaciones Examinador</label>" +
+                                            "<textarea disabled rows='4' class='form-control' name='observacionesBloque2_dia1_"+response[i].aplicacion[j].id_aplicacion+"' id='observacionesBloque2_dia1_"+response[i].aplicacion[j].id_aplicacion+"'>"+(response[i].aplicacion[j].b2_observaciones == null ? '' : response[i].aplicacion[j].b2_observaciones)+"</textarea>" +
+                                            "<button hidden disabled id='laboratorio_btn2_"+response[i].aplicacion[j].id_aplicacion+"' type='button' class='btn ' style='float: right; margin-top:15px; background: #6850C9;color: #fff;'onclick='guardabloque(2);'><i class='fas fa-save'></i> Guardar Bloque 2</button>"+
                                         "</div>" +
                                     "</div>" +  
                                 "</div>" +
                         
                             "</div>" +
 
-                            "<div class='col-sm-12 pt-2' style='padding-left: 0px;padding-right: 0px;'>" +
-                                "<label>Observaciones</label>" +
-                                "<textarea rows='4' class='form-control' name='observaciones_"+response[i].aplicaciones[j].id+"' id='observaciones_"+response[i].aplicaciones[j].id+"'>"+(response[i].aplicaciones[j].observaciones == null ? '' : response[i].aplicaciones[j].observaciones)+"</textarea>" +
+                            "<div id='superobs' class='col-sm-12 pt-2'  style='padding-left: 0px;padding-right: 0px;'>" +
+                                "<label class='_tex_mora'><i class='fas fa-comments'> </i> Observaciones Supervisor</label>" +
+                                "<textarea rows='4' class='form-control' name='observaciones_"+response[i].aplicacion[j].id_aplicacion+"' id='observaciones_"+response[i].aplicacion[j].id_aplicacion+"'>"+(response[i].aplicacion[j].observaciones_supervisor == null ? '' : response[i].aplicacion[j].observaciones_supervisor)+"</textarea>" +
+                                "<button id='laboratorio_btn3_"+response[i].aplicacion[j].id_aplicacion+"' type='button' class='btn ' style='float: right; margin-top:15px; background: #6850C9;color: #fff;'onclick='guardabloque(3);'><i class='fas fa-save'></i> Guardar Observaciones</button>"+
                             "</div>" +
-
+                            
                             /*"<div class='card-footer text-right sin-bordes bg-white'>"+
-                                "<button type='button' class='btn btn-success' onclick='saveAplicacion( 1,"+response[i].aplicaciones[j].id+");'><i class='fas fa-save'></i>Guardar</button>"+
+                                "<button type='button' class='btn btn-success' onclick='saveAplicacion( 1,"+response[i].aplicacion[j].id+");'><i class='fas fa-save'></i>Guardar</button>"+
                             "</div>"+*/
+                            `<div class="modal fade" id="confirmar_`+response[i].aplicacion[j].id_aplicacion+`" tabindex="-1" role="dialog" aria-labelledby="confirmar" aria-hidden="true">
+                              <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                                    <h5 class="modal-title _tex_mora" id="exampleModalLabel"><i class="fas fa-desktop mr-1"></i>`+ response[i].nombre_laboratorio +`</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                      <span aria-hidden="true">&times;</span>
+                                    </button>
+                                  </div>
+                                  <div class="modal-body">
+                                       <div class='pt-3 pb-3 col-sm-12'>
+                                            <div class='panel-body'>
+                                                    <div class='pt-3 col-sm-12'>
+                                                          <div class='row'>
+                                                        <div class='col-sm-4'>
+                                                            <label class='_tex_mora'><i class="fas fa-user"> </i> Encargado Apertura</label>
+                                                            <h5 id='encargado_`+response[i].aplicacion[j].id_aplicacion +`'>`+(response[i].encargado_apertura == null ? '-' : response[i].encargado_apertura)+`</h5>
+                                                        </div>
+                                                        <div class='col-sm-4'>
+                                                            <label class='_tex_mora'><i class="fas fa-phone"> </i> Teléfono Encargado</label>
+                                                            <h5 id='telefonoEncargado_`+response[i].aplicacion[j].id_aplicacion +`'>`+(response[i].telefono_encargado_apertura == null ? '-' : response[i].telefono_encargado_apertura)+`</h5>
+                                                        </div>
+                                                        
+                                                        <div class='col-sm-4'>
+                                                            <label class='_tex_mora'><i class="fas fa-clock"> </i> Horario Apertura</label>
+                                                            <h5 id='horarioApertura_`+response[i].aplicacion[j].id_aplicacion +`'>`+(response[i].acceso_desde_0730 == null ? '-' : response[i].acceso_desde_0730)+`</h5>
+                                                        </div>
+                                                    </div>
+                                                    <div class='row pt-2'>
+                                                        <div class='col-sm-6'>
+                                                            <label class='_tex_mora'>Dirección</label>
+                                                            <h5 id='encargado_`+response[i].aplicacion[j].id_aplicacion +`'>`+(response[i].direccion_lab == null ? '-' : response[i].direccion_lab)+`</h5>
+                                                        </div>
+                                                        
+                                                    </div>
+                                                    <div class='row pt-2'>
+                                                        <div class='col-sm-12 pt-2'>
+                                                            <label class='_tex_mora'><i class="fas fa-comments"> </i> Observaciones Visita Previa</label>
+                                                            <h5 id='observacionesLab_`+response[i].aplicacion[j].id_aplicacion +`'>`+(response[i].observacion_visita == null ? '-' : response[i].observacion_visita)+`</h5>
+                                                        </div>
+                                                    </div>
 
-                        "</div>" +
-                    "</div>");
-
-                    $(".clockpicker").clockpicker({
-                        placement: 'top',
-                        autoclose: true,
-                        donetext: 'Listo',
-
-                    });
-            }else
-
-            //Día 2
-            if (response[i].aplicaciones[j].fecha_agendada == "2018-12-19") {
-                $("#linkDia2").show();
-
-                $("#divLabsDia2").append(
-                    "<div class='panel-heading card-header'>" +
-                    "<input type='hidden' id='idAplicacionDia2_" + j + "' value='" + response[i].aplicaciones[j].id + "'>" +
-                    "<h5 class='panel-title'>" +
-                    "<a data-toggle='collapse' id='btn" + response[i].aplicaciones[j].id + "' class='nav-link text-dark' href='#collapse" + response[i].aplicaciones[j].id + "'>" + response[i].nombre_dependencia + "<i class='more-less fa fa-chevron-down'></i></a>" +
-                    "</h5>" +
-                    "</div>" +
-
-                    "<div id='collapse" + response[i].aplicaciones[j].id + "' class='panel-collapse collapse pt-2'>" +
-                    "<div class='panel-body'>" +
-                        "<div class='pt-3 pb-3 col-sm-12'>"+
-                            
-                            "<div class='panel-heading card-header _bg-verdeClaro' style='padding-top: 0px;padding-bottom: 0px;'>" +
-                                "<input type='hidden' id='idAplicacionDia1_" + j + "' value='" + response[i].aplicaciones[j].id + "'>" +
-
-                                "<h5 class='panel-title'>" +
-                                "<a data-toggle='collapse' id='btn" + response[i].aplicaciones[j].id + "' class='nav-link text-dark' href='#collapseInfoLab" + response[i].aplicaciones[j].id + "'> Información Laboratorio <i class='more-less fa fa-chevron-down'></i></a>" +
-                                "</h5>" +
-
-                            "</div>" +
-
-                            "<div id='collapseInfoLab" + response[i].aplicaciones[j].id + "' class='card panel-collapse collapse pt-2'>" +
-                                "<div class='panel-body'>" +
-                                    "<div class='pt-3 col-sm-12'>"+
-                                     
-                                        "<div class='row'>" +
-                                            "<div class='col-sm-4'>"+
-                                                "<label>Encargado Apertura</label>"+
-                                                "<h5 id='encargado_"+response[i].aplicaciones[j].id +"'><b>"+(response[i].persona_disponible_apertura == null ? '-' : response[i].persona_disponible_apertura)+"</b></h5>"+
-                                            "</div>"+
-                                            "<div class='col-sm-4'>"+
-                                                "<label>Teléfono Encargado</label>"+
-                                                "<h5 id='telefonoEncargado_"+response[i].aplicaciones[j].id +"'><b>"+(response[i].telefono_persona_apertura == null ? '-' : response[i].telefono_persona_apertura)+"</b></h5>"+
-                                            "</div>"+
-                                            
-                                            "<div class='col-sm-4'>"+
-                                                "<label>Horario Apertura</label>"+
-                                                "<h5 id='horarioApertura_"+response[i].aplicaciones[j].id +"'><b>"+(response[i].horario_apertura == null ? '-' : response[i].horario_apertura.slice(0,-3))+"</b></h5>"+
-                                            "</div>"+
-                                        "</div>" +
-                                        "<div class='row pt-2'>" +
-                                            "<div class='col-sm-6'>"+
-                                                "<label>Dirección</label>"+
-                                                "<h5 id='encargado_"+response[i].aplicaciones[j].id +"'><b>"+(response[i].direccion_dep == null ? '-' : response[i].direccion_dep)+"</b></h5>"+
-                                            "</div>"+
-                                            "<div class='col-sm-6'>"+
-                                                "<label>Facultad</label>"+
-                                                "<h5 id='encargado_"+response[i].aplicaciones[j].id +"'><b>"+(response[i].facultad_sector == null ? '-' : response[i].facultad_sector)+"</b></h5>"+
-                                            "</div>"+
-                                        "</div>" +
-                                        "<div class='row pt-2'>" +
-                                            "<div class='col-sm-12 pt-2'>" +
-                                                "<label>Observaciones Visita Previa</label>" +
-                                                "<h5 id='observacionesLab_"+response[i].aplicaciones[j].id +"'><b>"+(response[i].observaciones == null ? '-' : response[i].observaciones)+"</b></h5>"+
-                                            "</div>" +
-                                        "</div>" +
-                                    "</div>" +      
-                                "</div>" +
-                            "</div>"+
-
+                                                </div>    
+                                            </div>
+                                        </div>
+                                  </div>
+                                  <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>`+
                         "</div>"+
-
-                    "<div class='row mt-2 mb-2'>" +
-                        "<div class='col-sm-12'>" +
-                        "<a class='btn _bg-red text-light' id='"+response[i].aplicaciones[j].fecha_agendada+"' onclick='verContingencias("+response[i].aplicaciones[j].id+", this.id);'><i class='fas fa-exclamation-triangle'_bg-red></i>  Registro de Contingencias</a>" +
-                        "</div>" +
-                    "</div>" +
-
-                    "<div class='card'>" +
-                    "<div class='card-header'>" +
-                    "<h6>Bloque 1 - Prueba de Conocimientos Pedagógicos Generales</h6>" +
-                    "</div>" +
-
-                    "<div class='card-body'>" +
-                    "<div class='row'>" +
-                    "<div class='col-sm-4'>" +
-                        "<label>Hora Inicio</label>" +
-                        /*"<input type='time' name='horaInicioBloque1_dia2_" + response[i].aplicaciones[j].id + "' id='horaInicioBloque1_dia2_" + response[i].aplicaciones[j].id + "' class='form-control' value='" + response[i].aplicaciones[j].hora_inicioB1 + "'>" +*/
-                            "<div class='input-group clockpicker'>"+
-                                "<input type='text' class='form-control' name='horaInicioBloque1_dia2_" + response[i].aplicaciones[j].id + "' id='horaInicioBloque1_dia2_" + response[i].aplicaciones[j].id + "'  value='" + (response[i].aplicaciones[j].hora_inicio_b1 == null ? '' : response[i].aplicaciones[j].hora_inicio_b1.slice(0,-3)) + "' onchange='validateHhMm(this);' oninput='this.value=hora(this.value)'>"+
-                                "<span class='input-group-addon'>"+
-                                "<span class='glyphicon glyphicon-time'></span>"+
-                                "</span>"+
-                            "</div>"+
-                            "<span class='error_show' id='formError_horaInicioBloque1_dia2_"+response[i].aplicaciones[j].id+"'></span>"+
-                    "</div>" +
-
-                    "<div class='col-sm-4'>" +
-                    "<label>Hora Termino</label>" +
-                    /*"<input type='time' name='horaTerminoBloque1_dia2_" + response[i].aplicaciones[j].id + "' id='horaTerminoBloque1_dia2_" + response[i].aplicaciones[j].id + "' class='form-control' value='" + response[i].aplicaciones[j].hora_terminoB1 + "'>" +*/
-                        "<div class='input-group clockpicker'>"+
-                            "<input type='text' class='form-control' name='horaTerminoBloque1_dia2_" + response[i].aplicaciones[j].id + "' id='horaTerminoBloque1_dia2_" + response[i].aplicaciones[j].id + "'  value='" + (response[i].aplicaciones[j].hora_termino_b1 == null ? '' : response[i].aplicaciones[j].hora_termino_b1.slice(0,-3)) + "' onchange='validateHhMm(this);' oninput='this.value=hora(this.value)'>"+
-                            "<span class='input-group-addon'>"+
-                            "<span class='glyphicon glyphicon-time'></span>"+
-                            "</span>"+
-                        "</div>"+
-                        "<span class='error_show' id='formError_horaTerminoBloque1_dia2_"+response[i].aplicaciones[j].id+"'></span>"+
-                    "</div>" +
-
-                        "<div class='col-sm-4'>" +
-                            "<label>Estudiantes Presentes</label>" +
-                            "<input type='text' oninput='this.value=cantidadEstudiantes(this.value)' name='estudiantesPresentesBloque1_dia2_" + response[i].aplicaciones[j].id + "' id='estudiantesPresentesBloque1_dia2_" + response[i].aplicaciones[j].id + "' class='form-control' value='" + (response[i].aplicaciones[j].presentes_b1 == null ? '' : response[i].aplicaciones[j].presentes_b1) + "'>" +
-                        "</div>" +
-                    "</div>" +
-                    "<div class='row'>" +
-                        "<div class='col-sm-12 pt-2'>" +
-                            "<label>Observaciones Examinador</label>" +
-                            "<textarea rows='4' class='form-control' name='observacionesBloque1_dia2_"+response[i].aplicaciones[j].id+"' id='observacionesBloque1_dia2_"+response[i].aplicaciones[j].id+"'>"+(response[i].aplicaciones[j].observaciones_b1 == null ? '' : response[i].aplicaciones[j].observaciones_b1)+"</textarea>" +
-                        "</div>" +
-                    "</div>" + 
-                    "</div>" +
-                    "</div>" +
-
-                    "<hr class='separador-novisible'>" +
-
-                    "<div class='card'>" +
-                    "<div class='card-header'>" +
-                    "<h6>Bloque 2 - Prueba de Conocimientos Disciplinarios y Didácticos</h6>" +
-                    "</div>" +
-
-                    "<div class='card-body'>" +
-                    "<div class='row'>" +
-                    "<div class='col-sm-4'>" +
-                    "<label>Hora Inicio</label>" +
-                    /*"<input type='time' name='horaInicioBloque2_dia2_" + response[i].aplicaciones[j].id + "' id='horaInicioBloque2_dia2_" + response[i].aplicaciones[j].id + "' class='form-control' value='" + response[i].aplicaciones[j].hora_inicioB2 + "'>" +*/
-                        "<div class='input-group clockpicker'>"+
-                            "<input type='text' class='form-control' name='horaInicioBloque2_dia2_" + response[i].aplicaciones[j].id + "' id='horaInicioBloque2_dia2_" + response[i].aplicaciones[j].id + "'  value='" + (response[i].aplicaciones[j].hora_inicio_b2 == null ? '' : response[i].aplicaciones[j].hora_inicio_b2.slice(0,-3)) + "' onchange='validateHhMm(this);' oninput='this.value=hora(this.value)'>"+
-                            "<span class='input-group-addon'>"+
-                            "<span class='glyphicon glyphicon-time'></span>"+
-                            "</span>"+
-                        "</div>"+
-                        "<span class='error_show' id='formError_horaInicioBloque2_dia2_"+response[i].aplicaciones[j].id+"'></span>"+
-                    "</div>" +
-
-                    "<div class='col-sm-4'>" +
-                    "<label>Hora Termino</label>" +
-                    /*"<input type='time' name='horaTerminoBloque2_dia2_" + response[i].aplicaciones[j].id + "' id='horaTerminoBloque2_dia2_" + response[i].aplicaciones[j].id + "' class='form-control' value='" + response[i].aplicaciones[j].hora_terminoB2 + "'>" +*/
-                        "<div class='input-group clockpicker'>"+
-                            "<input type='text' class='form-control' name='horaTerminoBloque2_dia2_" + response[i].aplicaciones[j].id + "' id='horaTerminoBloque2_dia2_" + response[i].aplicaciones[j].id + "'  value='" + (response[i].aplicaciones[j].hora_termino_b2 == null ? '' : response[i].aplicaciones[j].hora_termino_b2.slice(0,-3)) + "' onchange='validateHhMm(this);' oninput='this.value=hora(this.value)'>"+
-                            "<span class='input-group-addon'>"+
-                            "<span class='glyphicon glyphicon-time'></span>"+
-                            "</span>"+
-                        "</div>"+
-                        "<span class='error_show' id='formError_horaTerminoBloque2_dia2_"+response[i].aplicaciones[j].id+"'></span>"+
-                    "</div>" +
-
-                        "<div class='col-sm-4'>" +
-                            "<label>Estudiantes Presentes</label>" +
-                            "<input type='text' oninput='this.value=cantidadEstudiantes(this.value)' name='estudiantesPresentesBloque2_dia2_" + response[i].aplicaciones[j].id + "' id='estudiantesPresentesBloque2_dia2_" + response[i].aplicaciones[j].id + "' class='form-control' value='" + (response[i].aplicaciones[j].presentes_b2 == null ? '' : response[i].aplicaciones[j].presentes_b2) + "'>" +
-                        "</div>" +
-                    "</div>" +
-                    "<div class='row'>" +
-                        "<div class='col-sm-12 pt-2'>" +
-                            "<label>Observaciones Examinador</label>" +
-                            "<textarea rows='4' class='form-control' name='observacionesBloque2_dia2_"+response[i].aplicaciones[j].id+"' id='observacionesBloque2_dia2_"+response[i].aplicaciones[j].id+"'>"+(response[i].aplicaciones[j].observaciones_b2 == null ? '' : response[i].aplicaciones[j].observaciones_b2)+"</textarea>" +
-                        "</div>" +
-                    "</div>" +  
-
-                    "</div>" +
-                    "</div>" +
-                        "<div class='col-sm-12 pt-2' style='padding-left: 0px;padding-right: 0px;'>" +
-                            "<label>Observaciones</label>" +
-                            "<textarea rows='4' class='form-control' name='observaciones_"+response[i].aplicaciones[j].id+"' id='observaciones_"+response[i].aplicaciones[j].id+"'>"+(response[i].aplicaciones[j].observaciones == null ? '' : response[i].aplicaciones[j].observaciones)+"</textarea>" +
-                        "</div>" +
-                        /*"<div class='card-footer text-right sin-bordes bg-white'>"+
-                            "<button type='button' class='btn btn-success' onclick='saveAplicacion( 2,"+response[i].aplicaciones[j].id+");'><i class='fas fa-save'></i>Guardar</button>"+
-                        "</div>"+*/
-                    "</div>" +
-                    "</div>");
-                
-                $(".clockpicker").clockpicker({
-                    placement: 'top',
-                    autoclose: true,
-                    donetext: 'Listo',
-
-                });
-
-            }else
-
-            //Día 3
-            if (response[i].aplicaciones[j].fecha_agendada == "2018-12-20") {
-
-                $("#linkDia3").show();
-
-                $("#divLabsDia3").append(
-                    "<div class='panel-heading card-header'>" +
-                    "<input type='hidden' id='idAplicacionDia3_" + j + "' value='" + response[i].aplicaciones[j].id + "'>" +
-                    "<h5 class='panel-title'>" +
-                    "<a data-toggle='collapse' id='btn" + response[i].aplicaciones[j].id + "' class='nav-link text-dark' href='#collapse" + response[i].aplicaciones[j].id + "'>" + response[i].nombre_dependencia + "<i class='more-less fa fa-chevron-down'></i></a>" +
-                    "</h5>" +
-                    "</div>" +
-
-                    "<div id='collapse" + response[i].aplicaciones[j].id + "' class='panel-collapse collapse pt-2'>" +
-                    "<div class='panel-body'>" +
-                        "<div class='pt-3 pb-3 col-sm-12'>"+
-                            
-                            "<div class='panel-heading card-header _bg-verdeClaro' style='padding-top: 0px;padding-bottom: 0px;'>" +
-                                "<input type='hidden' id='idAplicacionDia1_" + j + "' value='" + response[i].aplicaciones[j].id + "'>" +
-
-                                "<h5 class='panel-title'>" +
-                                "<a data-toggle='collapse' id='btn" + response[i].aplicaciones[j].id + "' class='nav-link text-dark' href='#collapseInfoLab" + response[i].aplicaciones[j].id + "'> Información Laboratorio <i class='more-less fa fa-chevron-down'></i></a>" +
-                                "</h5>" +
-
-                            "</div>" +
-
-                            "<div id='collapseInfoLab" + response[i].aplicaciones[j].id + "' class='card panel-collapse collapse pt-2'>" +
-                                "<div class='panel-body'>" +
-                                    "<div class='pt-3 col-sm-12'>"+
-                                     
-                                        "<div class='row'>" +
-                                            "<div class='col-sm-4'>"+
-                                                "<label>Encargado Apertura</label>"+
-                                                "<h5 id='encargado_"+response[i].aplicaciones[j].id +"'><b>"+(response[i].persona_disponible_apertura == null ? '-' : response[i].persona_disponible_apertura)+"</b></h5>"+
-                                            "</div>"+
-                                            "<div class='col-sm-4'>"+
-                                                "<label>Teléfono Encargado</label>"+
-                                                "<h5 id='telefonoEncargado_"+response[i].aplicaciones[j].id +"'><b>"+(response[i].telefono_persona_apertura == null ? '-' : response[i].telefono_persona_apertura)+"</b></h5>"+
-                                            "</div>"+
-                                            
-                                            "<div class='col-sm-4'>"+
-                                                "<label>Horario Apertura</label>"+
-                                                "<h5 id='horarioApertura_"+response[i].aplicaciones[j].id +"'><b>"+(response[i].horario_apertura == null ? '-' : response[i].horario_apertura.slice(0,-3))+"</b></h5>"+
-                                            "</div>"+
-                                        "</div>" +
-                                        "<div class='row pt-2'>" +
-                                            "<div class='col-sm-6'>"+
-                                                "<label>Dirección</label>"+
-                                                "<h5 id='encargado_"+response[i].aplicaciones[j].id +"'><b>"+(response[i].direccion_dep == null ? '-' : response[i].direccion_dep)+"</b></h5>"+
-                                            "</div>"+
-                                            "<div class='col-sm-6'>"+
-                                                "<label>Facultad</label>"+
-                                                "<h5 id='encargado_"+response[i].aplicaciones[j].id +"'><b>"+(response[i].facultad_sector == null ? '-' : response[i].facultad_sector)+"</b></h5>"+
-                                            "</div>"+
-                                        "</div>" +
-                                        "<div class='row pt-2'>" +
-                                            "<div class='col-sm-12 pt-2'>" +
-                                                "<label>Observaciones Visita Previa</label>" +
-                                                "<h5 id='observacionesLab_"+response[i].aplicaciones[j].id +"'><b>"+(response[i].observaciones == null ? '-' : response[i].observaciones)+"</b></h5>"+
-                                            "</div>" +
-                                        "</div>" +
-                                    "</div>" +      
-                                "</div>" +
-                            "</div>"+
-
-                        "</div>"+
-
-                    "<div class='row mt-2 mb-2'>" +
-                        "<div class='col-sm-12'>" +
-                        "<a class='btn _bg-red text-light' id='"+response[i].aplicaciones[j].fecha_agendada+"' onclick='verContingencias("+response[i].aplicaciones[j].id+", this.id);'><i class='fas fa-exclamation-triangle'_bg-red></i>  Registro de Contingencias</a>" +
-                        "</div>" +
-                    "</div>" +
-
-                    "<div class='card'>" +
-                    "<div class='card-header'>" +
-                    "<h6>Bloque 1 - Prueba de Conocimientos Pedagógicos Generales</h6>" +
-                    "</div>" +
-
-                    "<div class='card-body'>" +
-                    "<div class='row'>" +
-                    "<div class='col-sm-4'>" +
-                    "<label>Hora Inicio</label>" +
-                    /*"<input type='time' name='horaInicioBloque1_dia3_" + response[i].aplicaciones[j].id + "' id='horaInicioBloque1_dia3_" + response[i].aplicaciones[j].id + "' class='form-control' value='" + response[i].aplicaciones[j].hora_inicioB1 + "'>" +*/
-                        "<div class='input-group clockpicker'>"+
-                            "<input type='text' class='form-control' name='horaInicioBloque1_dia3_" + response[i].aplicaciones[j].id + "' id='horaInicioBloque1_dia3_" + response[i].aplicaciones[j].id + "'  value='" + (response[i].aplicaciones[j].hora_inicio_b1 == null ? '' : response[i].aplicaciones[j].hora_inicio_b1.slice(0,-3)) + "' onchange='validateHhMm(this);' oninput='this.value=hora(this.value)'>"+
-                            "<span class='input-group-addon'>"+
-                            "<span class='glyphicon glyphicon-time'></span>"+
-                            "</span>"+
-                        "</div>"+
-                        "<span class='error_show' id='formError_horaInicioBloque1_dia3_"+response[i].aplicaciones[j].id+"'></span>"+
-                    "</div>" +
-
-                    "<div class='col-sm-4'>" +
-                    "<label>Hora Termino</label>" +
-                    /*"<input type='time' name='horaTerminoBloque1_dia3_" + response[i].aplicaciones[j].id + "' id='horaTerminoBloque1_dia3_" + response[i].aplicaciones[j].id + "' class='form-control' value='" + response[i].aplicaciones[j].hora_terminoB1 + "'>" +*/
-                        "<div class='input-group clockpicker'>"+
-                            "<input type='text' class='form-control' name='horaTerminoBloque1_dia3_" + response[i].aplicaciones[j].id + "' id='horaTerminoBloque1_dia3_" + response[i].aplicaciones[j].id + "'  value='" + (response[i].aplicaciones[j].hora_termino_b1 == null ? '' : response[i].aplicaciones[j].hora_termino_b1.slice(0,-3)) + "' onchange='validateHhMm(this);' oninput='this.value=hora(this.value)'>"+
-                            "<span class='input-group-addon'>"+
-                            "<span class='glyphicon glyphicon-time'></span>"+
-                            "</span>"+
-                        "</div>"+
-                        "<span class='error_show' id='formError_horaTerminoBloque1_dia3_"+response[i].aplicaciones[j].id+"'></span>"+
-                    "</div>" +
-
-                        "<div class='col-sm-4'>" +
-                            "<label>Estudiantes Presentes</label>" +
-                            "<input type='text' oninput='this.value=cantidadEstudiantes(this.value)' name='estudiantesPresentesBloque1_dia3_" + response[i].aplicaciones[j].id + "' id='estudiantesPresentesBloque1_dia3_" + response[i].aplicaciones[j].id + "' class='form-control' value='" + (response[i].aplicaciones[j].presentes_b1 == null ? '' : response[i].aplicaciones[j].presentes_b1)+ "'>" +
-                        "</div>" +
-                    "</div>" +
-                    "<div class='row'>" +
-                        "<div class='col-sm-12 pt-2'>" +
-                            "<label>Observaciones Examinador</label>" +
-                            "<textarea rows='4' class='form-control' name='observacionesBloque1_dia3_"+response[i].aplicaciones[j].id+"' id='observacionesBloque1_dia3_"+response[i].aplicaciones[j].id+"'>"+(response[i].aplicaciones[j].observaciones_b1 == null ? '' : response[i].aplicaciones[j].observaciones_b1)+"</textarea>" +
-                        "</div>" +
-                    "</div>" +  
-
-                    "</div>" +
-                    "</div>" +
-
-                    "<hr class='separador-novisible'>" +
-
-                    "<div class='card'>" +
-                    "<div class='card-header'>" +
-                    "<h6>Bloque 2 - Prueba de Conocimientos Disciplinarios y Didácticos</h6>" +
-                    "</div>" +
-
-                    "<div class='card-body'>" +
-                    "<div class='row'>" +
-                    "<div class='col-sm-4'>" +
-                    "<label>Hora Inicio</label>" +
-                    /*"<input type='time' name='horaInicioBloque2_dia3_" + response[i].aplicaciones[j].id + "' id='horaInicioBloque2_dia3_" + response[i].aplicaciones[j].id + "' class='form-control' value='" + response[i].aplicaciones[j].hora_inicioB2 + "'>" +*/
-                        "<div class='input-group clockpicker'>"+
-                            "<input type='text' class='form-control' name='horaInicioBloque2_dia3_" + response[i].aplicaciones[j].id + "' id='horaInicioBloque2_dia3_" + response[i].aplicaciones[j].id + "'  value='" + (response[i].aplicaciones[j].hora_inicio_b2 == null ? '' : response[i].aplicaciones[j].hora_inicio_b2.slice(0,-3)) + "' onchange='validateHhMm(this);' oninput='this.value=hora(this.value)'>"+
-                            "<span class='input-group-addon'>"+
-                            "<span class='glyphicon glyphicon-time'></span>"+
-                            "</span>"+
-                        "</div>"+
-                        "<span class='error_show' id='formError_horaInicioBloque2_dia3_"+response[i].aplicaciones[j].id+"'></span>"+
-                    "</div>" +
-
-                    "<div class='col-sm-4'>" +
-                    "<label>Hora Termino</label>" +
-                    /*"<input type='time' name='horaTerminoBloque2_dia3_" + response[i].aplicaciones[j].id + "' id='horaTerminoBloque2_dia3_" + response[i].aplicaciones[j].id + "' class='form-control' value='" + response[i].aplicaciones[j].hora_terminoB2 + "'>" +*/
-                        "<div class='input-group clockpicker'>"+
-                            "<input type='text' class='form-control' name='horaTerminoBloque2_dia3_" + response[i].aplicaciones[j].id + "' id='horaTerminoBloque2_dia3_" + response[i].aplicaciones[j].id + "'  value='" + (response[i].aplicaciones[j].hora_termino_b2 == null ? '' : response[i].aplicaciones[j].hora_termino_b2.slice(0,-3)) + "' onchange='validateHhMm(this);' oninput='this.value=hora(this.value)'>"+
-                            "<span class='input-group-addon'>"+
-                            "<span class='glyphicon glyphicon-time'></span>"+
-                            "</span>"+
-                        "</div>"+
-                        "<span class='error_show' id='formError_horaTerminoBloque2_dia3_"+response[i].aplicaciones[j].id+"'></span>"+
-                    "</div>" +
-
-                        "<div class='col-sm-4'>" +
-                            "<label>Estudiantes Presentes</label>" +
-                            "<input type='text' oninput='this.value=cantidadEstudiantes(this.value)' name='estudiantesPresentesBloque2_dia3_" + response[i].aplicaciones[j].id + "' id='estudiantesPresentesBloque2_dia3_" + response[i].aplicaciones[j].id + "' class='form-control' value='" + (response[i].aplicaciones[j].presentes_b2 == null ? '' : response[i].aplicaciones[j].presentes_b2) + "'>" +
-                        "</div>" +
-                    "</div>" +
-                    "<div class='row'>" +
-                        "<div class='col-sm-12 pt-2'>" +
-                            "<label>Observaciones Examinador</label>" +
-                            "<textarea rows='4' class='form-control' name='observacionesBloque2_dia3_"+response[i].aplicaciones[j].id+"' id='observacionesBloque2_dia3_"+response[i].aplicaciones[j].id+"'>"+(response[i].aplicaciones[j].observaciones_b2 == null ? '' : response[i].aplicaciones[j].observaciones_b2)+"</textarea>" +
-                        "</div>" +
-                    "</div>" +  
-
-                    "</div>" +
-                    "</div>" +
-                        "<div class='col-sm-12 pt-2' style='padding-left: 0px;padding-right: 0px;'>" +
-                            "<label>Observaciones</label>" +
-                            "<textarea rows='4' class='form-control' name='observaciones_"+response[i].aplicaciones[j].id+"' id='observaciones_"+response[i].aplicaciones[j].id+"'>"+(response[i].aplicaciones[j].observaciones == null ? '' : response[i].aplicaciones[j].observaciones)+"</textarea>" +
-                        "</div>" +
-                        /*"<div class='card-footer text-right sin-bordes bg-white'>"+
-                            "<button type='button' class='btn btn-success' onclick='saveAplicacion( 3,"+response[i].aplicaciones[j].id+");'><i class='fas fa-save'></i>Guardar</button>"+
-                        "</div>"+*/
-                    "</div>" +
-                    "</div>");
-                
-                $(".clockpicker").clockpicker({
-                    placement: 'top',
-                    autoclose: true,
-                    donetext: 'Listo',
-
-                });
-            }else
-
-            //Día 4
-            if (response[i].aplicaciones[j].fecha_agendada == "2018-12-21") {
-                $("#linkDia4").show();    
-
-                $("#divLabsDia4").append(
-                    "<div class='panel-heading card-header'>" +
-                    "<input type='hidden' id='idAplicacionDia4_" + j + "' value='" + response[i].aplicaciones[j].id + "'>" +
-                    "<h5 class='panel-title'>" +
-                    "<a data-toggle='collapse' id='btn" + response[i].aplicaciones[j].id + "' class='nav-link text-dark' href='#collapse" + response[i].aplicaciones[j].id + "'>" + response[i].nombre_dependencia + "<i class='more-less fa fa-chevron-down'></i></a>" +
-                    "</h5>" +
-                    "</div>" +
-
-                    "<div id='collapse" + response[i].aplicaciones[j].id + "' class='panel-collapse collapse pt-2'>" +
-                    "<div class='panel-body'>" +
-                        "<div class='pt-3 pb-3 col-sm-12'>"+
-                            
-                            "<div class='panel-heading card-header _bg-verdeClaro' style='padding-top: 0px;padding-bottom: 0px;'>" +
-                                "<input type='hidden' id='idAplicacionDia1_" + j + "' value='" + response[i].aplicaciones[j].id + "'>" +
-
-                                "<h5 class='panel-title'>" +
-                                "<a data-toggle='collapse' id='btn" + response[i].aplicaciones[j].id + "' class='nav-link text-dark' href='#collapseInfoLab" + response[i].aplicaciones[j].id + "'> Información Laboratorio <i class='more-less fa fa-chevron-down'></i></a>" +
-                                "</h5>" +
-
-                            "</div>" +
-
-                            "<div id='collapseInfoLab" + response[i].aplicaciones[j].id + "' class='card panel-collapse collapse pt-2'>" +
-                                "<div class='panel-body'>" +
-                                    "<div class='pt-3 col-sm-12'>"+
-                                     
-                                        "<div class='row'>" +
-                                            "<div class='col-sm-4'>"+
-                                                "<label>Encargado Apertura</label>"+
-                                                "<h5 id='encargado_"+response[i].aplicaciones[j].id +"'><b>"+(response[i].persona_disponible_apertura == null ? '-' : response[i].persona_disponible_apertura)+"</b></h5>"+
-                                            "</div>"+
-                                            "<div class='col-sm-4'>"+
-                                                "<label>Teléfono Encargado</label>"+
-                                                "<h5 id='telefonoEncargado_"+response[i].aplicaciones[j].id +"'><b>"+(response[i].telefono_persona_apertura == null ? '-' : response[i].telefono_persona_apertura)+"</b></h5>"+
-                                            "</div>"+
-                                            
-                                            "<div class='col-sm-4'>"+
-                                                "<label>Horario Apertura</label>"+
-                                                "<h5 id='horarioApertura_"+response[i].aplicaciones[j].id +"'><b>"+(response[i].horario_apertura == null ? '-' : response[i].horario_apertura.slice(0,-3))+"</b></h5>"+
-                                            "</div>"+
-                                        "</div>" +
-                                        "<div class='row pt-2'>" +
-                                            "<div class='col-sm-6'>"+
-                                                "<label>Dirección</label>"+
-                                                "<h5 id='encargado_"+response[i].aplicaciones[j].id +"'><b>"+(response[i].direccion_dep == null ? '-' : response[i].direccion_dep)+"</b></h5>"+
-                                            "</div>"+
-                                            "<div class='col-sm-6'>"+
-                                                "<label>Facultad</label>"+
-                                                "<h5 id='encargado_"+response[i].aplicaciones[j].id +"'><b>"+(response[i].facultad_sector == null ? '-' : response[i].facultad_sector)+"</b></h5>"+
-                                            "</div>"+
-                                        "</div>" +
-                                        "<div class='row pt-2'>" +
-                                            "<div class='col-sm-12 pt-2'>" +
-                                                "<label>Observaciones Visita Previa</label>" +
-                                                "<h5 id='observacionesLab_"+response[i].aplicaciones[j].id +"'><b>"+(response[i].observaciones == null ? '-' : response[i].observaciones)+"</b></h5>"+
-                                            "</div>" +
-                                        "</div>" +
-                                    "</div>" +      
-                                "</div>" +
-                            "</div>"+
-
-                        "</div>"+
-
-                    "<div class='row mt-2 mb-2'>" +
-                        "<div class='col-sm-12'>" +
-                        "<a class='btn _bg-red text-light' id='"+response[i].aplicaciones[j].fecha_agendada+"' onclick='verContingencias("+response[i].aplicaciones[j].id+", this.id);'><i class='fas fa-exclamation-triangle'_bg-red></i>  Registro de Contingencias</a>" +
-                        "</div>" +
-                    "</div>" +
-                    
-                    "<div class='card'>" +
-                    "<div class='card-header'>" +
-                    "<h6>Bloque 1 - Prueba de Conocimientos Pedagógicos Generales</h6>" +
-                    "</div>" +
-
-                    "<div class='card-body'>" +
-                    "<div class='row'>" +
-                    "<div class='col-sm-4'>" +
-                    "<label>Hora Inicio</label>" +
-                    /*"<input type='time' name='horaInicioBloque1_dia4_" + response[i].aplicaciones[j].id + "' id='horaInicioBloque1_dia4_" + response[i].aplicaciones[j].id + "' class='form-control' value='" + response[i].aplicaciones[j].hora_inicioB1 + "'>" +*/
-                        "<div class='input-group clockpicker'>"+
-                            "<input type='text' class='form-control' name='horaInicioBloque1_dia4_" + response[i].aplicaciones[j].id + "' id='horaInicioBloque1_dia4_" + response[i].aplicaciones[j].id + "'  value='" + (response[i].aplicaciones[j].hora_inicio_b1 == null ? '' : response[i].aplicaciones[j].hora_inicio_b1.slice(0,-3)) + "' onchange='validateHhMm(this);' oninput='this.value=hora(this.value)'>"+
-                            "<span class='input-group-addon'>"+
-                            "<span class='glyphicon glyphicon-time'></span>"+
-                            "</span>"+
-                        "</div>"+
-                        "<span class='error_show' id='formError_horaInicioBloque1_dia4_"+response[i].aplicaciones[j].id+"'></span>"+
-                    "</div>" +
-
-                    "<div class='col-sm-4'>" +
-                    "<label>Hora Termino</label>" +
-                    /*"<input type='time' name='horaTerminoBloque1_dia4_" + response[i].aplicaciones[j].id + "' id='horaTerminoBloque1_dia4_" + response[i].aplicaciones[j].id + "' class='form-control' value='" + response[i].aplicaciones[j].hora_terminoB1 + "'>" +*/
-                        "<div class='input-group clockpicker'>"+
-                            "<input type='text' class='form-control' name='horaTerminoBloque1_dia4_" + response[i].aplicaciones[j].id + "' id='horaTerminoBloque1_dia4_" + response[i].aplicaciones[j].id + "'  value='" + (response[i].aplicaciones[j].hora_termino_b1 == null ? '' : response[i].aplicaciones[j].hora_termino_b1.slice(0,-3)) + "' onchange='validateHhMm(this);' oninput='this.value=hora(this.value)'>"+
-                            "<span class='input-group-addon'>"+
-                            "<span class='glyphicon glyphicon-time'></span>"+
-                            "</span>"+
-                        "</div>"+
-                        "<span class='error_show' id='formError_horaTerminoBloque1_dia4_"+response[i].aplicaciones[j].id+"'></span>"+
-                    "</div>" +
-
-                        "<div class='col-sm-4'>" +
-                            "<label>Estudiantes Presentes</label>" +
-                            "<input type='text' oninput='this.value=cantidadEstudiantes(this.value)' name='estudiantesPresentesBloque1_dia4_" + response[i].aplicaciones[j].id + "' id='estudiantesPresentesBloque1_dia4_" + response[i].aplicaciones[j].id + "' class='form-control' value='" + (response[i].aplicaciones[j].presentes_b1 == null ? '' : response[i].aplicaciones[j].presentes_b1) + "'>" +
-                        "</div>" +
-                    "</div>" +
-                    "<div class='row'>" +
-                        "<div class='col-sm-12 pt-2'>" +
-                            "<label>Observaciones Examinador</label>" +
-                            "<textarea rows='4' class='form-control' name='observacionesBloque1_dia4_"+response[i].aplicaciones[j].id+"' id='observacionesBloque1_dia4_"+response[i].aplicaciones[j].id+"'>"+(response[i].aplicaciones[j].observaciones_b1 == null ? '' : response[i].aplicaciones[j].observaciones_b1)+"</textarea>" +
-                        "</div>" +
-                    "</div>" +  
-
-                    "</div>" +
-                    "</div>" +
-
-                    "<hr class='separador-novisible'>" +
-
-                    "<div class='card'>" +
-                    "<div class='card-header'>" +
-                    "<h6>Bloque 2 - Prueba de Conocimientos Disciplinarios y Didácticos</h6>" +
-                    "</div>" +
-
-                    "<div class='card-body'>" +
-                    "<div class='row'>" +
-                    "<div class='col-sm-4'>" +
-                    "<label>Hora Inicio</label>" +
-                    /*"<input type='time' name='horaInicioBloque2_dia4_" + response[i].aplicaciones[j].id + "' id='horaInicioBloque2_dia4_" + response[i].aplicaciones[j].id + "' class='form-control' value='" + response[i].aplicaciones[j].hora_inicioB2 + "'>" +*/
-                        "<div class='input-group clockpicker'>"+
-                            "<input type='text' class='form-control' name='horaInicioBloque2_dia4_" + response[i].aplicaciones[j].id + "' id='horaInicioBloque2_dia4_" + response[i].aplicaciones[j].id + "'  value='" + (response[i].aplicaciones[j].hora_inicio_b2 == null ? '' : response[i].aplicaciones[j].hora_inicio_b2.slice(0,-3)) + "' onchange='validateHhMm(this);' oninput='this.value=hora(this.value)'>"+
-                            "<span class='input-group-addon'>"+
-                            "<span class='glyphicon glyphicon-time'></span>"+
-                            "</span>"+
-                        "</div>"+
-                        "<span class='error_show' id='formError_horaInicioBloque2_dia4_"+response[i].aplicaciones[j].id+"'></span>"+
-                    "</div>" +
-
-                    "<div class='col-sm-4'>" +
-                    "<label>Hora Termino</label>" +
-                    /*"<input type='time' name='horaTerminoBloque2_dia4_" + response[i].aplicaciones[j].id + "' id='horaTerminoBloque2_dia4_" + response[i].aplicaciones[j].id + "' class='form-control' value='" + response[i].aplicaciones[j].hora_terminoB2 + "'>" +*/
-                        "<div class='input-group clockpicker'>"+
-                            "<input type='text' class='form-control' name='horaTerminoBloque2_dia4_" + response[i].aplicaciones[j].id + "' id='horaTerminoBloque2_dia4_" + response[i].aplicaciones[j].id + "'  value='" + (response[i].aplicaciones[j].hora_termino_b2 == null ? '' : response[i].aplicaciones[j].hora_termino_b2.slice(0,-3)) + "' onchange='validateHhMm(this);' oninput='this.value=hora(this.value)'>"+
-                            "<span class='input-group-addon'>"+
-                            "<span class='glyphicon glyphicon-time'></span>"+
-                            "</span>"+
-                        "</div>"+
-                        "<span class='error_show' id='formError_horaTerminoBloque2_dia4_"+response[i].aplicaciones[j].id+"'></span>"+
-                    "</div>" +
-
-                        "<div class='col-sm-4'>" +
-                            "<label>Estudiantes Presentes</label>" +
-                            "<input type='text' oninput='this.value=cantidadEstudiantes(this.value)' name='estudiantesPresentesBloque2_dia4_" + response[i].aplicaciones[j].id + "' id='estudiantesPresentesBloque2_dia4_" + response[i].aplicaciones[j].id + "' class='form-control' value='" + (response[i].aplicaciones[j].presentes_b2 == null ? '' : response[i].aplicaciones[j].presentes_b2) + "'>" +
-                        "</div>" +
-                    "</div>" +
-                    "<div class='row'>" +
-                        "<div class='col-sm-12 pt-2'>" +
-                            "<label>Observaciones Examinador</label>" +
-                            "<textarea rows='4' class='form-control' name='observacionesBloque2_dia4_"+response[i].aplicaciones[j].id+"' id='observacionesBloque2_dia4_"+response[i].aplicaciones[j].id+"'>"+(response[i].aplicaciones[j].observaciones_b2 == null ? '' : response[i].aplicaciones[j].observaciones_b2)+"</textarea>" +
-                        "</div>" +
-                    "</div>" + 
-
-                    "</div>" +
-                    "</div>" +
-                        "<div class='col-sm-12 pt-2' style='padding-left: 0px;padding-right: 0px;'>" +
-                            "<label>Observaciones</label>" +
-                            "<textarea rows='4' class='form-control' name='observaciones_"+response[i].aplicaciones[j].id+"' id='observaciones_"+response[i].aplicaciones[j].id+"'>"+(response[i].aplicaciones[j].observaciones == null ? '' : response[i].aplicaciones[j].observaciones)+"</textarea>" +
-                        "</div>" +
-                        /*"<div class='card-footer text-right sin-bordes bg-white'>"+
-                            "<button type='button' class='btn btn-success' onclick='saveAplicacion( 4,"+response[i].aplicaciones[j].id+");'><i class='fas fa-save'></i>Guardar</button>"+
-                        "</div>"+*/
-                    "</div>" +
-                    "</div>");
-
-                $(".clockpicker").clockpicker({
-                    placement: 'top',
-                    autoclose: true,
-                    donetext: 'Listo',
-
-                });
-            }else{
-                $("#linkDiaComplementario").show();
-                var idAplicacion = response[i].aplicaciones[j].id;
-
-                $("#divLabsDiaComplementario").append(
-                    "<div class='panel-heading card-header'>" +
-                        "<input type='hidden' id='idAplicacionDia1_" + j + "' value='" + response[i].aplicaciones[j].id + "'>" +
-
-                        "<h5 class='panel-title'>" +
-                        "<a data-toggle='collapse' id='btn" + response[i].aplicaciones[j].id + "' class='nav-link text-dark' href='#collapse" + response[i].aplicaciones[j].id + "'>" + response[i].nombre_dependencia + "  <i class='more-less fa fa-chevron-down'></i></a>" +
-                        "</h5>" +
-
-                    "</div>" +
-
-                    "<div id='collapse" + response[i].aplicaciones[j].id + "' class='panel-collapse collapse pt-2'>" +
-                        "<div class='panel-body'>" +
-
-                            "<div class='pt-3 pb-3 col-sm-12'>"+
-
-                                "<div class='panel-heading card-header _bg-verdeClaro' style='padding-top: 0px;padding-bottom: 0px;'>" +
-                                    "<input type='hidden' id='idAplicacionDia1_" + j + "' value='" + response[i].aplicaciones[j].id + "'>" +
-
-                                    "<h5 class='panel-title'>" +
-                                    "<a data-toggle='collapse' id='btn" + response[i].aplicaciones[j].id + "' class='nav-link text-dark' href='#collapseInfoLab" + response[i].aplicaciones[j].id + "'> Información Laboratorio <i class='more-less fa fa-chevron-down'></i></a>" +
-                                    "</h5>" +
-
-                                "</div>" +
-
-                                "<div id='collapseInfoLab" + response[i].aplicaciones[j].id + "' class='card panel-collapse collapse pt-2'>" +
-                                    "<div class='panel-body'>" +
-                                        "<div class='pt-3 col-sm-12'>"+
-                                         
-                                            "<div class='row'>" +
-                                                "<div class='col-sm-4'>"+
-                                                    "<label>Encargado Apertura</label>"+
-                                                    "<h5 id='encargado_"+response[i].aplicaciones[j].id +"'><b>"+(response[i].persona_disponible_apertura == null ? '-' : response[i].persona_disponible_apertura)+"</b></h5>"+
-                                                "</div>"+
-                                                "<div class='col-sm-4'>"+
-                                                    "<label>Teléfono Encargado</label>"+
-                                                    "<h5 id='telefonoEncargado_"+response[i].aplicaciones[j].id +"'><b>"+(response[i].telefono_persona_apertura == null ? '-' : response[i].telefono_persona_apertura)+"</b></h5>"+
-                                                "</div>"+
-                                                
-                                                "<div class='col-sm-4'>"+
-                                                    "<label>Horario Apertura</label>"+
-                                                    "<h5 id='horarioApertura_"+response[i].aplicaciones[j].id +"'><b>"+(response[i].horario_apertura == null ? '-' : response[i].horario_apertura.slice(0,-3))+"</b></h5>"+
-                                                "</div>"+
-                                            "</div>" +
-                                            "<div class='row pt-2'>" +
-                                                "<div class='col-sm-6'>"+
-                                                    "<label>Dirección</label>"+
-                                                    "<h5 id='encargado_"+response[i].aplicaciones[j].id +"'><b>"+(response[i].direccion_dep == null ? '-' : response[i].direccion_dep)+"</b></h5>"+
-                                                "</div>"+
-                                                "<div class='col-sm-6'>"+
-                                                    "<label>Facultad</label>"+
-                                                    "<h5 id='encargado_"+response[i].aplicaciones[j].id +"'><b>"+(response[i].facultad_sector == null ? '-' : response[i].facultad_sector)+"</b></h5>"+
-                                                "</div>"+
-                                            "</div>" +
-                                            "<div class='row pt-2'>" +
-                                                "<div class='col-sm-12 pt-2'>" +
-                                                    "<label>Observaciones Visita Previa</label>" +
-                                                    "<h5 id='observacionesLab_"+response[i].aplicaciones[j].id +"'><b>"+(response[i].observaciones == null ? '-' : response[i].observaciones)+"</b></h5>"+
-                                                "</div>" +
-                                            "</div>" +
-                                        "</div>" +      
-                                    "</div>" +
-                                "</div>"+
-
-                            "</div>"+
-
-                            "<div class='row mt-2 mb-2'>" +
-                                "<div class='col-sm-12'>" +
-                                "<a class='btn _bg-red text-light' id='"+response[i].aplicaciones[j].fecha_agendada+"' onclick='verContingencias("+response[i].aplicaciones[j].id+", this.id);'><i class='fas fa-exclamation-triangle'_bg-red></i>  Registro de Contingencias</a>" +
-                                "</div>" +
-                            "</div>" +
-
-                            "<div class='card'>" +
-                                "<div class='card-header'>" +
-                                    "<h6>Bloque 1 - Prueba de Conocimientos Pedagógicos Generales</h6>" +
-                                "</div>" +
-
-                                "<div class='card-body'>" +
-                                    "<div class='row'>" +
-                                        "<div class='col-sm-4'>" +
-                                            "<label>Hora Inicio</label>" +
-                                            "<div class='input-group clockpicker'>"+
-                                                "<input disabled type='text' class='form-control' name='horaInicioBloque1_dia1_" + response[i].aplicaciones[j].id + "' id='horaInicioBloque1_dia1_" + response[i].aplicaciones[j].id + "'  value='" + (response[i].aplicaciones[j].hora_inicio_b1 == null ? '' : response[i].aplicaciones[j].hora_inicio_b1.slice(0,-3)) + "' onchange='validateHhMm(this);' oninput='this.value=hora(this.value)' disabled>"+
-                                                "<span class='input-group-addon'>"+
-                                                "<span class='glyphicon glyphicon-time'></span>"+
-                                                "</span>"+
-                                            "</div>"+
-                                            "<span class='error_show' id='formError_horaInicioBloque1_dia1_"+response[i].aplicaciones[j].id+"'></span>"+
-                                        "</div>" +
-
-                                        "<div class='col-sm-4'>" +
-                                            "<label>Hora Termino</label>" +
-                                            /*"<input type='time' name='horaTerminoBloque1_dia1_" + response[i].aplicaciones[j].id + "' id='horaTerminoBloque1_dia1_" + response[i].aplicaciones[j].id + "' class='form-control' value='" + response[i].aplicaciones[j].hora_terminoB1 + "'>" +*/
-                                            "<div class='input-group clockpicker'>"+
-                                                "<input  disabled type='text' class='form-control' name='horaTerminoBloque1_dia1_" + response[i].aplicaciones[j].id + "' id='horaTerminoBloque1_dia1_" + response[i].aplicaciones[j].id + "'  value='" + (response[i].aplicaciones[j].hora_termino_b1 == null ? '' : response[i].aplicaciones[j].hora_termino_b1.slice(0,-3)) + "' onchange='validateHhMm(this);' oninput='this.value=hora(this.value)' disabled>"+
-                                                "<span class='input-group-addon'>"+
-                                                "<span class='glyphicon glyphicon-time'></span>"+
-                                                "</span>"+
-                                            "</div>"+
-                                            "<span class='error_show' id='formError_horaTerminoBloque1_dia1_"+response[i].aplicaciones[j].id+"'></span>"+
+                        `<div  class="card sin-bordes mt-2 " hidden disabled id="cardSeccion1_`+response[i].aplicacion[j].id_aplicacion+`">
+                                    <div class="card-body sin-bordes">
+                                        <div class="row card-header sin-bordes  pr-0" id="infoLab_`+response[i].aplicacion[j].id_aplicacion+`">
+                                            <div class="col-sm-12 text-right" style="display: flex;justify-content: right;">
+                                             <label class='_tex_mora mr-2 pt-2' style="white-space: nowrap;">REGISTRO DE CONTINGENCIAS</label>   
+                                             <a  type="button" class="btn btn-default no_separar" style="border: 1px solid #715BCC; color:#6850C9!important; justify-content: center;"  onclick="crearContingencia(`+response[i].aplicacion[j].id_aplicacion+`)"><i class="fas fa-plus"></i></a>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-sm-12 p-0" style="overflow-x:auto;">
+                                                <table class="table table-sm">
+                                                    <thead class="text-left">
+                                                    <tr style="background: #6850C9;color: #fff;">
+                                                        <th style="width: 10%;">Hora</th>
+                                                        <th>Contingencia</th>
+                                                        <th>Descripción</th>
+                                                        
+                                                    </tr>
+                                                    </thead>
+
+                                                    <tbody class="table-bordered" style="background: #F6F5FB;" id="listaContingencias_`+response[i].aplicacion[j].id_aplicacion+`"></tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="row mb-2" style="display: none;" id="mensajeGuardado_`+response[i].aplicacion[j].id_aplicacion+`">
+                                        <div class="col-sm-4"></div>
+
+                                        <div class="col-sm-4" id="divMensaj_`+response[i].aplicacion[j].id_aplicacion+`e" style="border-radius: 5px 5px 5px 5px;">
+                                            <p id="mensaje" class="mt-1 text-white font-weight-bold"></p>
+                                        </div>
+
+                                        <div class="col-sm-4"></div>
+                                    </div>
+                                </div>
+
+                                <div class="modal fade" id="modalContingencia_`+response[i].aplicacion[j].id_aplicacion+`" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLabel_`+response[i].aplicacion[j].id_aplicacion+`">Nueva Contingencia</h5>
+                                                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">×</span>
+                                                </button>
+                                            </div>
+
+                                            <div class="modal-body">
+                                                <div class="row">
+                                                    <div class="col-sm-12">
+                                                        <label>Tipo</label>
+                                                        <select class="form-control custom-select" id="tipoContingencia_`+response[i].aplicacion[j].id_aplicacion+`" name="tipoContingencia_`+response[i].aplicacion[j].id_aplicacion+`">
+                                                            <option value="-1">Seleccione Tipo</option>
                                                             
-                                        "</div>" +
+                                                        </select>
+                                                    </div>
+                                                </div>
 
-                                        "<div class='col-sm-4'>" +
-                                            "<label>Estudiantes Presentes</label>" +
-                                            "<input disabled type='text' oninput='this.value=cantidadEstudiantes(this.value)' oninput='this.value=cantidadEstudiantes(this.value)' name='estudiantesPresentesBloque1_dia1_" + response[i].aplicaciones[j].id + "' id='estudiantesPresentesBloque1_dia1_" + response[i].aplicaciones[j].id + "' class='form-control' value='" + (response[i].aplicaciones[j].presentes_b1 == null ? '' :response[i].aplicaciones[j].presentes_b1) + "'  disabled>" +
-                                        "</div>" +
-                                    "</div>" +
-                                    "<div class='row'>" +
-                                        "<div class='col-sm-12 pt-2'>" +
-                                            "<label>Observaciones Examinador</label>" +
-                                            "<textarea disabled rows='4' class='form-control' name='observacionesBloque1_dia1_"+response[i].aplicaciones[j].id+"' id='observacionesBloque1_dia1_"+response[i].aplicaciones[j].id+"'  disabled>"+(response[i].aplicaciones[j].observaciones_b1 == null ? '' : response[i].aplicaciones[j].observaciones_b1)+"</textarea>" +
-                                        "</div>" +
-                                    "</div>" +  
-                                "</div>" +
-                            "</div>" +
 
-                            "<hr class='separador-novisible'>" +
+                                                <div class="row pt-2">
+                                                    <div class="col-sm-12">
+                                                        <label>Descripción</label>
+                                                        <textarea class="form-control" rows="3" id="descripcionContingencia_`+response[i].aplicacion[j].id_aplicacion+`" name="descripcionContingencia_`+response[i].aplicacion[j].id_aplicacion+`"></textarea>
+                                                    </div>
+                                                </div>
+                                            </div>
 
-                            "<div class='card mb-2'>" +
-                                "<div class='card-header'>" +
-                                    "<h6>Bloque 2 - Prueba de Conocimientos Disciplinarios y Didácticos</h6>" +
-                                "</div>" +
+                                            <div class="modal-footer">
+                                                <button class="btn btn-info" type="button" data-dismiss="modal"><i class="fas fa-times"></i>  Cancelar</button>
+                                                <a class="btn btn-success" style="color:#fff;" onclick="nuevaContingencia()"><i class="fas fa-save"></i>  Guardar</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>`);
+                        $("#superobs").attr("disabled", true);
+                        $("#superobs").attr("hidden", true);
 
-                                "<div class='card-body'>" +
-                                    "<div class='row'>" +
-                                        "<div class='col-sm-4'>" +
-                                            "<label>Hora Inicio</label>" +
-                                            /*"<input type='time' name='horaInicioBloque2_dia1_" + response[i].aplicaciones[j].id + "' id='horaInicioBloque2_dia1_" + response[i].aplicaciones[j].id + "' class='form-control' value='" + response[i].aplicaciones[j].hora_inicioB2 + "'>" +*/
-                                            "<div class='input-group clockpicker'>"+
-                                                "<input disabled type='text' class='form-control' name='horaInicioBloque2_dia1_" + response[i].aplicaciones[j].id + "' id='horaInicioBloque2_dia1_" + response[i].aplicaciones[j].id + "'  value='" + (response[i].aplicaciones[j].hora_inicio_b2 == null ? '' : response[i].aplicaciones[j].hora_inicio_b2.slice(0,-3)) + "' onchange='validateHhMm(this);' oninput='this.value=hora(this.value)'  disabled>"+
-                                                "<span class='input-group-addon'>"+
-                                                "<span class='glyphicon glyphicon-time'></span>"+
-                                                "</span>"+
-                                            "</div>"+
-                                            "<span class='error_show' id='formError_horaInicioBloque2_dia1_"+response[i].aplicaciones[j].id+"'></span>"+
-                                        "</div>" +
+                     $("#selectbloque").change(function () {
+                           if($('#selectbloque').val() == 1){
+                                
+                                $('#bloqueuno').removeAttr('hidden');
+                                $('#bloqueuno').show();
+                                $('#bloquedos').hide();
+                            }
+                            
+                           if($('#selectbloque').val() == 2){
+                                
+                                $('#bloquedos').removeAttr('hidden');
+                                $('#bloquedos').show();
+                                $('#bloqueuno').hide();
+                            } 
+                        });
+                     if(localStorage.getItem('supervisa')=="true"){
+                        $("#superobs").attr("disabled", false);
+                        $("#superobs").attr("hidden", false);
+                        $("#cardSeccion1_" + response[i].aplicacion[j].id_aplicacion).prop('disabled', false);
+                        $("#cardSeccion1_" + response[i].aplicacion[j].id_aplicacion).prop('hidden', false);
+                     }
 
-                                        "<div class='col-sm-4'>" +
-                                            "<label>Hora Termino</label>" +
-                                            /*"<input type='time' name='horaTerminoBloque2_dia1_" + response[i].aplicaciones[j].id + "' id='horaTerminoBloque2_dia1_" + response[i].aplicaciones[j].id + "' class='form-control' value='" + response[i].aplicaciones[j].hora_terminoB2 + "'>" +*/
-                                            "<div class='input-group clockpicker'>"+
-                                                "<input disabled type='text' class='form-control' name='horaTerminoBloque2_dia1_" + response[i].aplicaciones[j].id + "' id='horaTerminoBloque2_dia1_" + response[i].aplicaciones[j].id + "'  value='" + (response[i].aplicaciones[j].hora_termino_b2 == null ? '' : response[i].aplicaciones[j].hora_termino_b2.slice(0,-3)) + "' onchange='validateHhMm(this);' oninput='this.value=hora(this.value)'  disabled>"+
-                                                "<span class='input-group-addon'>"+
-                                                "<span class='glyphicon glyphicon-time'></span>"+
-                                                "</span>"+
-                                            "</div>"+
-                                            "<span class='error_show' id='formError_horaTerminoBloque2_dia1_"+response[i].aplicaciones[j].id+"'></span>"+
-                                        "</div>" +
+                     if(localStorage.getItem('examina')=="true"){
+                        $("#horaInicioBloque1_dia1_" + response[i].aplicacion[j].id_aplicacion).prop('disabled', false);
+                        $("#horaTerminoBloque1_dia1_" + response[i].aplicacion[j].id_aplicacion).prop('disabled', false);
+                        $("#estudiantesPresentesBloque1_dia1_" + response[i].aplicacion[j].id_aplicacion).prop('disabled', false);
+                        $("#observacionesBloque1_dia1_" + response[i].aplicacion[j].id_aplicacion).prop('disabled', false);
+                        $("#laboratorio_btn1_" + response[i].aplicacion[j].id_aplicacion).prop('disabled', false);
+                        $("#laboratorio_btn1_" + response[i].aplicacion[j].id_aplicacion).prop('hidden', false);
 
-                                        "<div class='col-sm-4'>" +
-                                            "<label>Estudiantes Presentes</label>" +
-                                            "<input disabled type='text' oninput='this.value=cantidadEstudiantes(this.value)' oninput='this.value=cantidadEstudiantes(this.value)' name='estudiantesPresentesBloque2_dia1_" + response[i].aplicaciones[j].id + "' id='estudiantesPresentesBloque2_dia1_" + response[i].aplicaciones[j].id + "' class='form-control' value='" + (response[i].aplicaciones[j].presentes_b2 == null ? '' : response[i].aplicaciones[j].presentes_b2) + "'  disabled>" +
-                                        "</div>" +
-                                    "</div>" +
-                                    "<div class='row'>" +
-                                        "<div class='col-sm-12 pt-2'>" +
-                                            "<label>Observaciones Examinador</label>" +
-                                            "<textarea disabled rows='4' class='form-control' name='observacionesBloque2_dia1_"+response[i].aplicaciones[j].id+"' id='observacionesBloque2_dia1_"+response[i].aplicaciones[j].id+"'  disabled>"+(response[i].aplicaciones[j].observaciones_b2 == null ? '' : response[i].aplicaciones[j].observaciones_b2)+"</textarea>" +
-                                        "</div>" +
-                                    "</div>" +  
-                                "</div>" +
-                        
-                            "</div>" +
-/*
-                            "<div class='col-sm-12 pt-2' style='padding-left: 0px;padding-right: 0px;'>" +
-                                "<label>Observaciones Laboratorio</label>" +
-                                "<textarea rows='4' disabled class='form-control' name='observaciones_"+response[i].aplicaciones[j].id+"' id='observaciones_"+response[i].aplicaciones[j].id+"'  disabled>"+(response[i].aplicaciones[j].observaciones == null ? '' : response[i].aplicaciones[j].observaciones)+"</textarea>" +
-                            "</div>" +*/
-
-                            "<div class='col-sm-12 pt-2' style='padding-left: 0px;padding-right: 0px;'>" +
-                                "<label>Observaciones Supervisor</label>" +
-                                "<textarea rows='4' class='form-control' name='observaciones_supervisor_"+response[i].aplicaciones[j].id+"' id='observaciones_supervisor_"+response[i].aplicaciones[j].id+"' >"+(response[i].aplicaciones[j].observaciones_supervisor == null ? '' : response[i].aplicaciones[j].observaciones_supervisor)+"</textarea>" +
-                            "</div>" +
-
-                            "<div class='card-footer text-right sin-bordes bg-white'>"+
-                                "<button type='button' class='btn btn-success' onclick='saveAplicacion("+response[i].aplicaciones[j].id+");'><i class='fas fa-save'></i>Guardar</button>"+
-                            "</div>"+
-
-                        "</div>" +
-                    "</div>");
+                        $("#horaInicioBloque2_dia1_" + response[i].aplicacion[j].id_aplicacion).prop('disabled', false);
+                        $("#horaTerminoBloque2_dia1_" + response[i].aplicacion[j].id_aplicacion).prop('disabled', false);
+                        $("#estudiantesPresentesBloque2_dia1_" + response[i].aplicacion[j].id_aplicacion).prop('disabled', false);
+                        $("#observacionesBloque2_dia1_" + response[i].aplicacion[j].id_aplicacion).prop('disabled', false);
+                        $("#laboratorio_btn2_" + response[i].aplicacion[j].id_aplicacion).prop('disabled', false);
+                        $("#laboratorio_btn2_" + response[i].aplicacion[j].id_aplicacion).prop('hidden', false);
+                       
+                     }
 
                     $(".clockpicker").clockpicker({
                         placement: 'top',
@@ -1162,9 +683,12 @@ function listerDependencias(response) {
                         donetext: 'Listo',
 
                     });
-            
-
             }
+            }
+           
+
+            
+            
 
         }
     }
@@ -1205,6 +729,106 @@ function listerDependencias(response) {
     $("#cardSeccion2").show();
 }
 
+var contin;
+
+function getContingencias() {
+    for (var i = 0; i < dep.length; i++) {
+        
+        //Aplicaciones
+        for (var j = 0; j < dep[i].aplicacion.length; j++) {
+            var dia1=$("#dia").val();
+            var dia2="Día: "+moment(dep[i].aplicacion[j].fecha_agendada).format("DD-MM-YYYY");
+            console.log(dia1+dia2)
+             if (dia1 == dia2 ) {
+                $.ajax({
+                    method: 'GET',
+                    url: 'https://dev.diagnosticafid.cl/public/api/laboratorio/indexlab',
+                    crossDomain: true,
+                    dataType: 'json',
+                    data:{
+                        idaplicacion: respse,
+                        fechaaplicacion: dep[i].aplicacion[j].fecha_agendada
+                    },
+                    success: function (data, textStatus, jqXHR) {
+                        console.log(data);
+                        contin=data
+                        listarContingencias(data);
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                         $.unblockUI();
+                        console.log(errorThrown)
+                    }
+                }); 
+             }
+        }
+    }
+   
+}
+
+function listarContingencias(response) {
+ 
+    
+
+    $("#listaContingencias_"+respse).empty();
+
+    if (response['contingencias'].length > 0){
+      
+        for(var i = 0; i < response['contingencias'].length; i++){
+            console.log(response['contingencias'])
+            $("#listaContingencias_"+respse).append(
+                "<tr>" +
+                "<td>"+ moment(response['contingencias'][i].created_at).format("HH:MM") +" </td>" +
+                "<td>"+ response['contingencias'][i].tipo_contingencia +" </td>" +
+                "<td>"+ response['contingencias'][i].contingencia +"</td>" +
+                
+                "</tr>"
+            );
+ 
+        //$('#estado_'+i).val(response['contingencias'][i].id_tabla_maestra)
+    }
+    }else{
+
+        $("#listaContingencias_"+respse).append(
+            "<tr>" +
+            "<td colspan='4'>No existen contigencias</td>" +
+            "</tr>");
+    }
+    $('#infoLab').show();
+
+    $.unblockUI();
+    
+}
+
+function getTipoContingencia() {
+    $.ajax({
+        method: 'GET',
+        url: 'https://dev.diagnosticafid.cl/public/api/laboratorio/indexbydiscriminador',
+        crossDomain: true,
+        dataType: 'json',
+        success: function (data, textStatus, jqXHR) {
+            console.log(data);
+            listarTiposContingencia(data);
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            console.log(errorThrown)
+        }
+    });
+}
+
+function crearContingencia(response){
+    console.log(response)
+    $('#tipoContingencia_'+respse).val('-1')
+    $('#descripcionContingencia_'+respse).val('')
+    $('#modalContingencia_'+respse).modal('show');
+}
+
+
+function listarTiposContingencia(response) {
+    for(var i = 0; i < response.length; i++){
+        $("#tipoContingencia_"+respse).append("<option value='" + response[i].id_tabla_maestra + "'>" + response[i].descripcion_larga + "</option>");
+    }
+}
+
 function verContingencias(idAplicacion,fechaAgendada) {
     localStorage.region = $('#selectRegion').val();
     localStorage.universidad = $('#universidad').val();
@@ -1213,6 +837,110 @@ function verContingencias(idAplicacion,fechaAgendada) {
     location.href = 'contingenciasSupervisorComplementaria.php?idaplicacion='+idAplicacion+'&fecha='+fechaAgendada
 }
 
+
+function nuevaContingencia(){
+    console.log(respse)
+    $.blockUI({ message: '<img src="img/carga.svg">' });
+    $('#modalContingencia_'+respse).modal('hide');
+    var tipo = $('#tipoContingencia_'+respse).val()
+    var descripcion = $('#descripcionContingencia_'+respse).val()
+    var aplicaciones_id = respse
+    
+    $.ajax({
+        method: 'POST',
+        url: 'https://dev.diagnosticafid.cl/public/api/laboratorio/saveContingencia',
+        crossDomain: true,
+        dataType: 'json',
+        data: {
+            aplicaciones_id : aplicaciones_id,
+            tipos_contingencia_id : tipo,
+            contingencia : descripcion
+        },
+        success: function (data, textStatus, jqXHR) {
+            getContingencias();
+            console.log(data)
+            $.blockUI({  baseZ: 2000, message: '<h5>La contingencia se almaceno exitosamente</h5>' });
+            
+        },
+
+        error: function (jqXHR, textStatus, errorThrown) {
+            console.log(errorThrown)
+        }
+    });
+
+}
+
+function guardabloque(id){
+   var b1_h_i;
+   var b1_h_t;
+   var b1_p;
+   var b1_ob;
+   var b2_h_i;
+   var b2_h_t;
+   var b2_p;
+   var b2_ob;
+   if(id==1){
+    var b1_h_i= $("#horaInicioBloque1_dia1_"+respse).val();
+    var b1_h_t= $("#horaTerminoBloque1_dia1_"+respse).val();
+    var b1_p= $("#estudiantesPresentesBloque1_dia1_"+respse).val();
+    var b1_ob= $("#observacionesBloque1_dia1_"+respse).val();
+    
+   }
+    if(id==2){
+        
+    var b2_h_i= $("#horaInicioBloque2_dia1_"+respse).val();
+    var b2_h_t= $("#horaTerminoBloque2_dia1_"+respse).val();
+    var b2_p= $("#estudiantesPresentesBloque2_dia1_"+respse).val();
+    var b2_ob= $("#observacionesBloque2_dia1_"+respse).val();
+    
+    }
+       
+        
+   
+
+    $.blockUI({ message: '<img src="img/carga.svg">' });
+    $.ajax({
+        method: 'POST',
+        url: 'https://dev.diagnosticafid.cl/public/api/laboratorio/saveBlock',
+        crossDomain: true,
+        dataType: 'json',
+        data: {
+            id: respse,
+            b1_hora_inicio: b1_h_i,                 
+            b1_hora_termino: b1_h_t,                    
+            b1_presentes: b1_p,            
+            b1_observaciones: b1_ob,
+
+            b2_hora_inicio: b2_h_i,                  
+            b2_hora_termino: b2_h_t,                    
+            b2_presentes: b2_p,            
+            b2_observaciones: b2_ob,
+
+            observaciones_supervisor: $("#observaciones_" + respse).val()
+        },
+        success: function (data, textStatus, jqXHR) {
+            if(data.resultado == 'ok'){
+
+                $.blockUI({  baseZ: 2000, message: '<h5>Los datos han sido almacenados exitosamente</h5>' });
+                setTimeout(function(){
+                    $.unblockUI(); 
+                }, 2000);
+
+            }else{
+                alert(JSON.stringify(data.descripcion))
+                $.unblockUI();
+
+            }
+             
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            alert(JSON.stringify(JSON.parse(jqXHR.responseText).descripcion))
+            $.unblockUI();  
+            console.log(errorThrown)
+
+        }
+    });
+}
 
 function ocultar(){
  

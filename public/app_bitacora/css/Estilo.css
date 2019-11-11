@@ -2,10 +2,10 @@
     background-image: url("../img/fondo_login.png");
 }*/
 body{
-    background-color: #F8F9F9;
-    font-family: 'Niramit', sans-serif !important;
-
-    position:absolute; left:50px;  width:810; height:650px; z-index:300;
+    
+    /*font-family: 'Niramit', sans-serif !important;*/
+font-color:#cccccc;
+   
 }
 .fondo {
     background: #fff url('../img/foto_ENDFID_2019.jpg') no-repeat;
@@ -16,14 +16,84 @@ body{
     
 }
 
+/*ENCABEZADO*/
+.encabezado{
+    background-color: #6850C9;
+    color:white;
+    padding:10px;
+    top: 0px;
+    position: absolute;
+    width: 100%;
+    max-width: 810px;
+    z-index: 810px;
+  /*margin-top: -20px;*/
+}
 
+.dropdown-menu.show {
+    top: 22px !important;
+    width:auto;
+}
+
+
+._container-form {
+    padding-top: 20px;
+    /* padding-left: 50px; */
+    /* padding-right: 50px; */
+    padding-left: 0px;
+    padding-right: 0px;
+}
+.card-centros{
+    background: #fff;
+    height: 240px; 
+    /* width: 75em; */
+    box-shadow: 0px 1px 15px rgba(0,0,0,0.2);
+    border-radius: 25px;
+    padding: 8px 30px;
+    margin-bottom: 20px;
+    /* padding-left: 5% !important; */
+}
+
+#containerCentros{
+    padding-left: 7%;
+    padding-right: 7%;
+    padding-top: 0%;
+}
+
+.cardLinea{
+    margin-bottom: 0.5rem !important;
+    /*border-top: 3px solid #03a9f4;*/
+    border-top: 3px solid #6850C9;
+}
+
+.card-aling{
+    position: absolute;
+    top: 20%;
+    left: 25%;
+    /* height: 30%; */
+    width: 100%;
+    margin: -11% -9px 4px -17%;
+}
+
+
+.modbody{
+  /* height: 650px; */
+  width: 100%;
+  overflow-y: auto;
+}
+
+.content {
+  max-width: 810px!important;
+  margin: auto;
+}
 
 .login {
-    margin: auto; 
+    margin-left: auto !important;
+    margin-right: auto !important;
+    justify-content: center;
     max-width: 380px;
     text-align: center;
     color: #6850C9;
-    position: relative;
+    position: center;
     margin-top: 60px;
     margin-bottom: 60px;
 }
@@ -42,6 +112,19 @@ body{
     background-color: #c0c0c0;
     height: 1px;
     border-radius: 18px 18px 18px 18px;
+}
+
+.block {
+  background: rgba(0, 0, 0, .3) url('https://thumbs.gfycat.com/LameDifferentBalloonfish-max-1mb.gif') no-repeat;
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 999;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-position: center;
 }
 
 .separador-novisible{
@@ -73,28 +156,36 @@ body{
 }
 
 ._nav{
-    background-color: #3d51b5;
-    height: 80px;
-    position: relative;
-    z-index: 999;
+    background-color: #6850C9;
+   
+    background-size: cover;
+    height: auto;
 }
 
 ._nav-left{
-    background-color: #3d51b5;
+    background-color: #6850C9;
     height: 80px;
     position: relative;
     z-index: 999;
 }
 
 ._nav-center{
-    padding-top: 23px;
-    padding-left: 30px;
+    margin-left: 30px;
 }
 
 ._nav-right{
-    width: 20%;
-    padding-top: 29px;
-    padding-right: 30px;
+    width: 25%;
+    margin-top: 10px;
+    margin-left: -20px;
+
+}
+
+.no_separar{
+        white-space:nowrap;
+    }
+
+._tex_mora{
+ color: #6850C9;
 }
 
 ._bg_gris{
@@ -133,8 +224,19 @@ body{
     color: red;
 }
 
+.blackout{
+    pointer-events: none;
+    opacity: 0.5;
+    background: #CCC;
+    
+}
+
 ._text-green{
     color: green;
+}
+
+#cardSeccion1, #cardSeccion3{
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
 .colo-m{
@@ -177,6 +279,18 @@ input{
 #documento_1, #documento_2, #documento_3, #documento_4{
     padding: 0px;
     margin-bottom: -1px;
+}
+
+
+.card-centros{
+    background: #fff;
+    height: 210px; 
+    
+    margin: 1%;
+    /* width: 75em; */
+    box-shadow: 0px 1px 15px rgba(0,0,0,0.2);
+    border-radius: 25px;
+   
 }
 
 .text-white{
@@ -282,7 +396,12 @@ input{
 }
 .text-wit{
     color: #fff;
-    font-size: 14px;
+    font-size: 11px;
+}
+
+.texto-withe{
+    color: #fff;
+    font-size: 7px;
 }
 
 .ml-4{
@@ -324,4 +443,46 @@ input{
 
 #compRun{
     margin-bottom: 0px;
+}
+
+#form_endfid{
+    margin-top: 10%;
+    }
+.mg_top{
+    margin-top: 10%!important;
+}
+@media(max-width: 575px){
+    #form_endfid{
+            margin-top: 21%;
+    }
+    .mg_top{
+    margin-top: 17%!important;
+    }
+}
+@media(max-width: 476px){
+    #form_endfid{
+            margin-top: 25%;
+    }
+    .mg_top{
+    margin-top: 23%!important;
+    }
+}
+
+@media(max-width: 400px){
+    #form_endfid{
+            margin-top: 30%;
+    }
+    .mg_top{
+    margin-top: 25%!important;
+    }
+}
+@media(max-width: 575px){
+    .card-centros{
+        height: 185px;
+        margin-top: 8%;
+    }
+    .paaddtop{
+      padding-top: 6%;  
+    }
+    
 }

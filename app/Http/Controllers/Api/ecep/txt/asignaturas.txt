@@ -1,0 +1,87 @@
+10	Ed. Especial Trastorno Específico del Lenguaje
+38	Ed. Media Técnico Profesional Metalurgia Extractiva
+19	Ed. Media Científico Humanista Artes Visuales
+61	Ed. Básica Primer Ciclo Generalista
+9	Ed. Especial Dificultades Específicas del Aprendizaje
+26	Ed. Media Técnico Profesional Contabilidad
+60	Ed. Parvularia
+17	Ed. Media Científico Humanista Historia, Geografía y Ciencias Sociales
+66	Ed. Básica Segundo Ciclo Matemática
+12	Ed. Media Científico Humanista Matemática
+63	Ed. Básica Segundo Ciclo Lenguaje y Comunicación
+85	Ed. Adultos Ed. Media Ciencias Naturales - Biología
+14	Ed. Media Científico Humanista Química
+5	Ed. Adultos Ed. Media Estudios Sociales
+71	Ed. Básica Segundo Ciclo Historia, Geografía y Ciencias Sociales
+16	Ed. Media Científico Humanista Biología
+11	Ed. Media Científico Humanista Lenguaje y Comunicación
+30	Ed. Media Técnico Profesional Mecánica Automotriz
+64	Ed. Básica Segundo Ciclo Educación Física
+15	Ed. Media Científico Humanista Religión Católica
+67	Ed. Básica Segundo Ciclo Religión Católica
+32	Ed. Media Técnico Profesional Operaciones Portuarias
+31	Ed. Media Técnico Profesional Atención de Enfermería
+62	Ed. Básica Segundo Ciclo Tecnología
+18	Ed. Media Científico Humanista Educación Física
+37	Ed. Media Técnico Profesional Telecomunicaciones
+65	Ed. Básica Segundo Ciclo Ciencias Naturales
+68	Ed. Básica Segundo Ciclo Artes Visuales
+80	Ed. Especial Discapacidad Intelectual
+1	Ed. Adultos Ed. Media Educación Matemática
+29	Ed. Media Técnico Profesional Atención de Párvulos
+35	Ed. Media Técnico Profesional Electricidad
+40	Ed. Media Técnico Profesional Electrónica
+3	Ed. Adultos Ed. Media Lengua Castellana y Comunicación
+4	Ed. Adultos Ed. Básica Lengua Castellana y Comunicación
+23	Ed. Media Científico Humanista Tecnología
+70	Ed. Básica Segundo Ciclo Religión Evangélica
+91	Ed. Media Técnico Profesional Mecánica Industrial, mención mantenimiento máquinas-herramientas
+20	Ed. Media Científico Humanista Física
+7	Ed. Adultos Ed. Básica Ciencias Naturales
+53	Ed. Media Técnico Profesional Elaboración Industrial de Alimentos
+8	Ed. Adultos Ed. Básica Educación Matemática
+89	Ed. Media Técnico Profesional Administración, mención recursos humanos
+39	Ed. Media Técnico Profesional Asistencia en Geología
+36	Ed. Media Técnico Profesional Construcciones Metálicas
+33	Ed. Media Técnico Profesional Gastronomía
+6	Ed. Adultos Ed. Básica Estudios Sociales
+46	Ed. Media Técnico Profesional Explotación Minera
+50	Ed. Media Técnico Profesional Programación
+24	Ed. Media Científico Humanista Religión Evangélica
+21	Ed. Media Científico Humanista Filosofía y Psicología
+49	Ed. Media Técnico Profesional Servicios de Hotelería
+2	Ed. Adultos Ed. Media Inglés
+72	Ed. Básica Segundo Ciclo Inglés
+13	Ed. Media Científico Humanista Inglés
+69	Ed. Básica Segundo Ciclo Música
+22	Ed. Media Científico Humanista Música
+42	Ed. Media Técnico Profesional Servicios de Turismo
+28	Ed. Media Técnico Profesional Química Industrial
+45	Ed. Media Técnico Profesional Construcción
+88	Ed. Media Técnico Profesional Administración, mención logística
+47	Ed. Media Técnico Profesional Dibujo Técnico
+87	Ed. Adultos Ed. Media Ciencias Naturales - Química
+74	Ed. Media Técnico Profesional Agropecuaria, mención Agricultura
+52	Ed. Media Técnico Profesional Acuicultura
+51	Ed. Media Técnico Profesional Conectividad y Redes
+86	Ed. Adultos Ed. Media Ciencias Naturales - Física
+90	Ed. Media Técnico Profesional Mecánica Industrial mención mantenimiento electromecánico
+44	Ed. Media Técnico Profesional Montaje Industrial
+54	Ed. Media Técnico Profesional Vestuario y Confección Textil
+55	Ed. Media Técnico Profesional Muebles y Terminaciones en madera
+84	Ed. Especial Trastorno del Espectro Autista-Disfasia Severa
+48	Ed. Media Técnico Profesional Refrigeración y Climatización
+43	Ed. Media Técnico Profesional Gráfica
+83	Ed. Especial Discapacidad Múltiple
+75	Ed. Media Técnico Profesional Agropecuaria, mención Pecuaria
+82	Ed. Especial Discapacidad Auditiva
+25	Ed. Media Científico Humanista Francés
+56	Ed. Media Técnico Profesional Instalaciones Sanitarias
+57	Ed. Media Técnico Profesional Forestal
+59	Ed. Media Técnico Profesional Mecánica de mantenimiento de aeronaves
+81	Ed. Especial Discapacidad Visual
+73	Ed. Básica Segundo Ciclo Francés
+58	Educación Media Técnico Profesional Tripulación de Naves Mercantes y Especiales
+76	Ed. Media Técnico Profesional Agropecuaria, mención Vitivinícola
+78	Educación Media Técnico Profesional Pesquería
+92	Ed. Media Técnico Profesional Mecánica Industrial, mención matricería

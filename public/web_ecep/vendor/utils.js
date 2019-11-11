@@ -32,6 +32,15 @@ function redirectCentro() {
 function redirectPersonal() {
     location.href = serverRedirect + '/personal.html'
 } 
+
+function redirectCapacitacion() {
+    location.href = serverRedirect + '/capacitacion.html'
+}
+
+function redirectAsignacion(){
+    location.href = serverRedirect + '/asignacion.html'
+}
+
 function ocultarLoading(){
     $(".loader-page").css({visibility:"hidden",opacity:"0"})
 }

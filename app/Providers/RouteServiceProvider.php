@@ -157,11 +157,11 @@ class RouteServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    // protected function mapApiBitacoraRoutes()
-    // {
-        // Route::prefix('api')
-             // ->middleware('api')
-             // ->namespace($this->namespace)
-             // ->group(base_path('routes/api/bitacora.php'));
-    // }
+     // protected function mapApiBitacoraRoutes()
+     // {
+     //     Route::prefix('api')
+     //        ->middleware('api')
+     //        ->namespace($this->namespace)
+     //        ->group(base_path('routes/api/bitacora.php'));
+     // }
 }

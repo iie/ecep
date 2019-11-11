@@ -1,5 +1,5 @@
 $(document).ready(function(){
-	$('#nombre_usuario').html(JSON.parse(localStorage.user).nombres+' '+JSON.parse(localStorage.user).apellidos+' ')
+    $('#nombre_usuario').html(JSON.parse(localStorage.user).nombres+' '+JSON.parse(localStorage.user).apellidos+' ')
     $('#redirect').css('display','');
     $('#redirect').on('click',redirectModulo);
 
@@ -9,39 +9,38 @@ $(document).ready(function(){
     .then(response => response.text())
     .then(contents => llenarVista(contents))
     .catch(() => console.log("Can’t access " + url + " response. Blocked by browser?"))
-    grafico(1)
 
     $('#tipoGrafico').niceSelect();    
     $('._selectGrafico').on('change',cambiarGrafico)
     //getDatos()
+    grafico(1)
 });
 
 function getDatos(){
-	$.ajax({
-	    method:'GET',
-	    url: 'https://ufro.gruposentte.cl/index.php/CReportes/cargarTablaEstados',
-	    headers: {
+    $.ajax({
+        method:'GET',
+        url: 'https://ufro.gruposentte.cl/index.php/CReportes/cargarTablaEstados',
+        headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
     },
-	    crossDomain: true,
-	    dataType:'json',
-	    success: function(data, textStatus, jqXHR) {
-	        var dosobt = JSON.parse(data);
-	        llenarVista(dosobt);
-	    },
-	    error: function(jqXHR, textStatus, errorThrown) {
-	        showFeedback("error","Error en el servidor","Datos incorrectos");
-	        console.log("error del servidor, datos incorrectos");
-	    }
+        crossDomain: true,
+        dataType:'json',
+        success: function(data, textStatus, jqXHR) {
+            var dosobt = JSON.parse(data);
+            llenarVista(dosobt);
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            showFeedback("error","Error en el servidor","Datos incorrectos");
+            console.log("error del servidor, datos incorrectos");
+        }
 
-	})
+    })
 }
 
-
 function llenarVista(data){
- 
+    
     data= JSON.parse(data)
-        console.log(data)
+  
     if(data.length != 0){
         if($.fn.dataTable.isDataTable('#table-tracking')){
             $('#table-tracking').DataTable().destroy();
@@ -80,6 +79,8 @@ function llenarVista(data){
                         return 'SI'
                     }else if(data.includes('cross')){
                         return 'NO'
+                    }else {
+                        return '-'
                     }
                 }
             },
@@ -89,6 +90,8 @@ function llenarVista(data){
                         return 'SI'
                     }else if(data.includes('cross')){
                         return 'NO'
+                    }else {
+                        return '-'
                     }
                 }
             },
@@ -98,6 +101,8 @@ function llenarVista(data){
                         return 'SI'
                     }else if(data.includes('cross')){
                         return 'NO'
+                    }else {
+                        return '-'
                     }
                 }
             },
@@ -107,6 +112,8 @@ function llenarVista(data){
                         return 'SI'
                     }else if(data.includes('cross')){
                         return 'NO'
+                    }else {
+                        return '-'
                     }
                 }
             },
@@ -116,6 +123,8 @@ function llenarVista(data){
                         return 'SI'
                     }else if(data.includes('cross')){
                         return 'NO'
+                    }else {
+                        return '-'
                     }
                 }
             },
@@ -125,6 +134,8 @@ function llenarVista(data){
                         return 'SI'
                     }else if(data.includes('cross')){
                         return 'NO'
+                    }else {
+                        return '-'
                     }
                 }
             },
@@ -134,6 +145,8 @@ function llenarVista(data){
                         return 'SI'
                     }else if(data.includes('cross')){
                         return 'NO'
+                    }else {
+                        return '-'
                     }
                 }
             },
@@ -220,29 +233,65 @@ function btnClearFilters(){
 
  
 function cambiarGrafico (){
-    console.log($('._selectGrafico  .selected').attr('data-value'))
+  
     grafico($('._selectGrafico  .selected').attr('data-value'))
 }
 
 function grafico(tipo){
 
-    arreglo1 = JSON.parse('[["ANTOFAGASTA","ARICA Y PARINACOTA","ATACAMA","AYS\u00c9N DEL GENERAL CARLOS IBA\u00d1EZ DEL CAMPO","BIOB\u00cdO","COQUIMBO","LA ARAUCAN\u00cdA","LIBERTADOR BERNARDO O\u00b4HIGGINS","LOS LAGOS","LOS R\u00cdOS","MAGALLANES Y DE LA ANT\u00c1RTICA CHILENA","MAULE","METROPOLITANA DE SANTIAGO","\u00d1UBLE","TARAPAC\u00c1","VALPARA\u00cdSO"],[0,0,0,0,0,0,100,0,0,0,0,0,6,0,0,0]]')
-    arreglo2 = JSON.parse('[["ANTOFAGASTA","ARICA Y PARINACOTA","ATACAMA","AYS\u00c9N DEL GENERAL CARLOS IBA\u00d1EZ DEL CAMPO","BIOB\u00cdO","COQUIMBO","LA ARAUCAN\u00cdA","LIBERTADOR BERNARDO O\u00b4HIGGINS","LOS LAGOS","LOS R\u00cdOS","MAGALLANES Y DE LA ANT\u00c1RTICA CHILENA","MAULE","METROPOLITANA DE SANTIAGO","\u00d1UBLE","TARAPAC\u00c1","VALPARA\u00cdSO"],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]]')
+    // Valores:
+    //  ->      1: Entregado Por Imprenta
+    //  2: Despachado a Centro de Operaciones
+    //  ->      3: Recepcionado por Centro de Operaciones
+    //  4: Revisado en Centro de Operaciones
+    //  5: Despacho de CO a CCA
+    //  ->      6: Recepción en Centro de Capacitación
+    //  7: Despachado a Bodega Central
+    $.ajax({
+        method:'POST',
+        url: 'https://ufro.gruposentte.cl/webService/dashboard.php',
+        headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        crossDomain: true,
+        data:{ 
+            id_estado: tipo,
+        },
+        dataType:'json',
+        success: function(data, textStatus, jqXHR) {
+            console.log(data)
+            cargarGrafico((data))
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            showFeedback("error","Error en el servidor","Datos incorrectos");
+            console.log("error del servidor, datos incorrectos");
+        }
+
+    })
+
     titulo = ''
-    datos = []
     if(tipo == 1){
         titulo = 'Porcentaje Validación Imprenta'
-        datos = arreglo1
     }else if(tipo == 2){
-        titulo = 'Porcentaje Recepción en Centro de Operaciones'
-        datos = arreglo2
+        titulo = 'Porcentaje Despacho a Centro de Operaciones'
     }else if(tipo == 3){
+        titulo = 'Porcentaje Recepción en Centro de Operaciones'
+    }else if(tipo == 4){
+        titulo = 'Porcentaje Revisado en Centro de Operaciones'
+    }else if(tipo == 5){
+        titulo = 'Porcentaje Despacho de Centro de Operaciones a Centro de Capacitación'
+    }else if(tipo == 6){
         titulo = 'Porcentaje Recepción en Centro de Capacitación'
-        datos = arreglo2
+    }else if(tipo == 7){
+        titulo = 'Porcentaje Despacho a Bodega Central'
     }
-    console.log(tipo)
-    console.log(titulo)
- 
+}
+
+function cargarGrafico(array){
+    datos = []
+    datos[0] = array.slice(0,16);
+    datos[1] = array[17];
+
     Highcharts.chart('graficoRegion', {
         chart: {
             type: 'bar'

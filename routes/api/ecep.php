@@ -1,6 +1,13 @@
 <?php
 
+
 Route::get('web/login' , 'Api\ecep\LoginController@login');	
+//Route::get('importa-sedes' , 'Api\ecep\SalaController@importaSedes');	
+Route::get('importa-salas' , 'Api\ecep\SalaController@importaSalas');	
+Route::get('importa-evaluados' , 'Api\ecep\SalaController@importaEvaluados');	
+Route::get('importa-asignaturas' , 'Api\ecep\SalaController@importaAsignaturas');	
+Route::get('sqltotable' , 'Api\ecep\SalaController@sqlToTable');	
+
 
 //Route::middleware('auth:api')->post('sede/lista' , 'Api\ecep\SedeController@lista');	
 
@@ -45,6 +52,12 @@ Route::get('web/login' , 'Api\ecep\LoginController@login');
 
 	Route::middleware('auth:api')->post('web/personal/listaCoordinadorZonal' , 'Api\ecep\PersonalController@listaCoordinadorZonal');
 	Route::middleware('auth:api')->post('web/personal/listaCoordinador' , 'Api\ecep\PersonalController@listaCoordinador');
+
+//CAPACITACION
+	Route::middleware('auth:api')->post('web/capacitacion/lista' , 'Api\ecep\CapacitacionController@lista');
+	Route::middleware('auth:api')->post('web/capacitacion/guardar' , 'Api\ecep\CapacitacionController@guardar');
+	Route::middleware('auth:api')->post('web/capacitacion/obtenerPersonal' , 'Api\ecep\CapacitacionController@obtenerPersonal');
+	Route::middleware('auth:api')->post('web/capacitacion/asignarCapacitacion' , 'Api\ecep\CapacitacionController@asignarCapacitacion');
 
 //RRHH Monitoreo
   	Route::get('web/monitoreo/personal/lista' , 'Api\ecep\MonitoreoPersonalController@listaPersonal');

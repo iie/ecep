@@ -13,14 +13,17 @@ function tipoUsuario(){
 		$('#card-infraestructura').remove();
 		$('#card-evaluados').remove();
 		$('#card-centros').remove();
+		$('#card-capacitacion').remove();
 		$('#card-rrhh').css('display','')
 		$('#card-asignacion').css('display','')
+		
 	}else{
 		$('#card-infraestructura').css('display','')
 		$('#card-evaluados').css('display','')
 		$('#card-rrhh').css('display','')
 		$('#card-centros').css('display','')
 		$('#card-asignacion').css('display','')
+		$('#card-capacitacion').css('display','')
 	}
 }
  

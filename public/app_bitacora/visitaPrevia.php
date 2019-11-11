@@ -1,23 +1,3 @@
-<?php
-session_start();
-if (empty($_SESSION['usuario'])) {
-    header("Location: login.php");
-    exit();
-}
-
-/*
-if($_SESSION['idRol'] != '10' || $_SESSION['idRol'] != '1'){
-    header("Location: index.php");
-    exit();
-    //print_r($_SESSION['idRol']);exit;
-}*/
-
-header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept");
-header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE');
-header('content-type: json; charset=utf-8');
-?>
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -27,18 +7,22 @@ header('content-type: json; charset=utf-8');
     <link rel="icon" type="image/png" href="img/mineduc.png">
     <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="css/Estilo.css">
+    <link rel="stylesheet" type="text/css" href="css/w3.css">
     <link rel="stylesheet" type="text/css" href="css/clockpicker.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretty-checkbox@3.0/dist/pretty-checkbox.min.css">
     <link rel="stylesheet" type="text/css" href="css/bootstrap-datetimepicker.css">
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
     <script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <script type="text/javascript" src="js/bootstrap-datetimepicker.js"></script>
     <script type="text/javascript" src="js/locales/bootstrap-datetimepicker.es.js"></script>
     <script type="text/javascript" src="js/clockpicker.js"></script>
     <script type="text/javascript" src="js/popper.min.js"></script>
     <script type="text/javascript" src="js/bootstrap.min.js"></script>
     <script type="text/javascript" src="js/jquery.mask.js"></script>
-    <script type="text/javascript" src="js/visitaPrevia.js"></script>   
+    <script type="text/javascript" src="js/visitaPrevia.js"></script> 
+    <script type="text/javascript" src="js/utils.js"></script>   
     <script src="js/jquery.blockUI.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sweetalert2@7.29.1/dist/sweetalert2.all.min.js"></script>
     <script src="https://d3js.org/d3.v3.min.js"></script>
@@ -47,86 +31,83 @@ header('content-type: json; charset=utf-8');
 </head>
 
 <body>
-<div class="container-fluid">
-    <nav class="row _nav navbar-expand-lg position-static">
-        <div class="_nav-left text-wit">
-            <a href="/app_bitacora/index.php" class="nav-link text-wit mt-3 ml-2 h3"><i class="fa fw fa-arrow-left"></i></a>
+    <!--<div id="divBlock" class="block" style="display: none;"></div>-->
+<div class="container content blackout p-0" id="asw">
+    
+     <!-- NAVBAR -->
+        <div class="encabezado" style="margin-right: auto!important;">
+          <div class="row" style="">
+              <div class="col-sm-8" style="text-align: left;">
+                  Registro de Procesos - ENDFID 2019
+              </div>
+
+              <div class="col-sm-3 " style="width: 100%;white-space: nowrap;">
+                <strong><span id="nombre_usuario" style="font-size: 15px;margin-left: 3px;"></span></strong>
+                <a class="" href="#" onclick="redirectLogin(1)"><i class="fas fa-sign-out-alt" style="color: #fff;"></i></a>
+              </div>
+          </div>
         </div>
+        <!--FIN NAVBAR-->
 
-        <div class="_nav-center text-wit fuente-gob-regular">
-            <h3 class="mb-3">Visita Previa</h3>
-        </div>
+    <form id="form_endfid" name="submit-to-google-sheet" method="post" style="margin-top:50px;">
 
-        <div class="_nav-right text-wit"></div>
-
-        <div class="_nav-right text-wit ml-auto">
-            <div class="row">
-                <div class="col-sm-8">
-                    <p class="text-wit"><?php echo utf8_encode(utf8_decode($_SESSION['nombres'] . " " . $_SESSION['apellidos'])); ?></p>
-
-                    <p hidden id="usuario"><?php echo utf8_encode(utf8_decode($_SESSION['id_usuario'])); ?></p>
-                </div>
-
-                <div class="col-sm-4">
-                    <a class="nav-link text-wit" href="logout.php" title="Cerrar Sesión"><i class="fas fa-sign-out-alt"></i></a>
-                </div> 
+        <div class="row mg_top">
+            <div class="col-sm-6  _tex_mora">
+                <h2 class="ml-3"><i class="fas fa-clipboard-check" ></i> Visita <b>Previa</b></h2>
             </div>
         </div>
-    </nav>
-
-    <form id="form_endfid" name="submit-to-google-sheet" method="post">
-        <div class="card mt-3" id="cardSeccion1">
-            <div class="card-header fuente-gob-bold">
+        <div class="card " id="cardSeccion1" style="width:95%; margin:auto; margin-top:10px;">
+            <div class="card-header pt-0 pb-0 sin-bordes">
                 <div class="row">
-                    <div class="col-sm-6 pt-3">
-                        <h5>1. Identificación de la Sede</h5>
+                    <div class="col-sm-6 pt-0 _tex_mora">
+                        <h6>FILTROS</h6>
                     </div>
                 </div>
             </div>
 
-            <div class="card-body fuente-gob-regular">
-                <div class="col-12 mb-2 pb-3 pt-3 _bg-verdeClaro">
-                    <div class="row mb-2 pb-3 pt-3">
+            <div class="card-body">
+                <div class="col-12 ">
+                    <div class="row   pt-3">
                         <div class="col-sm-4">
-                            <label>Región</label>
+                            <label class="font-weight-bold">Región</label>
                             <select class="form-control custom-select" name="region" id="region">
-                                <option value="-1">SELECCIONE REGION</option>
+                                <option value="-1">Seleccionar Región</option>
                             </select>
                         </div>
 
-                        <div class="col-sm-4">
-                            <label>Nombre Universidad</label>
+                        <div class="col-sm-4 paaddtop">
+                            <label class="font-weight-bold" style="white-space: nowrap;">Nombre Universidad</label>
                             <select class="form-control custom-select" name="universidad" id="universidad">
-                                <option value="-1">SELECCIONE UNIVERSIDAD</option>
+                                <option value="-1">Seleccionar Universidad</option>
                             </select>
                         </div>
 
-                        <div class="col-sm-4">
-                            <label>Nombre Sede</label>
+                        <div class="col-sm-4 paaddtop">
+                            <label class="font-weight-bold">Nombre Sede</label>
                             <select class="form-control custom-select" name="sede" id="sede">
-                                <option value="1000">SELECCIONE SEDE</option>
+                                <option value="1000">Seleccionar Sede</option>
                             </select>
                         </div>
                     </div>
-                    <div class="row mb-2 pb-3 pt-3" id="direccionSede">
+                    <!-- <div class="row mb-2 pb-3 pt-3" id="direccionSede">
                         <div class="col-sm-4">
                             <label>Región</label>
-                            <h5 id="regionInfo"></h5>
+                            <h6 id="regionInfo"></h6>
                         </div>
 
                         <div class="col-sm-4">
                             <label>Comuna</label>
-                            <h5 id="comuna"></h5>
+                            <h6 id="comuna"></h6>
                         </div>
 
                         <div class="col-sm-4">
                             <label>Dirección</label>
-                            <h5 id="direccion"></h5>
+                            <h6 id="direccion"></h6>
                         </div> 
-                    </div> 
+                    </div>  -->
                 </div>
                 <br>
-                <div class="mt-3" id="cardSeccion2">
+               <!--  <div class="mt-3" id="cardSeccion2">
                     <div class="row mb-2">
                         <div class="col-sm-4">
                             <label>Encargado sede</label>
@@ -149,19 +130,19 @@ header('content-type: json; charset=utf-8');
                             <textarea rows="4" class="form-control" name="observaciones" id="observaciones" disabled></textarea>
                         </div>
                     </div>
-                </div>  
+                </div>   -->
             </div>
         </div>
-        <div class="card mt-3" id="cardSeccion3">
-            <div class="card-header fuente-gob-bold">
+        <div class="card" id="cardSeccion3" style="width:95%; margin:auto; margin-top:10px;">
+            <div class="card-header pb-0 pt-0 sin-bordes">
                 <div class="row">
-                    <div class="col-sm-6 pt-3">
-                        <h5>2. Laboratorios</h5>
+                    <div class="col-sm-6 pt-0 _tex_mora">
+                        <h5>LABORATORIOS</h5>
                     </div>
                 </div>
             </div>
 
-            <div class="card-body fuente-gob-regular">
+            <div class="card-body">
                 <div class="row">
                     <div class="col-sm-12">
                         <div class="panel-group">
@@ -183,7 +164,7 @@ header('content-type: json; charset=utf-8');
         </div> -->
 
         <hr class="separador-novisible">
-        <div class="card-footer text-right fixed-bottom sin-bordes bg-white">
+        <!-- <div class="card-footer text-right fixed-bottom sin-bordes bg-white content">
             <button type="button" id="guardar" class="btn btn-success" onclick="validar()" disabled="disabled"><i class="fas fa-save"></i>  Guardar Cambios</button>
         </div>
         <div class="row mb-2" style="display: none;" id="mensajeGuardado">
@@ -194,7 +175,7 @@ header('content-type: json; charset=utf-8');
             </div>
 
             <div class="col-sm-4"></div>
-        </div>
+        </div> -->
     </form>
 </div>
 
@@ -214,7 +195,7 @@ header('content-type: json; charset=utf-8');
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-        <button type="button" class="btn btn-primary"  onclick="guardarInformacionSede();">Confirmar</button>
+        <button type="button" class="btn" style=" background: #6850C9;color: #fff;"  onclick="guardarInformacionLaboratorio();">Confirmar</button>
       </div>
     </div>
   </div>
