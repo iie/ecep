@@ -5,6 +5,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Infraestructura\Sala;
 use App\Models\Core\Comuna;
 use App\Models\Infraestructura\Estimacion;
+use App\Models\Infraestructura\Sede;
 use App\Models\Evaluado\Asignatura;
 use App\Models\Evaluado\Prueba;
 use App\Models\Evaluado\Evaluado;
@@ -22,7 +23,68 @@ class SalaController extends Controller
 		$this->fields = array();	
     }	
 
-    public function sqlToTable(Request $request){
+    public function sincronizaEstimacion(Request $request){
+		exit;
+		// $evaluadosSede = DB::select("SELECT _estimacion.id_estimacion,id_sede_ecep, count(id_evaluado) as total FROM infraestructura.sala, infraestructura._estimacion, evaluado.evaluado where 
+		// infraestructura.sala.id_estimacion = infraestructura._estimacion.id_estimacion
+		// and evaluado.evaluado.id_sala = infraestructura.sala.id_sala
+		// and infraestructura.sala.nro_sala <> 0
+		// group by infraestructura._estimacion.id_estimacion, id_sede_ecep");
+		
+		// foreach($evaluadosSede as $Aux){
+			// $tEv[$Aux->id_estimacion]  = $Aux->total;
+		// }
+		
+		// $_estimacion = _Estimacion::get();
+		// foreach($_estimacion as $_estimacionAux){
+			// $_estimacionAux->docentes = $tEv[$_estimacionAux->id_estimacion];
+			// $_estimacionAux->examinadores = $_estimacionAux->salas;
+			// $_estimacionAux->anfitriones = 	round($_estimacionAux->salas*0.5,0);
+			// $_estimacionAux->supervisores = round($_estimacionAux->salas/7,0);	
+			// $_estimacionAux->jefes_sede = 1;				
+			// $_estimacionAux->save();
+		// }
+		// exit;
+
+		$sede = Sede::get();
+		foreach($sede as $sedeAux){
+			if($sedeAux->id_estimacion!=""){
+				$datosAntiguos[$sedeAux->id_sede] = $sedeAux->id_estimacion;
+			}
+			
+		}
+		foreach($datosAntiguos as $idSede=>$datosAntiguosAux){
+			
+			$estimacion = Estimacion::find($datosAntiguosAux);	
+			if(isset($estimacion->id_comuna)){
+				$_estimacion = DB::select("select * from infraestructura._estimacion where id_comuna = ".$estimacion->id_comuna." and salas = ".$estimacion->salas." and dia = 1");
+				if(isset($_estimacion[0]->id_estimacion)){
+					$sede = Sede::find($idSede);
+					$sede->id_estimacion = $_estimacion[0]->id_estimacion;
+					$sede->save();
+					//echo "si tiene<br/>";
+				}
+				else{
+					$sede = Sede::find($idSede);
+					$sede->id_estimacion = null;
+					$sede->save();				
+					//echo "no tiene<br/>";
+				}
+			}
+			else{
+				$sede = Sede::find($idSede);
+				$sede->id_estimacion = null;
+				$sede->save();	
+			}
+			
+		}
+		//arreglo($datosAntiguos);
+		//$estimacion = Estimacion::get();
+		//foreach()
+		
+	}	
+	
+	public function sqlToTable(Request $request){
 
 		$sql = "
 			SELECT 
@@ -165,7 +227,7 @@ class SalaController extends Controller
 	// }	
 
 	public function importaEvaluados(Request $request){
-		
+		exit;
 		//pruebas
 		$pruebas = DB::select("select id_prueba,forma, asignatura.id_asignatura, asignatura.asignatura from evaluado.prueba as prueba, evaluado.asignatura as asignatura where prueba.id_asignatura = asignatura.id_asignatura");
 		foreach($pruebas as $pruebasAux){
@@ -222,7 +284,7 @@ class SalaController extends Controller
 	}	
     
 	public function importaAsignaturas(Request $request){
-	
+		exit;
 		// $x = file("/home/ecep2019/public_html/app/Http/Controllers/Api/ecep/asignaturas.txt");
 		// foreach($x as $xAux){
 			// $l[] = explode("\t", trim($xAux));

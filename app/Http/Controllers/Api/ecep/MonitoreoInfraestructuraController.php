@@ -10,7 +10,6 @@ use App\Models\Infraestructura\Institucion;
 use App\Models\Core\TablaMaestra;
 use App\Models\Core\Comuna;
 use App\Models\Core\Region;
-
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -40,7 +39,6 @@ class MonitoreoInfraestructuraController extends Controller
                             infraestructura.estimacion.supervisores,
                             infraestructura.estimacion.jefes_sede,
                             infraestructura.sede.id_sede,
-
                             SUM(infraestructura.sede.salas_disponibles) as salas_disponibles
                             FROM
                             infraestructura.estimacion

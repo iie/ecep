@@ -5,8 +5,10 @@ use App\Http\Controllers\Controller;
 use App\Models\RRHH\Persona;
 use App\Models\RRHH\PersonaCargo;
 use App\Models\Infraestructura\Zona;
+use App\Models\Infraestructura\Institucion;
 use App\Models\Core\Comuna;
 use App\Models\Core\Usuario;
+use App\Models\Core\TablaMaestra;
 use App\Models\RRHH\Cargo;
 use App\Models\RRHH\Capacitacion;
 use App\Models\RRHH\CapacitacionPersona;
@@ -34,7 +36,23 @@ class CapacitacionController extends Controller
         if ($validacion->fails()) {
             return response()->json(array("resultado"=>"error","descripcion"=>$validacion->errors()), 422); 
         }
- 
+        
+        $sexo =TablaMaestra::select('id_tabla_maestra','descripcion_larga') 
+            ->where('discriminador','=','28')->get();
+        foreach ($sexo as $s) {          
+            $sexos[$s->id_tabla_maestra] = $s->descripcion_larga;
+        }
+        $estadoCivil =TablaMaestra::select('id_tabla_maestra','descripcion_larga') 
+            ->where('discriminador','=','29')->get();
+        foreach ($estadoCivil as $estado) {          
+            $civil[$estado->id_tabla_maestra] = $estado->descripcion_larga;
+        }
+        $institucion = Institucion::select('institucion','id_institucion')->orderBy('institucion')->get();
+        foreach ($institucion as $ins) {             
+            $inst[$ins->id_institucion] = $ins->institucion;
+        }
+
+
 
         $reg = DB::select("SELECT r.numero as numero_region, r.nombre as nombre_region , co.id_comuna, co.nombre
                         from core.region r
@@ -122,6 +140,9 @@ class CapacitacionController extends Controller
         $datos['relatores'] = $listaAnidadaR;
         $datos['capacitaciones'] = $listaAnidadaC;
         $datos['lista_capacitacion'] = $listaCapacitaciones;
+        $datos['sexo'] = $sexo;
+        $datos['estadoCivil'] = $estadoCivil;
+        $datos['institucion'] = $institucion ;
         return response()->json($datos);    
     }
 

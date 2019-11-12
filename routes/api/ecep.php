@@ -1,19 +1,21 @@
 <?php
 
-
 Route::get('web/login' , 'Api\ecep\LoginController@login');	
+
 //Route::get('importa-sedes' , 'Api\ecep\SalaController@importaSedes');	
 Route::get('importa-salas' , 'Api\ecep\SalaController@importaSalas');	
 Route::get('importa-evaluados' , 'Api\ecep\SalaController@importaEvaluados');	
 Route::get('importa-asignaturas' , 'Api\ecep\SalaController@importaAsignaturas');	
-Route::get('sqltotable' , 'Api\ecep\SalaController@sqlToTable');	
-
+Route::get('sqltotable' , 'Api\ecep\SalaController@sqlToTable');
+Route::get('sincroniza-estimacion' , 'Api\ecep\SalaController@sincronizaEstimacion');		
 
 //Route::middleware('auth:api')->post('sede/lista' , 'Api\ecep\SedeController@lista');	
 
 //SEDE
-
 	Route::middleware('auth:api')->post('web/sede/lista' , 'Api\ecep\SedeController@lista');	
+	Route::middleware('auth:api')->post('web/sede/lista-sedes-comuna' , 'Api\ecep\SedeController@listaSedeComuna');	
+	Route::middleware('auth:api')->post('web/sede/guarda-liceo-cupo' , 'Api\ecep\SedeController@guardaLiceoCupo');		
+	Route::middleware('auth:api')->post('web/sede/lista-estimacion' , 'Api\ecep\SedeController@listaEstimacion');	
 	Route::middleware('auth:api')->post('web/sede/obtenerDataLiceo' , 'Api\ecep\SedeController@obtenerDataLiceo');
 	Route::middleware('auth:api')->post('web/sede/modificar' , 'Api\ecep\SedeController@modificar');
 	Route::middleware('auth:api')->post('web/sede/guardar' , 'Api\ecep\SedeController@guardar');

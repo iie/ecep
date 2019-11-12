@@ -128,29 +128,29 @@
 
     <div  class="_principal" style="max-width: 1366px !important; margin:auto;">
 
-			<div class="page-content _padding-pages"  >
+            <div class="page-content _padding-pages"  >
 
-				<div class="row m-0">
+                <div class="row m-0">
 
-	                <div class="col-6 form-row align-items-center">
+                    <div class="col-6 form-row align-items-center">
 
-	                    <h2><i class="fas fa-users"></i></h2>
+                        <h2><i class="fas fa-users"></i></h2>
 
-	                    <h4 class="nombre_modulo"><b>Personal RRHH</b></h4>
+                        <h4 class="nombre_modulo"><b>Personal RRHH</b></h4>
 
-	                </div>
+                    </div>
 
-	                <div class="col-6 pr-0 text-right">
+                    <div class="col-6 pr-0 text-right">
 
-	                    <button class="btn btn-volver" onclick="redirectModulo()">Volver</button>
+                        <button class="btn btn-volver" onclick="redirectModulo()">Volver</button>
 
-	                </div>
+                    </div>
 
 
 
-	            </div>
+                </div>
 
-				<div  class="">
+                <div  class="">
 
             <div class="page-content "  >
 
@@ -161,6 +161,12 @@
                         <li class="nav-item">
 
                             <a class="nav-link active pr-5" id="tab-postulacion" data-toggle="pill" href="#tabPostulacion" role="tab" aria-controls="tabPostulacion" aria-selected="true">Supervisores</a>
+
+                        </li>
+
+                        <li class="nav-item">
+
+                            <a class="nav-link pr-5 pl-5" id="tab-preseleccionado" data-toggle="pill" href="#tabpreseleccionado" role="tab" aria-controls="tabreseleccionado" aria-selected="false">Preseleccionado</a>
 
                         </li>
 
@@ -239,9 +245,11 @@
 
                                        
                                     </div>
-                                    <div class="col-1 text-center _info" id="clear-filtros">
+                                        <!-- style="margin-left: 10px !important;max-width: 10% !important;flex: auto;" -->
+                                    <div class="col-1 text-center _info" id="clear-filtros" >
                                         <p class="_text-dato" id="ttotal"></p>
-                                        <label class="_text-legend" id="">TOTAL</label>
+                                        <!-- style="white-space: nowrap;" -->
+                                        <label class="_text-legend" id="" >TOTAL</label>
                                     </div>
 
 
@@ -254,10 +262,12 @@
                                 <thead>         
 
                                     <tr>
-										<th style="text-align:center">NRO</th>
+                                        <th style="text-align:center">NRO</th>
                                         <th >REGION</th>
                                         <th>COMUNA</th> 
+                                        <th style="text-align:center" id="change_rquerido">REQUERIDO</th>
                                         <th style="text-align:center" id="change_post">POSTULANTES</th>
+                                        <th style="text-align:center" id="change_prese">PRESELECCIONADO</th>
                                         <th style="text-align:center"id="change_capa">CAPACITADOS</th>    
                                         <th style="text-align:center" id="change_sele">SELECCIONADOS</th>
                                         <th  style="text-align:center"id="change_contr">CONTRATADOS</th>
@@ -268,6 +278,91 @@
                                 </thead>
 
                                 <tbody id="lista-postulacion">
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+                        
+                        <div class="tab-pane fade" id="tabpreseleccionado" role="tabpanel" aria-labelledby="tab-preseleccionado">
+
+                            <div class="row pb-4" id="preseleccionado-Table_filters">
+                                
+                                <div class="row col-6 m-0" id="filtros-preseleccionado"></div>
+                                    <!--<button class="btn limpiar-filtros" role="button" id="limpiar-filtros-preseleccionado" type="button">Limpiar Filtros</button>-->
+                                    <div class="col-1 text-left" style="position: absolute;margin-left: 339px;margin-top: 3px;">
+                                        <button class="btn limpiar-filtros" role="button" id="limpiar-filtros-preseleccionado" type="button">Limpiar Filtros</button>
+                                    </div>
+                                    <div class="col-1 text-center _info" id="clear-filtros">
+
+                                        <p class="_text-dato" id="total_supervisorP"></p>
+                                        <label class="_text-legend" id="ttotal_supervisorP">POSTULANTES</label>
+                                        
+                                        
+
+                                       <!--<button class="btn limpiar-filtros" role="button" id="limpiar-filtros-preseleccionado" type="button">Limpiar Filtros</button>-->
+
+                                    </div>
+                                     <div class="col-1 text-center _info" id="clear-filtros">
+
+                                        
+                                        <p class="_text-dato" id="total_capacitadosP"></p>
+                                        <label class="_text-legend" id="ttotal_capacitadosP">CAPACITADOS</label>
+                                        
+
+                                    </div>
+                                     <div class="col-1 text-center _info" id="clear-filtros">
+
+                                        
+                                        <p class="_text-dato" id="total_seleccionadosP"></p>
+                                        <label class="_text-legend" id="ttotal_seleccionadosP">SELECCIONADOS</label>
+                                        
+
+                                       
+
+                                    </div>
+                                     <div class="col-1 text-center _info" id="clear-filtros">
+
+                                        
+                                        <p class="_text-dato" id="total_contratadosP"></p>
+                                        <label class="_text-legend" id="ttotal_contratadosP">CONTRATADOS</label>
+
+                                       
+                                    </div>
+                                        <!-- style="margin-left: 10px !important;max-width: 10% !important;flex: auto;" -->
+                                    <div class="col-1 text-center _info" id="clear-filtros" >
+                                        <p class="_text-dato" id="ttotalP"></p>
+                                        <!-- style="white-space: nowrap;" -->
+                                        <label class="_text-legend" id="ttotal_full" >TOTAL</label>
+                                    </div>
+
+
+                            </div>
+
+
+
+                            <table id="table-preseleccionado" class=" table table-hover _table-link dataTable " style="width:100%;">
+
+                                <thead>         
+
+                                    <tr>
+                                        <th style="text-align:center">NRO</th>
+                                        <th >REGION</th>
+                                        <th>COMUNA</th> 
+                                        <th style="text-align:center" id="change_rqueridoP">REQUERIDO</th>
+                                        <th style="text-align:center" id="change_postP">POSTULANTES</th>
+                                        <th style="text-align:center"id="change_capaP">CAPACITADOS</th>    
+                                        <th style="text-align:center" id="change_seleP">SELECCIONADOS</th>
+                                        <th  style="text-align:center"id="change_contrP">CONTRATADOS</th>
+                                        <th  style="text-align:center"id="change_totaP">TOTAL</th>
+
+                                    </tr>
+
+                                </thead>
+
+                                <tbody id="lista-preseleccionado">
 
                                 </tbody>
 
@@ -325,10 +420,12 @@
 
                                     <tr>
 
-										<th style="text-align:center">NRO</th>
+                                        <th style="text-align:center">NRO</th>
                                         <th >REGION</th>
                                         <th>COMUNA</th> 
+                                        <th style="text-align:center" id="change_rquerido">REQUERIDO</th>
                                         <th style="text-align:center" id="change_post2">POSTULANTES</th>
+                                        <th style="text-align:center" id="change_prese2">PRESELECCIONADO</th>
                                         <th style="text-align:center"id="change_capa2">CAPACITADOS</th>    
                                         <th style="text-align:center" id="change_sele2">SELECCIONADOS</th>
                                         <th  style="text-align:center"id="change_contr2">CONTRATADOS</th>
@@ -401,10 +498,12 @@
 
                                     <tr>
 
-										<th style="text-align:center">NRO</th>
+                                        <th style="text-align:center">NRO</th>
                                         <th >REGION</th>
                                         <th>COMUNA</th> 
+                                        <th style="text-align:center" id="change_rquerido3">REQUERIDO</th>
                                         <th style="text-align:center" id="change_post3">POSTULANTES</th>
+                                        <th style="text-align:center" id="change_prese3">PRESELECCIONADO</th>
                                         <th style="text-align:center"id="change_capa3">CAPACITADOS</th>    
                                         <th style="text-align:center" id="change_sele3">SELECCIONADOS</th>
                                         <th  style="text-align:center"id="change_contr3">CONTRATADOS</th>
@@ -485,10 +584,12 @@
 
                                     <tr>
 
-										<th style="text-align:center">NRO</th>
+                                        <th style="text-align:center">NRO</th>
                                         <th >REGION</th>
                                         <th>COMUNA</th> 
+                                        <th style="text-align:center" id="change_rquerido4">REQUERIDO</th>
                                         <th style="text-align:center" id="change_pos4">POSTULANTES</th>
+                                        <th style="text-align:center" id="change_prese4">PRESELECCIONADO</th>
                                         <th style="text-align:center"id="change_cap4">CAPACITADOS</th>    
                                         <th style="text-align:center" id="change_sel4">SELECCIONADOS</th>
                                         <th  style="text-align:center"id="change_cont4">CONTRATADOS</th>

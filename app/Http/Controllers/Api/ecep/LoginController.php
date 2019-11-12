@@ -94,9 +94,9 @@ class LoginController extends Controller
 							$idCargo = 1004; //1004-> Encargado Regional
 						}
 						else{
-							$personaCargo = PersonaCargo::where("id_persona", $persona->id_persona)->where("id_cargo", 13)->first();
+							$personaCargo = PersonaCargo::where("id_persona", $persona->id_persona)->where("id_cargo", 1008)->first();
 							if(isset($personaCargo->id_persona_cargo)){
-								$idCargo = 13; //13->   Encargados de Centro
+								$idCargo = 1008; //1008->   Relator
 							}	
 							else{
 								return response()->json(array("respuesta"=>"error","descripcion"=>"No autorizado."));			

@@ -3,31 +3,31 @@ $(document).ready(function(){
     $('#redirect').css('display','');
     $('#redirect').on('click',redirectModulo);
 
-    const proxyurl = "https://cors-anywhere.herokuapp.com/";
+    /*const proxyurl = "https://cors-anywhere.herokuapp.com/";
     const url = "https://ufro.gruposentte.cl/index.php/CReportes/cargarTablaEstados"; // site that doesn’t send Access-Control-*
     fetch(proxyurl + url) // https://cors-anywhere.herokuapp.com/https://example.com
     .then(response => response.text())
     .then(contents => llenarVista(contents))
-    .catch(() => console.log("Can’t access " + url + " response. Blocked by browser?"))
+    .catch(() => console.log("Can’t access " + url + " response. Blocked by browser?"))*/
 
     $('#tipoGrafico').niceSelect();    
     $('._selectGrafico').on('change',cambiarGrafico)
-    //getDatos()
+    getDatos()
     grafico(1)
 });
 
 function getDatos(){
     $.ajax({
         method:'GET',
-        url: 'https://ufro.gruposentte.cl/index.php/CReportes/cargarTablaEstados',
+        url: 'https://ufro.gruposentte.cl/webService/estadoCajas.php',
         headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
     },
         crossDomain: true,
         dataType:'json',
         success: function(data, textStatus, jqXHR) {
-            var dosobt = JSON.parse(data);
-            llenarVista(dosobt);
+            //var dosobt = JSON.parse(data);
+            llenarVista(data);
         },
         error: function(jqXHR, textStatus, errorThrown) {
             showFeedback("error","Error en el servidor","Datos incorrectos");
@@ -39,7 +39,7 @@ function getDatos(){
 
 function llenarVista(data){
     
-    data= JSON.parse(data)
+    //data= JSON.parse(data)
   
     if(data.length != 0){
         if($.fn.dataTable.isDataTable('#table-tracking')){

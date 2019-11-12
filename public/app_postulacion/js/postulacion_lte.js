@@ -1126,8 +1126,7 @@ function guardarConfirm() {
 /*        valdoc1 == null ? null : encodeDocumento(valdoc1);
         valdoc2 == null ? null : encodeDocumento(valdoc2);
         valdoc3 == null ? null : encodeDocumento(valdoc3);*/
-        console.log(regs3)
-        console.log(valdoc4)
+        
         valdoc4 == null ? null : encodeDocumento(valdoc4);
          
         //valdoc4 == null ? null : encodeDocumento(valdoc4);

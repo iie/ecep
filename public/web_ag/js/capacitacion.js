@@ -5,6 +5,7 @@ $(document).ready(function(){
     $('#selectCapacitacion').on('change',verPersonal);
         
     $('#guardar_asignacion').on('click',asignarCapacitacion);
+    $('#guardar_persona').click(guardarPersonal);
          
     $('#guardar_capacitacion').click(guardarCapacitacion);
     $('#divInputHora').datetimepicker({
@@ -179,7 +180,6 @@ function llenarVista(data){
             {data: "apellido_materno"},
             {data: "capacitacion",
                 render: function(data, type,row){
-
                     if(row.id_capacitacion_persona != null && row.borrado_capacitacion == false ){
                         return  moment(row.fecha_hora).format('DD-MM-YYYY  HH:mm')+', '+row.lugar;
                     }else{
@@ -313,6 +313,9 @@ function llenarVista(data){
     capacitaciones = data.capacitaciones;
 
     llenarVistaCapacitacion(data.lista_capacitacion)
+
+    llenarSelects(data)
+
    /* if(JSON.parse(localStorage.user).id_cargo != 1003 && JSON.parse(localStorage.user).id_cargo != 1004){
         llenarVista2(data)
     }*/
@@ -322,8 +325,7 @@ function llenarVista(data){
 function llenarVistaCapacitacion(data){
 
     //data = JSON.parse(data)
- 
-    $('#filtros-capacitacion').empty();
+     
     if($.fn.dataTable.isDataTable('#table-capacitacion')){
         $('#table-capacitacion').DataTable().destroy();
         $('#lista-capacitacion').empty();
@@ -496,7 +498,7 @@ function btnClearFilters(){
 }
 
 function nuevaCapacitacion(){ 
-
+    $('#selectRegion').val('-1')
     $('#selectComuna').prop('disabled',true)
     $('#selectRelator').prop('disabled',true)
     limpiar()
@@ -780,4 +782,389 @@ function btnClearFiltersModal(){
          .search( '' )
          .columns().search( '' )
          .draw(); 
+}
+
+function nuevaPersona(){
+
+    localStorage.id_persona = -1;    
+    localStorage.id_persona_cargo = -1;
+    localStorage.usuario_id = -1;
+    
+    $('#divUsuario').css('display','')
+  
+    $('#inputUsuario').prop('disabled',false)
+    $('#inputContrasena').prop('disabled',false)
+ 
+    limpiarPersona()
+    disabledDataPersona()
+    $('#inputRun').prop('disabled',false)
+    $('#div-search').css('display','')
+    $('#titulo_modal').html('Nueva Persona');
+    $('#personalModal').modal({backdrop: 'static', keyboard: false},'show')
+
+}
+
+function searchRUN() {
+
+    if($("#inputRun").val() == ""){
+        showFeedback('error', 'Debe ingresar un RUN para realizar solicitud.', 'Error');
+        return;
+    }
+
+    if($.validateRut($("#inputRun").val()) == false) {
+        showFeedback('error', 'Debe ingresar un RUN válido.', 'Error');
+        return;
+    }
+
+    var run = ($('#inputRun').val().toUpperCase()).replace(/\./g,'');
+    limpiar()
+    $('#inputRun').val($.formatRut(run))
+    $.blockUI({
+        message: '<h1>Espere por favor</h1>',
+        baseZ: 2000
+    });
+
+    $.ajax({
+        method: 'POST',
+        url: webservice+'/personal/obtenerPersona',
+        headers: {
+            't': JSON.parse(localStorage.user).token
+        },
+        crossDomain: true,
+        dataType: 'text',
+        data: { 
+            id_usuario: JSON.parse(localStorage.user).id_usuario,
+            run: run,
+        },
+        success: function(data, textStatus, jqXHR) {
+            var mensaje = JSON.parse(data);
+            if(typeof mensaje["resultado"] === 'undefined'){
+                console.log("correcto!")
+                cargarDatos(JSON.parse(data))
+                enabledDataPersona()
+                $.unblockUI();
+            }else{
+                if(mensaje["resultado"] == 'existe'){
+                    console.log("correcto!")
+                    showFeedback("warning", mensaje["descripcion"], "");
+                    disabledDataPersona()
+                    $('#inputRun').prop('disabled',false)
+                    $.unblockUI();
+
+                }else{
+                    showFeedback("warning", mensaje["descripcion"], "");
+                    enabledDataPersona()
+                    $.unblockUI();
+                    console.log("no existe!")
+                }
+            }
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            //feedback
+            console.log(textStatus)
+            showFeedback("error","Error en el servidor","Error");
+            $.unblockUI();
+            console.log(textStatus);
+        }
+    });
+}
+
+function llenarSelects(data){
+    
+    $('#inputSexo').html('').append('<option value="-1" selected="">Elegir...</option>') 
+    for(i = 0; i < data.sexo.length; i++){
+        $('#inputSexo').append('<option value="'+data.sexo[i].id_tabla_maestra+'">'+data.sexo[i].descripcion_larga+'</option>') 
+    }
+
+
+    $('#inputEstadoCivil').html('').append('<option value="-1" selected="">Elegir...</option>') 
+    for(i = 0; i < data.estadoCivil.length; i++){
+        $('#inputEstadoCivil').append('<option value="'+data.estadoCivil[i].id_tabla_maestra+'">'+data.estadoCivil[i].descripcion_larga+'</option>') 
+    }
+
+    $('#inputRegionNacimiento').html('').append('<option value="-1" selected="">Elegir...</option>') 
+    for(i = 0; i < data.regiones.length; i++){
+        $('#inputRegionNacimiento').append('<option value="'+data.regiones[i].id_region+'">'+data.regiones[i].nombre+'</option>') 
+    }
+
+    $('#inputRegionResidencia').html('').append('<option value="-1" selected="">Elegir...</option>') 
+    for(i = 0; i < data.regiones.length; i++){
+        $('#inputRegionResidencia').append('<option value="'+data.regiones[i].id_region+'">'+data.regiones[i].nombre+'</option>') 
+    }
+
+    $('#inputUniversidad').html('').append('<option value="-1" selected="">Elegir...</option>') 
+    for(i = 0; i < data.institucion.length; i++){
+        $('#inputUniversidad').append('<option value="'+data.institucion[i].id_institucion+'">'+data.institucion[i].institucion+'</option>') 
+    }
+
+    $('#inputRegionPostulacion').html('').append('<option value="-1" selected="">Elegir...</option>') 
+    for(i = 0; i < data.regiones.length; i++){
+        $('#inputRegionPostulacion').append('<option value="'+data.regiones[i].id_region+'">'+data.regiones[i].nombre+'</option>') 
+    }
+}
+
+function cargarDatos(data){
+    $('#div-search').css('display','none')
+    $('#titulo_modal').html('Modificar Persona');
+    localStorage.id_persona = data.id_persona;
+    localStorage.id_persona_cargo = data.id_persona_cargo == null ? -1 : data.id_persona_cargo;
+    localStorage.usuario_id = data.id_usuario;
+    limpiarPersona()
+    enabledDataPersona()
+    $('#inputRun').val($.formatRut(data.run))
+    $('#inputNombres').val(data.nombres)
+    $('#inputApellidoPaterno').val(data.apellido_paterno)
+    $('#inputApellidoMaterno').val(data.apellido_materno)
+
+    $('#inputSexo').val(data.id_sexo == null ? -1 : data.id_sexo)
+    $('#inputEstadoCivil').val(data.id_estado_civil == null ? -1 : data.id_estado_civil)
+    $('#inputFechaNacimiento').val(data.fecha_nacimiento)
+    $('#inputNacionalidad').val(data.nacionalidad)
+    if(/*data.nacionalidad == null || (data.nacionalidad).trim().toLowerCase() == 'chile' || (data.nacionalidad).trim().toLowerCase() == 'chilena' ||*/  data.otra_nacionalidad == null || data.otra_nacionalidad == 'No'){
+        $('#inputExtranjero_no').prop('checked',true);
+        $('#reginNacimiento').css('display','')
+        $('#comunaNacimiento').css('display','')
+    }else{
+        $('#inputExtranjero_si').prop('checked',true);
+        $('#reginNacimiento').css('display','none')
+        $('#comunaNacimiento').css('display','none')
+    }
+
+    $('#inputRegionNacimiento').val(data.id_region_nacimiento == null ? -1 : data.id_region_nacimiento)
+    cargarComunasPersona('inputComunaNacimiento', data.id_region_nacimiento)
+    $('#inputComunaNacimiento').val(data.id_comuna_nacimiento == null ? -1 : data.id_comuna_nacimiento)
+
+    $('#inputRegionResidencia').val(data.id_region_residencia == null ? -1 : data.id_region_residencia)
+    cargarComunasPersona('inputComunaResidencia', data.id_region_residencia)
+    $('#inputComunaResidencia').val(data.id_comuna_residencia == null ? -1 : data.id_comuna_residencia)
+
+    $('#inputRegionPostulacion').val(data.id_region_postulacion == null ? -1 : data.id_region_postulacion)
+    cargarComunasPersona('inputComunaPostulacion', data.id_region_postulacion)
+    $('#inputComunaPostulacion').val(data.id_comuna_postulacion == null ? -1 : data.id_comuna_postulacion)
+ 
+
+    $('#inputDireccion').val(data.domicilio)
+    $('#inputSector').val(data.domicilio_sector)
+    $('#inputMail').val(data.email)
+    $('#inputTelefono').val(data.telefono)
+    $('#inputNivelEstudios').val(data.nivel_estudios == null ? -1 : data.nivel_estudios)
+    $('#inputProfesion').val(data.profesion)
+
+    $('#inputUniversidad').val(data.id_institucion == null ? -1 : data.id_institucion)
+
+    /*$('#inputRegionAsignada').val()*/
+    $('#inputNroCuenta').val(data.banco_nro_cuenta)
+    $('#inputTipoCuenta').val(data.banco_tipo_cuenta)
+    $('#inputBanco').val(data.banco_nombre)
+
+    $('#inputUsuario').val(data.usuario)
+ 
+    $('#personalModal').modal({backdrop: 'static', keyboard: false},'show')
+}
+
+function cargarComunasPersona(input,id){
+    $('#'+input).html('')
+    $('#'+input).append('<option value="-1" selected="">Elegir...</option>') 
+    for(h = 0; h < regiones.length; h++){
+        if(regiones[h].id_region == id){
+            for(i = 0; i < regiones[h].comunas.length; i++){
+                $('#'+input).append('<option value="'+regiones[h].comunas[i].id_comuna+'">'+regiones[h].comunas[i].nombre+'</option>') 
+            }
+        }
+    }
+    $('#'+input).prop('disabled',false)
+}
+
+function guardarPersonal(){
+    var checkbox = $('input:checkbox[name=inputRolAsignado]')
+    cargos = [];
+
+    cargos.push(1008)
+
+
+
+    if(validarPersona() == true){
+        $.ajax({
+            method:'POST',
+            url: webservice+'/personal/guardar',
+            headers:{
+               't': JSON.parse(localStorage.user).token
+            },
+            crossDomain: true,
+            dataType:'text',
+            data :{ 
+                    id_usuario: JSON.parse(localStorage.user).id_usuario,
+                    id_persona: localStorage.id_persona,
+                    id_persona_cargo: localStorage.id_persona_cargo,
+                    run: ($('#inputRun').val().toUpperCase()).replace(/\./g,''),
+                    nombres: $('#inputNombres').val(),
+                    apellido_paterno: $('#inputApellidoPaterno').val(),
+                    apellido_materno: $('#inputApellidoMaterno').val(),
+                    email: $('#inputMail').val(),
+                    telefono: $('#inputTelefono').val(),
+                    id_comuna_nacimiento: $('#inputComunaNacimiento').val() == -1 ? null : $('#inputComunaNacimiento').val(),
+                    id_cargo: cargos,
+                    id_sexo: $('#inputSexo').val() == -1 ? null : $('#inputSexo').val(),
+                    id_estado_civil: $('#inputEstadoCivil').val() == -1 ? null : $('#inputEstadoCivil').val(),
+                    id_institucion: $('#inputUniversidad').val() == -1 ? null : $('#inputUniversidad').val(),
+                    id_comuna_residencia: $('#inputComunaResidencia').val() == -1 ? null : $('#inputComunaResidencia').val(),
+                    nacionalidad: $('#inputNacionalidad').val(),
+                    domicilio: $('#inputDireccion').val(),
+                    domicilio_sector: $('#inputSector').val(),
+                    fecha_nacimiento: $('#inputFechaNacimiento').val(),
+                    nivel_estudios: $('#inputNivelEstudios').val() == -1 ? null : $('#inputNivelEstudios').val(),
+                    profesion: $('#inputProfesion').val(),
+                    banco_nro_cuenta: $('#inputNroCuenta').val(),
+                    banco_tipo_cuenta: $('#inputTipoCuenta').val(),
+                    banco_nombre: $('#inputBanco').val(),
+                    otra_nacionalidad: $('input:radio[name=inputExtranjero]').val(),
+                    id_comuna_postulacion:$('#inputComunaPostulacion').val() == -1 ? null : $('#inputComunaPostulacion').val(),
+
+                    usuario : $('#inputUsuario').val(),
+                    contrasena : $('#inputContrasena').val(),
+                    usuario_id: localStorage.usuario_id,
+
+
+                },
+            success: function(data, textStatus, jqXHR) {
+                data = JSON.parse(data) 
+                console.log(data)
+
+                if (data.resultado != "error") {
+                    showFeedback("success", data.descripcion, "Guardado");
+                    $('#personalModal').modal('hide');
+                    getPersonal()
+                } else {
+                    showFeedback("error","Error al guardar","Error");
+                    console.log("invalidos");
+                }
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                showFeedback("error","Error en el servidor","Datos incorrectos");
+                console.log("error del servidor, datos incorrectos");
+     
+            }
+        })
+    }
+}
+
+function validarPersona(){
+    var input = document.getElementsByTagName("input");
+    valida = true
+
+    if($('#inputRun').val().length < 1){
+        valida = false
+        $('#inputRun').addClass('is-invalid')
+    }else{
+        $('#inputRun').removeClass('is-invalid')
+    }
+
+    if($('#inputNombres').val().length < 1){
+        valida = false
+        $('#inputNombres').addClass('is-invalid')
+    }else{
+        $('#inputNombres').removeClass('is-invalid')
+    }
+
+    if($('#inputApellidoPaterno').val().length < 1){
+        valida = false
+        $('#inputApellidoPaterno').addClass('is-invalid')
+    }else{
+        $('#inputApellidoPaterno').removeClass('is-invalid')
+    }
+
+    if($('#inputApellidoMaterno').val().length < 1){
+        valida = false
+        $('#inputApellidoMaterno').addClass('is-invalid')
+    }else{
+        $('#inputApellidoMaterno').removeClass('is-invalid')
+    }
+
+    if($('#inputRegionPostulacion').val() == -1){
+        valida = false
+        $('#inputRegionPostulacion').addClass('is-invalid')
+    }else{
+        $('#inputRegionPostulacion').removeClass('is-invalid')
+    }
+
+    if($('#inputComunaPostulacion').val() == -1){
+        valida = false
+        $('#inputComunaPostulacion').addClass('is-invalid')
+    }else{
+        $('#inputComunaPostulacion').removeClass('is-invalid')
+    }
+
+    if($('#inputUsuario').val().length < 1){
+        valida = false
+        $('#inputUsuario').addClass('is-invalid')
+    }else{
+        $('#inputUsuario').removeClass('is-invalid')
+    }
+
+    if($('#inputContrasena').val().length < 1){
+        valida = false
+        $('#inputContrasena').addClass('is-invalid')
+    }else{
+        $('#inputContrasena').removeClass('is-invalid')
+    }
+
+    return valida;
+}
+
+function disabledDataPersona(){
+    $('#personalModal').find('input').each(function(){
+        this.disabled = true
+        $(this).removeClass('is-invalid')
+    });
+
+    $('#inputExtranjero_no').prop('checked',true);
+    
+    $('#personalModal').find('select').each(function(){
+        this.disabled = true
+        $(this).removeClass('is-invalid')
+    });
+
+ 
+}
+
+function enabledDataPersona(){
+    $('#personalModal').find('input').each(function(){
+        this.disabled = false
+        $(this).removeClass('is-invalid')
+    });
+
+    $('#inputExtranjero_no').prop('checked',true);
+    var select = document.getElementsByTagName("select");
+
+    $('#personalModal').find('select').each(function(){
+        this.disabled = false
+        $(this).removeClass('is-invalid')
+    });
+
+    $('#inputComunaNacimiento').prop('disabled',true)
+    $('#inputComunaResidencia').prop('disabled',true)
+    $('#inputComunaPostulacion').prop('disabled',true)
+ 
+}
+function limpiarPersona(){
+
+    $('#personalModal').find('input').each(function(){
+        this.disabled = false
+        if(this.type != 'checkbox' && this.type != 'radio'){
+            this.value = '';
+            this.disabled = false;
+            $(this).removeClass('is-invalid')
+        }
+    });
+
+
+    $('#inputSexo').val('-1') 
+    $('#inputNivelEstudios').val('-1') 
+    $('#inputEstadoCivil').val('-1') 
+    $('#inputRegionNacimiento').val('-1') 
+    $('#inputRegionResidencia').val('-1') 
+    $('#inputRegionPostulacion').val('-1') 
+    $('#inputUniversidad').val('-1') 
+
+    $('#inputRegionAsignada').val('-1') 
 }
