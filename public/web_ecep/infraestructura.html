@@ -73,66 +73,138 @@
 	                </div>
 	            </div>
 				<div  class="container-fluid _card-rounded mt-3" >
-					<div class="row pt-3 pb-3 _info">
-						<div class="col-2 text-center">
-							<label class="_text-legend">Necesitadas</label>
-							<p class="_text-dato" id="total_necesitadas">0</label>
-						</div>
-						<div class="col-2 text-center">
-							<label class="_text-legend">Conseguidas</label>
-							<p class="_text-dato" id="total_conseguidas">0</label>
-						</div>
-						<div class="col-2 text-center">
-							<label class="_text-legend">Potenciales</label>
-							<p class="_text-dato" id="total_potenciales">0</label>
-						</div>
-						<div class="col-2 text-center">
-							<label class="_text-legend">Faltantes</label>
-							<p class="_text-dato" id="total_faltantes">0</label>
-						</div>
-						<div class="offset-sm-3 col-1 text-center _descargar">	
-							<div class="row align-items-center">	
-								<div class="mr-3">
-									<button class="btn btn-primary btn-acciones" role="button" id="crear-items" type="button" onclick="nuevaSede()">
-										<i class="fas fa-plus-circle"></i> Nueva</button>
-								</div>	
-								<!-- <div class="">
-									<button class="btn btn-primary datatable-excel btn-acciones"   role="button" id="descargar-lista" type="button"><i class="fas fa-download"></i> Descargar Lista</button>
-								</div> -->				
-							</div>		
-						</div>		 
-					</div>
 
-					<div class="row" id="supervisor-prueba-Table_filters">
-						<div class="row col-8 m-0" id="filtros"></div>
-						<div class="col-4 text-right" id="clear-filtros">
-							<button class="btn limpiar-filtros" role="button" id="limpiar-filtros" type="button">Limpiar Filtros</button>
-						</div>
-					</div>
+					<ul class="nav nav-tabs" id="myTab" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" id="tab-sede" data-toggle="tab" href="#tabSede" role="tab" aria-controls="tabSede" aria-selected="true">Sede</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="tab-dia1" data-toggle="tab" href="#tabDia1" role="tab" aria-controls="tabDia1" aria-selected="false">Aplicación Día 1</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="tab-dia2" data-toggle="tab" href="#tabDia2" role="tab" aria-controls="tabDia2" aria-selected="false">Aplicación Día 2</a>
+                        </li>
+                    </ul>
+                    <div class="tab-content pt-4" id="myTabContent">
+                        <div class="tab-pane fade show active" id="tabSede" role="tabpanel" aria-labelledby="tab-sede">
+                        	<div class="row pt-3 pb-3 _info">
+								<div class="col-2 text-center">
+									<label class="_text-legend">Necesitadas</label>
+									<p class="_text-dato" id="total_necesitadas">0</label>
+								</div>
+								<div class="col-2 text-center">
+									<label class="_text-legend">Conseguidas</label>
+									<p class="_text-dato" id="total_conseguidas">0</label>
+								</div>
+								<div class="col-2 text-center">
+									<label class="_text-legend">Potenciales</label>
+									<p class="_text-dato" id="total_potenciales">0</label>
+								</div>
+								<div class="col-2 text-center">
+									<label class="_text-legend">Faltantes</label>
+									<p class="_text-dato" id="total_faltantes">0</label>
+								</div>
+								<div class="offset-sm-3 col-1 text-center _descargar">	
+									<div class="row align-items-center">	
+										<div class="mr-3">
+											<button class="btn btn-primary btn-acciones" role="button" id="crear-items" type="button" onclick="nuevaSede()">
+												<i class="fas fa-plus-circle"></i> Nueva</button>
+										</div>				
+									</div>		
+								</div>		 
+							</div>
 
-					<div class="col-sm-12 pt-5 pl-5 pr-5 mb-5" style="padding-top: 1.5rem!important; padding-left: 0px !important; padding-right: 0px !important;">										
-						<table id="table-sede" class="stripe table table-hover _table-link dataTable no-footer" style="width:100%;">
-							<thead>			
-								<tr>
-								  	<th>N°</th>
-								  	<th>REGION</th>	
-									<th>COMUNA</th>	
-									<th>CENTRO</th>
-									<th>RBD</th>
-								  	<th>NOMBRE</th>		
-									<th>DIRECTOR</th>	
-									<th>MAIL</th>	
-									<th>TELEFONO</th>	
-									<th>SALAS REQUERIDAS</th>	
-									<th>SALAS DISPONIBLES</th>	
-									<th>CONFIRMADO</th>		
-									<th>ACCIONES</th>			
-								</tr>
-							</thead>
-							<tbody id="lista_sede">
-							</tbody>
-						</table>
-					</div>		
+							<div class="row" id="supervisor-prueba-Table_filters">
+								<div class="row col-8 m-0" id="filtros"></div>
+								<div class="col-4 text-right" id="clear-filtros">
+									<button class="btn limpiar-filtros" role="button" id="limpiar-filtros" type="button">Limpiar Filtros</button>
+								</div>
+							</div>
+
+							<div class="col-sm-12 pt-5 pl-5 pr-5 mb-5" style="padding-top: 1.5rem!important; padding-left: 0px !important; padding-right: 0px !important;">										
+								<table id="table-sede" class="stripe table table-hover _table-link dataTable no-footer" style="width:100%;">
+									<thead>			
+										<tr>
+										  	<th>N°</th>
+										  	<th>REGION</th>	
+											<th>COMUNA</th>	
+											<th>CENTRO</th>
+											<th>RBD</th>
+										  	<th>NOMBRE</th>		
+											<th>DIRECTOR</th>	
+											<th>MAIL</th>	
+											<th>TELEFONO</th>	
+											<th>SALAS REQUERIDAS</th>	
+											<th>SALAS DISPONIBLES</th>	
+											<th>CONFIRMADO</th>		
+											<th>ACCIONES</th>			
+										</tr>
+									</thead>
+									<tbody id="lista_sede">
+									</tbody>
+								</table>
+							</div>
+ 						</div>
+
+
+                        <div class="tab-pane fade" id="tabDia1" role="tabpanel" aria-labelledby="tab-dia1">
+
+							<div class="row">
+								<div class="row col-8 m-0" id="filtros-dia1"></div>
+								<div class="col-4 text-right" id="clear-filtros-dia1">
+									<button class="btn limpiar-filtros" role="button" id="limpiar-filtros-dia1" type="button">Limpiar Filtros</button>
+								</div>
+							</div>
+
+							<div class="col-sm-12 pt-5 pl-5 pr-5 mb-5" style="padding-top: 1.5rem!important; padding-left: 0px !important; padding-right: 0px !important;">										
+								<table id="table-dia1" class="stripe table table-hover _table-link dataTable no-footer" style="width:100%;">
+									<thead>			
+										<tr>
+										  	<th>N°</th>
+										  	<th>REGION</th>	
+											<th>COMUNA</th>	
+											<th>CENTRO</th>
+											<th>RBD</th>										  	
+											<th>SALAS REQUERIDAS</th>												
+											<th>ACCIONES</th>			
+										</tr>
+									</thead>
+									<tbody id="lista_dia1">
+									</tbody>
+								</table>
+							</div>
+						</div>
+
+
+						<div class="tab-pane fade" id="tabDia2" role="tabpanel" aria-labelledby="tab-dia2">
+
+							<div class="row">
+								<div class="row col-8 m-0" id="filtros-dia2"></div>
+								<div class="col-4 text-right" id="clear-filtros-dia2">
+									<button class="btn limpiar-filtros" role="button" id="limpiar-filtros-dia2" type="button">Limpiar Filtros</button>
+								</div>
+							</div>
+
+							<div class="col-sm-12 pt-5 pl-5 pr-5 mb-5" style="padding-top: 1.5rem!important; padding-left: 0px !important; padding-right: 0px !important;">										
+								<table id="table-dia2" class="stripe table table-hover _table-link dataTable no-footer" style="width:100%;">
+									<thead>			
+										<tr>
+										  	<th>N°</th>
+										  	<th>REGION</th>	
+											<th>COMUNA</th>	
+											<th>CENTRO</th>
+											<th>RBD</th>										  	
+											<th>SALAS REQUERIDAS</th>												
+											<th>ACCIONES</th>		
+										</tr>
+									</thead>
+									<tbody id="lista_dia2">
+									</tbody>
+								</table>
+							</div>
+						</div>
+						
+					</div>			
 				</div>
 			</div>	
 		</div>
@@ -212,11 +284,11 @@
 								<select id="inputCentro" class="form-control" name="inputCentro" disabled="disabled">
 								</select>
 							</div>
-							<div class="form-group col-6" id="divInputCupo">
+							<!-- <div class="form-group col-6" id="divInputCupo">
 								<label for="inputCupo">Cupo a llenar:</label>
 								<select id="inputCupo" class="form-control" name="inputCupo" disabled="disabled">
 								</select>
-							</div>
+							</div> -->
 
  
 						</div>
@@ -252,6 +324,44 @@
 		      <div class="modal-footer">
 		        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
 		        <button type="button" class="btn btn-primary" id="guardar_sede" disabled="disabled">Guardar</button>
+		      </div>
+		    </div>
+		  </div>
+		</div>
+
+		<!-- Modal -->
+		<div class="modal fade" id="asignarModal" tabindex="-1" role="dialog" aria-hidden="true">
+		  	<div class="modal-dialog  modal-lg" role="document">
+		    	<div class="modal-content">
+		      	<div class="modal-header">
+		        	<h5 class="modal-title" id="titulo_modal">Asignar</h5>
+		        	<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+		          		<span aria-hidden="true">&times;</span>
+		        	</button>
+		      	</div>
+		      	<div class="modal-body">
+		    		<div class="container-fluid">
+		    			<div class="form-row">
+							<div class="form-group col-6">
+								<h4 id="nombreComuna"></h4>
+							</div>
+
+						</div>
+						<div class="form-row">
+							<div class="form-group col-6">
+								<label for="inputSede">Sede:</label>
+								<select id="inputSede" name="inputSede" class="form-control"></select>
+								<label id="mensajeSede" style="display: none">No existen confirmadas para esta Comuna</label>
+							</div>
+
+						</div>
+		
+						
+					</div>
+		      </div>
+		      <div class="modal-footer" id="footer-asignar">
+		        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+		        <button type="button" class="btn btn-primary" id="guardar_asignacion" >Guardar</button>
 		      </div>
 		    </div>
 		  </div>

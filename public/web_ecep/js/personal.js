@@ -129,7 +129,7 @@ examinador = 0;
 eApoyo = 0;
 supervisor = 0;
 
- 
+validarTabla = 0;
 function llenarVista(data){
 
     data = JSON.parse(data)
@@ -236,14 +236,31 @@ function llenarVista(data){
                     select += '<option value="rechazado">Rechazado</option>'
 
             select += '</select>'
-            $('td:eq(10)', row).html(select)
-            $('td:eq(10)', row).find('select').val(data.estado)
-            if(data.estado=='contratado' || data.estado=='rechazado'){
-                $('td:eq(10)', row).find('select').prop('disabled',true)
+            if(JSON.parse(localStorage.user).id_cargo != 1004){
+                $('td:eq(10)', row).html(select)
+                $('td:eq(10)', row).find('select').val(data.estado)
+                if(data.estado=='contratado' || data.estado=='rechazado'){
+                    $('td:eq(10)', row).find('select').prop('disabled',true)
+                }
+                $('td:eq(10)', row).find('select').data('id_persona_cargo',data.id_persona_cargo);
+                $('td:eq(10)', row).find('select').on('change',cambiarEstado);
+            }else{
+                if(validarTabla ==  0){
+                    col = 10
+                } else{
+                    col = 9
+                }
+
+                $('td:eq('+col+')', row).html(select)
+                $('td:eq('+col+')', row).find('select').val(data.estado)
+                if(data.estado=='contratado' || data.estado=='rechazado'){
+                    $('td:eq('+col+')', row).find('select').prop('disabled',true)
+                }
+                $('td:eq('+col+')', row).find('select').data('id_persona_cargo',data.id_persona_cargo);
+                $('td:eq('+col+')', row).find('select').on('change',cambiarEstado);
+
             }
-            $('td:eq(10)', row).find('select').data('id_persona_cargo',data.id_persona_cargo);
-            $('td:eq(10)', row).find('select').on('change',cambiarEstado);
- 
+
             if(data.id_cargo == 1006){
                 anfitrion++; 
             }else if(data.id_cargo == 8){
@@ -255,7 +272,8 @@ function llenarVista(data){
             }
         },
         "initComplete": function(settings, json) {
-            //$('#inputRolAsignado').prop('disabled',true)
+            validarTabla++;
+
             if(JSON.parse(localStorage.user).id_cargo == 1004){
                 var api = new $.fn.dataTable.Api(settings);
                 api.columns([1]).visible(false);
@@ -302,6 +320,7 @@ function llenarVista(data){
             $('.dataTables_length select').addClass('nice-select small');         
         },
         "drawCallback": function(settings){
+
             if(JSON.parse(localStorage.user).id_cargo == 1004){
                 var api = new $.fn.dataTable.Api(settings);
                 api.columns([1]).visible(false);

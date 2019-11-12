@@ -48,8 +48,9 @@ class MonitoreoPersonalController extends Controller
 			$_region[$region->region][] = $region->comuna;
 		}
 		
-		//todos los estados
-		$_estado[] = 'reclutado';
+        //todos los estados
+        $_estado[] = 'reclutado';
+        $_estado[] = 'postulante';
 		$_estado[] = 'preseleccionado';
 		$_estado[] = 'capacitado';
 		$_estado[] = 'seleccionado';
@@ -100,10 +101,11 @@ class MonitoreoPersonalController extends Controller
                             INNER JOIN core.region ON core.comuna.id_region = core.region.id_region
                             WHERE rrhh.persona.modificado = true AND rrhh.persona.borrado = false
                             GROUP BY rrhh.persona_cargo.estado, core.region.nombre, core.region.orden_geografico, core.comuna.nombre, rrhh.cargo.nombre_rol order by core.region.orden_geografico, core.comuna.nombre");
+
         foreach ($sql as $value) {
             $arr[$value->nombre_rol][$value->region][$value->comuna][$value->estado] = $value->cuenta_estado;
         }
-		
+
 		$arrFinal = [];
 		
         foreach ($arr as $rol => $data_rol) {
@@ -128,7 +130,18 @@ class MonitoreoPersonalController extends Controller
                             }
                             @$arrCont[$_rol][$cargo] += $cont;
                         }
-                        $auxCargo[$cargo] = $cont;
+                        
+                        if($cargo == "reclutado"){
+                            if($cargo != "postulante"){
+                                $auxCargo[$cargo] = $cont;
+                                @$auxCargo["postulante"] += $cont;
+                            }
+                        }else{
+                            if($cargo != "postulante"){
+                                $auxCargo[$cargo] = $cont;
+                                @$auxCargo["postulante"] += $cont;
+                            }          
+                        }
                     }
                     if(in_array($comuna, $arrComunas)){
                         $auxComuna["comuna"] = $comuna;

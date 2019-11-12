@@ -15,36 +15,47 @@ class SedeController extends Controller
     {
 		$this->fields = array();	
     }	
-	
-	// public function guardaLiceoCupo(Request $request)
-    // {
-		
-		// $post = $request->all();	
 
-		// $validacion = Validator::make($post, [
-			// 'id_usuario' => 'int|required',
-			// 'id_comuna' => 'int|required',
-		// ]);
-
-		// if ($validacion->fails()) {
-			// return response()->json(array("respuesta"=>"error","descripcion"=>$validacion->errors()), 422); 
-		// }
-
-		// $sedeComunas = DB::select('SELECT comuna.id_comuna, sede.rbd, sede.nombre, sede.direccion	
-				// FROM infraestructura.sede , core.comuna as comuna , core.region as region
-				// where sede.id_comuna = comuna.id_comuna 
-				// and comuna.id_region = region.id_region
-				// and comuna.id_comuna  = '.$post["id_comuna"].'
-				// and sede.estado = 1
-				// order by  region, comuna');
-		
-		// return response()->json($sedeComunas);	
-	// }		
-	
-
-				
-	public function listaSedeComuna(Request $request)
+	public function guardaLiceoCupo(Request $request)
     {
+		
+		$post = $request->all();	
+
+		$validacion = Validator::make($post, [
+			'id_usuario' => 'int|required',
+			'id_estimacion' => 'int|required',
+			'id_sede' => 'int|required',
+		]);
+
+		if ($validacion->fails()) {
+			return response()->json(array("respuesta"=>"error","descripcion"=>$validacion->errors()), 422); 
+		}
+
+		$sede = Sede::find($post["id_sede"]);
+		if(isset($sede->id_sede)){
+
+			if($sede->id_estimacion == $post["id_estimacion"]){
+				return response()->json(["respuesta"=>"error","descripcion"=>"Esta sede sede ya fue asignada a este cupo"]);
+			} 
+			
+			$sede->id_estimacion = $post["id_estimacion"];
+			$sede->id_sede = $post["id_sede"];
+			DB::beginTransaction();
+			try{
+				$sede->save(); 
+			}catch (\Exception $e){
+				DB::rollback();
+				return response()->json(['resultado'=>'error','descripcion'=>'Error al guardar. ()'. $e->getMessage()]);
+			}
+
+			DB::commit();
+			return response()->json(["respuesta"=>"ok","descripcion"=>"Se ha guardado con exito"]);
+			
+		}
+	}		
+
+	public function listaSedeComuna(Request $request)
+	{
 		
 		$post = $request->all();	
 
@@ -57,7 +68,7 @@ class SedeController extends Controller
 			return response()->json(array("respuesta"=>"error","descripcion"=>$validacion->errors()), 422); 
 		}
 
-		$sedeComunas = DB::select('SELECT comuna.id_comuna, sede.rbd, sede.nombre, sede.direccion	
+		$sedeComunas = DB::select('SELECT comuna.id_comuna, sede.rbd, sede.nombre, sede.direccion, sede.id_sede
 				FROM infraestructura.sede , core.comuna as comuna , core.region as region
 				where sede.id_comuna = comuna.id_comuna 
 				and comuna.id_region = region.id_region
@@ -67,37 +78,10 @@ class SedeController extends Controller
 				order by  region, comuna');
 		
 		return response()->json($sedeComunas);	
-	}		
-
-				
-	public function listaEstimacion(Request $request)
+	}	
+		
+    public function lista(Request $request)
     {
-		
-		$post = $request->all();	
-
-		$validacion = Validator::make($post, [
-			'id_usuario' => 'int|required',
-			'dia' => 'int|required',
-		]);
-
-		if ($validacion->fails()) {
-			return response()->json(array("respuesta"=>"error","descripcion"=>$validacion->errors()), 422); 
-		}
-
-		$sede = DB::select('SELECT comuna.id_comuna, estimacion.docentes, estimacion.id_estimacion, estimacion.dia , region.nombre as region, comuna.nombre as comuna, salas, docentes, sede.rbd, sede.nombre	, sede.direccion	
-				FROM infraestructura.estimacion as estimacion left join infraestructura.sede on (estimacion.id_estimacion = sede.id_estimacion), core.comuna as comuna , core.region as region
-				where estimacion.id_comuna = comuna.id_comuna 
-				and comuna.id_region = region.id_region
-				and estimacion.dia = '.$post['dia'].'
-				order by  region, comuna');
-		
-		return response()->json($sede);	
-	}		
-	
-	
-	public function lista(Request $request)
-    {
-		
 		$post = $request->all();	
 
 		$validacion = Validator::make($post, [
@@ -155,6 +139,32 @@ class SedeController extends Controller
 		return response()->json($datos);	
     }
 
+	public function listaEstimacion(Request $request)
+    {
+		
+		$post = $request->all();	
+
+		$validacion = Validator::make($post, [
+			'id_usuario' => 'int|required',
+			'dia' => 'int|required',
+		]);
+
+		if ($validacion->fails()) {
+			return response()->json(array("respuesta"=>"error","descripcion"=>$validacion->errors()), 422); 
+		}
+
+		$sede = DB::select('SELECT comuna.id_comuna,  estimacion.id_estimacion, estimacion.docentes, estimacion.dia , region.nombre as region, comuna.nombre as comuna, salas, docentes, sede.rbd, sede.nombre	, sede.direccion, sede.id_sede
+				FROM infraestructura.estimacion as estimacion left join infraestructura.sede on (estimacion.id_estimacion = sede.id_estimacion), core.comuna as comuna , core.region as region
+				where estimacion.id_comuna = comuna.id_comuna 
+				and comuna.id_region = region.id_region
+				and estimacion.dia = '.$post['dia'].'
+				order by  region, comuna');
+
+		
+		return response()->json($sede);	
+	}		
+	
+	
     public function obtenerDataLiceo(Request $request){
 		$post = $request->all();		
 
@@ -198,49 +208,7 @@ class SedeController extends Controller
 		return response()->json($arr);
 	}
 
-	public function guardaLiceoCupo(Request $request)
-    {
-		
-		$post = $request->all();	
-
-		$validacion = Validator::make($post, [
-			'id_usuario' => 'int|required',
-			'id_estimacion' => 'int|required',
-			'id_sede' => 'int|required',
-		]);
-
-		if ($validacion->fails()) {
-			return response()->json(array("respuesta"=>"error","descripcion"=>$validacion->errors()), 422); 
-		}
-
-		$sede = Sede::find($post["id_sede"]);
-		if(isset($sede->id_sede)){
-
-			if($sede->id_estimacion == $post["id_estimacion"]){
-				return response()->json(["respuesta"=>"error","descripcion"=>"Esta sede sede ya fue asignada a este cupo"]);
-			} 
-			if($post['id_estimcacion'] == -1){
-				 $post["id_estimacion"] = null;
-			}
-			
-			$sede->id_estimacion = $post["id_estimacion"];
-			$sede->id_sede = $post["id_sede"];
-			DB::beginTransaction();
-			try{
-				$sede->save(); 
-			}catch (\Exception $e){
-				DB::rollback();
-				return response()->json(['resultado'=>'error','descripcion'=>'Error al guardar. ()'. $e->getMessage()]);
-			}
-
-			DB::commit();
-			return response()->json(["respuesta"=>"ok","descripcion"=>"Se ha guardado con exito"]);
-			
-		}
-	}		
-
-    
-	public function guardar(Request $request){
+    public function guardar(Request $request){
 
     	$post = $request->all();
 

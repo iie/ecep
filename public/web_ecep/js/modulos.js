@@ -9,7 +9,10 @@ $(".custom-file-input").on("change", function() {
 });
 
 function tipoUsuario(){
-	if(JSON.parse(localStorage.user).id_tipo_usuario == 28){
+	if(JSON.parse(localStorage.user).id_tipo_usuario == 28 && JSON.parse(localStorage.user).id_cargo == 1008){
+		redirectCapacitacion()
+		
+	}else if(JSON.parse(localStorage.user).id_tipo_usuario == 28){
 		$('#card-infraestructura').remove();
 		$('#card-evaluados').remove();
 		$('#card-centros').remove();

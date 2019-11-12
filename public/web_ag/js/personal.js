@@ -163,15 +163,7 @@ function getpostula(response){
     $("#change_capa").html("EXAMINADORES")
     $("#change_sele").html("EXAM. DE APOYO")
     $("#change_contr").html("ANFITRION")
-     //vista P
-    $("#ttotal_supervisorP").html("SUPERVISORES")
-    $("#ttotal_capacitadosP").html("EXAMINADORES")
-    $("#ttotal_seleccionadosP").html("EXAM. DE APOYO")
-    $("#ttotal_contratadosP").html("ANFITRION")
-    $("#change_postP").html("SUPERVISORES")
-    $("#change_capaP").html("EXAMINADORES")
-    $("#change_seleP").html("EXAM. DE APOYO")
-    $("#change_contrP").html("ANFITRION")
+    $("#ratiototal").html("POSTULANTES")
     //vista 2
     $("#ttotal_supervisor2").html("SUPERVISORES")
     $("#ttotal_capacitados2").html("EXAMINADORES")
@@ -181,6 +173,7 @@ function getpostula(response){
     $("#change_capa2").html("EXAMINADORES")
     $("#change_sele2").html("EXAM. DE APOYO")
     $("#change_contr2").html("ANFITRION")
+    $("#ratiototal2").html("POSTULANTES")
     //vista 3
     $("#ttotal_supervisor3").html("SUPERVISORES")
     $("#ttotal_capacitados3").html("EXAMINADORES")
@@ -190,6 +183,7 @@ function getpostula(response){
     $("#change_capa3").html("EXAMINADORES")
     $("#change_sele3").html("EXAM. DE APOYO")
     $("#change_contr3").html("ANFITRION")
+    $("#ratiototal3").html("POSTULANTES")
     //vista 4
     $("#ttotal_supervisor4").html("SUPERVISORES")
     $("#ttotal_capacitados4").html("EXAMINADORES")
@@ -199,10 +193,10 @@ function getpostula(response){
     $("#change_cap4").html("EXAMINADORES")
     $("#change_sel4").html("EXAM. DE APOYO")
     $("#change_cont4").html("ANFITRION")
+    $("#ratiototal4").html("POSTULANTES")
 
 
     llenarVista(response["descripcion"]["0"]["data_estado"],response["descripcion"]["contador"]["reclutado"],response["descripcion"]["contador"].total_reclutado);
-    llenarVistaP(response["descripcion"]["1"]["data_estado"],response["descripcion"]["contador"]["preseleccionado"],response["descripcion"]["contador"].total_preseleccionado);
     llenarVista2(response["descripcion"]["2"]["data_estado"],response["descripcion"]["contador"]["capacitado"],response["descripcion"]["contador"].total_capacitado);
     llenarVista3(response["descripcion"]["3"]["data_estado"],response["descripcion"]["contador"]["seleccionado"],response["descripcion"]["contador"].total_seleccionado);
     llenarVista4(response["descripcion"]["4"]["data_estado"],response["descripcion"]["contador"]["contratado"],response["descripcion"]["contador"].total_contratado);
@@ -233,7 +227,7 @@ function getPersonal(response){
     $("#change_capa").html("CAPACITADOS")
     $("#change_sele").html("SELECCIONADOS")
     $("#change_contr").html("CONTRATADOS")
-    $("#change_tota").html("TOTAL")
+    $("#ratiototal").html("TOTAL")
     
     //vista 2
     $("#ttotal_supervisor2").html("POSTULANTES")
@@ -244,7 +238,7 @@ function getPersonal(response){
     $("#change_capa2").html("CAPACITADOS")
     $("#change_sele2").html("SELECCIONADOS")
     $("#change_contr2").html("CONTRATADOS")
-    $("#change_tota2").html("TOTAL")
+    $("#ratiototal2").html("TOTAL")
     //vista 3
     $("#ttotal_supervisor3").html("POSTULANTES")
     $("#ttotal_capacitados3").html("CAPACITADOS")
@@ -254,7 +248,7 @@ function getPersonal(response){
     $("#change_capa3").html("CAPACITADOS")
     $("#change_sele3").html("SELECCIONADOS")
     $("#change_contr3").html("CONTRATADOS")
-    $("#change_tota3").html("TOTAL")
+    $("#ratiototal3").html("TOTAL")
     //vista 4
     $("#ttotal_supervisor4").html("POSTULANTES")
     $("#ttotal_capacitados4").html("CAPACITADOS")
@@ -264,7 +258,7 @@ function getPersonal(response){
     $("#change_cap4").html("CAPACITADOS")
     $("#change_sel4").html("SELECCIONADOS")
     $("#change_cont4").html("CONTRATADOS")
-    $("#change_tota4").html("TOTAL")
+    $("#ratiototal4").html("TOTAL")
     //console.log(response)
     llenarVista(response["descripcion"]["1"]["data_rol"],response["descripcion"]["contador"]["Supervisor"],response);
     llenarVista2(response["descripcion"]["0"]["data_rol"],response["descripcion"]["contador"]["Examinador"],response);
@@ -299,17 +293,22 @@ function llenarVista(data,data2,data3){
                 if ($("#select-view").val()==1) {
                     var req = data[j]["data_region"][k].data_comuna.requeridos != null ? data[j]["data_region"][k].data_comuna.requeridos : 0
                     var sum= data[j]["data_region"][k].data_comuna.reclutado+data[j]["data_region"][k].data_comuna.capacitado+data[j]["data_region"][k].data_comuna.seleccionado+data[j]["data_region"][k].data_comuna.contratado
+                    var porcentaje = data[j]["data_region"][k].data_comuna.postulante * 100;
+                        porcentaje= req==0?0:porcentaje/req;
+                        var conDecimal = porcentaje.toFixed(0);
+                        
                     trData+= '<tr>';    
                 trData+= '<td style="text-align:center">' + nro + '</td>'
                 trData+= '<td>' + data[j]["region"] + '</td>'
                 trData+= '<td>' + data[j]["data_region"][k].comuna + '</td>'
-                trData+= '<td style="text-align:center">' + req + '</td>'
-                trData+= '<td style="text-align:center">' + data[j]["data_region"][k].data_comuna.reclutado + '</td>'
-                trData+= '<td id="preselected" style="text-align:center">' + data[j]["data_region"][k].data_comuna.preseleccionado + '</td>'
+                trData+= '<td id="requeridos_'+nro +'" style="text-align:center">' + req + '</td>'
+                trData+= '<td id="preselected_'+nro +'" style="text-align:center">'+data[j]["data_region"][k].data_comuna.postulante+'</td>'
+                trData+= '<td id="tototalcol_'+nro +'" style="text-align:center">' + conDecimal + '%</td>'
+                trData+= '<td id="supervisor_'+nro +'" style="text-align:center">' + data[j]["data_region"][k].data_comuna.reclutado + '</td>'
                 trData+= '<td style="text-align:center">' + data[j]["data_region"][k].data_comuna.capacitado + '</td>'
                 trData+= '<td style="text-align:center">' + data[j]["data_region"][k].data_comuna.seleccionado + '</td>'
                 trData+= '<td style="text-align:center">' + data[j]["data_region"][k].data_comuna.contratado + '</td>'
-                trData+= '<td style="text-align:center">' + sum + '</td>'
+                
                 trData+= '</tr>';   
             //}
                 nro++;
@@ -327,18 +326,23 @@ function llenarVista(data,data2,data3){
                     var four=data[j]["data_region"][k].data_comuna.requeridos==null?0:data[j]["data_region"][k].data_comuna.requeridos;
                         four= four.anfitrion==null?0:four.anfitrion;
                     var sumrquerido = parseInt(one) + parseInt(two) + parseInt(three) + parseInt(four)
+
+                    var porcentaje = sum * 100;
+                        porcentaje= sumrquerido==0?0:porcentaje/sumrquerido;
+                        var conDecimal = porcentaje.toFixed(0);
                     
                      trData+= '<tr>';    
                 trData+= '<td style="text-align:center">' + nro + '</td>'
                 trData+= '<td>' + data[j]["region"] + '</td>'
                 trData+= '<td>' + data[j]["data_region"][k].comuna + '</td>'
-                trData+= '<td style="text-align:center">' + sumrquerido + '</td>'
-                trData+= '<td style="text-align:center">' + data[j]["data_region"][k].data_comuna.Supervisor + '</td>'
-                trData+= '<td id="preselected_'+nro +'" style="text-align:center"></td>'
+                trData+= '<td id="1requeridos_'+nro +'" style="text-align:center">' + sumrquerido + '</td>'
+                trData+= '<td id="preselected_'+nro +'" style="text-align:center">' + sum + '</td>'
+                trData+= '<td id="tototalcol_'+nro +'" style="text-align:center">' + conDecimal + '%</td>'
+                trData+= '<td id="supervisor_'+nro +'" style="text-align:center">' + data[j]["data_region"][k].data_comuna.Supervisor + '</td>'
                 trData+= '<td style="text-align:center">' + data[j]["data_region"][k].data_comuna.Examinador + '</td>'
                 trData+= '<td style="text-align:center">' + data[j]["data_region"][k].data_comuna.examinador_de_apoyo + '</td>'
                 trData+= '<td style="text-align:center">' + data[j]["data_region"][k].data_comuna.anfitrion + '</td>'
-                trData+= '<td style="text-align:center">' + sum + '</td>'
+                
                 trData+= '</tr>';   
             //} 
 
@@ -347,12 +351,12 @@ function llenarVista(data,data2,data3){
                 
         }
             // trData = '<tr>'
-                // + '     <td style="border-right:1px solid #dddddd;">' + _data[j]["nro"] + '</td>'
+                // + '     <td style="border-right:1px sd #dddddd;">' + _data[j]["nro"] + '</td>'
                 // + '     <td class="text-left" style="padding-left:10px; ' + borderCol + ' ">' + _data[j]["region"] + '</td>'
                 // + '     <td class="text-center">' + _data[j]["inscritosD1"] + '</td>' 
                 // + '     <td class="text-center">' + _data[j]["inscritosD2"] + '</td>' 
                 // + '     <td class="text-center">' + _data[j]["inscritosD3"] + '</td>' 
-                // + '     <td class="text-center" style="border-right:3px solid #dddddd;">' + _data[j]["inscritosD4"]    + '</td>'
+                // + '     <td class="text-center" style="border-right:3px sd #dddddd;">' + _data[j]["inscritosD4"]    + '</td>'
                 // + '   </tr>'
         
     }
@@ -465,8 +469,28 @@ function llenarVista(data,data2,data3){
     });
 
     if ($("#select-view").val()==1) {
-            $("#change_prese").show()
-            $("#preselected").show()
+            $("#clear-filtros1").hide();
+
+            $("#change_post").hide();
+            
+            for (var az = 0; az < nro; az++){
+                
+                 
+               $("#supervisor_"+az).hide();
+            } 
+            /*for (var w = 0; w < nro; w++){
+                
+               $("#preselected_"+w).hide(); 
+            }
+            
+             for (var az = 0; az < nro; az++){
+                
+               $("#tototalcol_"+az).hide(); 
+            }
+            id="supervisor_'+nro +'"
+            change_post
+            $("#change_aventg").hide();
+            $("#change_tota").hide();*/
             $('#total_supervisor').html(data2.reclutado)
             $('#total_capacitados').html(data2.capacitado)
             $('#total_seleccionados').html(data2.seleccionado)
@@ -475,12 +499,24 @@ function llenarVista(data,data2,data3){
             
         }
         if ($("#select-view").val()==2) {
-            for (var w = 0; w < nro; w++){
-                console.log(w)
-               $("#preselected_"+w).hide(); 
+            $("#clear-filtros1").show();
+            
+            $("#change_post").show();
+            for (var bz = 0; bz < nro; bz++){
+                
+               $("#supervisor_"+bz).show();
+            } 
+            /*for (var w = 0; w < nro; w++){
+                
+               $("#preselected_"+w).show(); 
             }
-            $("#change_prese").hide()
-            $("#preselected_"+nro).hide();
+             $("#change_aventg").hide();
+             for (var bz = 0; bz < nro; bz++){
+                
+               $("#tototalcol_"+bz).show(); 
+            }
+            $("#change_aventg").show()
+            $("#change_tota").show();*/
             $('#total_supervisor').html(data2.Supervisor)
             $('#total_capacitados').html(data2.Examinador)
             $('#total_seleccionados').html(data2.examinador_de_apoyo)
@@ -499,209 +535,7 @@ function llenarVista(data,data2,data3){
     $("#table-postulacion").show();  
 }
 
-function llenarVistaP(data,data2,data3){
 
-    $('#filtros-preseleccionado').empty();
-    if($.fn.dataTable.isDataTable('#table-preseleccionado')){
-        $('#table-preseleccionado').DataTable().destroy();
-        $('#lista-preseleccionado').empty();
-    }
-    
-    trData = '';
-    nro = 1;
-    for (var j = 0; j < data.length; j++){
-        for (var k = 0; k < data[j]["data_region"].length; k++){    
-            //console.log(data[j]["data_region"][0].comuna);
-            //for (var x = 0; x < data[j]["data_region"][k]["data_comuna"].length; x++){    
-                
-                if ($("#select-view").val()==1) {
-                var req = data[j]["data_region"][k].data_comuna.requeridos != null ? data[j]["data_region"][k].data_comuna.requeridos : 0
-                var sum= data[j]["data_region"][k].data_comuna.reclutado+data[j]["data_region"][k].data_comuna.capacitado+data[j]["data_region"][k].data_comuna.seleccionado+data[j]["data_region"][k].data_comuna.contratado
-                trData+= '<tr>';    
-                trData+= '<td style="text-align:center">' + nro + '</td>'
-                trData+= '<td>' + data[j]["region"] + '</td>'
-                trData+= '<td>' + data[j]["data_region"][k].comuna + '</td>'
-                trData+= '<td style="text-align:center">' + req + '</td>'
-                trData+= '<td style="text-align:center">' + data[j]["data_region"][k].data_comuna.reclutado + '</td>'
-                trData+= '<td style="text-align:center">' + data[j]["data_region"][k].data_comuna.capacitado + '</td>'
-                trData+= '<td style="text-align:center">' + data[j]["data_region"][k].data_comuna.seleccionado + '</td>'
-                trData+= '<td style="text-align:center">' + data[j]["data_region"][k].data_comuna.contratado + '</td>'
-                trData+= '<td style="text-align:center">' + sum + '</td>'
-                trData+= '</tr>';   
-            //}
-                nro++;
-                }
-                if ($("#select-view").val()==2) {
-                    var sum= data[j]["data_region"][k].data_comuna.Supervisor+data[j]["data_region"][k].data_comuna.Examinador+data[j]["data_region"][k].data_comuna.examinador_de_apoyo+data[j]["data_region"][k].data_comuna.anfitrion
-                     var one=data[j]["data_region"][k].data_comuna.requeridos==null?0:data[j]["data_region"][k].data_comuna.requeridos.Supervisor;
-                        one= one.Supervisor==null?0:one.Supervisor;
-                    var two=data[j]["data_region"][k].data_comuna.requeridos==null?0:data[j]["data_region"][k].data_comuna.requeridos;
-                        two = two.Examinador==null?0:two.Examinador
-                    var three=data[j]["data_region"][k].data_comuna.requeridos==null?0:data[j]["data_region"][k].data_comuna.requeridos;
-                        three=three.examinador_de_apoyor==null?0:three.examinador_de_apoyor
-                    var four=data[j]["data_region"][k].data_comuna.requeridos==null?0:data[j]["data_region"][k].data_comuna.requeridos;
-                        four= four.anfitrion==null?0:four.anfitrion;
-                    var sumrquerido = parseInt(one) + parseInt(two) + parseInt(three) + parseInt(four)
-
-                     trData+= '<tr>';    
-                trData+= '<td style="text-align:center">' + nro + '</td>'
-                trData+= '<td>' + data[j]["region"] + '</td>'
-                trData+= '<td>' + data[j]["data_region"][k].comuna + '</td>'
-                trData+= '<td style="text-align:center">' + sumrquerido + '</td>'
-                trData+= '<td style="text-align:center">' + data[j]["data_region"][k].data_comuna.Supervisor + '</td>'
-                trData+= '<td style="text-align:center">' + data[j]["data_region"][k].data_comuna.Examinador + '</td>'
-                trData+= '<td style="text-align:center">' + data[j]["data_region"][k].data_comuna.examinador_de_apoyo + '</td>'
-                trData+= '<td style="text-align:center">' + data[j]["data_region"][k].data_comuna.anfitrion + '</td>'
-                trData+= '<td style="text-align:center">' + sum + '</td>'
-                trData+= '</tr>';   
-            //}
-                nro++;
-                }
-                
-        }
-            // trData = '<tr>'
-                // + '     <td style="border-right:1px solid #dddddd;">' + _data[j]["nro"] + '</td>'
-                // + '     <td class="text-left" style="padding-left:10px; ' + borderCol + ' ">' + _data[j]["region"] + '</td>'
-                // + '     <td class="text-center">' + _data[j]["inscritosD1"] + '</td>' 
-                // + '     <td class="text-center">' + _data[j]["inscritosD2"] + '</td>' 
-                // + '     <td class="text-center">' + _data[j]["inscritosD3"] + '</td>' 
-                // + '     <td class="text-center" style="border-right:3px solid #dddddd;">' + _data[j]["inscritosD4"]    + '</td>'
-                // + '   </tr>'
-        
-    }
-
-    $('#lista-preseleccionado').append(trData); 
-
-    var tablaD = $("#table-preseleccionado").DataTable({
-        dom: "",
-        buttons: [
-            {
-                extend: 'excel',
-                title: 'Postulantes',
-                /*exportOptions: {
-
-                    modifier: {
-
-                        page: 'current'
-
-                    },
-
-                    columns: [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-
-                }*/
-                exportOptions: {
-                    columns: [ 0,1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 13,14,15,16,17,18,19,20,21,22,23,24,25,26],
-                }
-            }
-        ],
-
-        lengthMenu: [[10, 15, 20, -1], [10, 15, 20, "Todos"]],
-        language:spanishTranslation,
-        lengthChange: true,
-        info: false,
-        /*columnDefs: [
-            { targets: [0,1,2,3,5,6,7], searchable: false }
-        ],*/
-        paging: false,
-        displayLength: -1,
-        ordering: true, 
-        order: [],
-        search: true,
-        data: data.personal_preseleccionado,
-        responsive: true, 
-        /*columnDefs: [{
-            targets: 9,
-            orderable: false
-        }],*/
-        // columns:[
-            // {data: "region"},
-            // {data: "comuna"},
-            // {data: "nombre_rol"},
-            // {data: "run"},
-            // {data: "nombres"},
-            // {data: "apellido_paterno"},
-        // ],
-
-         "rowCallback": function( row, data ) {
-                supervisor++; 
-        },
-
-        "initComplete": function(settings, json) {
-            //$('#inputRolAsignado').prop('disabled',true)
-            var checkbox = $('input:checkbox[name=inputRolAsignado]')
-            for (var i = 0; i < checkbox.length; i++) {
-                checkbox[i].disabled = true;
-            }
-            $('#divRol').css('display','none')
-            var placeholder = ["","Región","Comuna"]
-            this.api().columns([1,2]).every( function (index) {
-                var column = this;
-                var select = $('<select class="form-control col-sm-2 small _filtros"  id="selectP_'+index+'" >'+
-                    '<option value="" selected="selected">'+placeholder[index]+'</option></select>')
-                    .appendTo( $('#filtros-preseleccionado'))
-                    .on( 'change', function () {
-                        var val = $.fn.dataTable.util.escapeRegex(
-                            $(this).val()
-                        );
-
-                        column
-                            .search( val ? '^'+val+'$' : '', true, false )
-                            .draw();
-                    } );
-                column.data().unique().each( function ( d, j ) {
-                    if(d != null){
-                        $('#selectP_'+index).append( '<option value="'+d.charAt(0).toUpperCase() + d.slice(1)+'">'+d.charAt(0).toUpperCase() + d.slice(1)+'</option>' )     
-                    }
-                } );
-                $('#selectP_'+index).niceSelect();    
-            })   
-            $('.dataTables_length select').addClass('nice-select small');         
-        },
-
-        "drawCallback": function(){
-            var placeholder = ["","Región","Comuna"]
-            this.api().columns([1,2]).every( function (index) {
-                var columnFiltered = this;
-                var selectFiltered = $("#selectP_"+index)
-                if(selectFiltered.val()===''){
-                    selectFiltered.empty()
-                    selectFiltered.append('<option value="">'+placeholder[index]+'</option>')
-                    columnFiltered.column(index,{search:'applied'}).data().unique().each( function ( d, j ) {
-                        if(d != null){
-                            selectFiltered.append( '<option value="'+d.charAt(0).toUpperCase() + d.slice(1)+'">'+d.charAt(0).toUpperCase() + d.slice(1)+'</option>' )    
-                        }                 
-                    } );
-                }
-                $('select').niceSelect('update');
-            })
-        }
-    });
-
-    if ($("#select-view").val()==1) {
-            $('#total_supervisorP').html(data2.reclutado)
-            $('#total_capacitadosP').html(data2.capacitado)
-            $('#total_seleccionadosP').html(data2.seleccionado)
-            $('#total_contratadosP').html(data2.contratado)
-            $('#ttotalP').html(data2.reclutado+data2.seleccionado+data2.capacitado+data2.contratado)
-            
-        }
-        if ($("#select-view").val()==2) {
-            $('#total_supervisorP').html(data2.Supervisor)
-            $('#total_capacitadosP').html(data2.Examinador)
-            $('#total_seleccionadosP').html(data2.examinador_de_apoyo)
-            $('#total_contratadosP').html(data2.anfitrion)
-            $('#ttotalP').html(data3)
-        }
-
-    
-    $('#limpiar-filtros-preseleccionado').click(btnClearFilters);
-
-    $("#descargar-lista").on("click", function() {
-        tablaD.button( '.buttons-excel' ).trigger();
-    });
-
-    $("#table-preseleccionado").show();  
-}
 
 function llenarVista2(data,data2,data3){
 
@@ -726,17 +560,24 @@ function llenarVista2(data,data2,data3){
                  
                 
                 if ($("#select-view").val()==1) {
+                    var req = data[j]["data_region"][k].data_comuna.requeridos != null ? data[j]["data_region"][k].data_comuna.requeridos : 0
                     var sum= data[j]["data_region"][k].data_comuna.reclutado+data[j]["data_region"][k].data_comuna.capacitado+data[j]["data_region"][k].data_comuna.seleccionado+data[j]["data_region"][k].data_comuna.contratado
+                    var porcentaje = data[j]["data_region"][k].data_comuna.postulante * 100;
+                        porcentaje= sum==0?0:porcentaje/sum;
+                        var conDecimal = porcentaje.toFixed(0);
                     trData+= '<tr>';    
                 trData+= '<td style="text-align:center">' + nro + '</td>'
                 trData+= '<td>' + data[j]["region"] + '</td>'
                 trData+= '<td>' + data[j]["data_region"][k].comuna + '</td>'
-                trData+= '<td style="text-align:center">' + data[j]["data_region"][k].data_comuna.reclutado + '</td>'
-                trData+= '<td id="" style="text-align:center">' + data[j]["data_region"][k].data_comuna.preseleccionado + '</td>'
+                trData+= '<td id="requeridos2_'+nro +'" style="text-align:center">' + req + '</td>'
+                trData+= '<td id="preselected2_'+nro +'" style="text-align:center">'+data[j]["data_region"][k].data_comuna.postulante+'</td>'
+                trData+= '<td id="tototalcol2_'+nro +'" style="text-align:center">' + conDecimal + '%</td>'
+                trData+= '<td id="supervisor2_'+nro +'" style="text-align:center">' + data[j]["data_region"][k].data_comuna.reclutado + '</td>'
+
                 trData+= '<td style="text-align:center">' + data[j]["data_region"][k].data_comuna.capacitado + '</td>'
                 trData+= '<td style="text-align:center">' + data[j]["data_region"][k].data_comuna.seleccionado + '</td>'
                 trData+= '<td style="text-align:center">' + data[j]["data_region"][k].data_comuna.contratado + '</td>'
-                trData+= '<td style="text-align:center">' + sum + '</td>'
+                
                 trData+= '</tr>';   
             //}
                 nro++;
@@ -758,12 +599,13 @@ function llenarVista2(data,data2,data3){
                 trData+= '<td>' + data[j]["region"] + '</td>'
                 trData+= '<td>' + data[j]["data_region"][k].comuna + '</td>'
                 trData+= '<td style="text-align:center">' + sumrquerido + '</td>'
+                trData+= '<td style="text-align:center">' + sum + '</td>'
+                trData+= '<td id="preselected2_'+nro +'" style="text-align:center">' + sum + '</td>'
                 trData+= '<td style="text-align:center">' + data[j]["data_region"][k].data_comuna.Supervisor + '</td>'
-                trData+= '<td id="preselected2_'+nro +'" style="text-align:center"></td>'
                 trData+= '<td style="text-align:center">' + data[j]["data_region"][k].data_comuna.Examinador + '</td>'
                 trData+= '<td style="text-align:center">' + data[j]["data_region"][k].data_comuna.examinador_de_apoyo + '</td>'
                 trData+= '<td style="text-align:center">' + data[j]["data_region"][k].data_comuna.anfitrion + '</td>'
-                trData+= '<td style="text-align:center">' + sum + '</td>'
+                
                 trData+= '</tr>';   
             //}
                 nro++;
@@ -933,8 +775,15 @@ function llenarVista2(data,data2,data3){
   });
 
     if ($("#select-view").val()==1) {
-            $("#change_prese2").show()
-            $("#preselected2").show()
+        
+            $("#clear-filtros2").hide();
+            $("#change_post2").hide(); 
+            for (var w = 0; w < nro; w++){
+                
+                $("#supervisor2_"+w).hide(); 
+               
+            }
+            
             $('#total_supervisor2').html(data2.reclutado)
             $('#total_capacitados2').html(data2.capacitado)
             $('#total_seleccionados2').html(data2.seleccionado)
@@ -943,10 +792,10 @@ function llenarVista2(data,data2,data3){
         }
         if ($("#select-view").val()==2) {
             for (var w = 0; w < nro; w++){
-                console.log(w)
-               $("#preselected2_"+w).hide(); 
+                $("#supervisor2_"+w).show();
+               $("#preselected2_"+w).show(); 
             }
-            $("#change_prese2").hide()
+            $("#change_aventg2").show()
             $('#total_supervisor2').html(data2.Supervisor)
             $('#total_capacitados2').html(data2.Examinador)
             $('#total_seleccionados2').html(data2.examinador_de_apoyo)
@@ -995,11 +844,12 @@ function llenarVista3(data,data2,data3){
                 trData+= '<td>' + data[j]["region"] + '</td>'
                 trData+= '<td>' + data[j]["data_region"][k].comuna + '</td>'
                 trData+= '<td style="text-align:center">' + data[j]["data_region"][k].data_comuna.reclutado + '</td>'
-                trData+= '<td id="" style="text-align:center">' + data[j]["data_region"][k].data_comuna.preseleccionado + '</td>'
+                trData+= '<td id="id="preselected3_'+nro +'" style="text-align:center">nope</td>'
+                trData+= '<td style="text-align:center">' + sum + '</td>'
                 trData+= '<td style="text-align:center">' + data[j]["data_region"][k].data_comuna.capacitado + '</td>'
                 trData+= '<td style="text-align:center">' + data[j]["data_region"][k].data_comuna.seleccionado + '</td>'
                 trData+= '<td style="text-align:center">' + data[j]["data_region"][k].data_comuna.contratado + '</td>'
-                trData+= '<td style="text-align:center">' + sum + '</td>'
+                
                 trData+= '</tr>';   
             //}
                 nro++;
@@ -1021,12 +871,13 @@ function llenarVista3(data,data2,data3){
                 trData+= '<td>' + data[j]["region"] + '</td>'
                 trData+= '<td>' + data[j]["data_region"][k].comuna + '</td>'
                 trData+= '<td style="text-align:center">' + sumrquerido + '</td>'
+                trData+= '<td id="preselected3_'+nro +'" style="text-align:center">' + sum + '</td>'
+                trData+= '<td style="text-align:center">' + sum + '</td>'
                 trData+= '<td style="text-align:center">' + data[j]["data_region"][k].data_comuna.Supervisor + '</td>'
-                trData+= '<td id="preselected3_'+nro +'" style="text-align:center"></td>'
                 trData+= '<td style="text-align:center">' + data[j]["data_region"][k].data_comuna.Examinador + '</td>'
                 trData+= '<td style="text-align:center">' + data[j]["data_region"][k].data_comuna.examinador_de_apoyo + '</td>'
                 trData+= '<td style="text-align:center">' + data[j]["data_region"][k].data_comuna.anfitrion + '</td>'
-                trData+= '<td style="text-align:center">' + sum + '</td>'
+                
                 trData+= '</tr>';   
             //}
                 nro++;
@@ -1194,8 +1045,10 @@ function llenarVista3(data,data2,data3){
   });
 
     if ($("#select-view").val()==1) {
-            $("#change_prese3").show()
-            $("#preselected3").show()
+            /*for (var w = 0; w < nro; w++){
+               $("#preselected3_"+w).hide(); 
+            }
+            $("#change_aventg3").hide()*/
             $('#total_supervisor3').html(data2.reclutado)
             $('#total_capacitados3').html(data2.capacitado)
             $('#total_seleccionados3').html(data2.seleccionado)
@@ -1203,10 +1056,10 @@ function llenarVista3(data,data2,data3){
             $('#ttotal3').html(data2.reclutado+data2.seleccionado+data2.capacitado+data2.contratado)
         }
         if ($("#select-view").val()==2) {
-            for (var w = 0; w < nro; w++){
-               $("#preselected3_"+w).hide(); 
-            }
-            $("#change_prese3").hide()
+            /*for (var w = 0; w < nro; w++){
+               $("#preselected3_"+w).show(); 
+            }*/
+            $("#change_aventg3").show()
             $('#total_supervisor3').html(data2.Supervisor)
             $('#total_capacitados3').html(data2.Examinador)
             $('#total_seleccionados3').html(data2.examinador_de_apoyo)
@@ -1256,11 +1109,12 @@ function llenarVista4(data,data2,data3){
                 trData+= '<td>' + data[j]["region"] + '</td>'
                 trData+= '<td>' + data[j]["data_region"][k].comuna + '</td>'
                 trData+= '<td style="text-align:center">' + data[j]["data_region"][k].data_comuna.reclutado + '</td>'
-                trData+= '<td id="" style="text-align:center">' + data[j]["data_region"][k].data_comuna.preseleccionado + '</td>'
+                trData+= '<td id="id="preselected4_'+nro +'" style="text-align:center"></td>'
+                trData+= '<td style="text-align:center">' + sum + '</td>'
                 trData+= '<td style="text-align:center">' + data[j]["data_region"][k].data_comuna.capacitado + '</td>'
                 trData+= '<td style="text-align:center">' + data[j]["data_region"][k].data_comuna.seleccionado + '</td>'
                 trData+= '<td style="text-align:center">' + data[j]["data_region"][k].data_comuna.contratado + '</td>'
-                trData+= '<td style="text-align:center">' + sum + '</td>'
+                
                 trData+= '</tr>';   
             //}
                 nro++;
@@ -1283,12 +1137,12 @@ function llenarVista4(data,data2,data3){
                 trData+= '<td>' + data[j]["region"] + '</td>'
                 trData+= '<td>' + data[j]["data_region"][k].comuna + '</td>'
                 trData+= '<td style="text-align:center">' + sumrquerido + '</td>'
+                trData+= '<td id="preselected4_'+nro +'" style="text-align:center">' + sum + '</td>'
+                trData+= '<td style="text-align:center">' + sum + '</td>'
                 trData+= '<td style="text-align:center">' + data[j]["data_region"][k].data_comuna.Supervisor + '</td>'
-                trData+= '<td id="preselected4_'+nro +'" style="text-align:center"></td>'
                 trData+= '<td style="text-align:center">' + data[j]["data_region"][k].data_comuna.Examinador + '</td>'
                 trData+= '<td style="text-align:center">' + data[j]["data_region"][k].data_comuna.examinador_de_apoyo + '</td>'
                 trData+= '<td style="text-align:center">' + data[j]["data_region"][k].data_comuna.anfitrion + '</td>'
-                trData+= '<td style="text-align:center">' + sum + '</td>'
                 trData+= '</tr>';   
             //}
                 nro++;
@@ -1458,8 +1312,10 @@ function llenarVista4(data,data2,data3){
   });
 
     if ($("#select-view").val()==1) {
-            $("#change_prese4").show()
-            $("#preselected4").show()
+            for (var w = 0; w < nro; w++){
+               $("#preselected4_"+w).hide(); 
+            }
+            $("#change_aventg4").hide()
             $('#total_supervisor4').html(data2.reclutado)
             $('#total_capacitados4').html(data2.capacitado)
             $('#total_seleccionados4').html(data2.seleccionado)
@@ -1468,9 +1324,9 @@ function llenarVista4(data,data2,data3){
         }
         if ($("#select-view").val()==2) {
             for (var w = 0; w < nro; w++){
-               $("#preselected4_"+w).hide(); 
+               $("#preselected4_"+w).show(); 
             }
-            $("#change_prese4").hide()
+            $("#change_aventg4").show()
             $('#total_supervisor4').html(data2.Supervisor)
             $('#total_capacitados4').html(data2.Examinador)
             $('#total_seleccionados4').html(data2.examinador_de_apoyo)
@@ -1691,7 +1547,7 @@ function btnClearFilters(){
 
     // if($("#inputRun").val() == ""){
 
-        // showFeedback('error', 'Debe ingresar un RUN para realizar solicitud.', 'Error');
+        // showFeedback('error', 'Debe ingresar un RUN para realizar scitud.', 'Error');
 
         // return;
 

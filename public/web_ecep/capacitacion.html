@@ -89,9 +89,14 @@
                 </div>
                 <div  class="container-fluid _card-rounded mt-3 pt-4" >
                     <div class="row " id="postulacion-Table_filters">
-                        <div class="offset-sm-10 col-2 text-right" id="clear-filtros">
+                        <div class="offset-sm-6 col-6 text-right" id="clear-filtros">
                             <button class="btn btn-primary btn-acciones" role="button" id="crear-capacitacion" type="button" onclick="nuevaCapacitacion()">
-                            <i class="fas fa-plus-circle"></i> Nueva</button>
+                                <i class="fas fa-plus-circle"></i> Nueva Capacitación
+                            </button>
+
+                            <button class="btn btn-primary btn-acciones"  id="btn-nuevaPersona" role="button"  type="button" onclick="nuevaPersona()">
+                                <i class="fas fa-plus-circle"></i> Agregar Persona
+                            </button> 
                         </div>
                     </div>
                                                        
@@ -264,6 +269,181 @@
             </div>  
         </div>
 
+      <!-- Modal -->
+        <div class="modal fade" id="personalModal" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog  modal-xl" role="document">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="titulo_modal">Modificar Persona</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="container-fluid">
+                        <div class="form-row">
+                            <div class="form-group col-3">
+                                <label for="inputRun">RUN:</label>
+                                <div class="input-group mb-3">
+                                    <input type="text" class="form-control" id="inputRun">
+                                    <div class="input-group-append" id="div-search">
+                                        <button class="btn btn-outline-primary" type="button"  id="btn-search-run" onclick="searchRUN()"><i class="fa fa-search" disabled=""></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-3">
+                                <label for="inputNombres">Nombres:</label>
+                                <input type="text" class="form-control" id="inputNombres" oninput="this.value=NumText(this.value)" >
+                            </div>
+
+                            <div class="form-group col-3">
+                                <label for="inputApellidoPaterno">Apellido Paterno:</label>
+                                <input type="text" class="form-control" id="inputApellidoPaterno" oninput="this.value=NumText(this.value)" >
+                            </div>
+
+                            <div class="form-group col-3">
+                                <label for="inputApellidoMaterno">Apellido Materno:</label>
+                                <input type="text" class="form-control" id="inputApellidoMaterno" oninput="this.value=NumText(this.value)" >
+                            </div>
+
+                            <div class="form-group col-3">
+                                <label for="inputSexo">Sexo:</label>
+                                <select class="form-control" id="inputSexo">
+                                </select>
+                            </div>
+
+                            <div class="form-group col-3">
+                                <label for="inputEstadoCivil">Estado Civil:</label>
+                                <select class="form-control" id="inputEstadoCivil">
+                                </select>
+                            </div>
+                            <div class="form-group col-3">
+                                <label for="inputFechaNacimiento">Fecha Nacimiento:</label>
+                                <input type="date" class="form-control" id="inputFechaNacimiento">
+                            </div>
+                            <div class="form-group col-3">
+                                <label for="inputExtranjero">Extranjero:</label>
+                                <div>
+                                    <div class="form-check form-check-inline custom-radio col-4">
+                                        <input type="radio" id="inputExtranjero_si" name="inputExtranjero" value="Si" class="form-check-input custom-control-input">
+                                        <label class="form-check-label custom-control-label" for="inputExtranjero_si">SI</label>
+                                    </div>
+                                    <div class="form-check form-check-inline custom-radio">
+                                        <input type="radio" id="inputExtranjero_no" name="inputExtranjero" value="No" class="form-check-input custom-control-input">
+                                        <label class="form-check-label custom-control-label" for="inputExtranjero_no">NO</label>
+                                    </div>
+                                </div>
+                            </div>
+                             <div class="form-group col-3">
+                                <label for="inputNacionalidad">Nacionalidad:</label>
+                                <input type="text" class="form-control" id="inputNacionalidad">
+                            </div>
+                            <div class="form-group col-3" id="reginNacimiento">
+                                <label for="inputRegionNacimiento">Región Nacimiento:</label>
+                                <select class="form-control" id="inputRegionNacimiento" onchange="cargarComunasPersona('inputComunaNacimiento',this.value)">
+                                </select>
+                            </div>
+                            <div class="form-group col-3" id="comunaNacimiento">
+                                <label for="inputComunaNacimiento">Comuna Nacimiento:</label>
+                                <select class="form-control" id="inputComunaNacimiento">
+                                </select>
+                            </div>
+                            <div class="form-group col-3">
+                                <label for="inputRegionResidencia">Región Residencia:</label>
+                                <select class="form-control" id="inputRegionResidencia" onchange="cargarComunasPersona('inputComunaResidencia',this.value)">
+                                </select>
+                            </div>
+                            <div class="form-group col-3">
+                                <label for="inputComunaResidencia">Comuna Residencia:</label>
+                                <select class="form-control" id="inputComunaResidencia">
+                                </select>
+                            </div>
+                            <div class="form-group col-3">
+                                <label for="inputDireccion">Dirección Residencia:</label>
+                                <input type="text" class="form-control" id="inputDireccion" oninput="this.value=NumText(this.value)" >
+                            </div>
+                            <div class="form-group col-3">
+                                <label for="inputSector">Sector/Villa/Población:</label>
+                                <input type="text" class="form-control" id="inputSector" oninput="this.value=NumText(this.value)" >
+                            </div>
+
+                            <div class="form-group col-3">
+                                <label for="inputMail">Mail:</label>
+                                <input type="email" class="form-control" id="inputMail" oninput="this.value=NumText(this.value)" >
+                            </div>
+                             <div class="form-group col-3">
+                                <label for="inputTelefono">Teléfono:</label>
+                                <input type="text" class="form-control" id="inputTelefono" oninput="this.value=NumText(this.value)" >
+                            </div>
+                             <div class="form-group col-3">
+                                <label for="inputNivelEstudios">Nivel de Estudios:</label>
+                                <!-- <input type="text" class="form-control" id="inputNivelEstudios" oninput="this.value=NumText(this.value)" > -->
+                                <select name="nivel_estudios" id="inputNivelEstudios" class="form-control custom-select">
+                                    <option value="-1">Elegir...</option>
+                                    <option value="Estudiante Educación Media">Estudiante Educación Media</option>
+                                    <option value="Educación Media Incompleta">Educación Media Incompleta</option>
+                                    <option value="Educación Media Completa">Educación Media Completa</option>
+                                    <option value="Estudiante Educación Superior">Estudiante Educación Superior</option>
+                                    <option value="Educación Superior Incompleta">Educación Superior Incompleta</option>
+                                    <option value="Educación Superior Completa">Educación Superior Completa</option>
+                                    <option value="Estudiante Postgrado">Estudiante Postgrado</option>
+                                    <option value="Postgrado Incompleto">Postgrado Incompleto</option>
+                                    <option value="Postgrado Completo">Postgrado Completo</option>
+                                </select>
+                            </div>
+                             <div class="form-group col-3">
+                                <label for="inputProfesion">Profesión:</label>
+                                <input type="text" class="form-control" id="inputProfesion" oninput="this.value=NumText(this.value)" >
+                            </div>
+
+                            <div class="form-group col-3">
+                                <label for="inputUniversidad">Universidad:</label>
+                                <select class="form-control" id="inputUniversidad">
+                                </select>
+                            </div>
+                            <div class="form-group col-3">
+                                <label for="inputNroCuenta">N° Cuenta:</label>
+                                <input type="text" class="form-control" id="inputNroCuenta" oninput="this.value=NumText(this.value)" >
+                            </div>
+                            <div class="form-group col-3">
+                                <label for="inputTipoCuenta">Tipo Cuenta:</label>
+                                <input type="text" class="form-control" id="inputTipoCuenta" oninput="this.value=NumText(this.value)" >
+                            </div>
+                            <div class="form-group col-3">
+                                <label for="inputBanco">Banco:</label>
+                                <input type="text" class="form-control" id="inputBanco" oninput="this.value=NumText(this.value)" >
+                            </div>
+                            <div class="form-group col-3" id="divRegionPostulacion">
+                                <label for="inputRegionPostulacion">Región Postulacion:</label>
+                                <select class="form-control" id="inputRegionPostulacion" disabled="disabled" onchange="cargarComunasPersona('inputComunaPostulacion',this.value)">
+                                </select>
+                            </div>
+                            <div class="form-group col-3" id="divComunaPostulacion">
+                                <label for="inputComunaPostulacion">Comuna Postulacion:</label>
+                                <select class="form-control" id="inputComunaPostulacion"  disabled="disabled">
+                                </select>
+                            </div>
+                            <div class="row col-12" id="divUsuario">
+                                <div class="form-group col-3">
+                                    <label for="inputUsuario">Usuario:</label>
+                                    <input type="text" class="form-control" id="inputUsuario" oninput="this.value=NumText(this.value)" >
+                                </div>
+                                <div class="form-group col-3">
+                                    <label for="inputContrasena">Contraseña:</label>
+                                    <input type="text" class="form-control" id="inputContrasena" oninput="this.value=NumText(this.value)" >
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" id="guardar_persona">Guardar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
     <!-- Modal -->
         <div class="modal fade" id="capacitacionModal" tabindex="-1" role="dialog" aria-hidden="true">
             <div class="modal-dialog  modal-xl" role="document">
@@ -372,6 +552,52 @@
             </div>
         </div>
 
+    <!-- Modal -->
+        <div class="modal fade" id="evaluarPostulante" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog  modal-xl modal-dialog-scrollable" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="titulo_modal_capacitacion">Evaluación Capacitación</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="container-fluid">
+                            <div class="form-row">
+                                <div class="form-group col-12">
+                                    <h4 id="nombreCapacitacion"></h4>
+                                </div>  
+                                <div class="form-group col-12">        
+                                    <div class="pl-1">
+                                        <table class="stripe table table-hover _table-link dataTable no-footer" style="width:100%;">
+                                            <thead class="text-center"> 
+                                                <tr>
+                                                    <td rowspan="2"></td>
+                                                    <td colspan="2">PRUEBA PSICOLOGICA</td>
+                                                    <td colspan="2">PRUEBA CONTENIDO</td>
+                                                </tr>
+                                                <tr> 
+                                                    <td>PUNTAJE</td>
+                                                    <td>NOTA</td>
+                                                    <td>PUNTAJE</td>
+                                                    <td>NOTA</td>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="body-evaluacion"></tbody>
+                                        </table>
+                                    </div>
+                                </div>                            
+                            </div>
+                        </div>                         
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-primary" id="guardar_evaluacion">Guardar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
     </body>
 </html>

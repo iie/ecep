@@ -4,10 +4,12 @@ $(document).ready(function(){
         $('#redirect').css('display','');
         $('#redirect').on('click',redirectModulo);
     }
-     
     getSede()
+    getListaEstimacion1()
+    getListaEstimacion2()
+   
     $('#guardar_sede').click(guardarSede); 
-    $('#inputEstado').on('change',estadoSede); 
+    $('#guardar_asignacion').click(guardarAsignacion); 
 });
 
 var region = '';
@@ -26,6 +28,60 @@ function getSede(){
         },
         success: function(data, textStatus, jqXHR) {
             llenarVista(data)
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            showFeedback("error","Error en el servidor","Datos incorrectos");
+            console.log("error del servidor, datos incorrectos");
+ 
+        }
+    })
+
+}
+
+function getListaEstimacion1(){
+
+    $.ajax({
+        method:'POST',
+        url: webservice+'/sede/lista-estimacion',
+        headers: {
+                't': JSON.parse(localStorage.user).token
+        },
+        crossDomain: true,
+        dataType:'text',
+        data: {
+            id_usuario: JSON.parse(localStorage.user).id_usuario,
+            dia: 1,
+        },
+        success: function(data, textStatus, jqXHR) {
+             
+            llenarVistaEstamacion1(data)
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            showFeedback("error","Error en el servidor","Datos incorrectos");
+            console.log("error del servidor, datos incorrectos");
+ 
+        }
+    })
+
+}
+
+function getListaEstimacion2(){
+
+    $.ajax({
+        method:'POST',
+        url: webservice+'/sede/lista-estimacion',
+        headers: {
+                't': JSON.parse(localStorage.user).token
+        },
+        crossDomain: true,
+        dataType:'text',
+        data: {
+            id_usuario: JSON.parse(localStorage.user).id_usuario,
+            dia: 2,
+        },
+        success: function(data, textStatus, jqXHR) {
+            console.log(data)
+            llenarVistaEstamacion2(data)
         },
         error: function(jqXHR, textStatus, errorThrown) {
             showFeedback("error","Error en el servidor","Datos incorrectos");
@@ -206,6 +262,292 @@ function llenarVista(data){
 
 }
 
+function llenarVistaEstamacion1(data){
+    data = JSON.parse(data)
+
+    $('#filtros-dia1').empty();
+    if(data.length != 0){
+        if($.fn.dataTable.isDataTable('#table-dia1')){
+            $('#table-dia1').DataTable().destroy();
+            $('#lista_dia1').empty();
+        }
+    }
+
+    var tablaD = $("#table-dia1").DataTable({
+        dom: "<'search'f>",
+        buttons: [
+            {
+                extend: 'excel',
+                title: 'Sedes',
+                exportOptions: {
+                    modifier: {
+                        page: 'current'
+                    },
+                    columns: [ 0, 1]
+                }
+            }
+        ],
+        lengthMenu: [[10, 15, 20, -1], [10, 15, 20, "Todos"]],
+        language:spanishTranslation,
+        lengthChange: true,
+        info: false,
+        /*columnDefs: [
+            { targets: [0,1,2,3,5,6,7], searchable: false }
+        ],*/
+        paging: false,
+        displayLength: -1,
+        ordering: true, 
+        order: [],
+        search: true,
+        data: data,
+        responsive: true, 
+        columns:[
+            {data: "nro",
+                render: function(data, type, full, meta){
+                    return  meta.row + 1;
+                }
+            },
+            {data: "region"},
+            {data: "comuna"},
+            {data: "nombre"},
+            {data: "rbd"},
+            {data: "salas", className: "text-center"},
+            {data: "opciones",
+                render: function(data, type, row){
+                    return  '<button type="button" id="modificar_'+row.id_sede+'" class="btn btn-primary btn-sm _btn-item mr-1"><i class="fa fa-pencil-alt"></i></button>'
+                            //'<button type="button" id="ver_'+row.id_sede+'" onclick="redireccionarSede('+row.id_sede+')" class="btn btn-primary btn-sm _btn-item"><i class="fas fa-search"></i></button>'        
+                },
+                className: "text-center"
+            } 
+        ],
+        "rowCallback": function( row, data ) {
+
+            $('td:eq(6)', row).find('button').data('id_estimacion',data.id_estimacion);
+            $('td:eq(6)', row).find('button').data('id_comuna',data.id_comuna);
+            $('td:eq(6)', row).find('button').data('id_sede',data.id_sede);
+            $('td:eq(6)', row).find('button').data('comuna',data.comuna);
+            $('td:eq(6)', row).find('button').on('click',asignar);
+        
+ 
+        },
+        "initComplete": function(settings, json) {
+            var placeholder = ["","Región","Comuna","Centro"]
+            this.api().columns([1,2,3]).every( function (index) {
+                var column = this;
+                var select = $('<select class="form-control col-sm-2 small _filtros"  id="selectD1'+index+'" >'+
+                    '<option value="" selected="selected">'+placeholder[index]+'</option></select>')
+                    .appendTo( $('#filtros-dia1'))
+                    .on( 'change', function () {
+                        var val = $.fn.dataTable.util.escapeRegex(
+                            $(this).val()
+                        );
+ 
+                        column
+                            .search( val ? '^'+val+'$' : '', true, false )
+                            .draw();
+                    } );
+                column.data().unique().each( function ( d, j ) {
+                    if(index == 11){
+                        confirmado = null
+                        if(d == 0){
+                            confirmado = "S/I"
+                        }else if(d == 1){
+                            confirmado = "NO"
+                        }else if(d == 2){
+                            confirmado = "SI"
+                        }
+                        $('#selectD1'+index).append( '<option value="'+confirmado+'">'+confirmado+'</option>' )
+                    }else{
+                        $('#selectD1'+index).append( '<option value="'+d+'">'+d+'</option>' )
+                    }
+                } );
+                 $('#selectD1'+index).niceSelect();        
+            })   
+
+            $('.dataTables_length select').addClass('nice-select small');         
+        },
+        "drawCallback": function(){
+            var placeholder = ["","Región","Comuna","Centro"]
+            this.api().columns([1,2,3]).every( function (index) {
+                var columnFiltered = this;
+                var selectFiltered = $("#selectD1"+index)
+                if(selectFiltered.val()===''){
+                    selectFiltered.empty()
+                    selectFiltered.append('<option value="">'+placeholder[index]+'</option>')
+                    columnFiltered.column(index,{search:'applied'}).data().unique().each( function ( d, j ) {
+                        if(index == 11){
+                            confirmado = null
+                            if(d == 0){
+                                confirmado = "S/I"
+                            }else if(d == 1){
+                                confirmado = "NO"
+                            }else if(d == 2){
+                                confirmado = "SI"
+                            }
+                            selectFiltered.append( '<option value="'+confirmado+'">'+confirmado+'</option>' )
+                        }else{
+                            selectFiltered.append( '<option value="'+d+'">'+d+'</option>' )
+                        }
+
+                    } );
+                }
+                $('select').niceSelect('update');
+            })
+        }
+    });
+
+    $("#descargar-lista-dia1").on("click", function() {
+        tablaD.button( '.buttons-excel' ).trigger();
+    });
+
+    $('#limpiar-filtros-dia1').click(btnClearFilters);
+    $('#lista_items-dia1').on('click','._btn-item',redireccionarSede);
+    $('#total-items-dia1').html(data.length);
+    $("#table-dia1").show(); 
+ 
+}
+function llenarVistaEstamacion2(data){
+    data = JSON.parse(data)
+    $('#filtros').empty();
+    if(data.length != 0){
+        if($.fn.dataTable.isDataTable('#table-dia2')){
+            $('#table-dia2').DataTable().destroy();
+            $('#lista_dia2').empty();
+        }
+    }
+
+    var tablaD = $("#table-dia2").DataTable({
+        dom: "<'search'f>",
+        buttons: [
+            {
+                extend: 'excel',
+                title: 'Sedes',
+                exportOptions: {
+                    modifier: {
+                        page: 'current'
+                    },
+                    columns: [ 0, 1]
+                }
+            }
+        ],
+        lengthMenu: [[10, 15, 20, -1], [10, 15, 20, "Todos"]],
+        language:spanishTranslation,
+        lengthChange: true,
+        info: false,
+        /*columnDefs: [
+            { targets: [0,1,2,3,5,6,7], searchable: false }
+        ],*/
+        paging: false,
+        displayLength: -1,
+        ordering: true, 
+        order: [],
+        search: true,
+        data: data.sedes,
+        responsive: true, 
+        columns:[
+            {data: "nro",
+                render: function(data, type, full, meta){
+                    return  meta.row + 1;
+                }
+            },
+            {data: "region"},
+            {data: "comuna"},
+            {data: "nombre"},
+            {data: "rbd"},
+            {data: "salas", className: "text-center"},
+            {data: "opciones",
+                render: function(data, type, row){
+                    return  '<button type="button" id="modificar_'+row.id_sede+'" class="btn btn-primary btn-sm _btn-item mr-1"><i class="fa fa-pencil-alt"></i></button>'
+                            //'<button type="button" id="ver_'+row.id_sede+'" onclick="redireccionarSede('+row.id_sede+')" class="btn btn-primary btn-sm _btn-item"><i class="fas fa-search"></i></button>'        
+                },
+                className: "text-center"
+            }
+        ],
+        "rowCallback": function( row, data ) {
+
+            $('td:eq(6)', row).find('button').data('id_estimacion',data.id_estimacion);
+            $('td:eq(6)', row).find('button').data('id_comuna',data.id_comuna);
+            $('td:eq(6)', row).find('button').data('comuna',data.comuna);
+            $('td:eq(6)', row).find('button').on('click',asignar);
+        
+ 
+        },
+        "initComplete": function(settings, json) {
+            var placeholder = ["","Región","Comuna","Centro"]
+            this.api().columns([1,2,3]).every( function (index) {
+                var column = this;
+                var select = $('<select class="form-control col-sm-2 small _filtros"  id="selectD2'+index+'" >'+
+                    '<option value="" selected="selected">'+placeholder[index]+'</option></select>')
+                    .appendTo( $('#filtros-dia2'))
+                    .on( 'change', function () {
+                        var val = $.fn.dataTable.util.escapeRegex(
+                            $(this).val()
+                        );
+ 
+                        column
+                            .search( val ? '^'+val+'$' : '', true, false )
+                            .draw();
+                    } );
+                column.data().unique().each( function ( d, j ) {
+                    if(index == 11){
+                        confirmado = null
+                        if(d == 0){
+                            confirmado = "S/I"
+                        }else if(d == 1){
+                            confirmado = "NO"
+                        }else if(d == 2){
+                            confirmado = "SI"
+                        }
+                        $('#selectD2'+index).append( '<option value="'+confirmado+'">'+confirmado+'</option>' )
+                    }else{
+                        $('#selectD2'+index).append( '<option value="'+d+'">'+d+'</option>' )
+                    }
+                } );
+                 $('#selectD2'+index).niceSelect();        
+            })   
+
+            $('.dataTables_length select').addClass('nice-select small');         
+        },
+        "drawCallback": function(){
+            var placeholder = ["","Región","Comuna","Centro"]
+            this.api().columns([1,2,3]).every( function (index) {
+                var columnFiltered = this;
+                var selectFiltered = $("#selectD2"+index)
+                if(selectFiltered.val()===''){
+                    selectFiltered.empty()
+                    selectFiltered.append('<option value="">'+placeholder[index]+'</option>')
+                    columnFiltered.column(index,{search:'applied'}).data().unique().each( function ( d, j ) {
+                        if(index == 11){
+                            confirmado = null
+                            if(d == 0){
+                                confirmado = "S/I"
+                            }else if(d == 1){
+                                confirmado = "NO"
+                            }else if(d == 2){
+                                confirmado = "SI"
+                            }
+                            selectFiltered.append( '<option value="'+confirmado+'">'+confirmado+'</option>' )
+                        }else{
+                            selectFiltered.append( '<option value="'+d+'">'+d+'</option>' )
+                        }
+
+                    } );
+                }
+                $('select').niceSelect('update');
+            })
+        }
+    });
+
+    $("#descargar-lista-dia2").on("click", function() {
+        tablaD.button( '.buttons-excel' ).trigger();
+    });
+
+    $('#limpiar-filtros-dia2').click(btnClearFilters);
+    $('#lista_items-dia2').on('click','._btn-item',redireccionarSede);
+    $('#total-items-dia2').html(data.length);
+    $("#table-dia2").show(); 
+}
+ 
 function cargarComunas(id){
     $('#inputComuna').html('')
     $('#inputComuna').append('<option value="-1" selected="">Elegir...</option>') 
@@ -222,9 +564,26 @@ function btnClearFilters(){
     $('#select1').val("").niceSelect('update');
     $('#select2').val("").niceSelect('update');
     $('#select3').val("").niceSelect('update');
-    $('#select11').val("").niceSelect('update');
+    
+    $('#selectD11').val("").niceSelect('update');
+    $('#selectD12').val("").niceSelect('update');
+    $('#selectD13').val("").niceSelect('update');
+
+    $('#selectD21').val("").niceSelect('update');
+    $('#selectD22').val("").niceSelect('update');
+    $('#selectD23').val("").niceSelect('update');
 
     var table = $('#table-sede').DataTable();
+        table
+         .search( '' )
+         .columns().search( '' )
+         .draw();
+    var table = $('#table-dia1').DataTable();
+        table
+         .search( '' )
+         .columns().search( '' )
+         .draw();
+    var table = $('#table-dia2').DataTable();
         table
          .search( '' )
          .columns().search( '' )
@@ -237,7 +596,7 @@ function nuevaSede(){
     limpiarNueva()
     $('#titulo_modal').html('Nueva Sede');
     $('#btn-search-rbd').prop('disabled',false)
-    $('#divInputCupo').css('display','none')
+    //$('#divInputCupo').css('display','none')
     $('#nuevaSedeModal').modal({backdrop: 'static', keyboard: false},'show')
 }
 
@@ -302,14 +661,14 @@ function completarDatos(datos) {
     $.unblockUI();
 }
 
-function estadoSede(){
+/*function estadoSede(){
     if($(this).val() == 2){
         $('#inputCupo').prop('disabled',false)
     }else{
         $('#inputCupo').val(-1)
         $('#inputCupo').prop('disabled',true)
     }
-}
+}*/
 
 function guardarSede(){
 
@@ -330,7 +689,7 @@ function guardarSede(){
     requeridas = $('#inputRequeridas').val()
 
     centro = $('#inputCentro').val() == -1 ? null : $('#inputCentro').val()
-    cupo = $('#inputCupo').val() == -1 ? null : $('#inputCupo').val()
+    //cupo = $('#inputCupo').val() == -1 ? null : $('#inputCupo').val()
 
     if(validar() == true){
         $.ajax({
@@ -358,7 +717,7 @@ function guardarSede(){
                     salas_disponibles:disponibles,
                     salas_requeridas:requeridas,
                     id_centro_operaciones: centro,
-                    cupo: cupo
+                    //cupo: cupo
                 },
             success: function(data, textStatus, jqXHR) {
                 console.log(data)
@@ -380,7 +739,7 @@ function guardarSede(){
         })
     }
 
-}
+} 
 
 function modificar(id){
     $.ajax({
@@ -423,6 +782,10 @@ function cargarDatos(data){
     $('#inputRBD').val(data.sede.rbd).prop('disabled',true);
     $('#inputNombreEstablecimiento').val(data.sede.nombre).prop('disabled',false);
     $('#inputEstado').val(data.sede.estado).prop('disabled',false);
+ 
+    if(data.sede.id_estimacion != null){
+    	$('#inputEstado').prop('disabled',true);
+    }
     $('#inputDireccionEstablecimiento').val(data.sede.direccion).prop('disabled',false);
     $('#inputNroEstablecimiento').val(data.sede.nro_direccion).prop('disabled',false);
     $('#inputRegion').val(data.sede.id_region).prop('disabled',false);
@@ -441,19 +804,19 @@ function cargarDatos(data){
     //cargarCentros(data.centros);
     $('#inputCentro').val(data.sede.id_centro_operaciones == null ? -1 : data.sede.id_centro_operaciones).prop('disabled',false);
 
-    $('#divInputCupo').css('display','') 
-    $('#inputCupo').html('')
-    $('#inputCupo').append('<option value="-1" selected="">Elegir...</option>') 
+    //$('#divInputCupo').css('display','') 
+    //$('#inputCupo').html('')
+    //$('#inputCupo').append('<option value="-1" selected="">Elegir...</option>') 
 
-    for(i = 0; i < data.estimacion.length; i++){
-        $('#inputCupo').append('<option value="'+data.estimacion[i].id_estimacion+'">Docentes: '+data.estimacion[i].docentes+', Salas: '+data.estimacion[i].salas+'</option>') 
-    }
-    if(data.sede.estado == 2){
-        $('#inputCupo').prop('disabled',false)
-    }else{
-        $('#inputCupo').prop('disabled',true)
-    }
-    $('#inputCupo').val(data.sede.id_estimacion == null ? -1 : data.sede.id_estimacion)
+    // for(i = 0; i < data.estimacion.length; i++){
+    //     $('#inputCupo').append('<option value="'+data.estimacion[i].id_estimacion+'">Docentes: '+data.estimacion[i].docentes+', Salas: '+data.estimacion[i].salas+'</option>') 
+    // }
+    // if(data.sede.estado == 2){
+    //     $('#inputCupo').prop('disabled',false)
+    // }else{
+    //     $('#inputCupo').prop('disabled',true)
+    // }
+    // $('#inputCupo').val(data.sede.id_estimacion == null ? -1 : data.sede.id_estimacion)
     $('#btn-search-rbd').prop('disabled',true)
     $('#nuevaSedeModal').modal({backdrop: 'static', keyboard: false},'show')
     $('#guardar_sede').prop('disabled',false)
@@ -530,7 +893,7 @@ function disabledData(){
     $('#inputRegion').prop('disabled',false)
     $('#inputComuna').prop('disabled',false)
     $('#inputCentro').prop('disabled',false)
-    $('#inputCupo').prop('disabled',false)
+    //$('#inputCupo').prop('disabled',false)
 }
 
 function limpiar(){
@@ -567,7 +930,7 @@ function limpiarNueva(){
     $('#inputRegion').val('-1').prop('disabled',true)
     $('#inputComuna').val('-1').prop('disabled',true)
     $('#inputCentro').val('-1').prop('disabled',true)
-    $('#inputCupo').val('-1').prop('disabled',true)
+    //$('#inputCupo').val('-1').prop('disabled',true)
 
     $('#inputOtros').val('').prop('disabled',true)
 
@@ -577,4 +940,107 @@ function limpiarNueva(){
 function redireccionarSede(id){
     localStorage.id_sede = id;
     redirectInfraestructuraSala()
+}
+
+
+function asignar( ){
+	localStorage.id_estimacion = $(this).data('id_estimacion')
+	localStorage.id_sede = $(this).data('id_sede')
+	 
+	$('#nombreComuna').html($(this).data('comuna'))
+    $.ajax({
+        method:'POST',
+        url: webservice+'/sede/lista-sedes-comuna',
+        headers: {
+            't': JSON.parse(localStorage.user).token
+        },
+        crossDomain: true,
+        dataType:'text',
+        data :{ 
+            id_usuario: JSON.parse(localStorage.user).id_usuario,
+            id_comuna :  $(this).data('id_comuna')
+        },
+        success: function(data, textStatus, jqXHR) {
+            data = JSON.parse(data) 
+            console.log(data)
+
+            if (data.resultado == undefined) {
+                cargarCupo(data)
+            }else {
+                showFeedback("error",data.resultado,"Error");
+                console.log("invalidos");
+            }
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            showFeedback("error","Error en el servidor","Datos incorrectos");
+            console.log("error del servidor, datos incorrectos");
+ 
+        }
+    })
+ 
+}
+
+function cargarCupo(data){
+	$('#footer-asignar').css('display','')
+ 	$('#mensajeSede').css('display','none')
+    $('#inputSede').html('')
+	    $('#inputSede').append('<option value="-1" selected="">Sin Sede...</option>') 
+	    if( data.length > 0){
+	    	$('#inputSede').css('display','')
+	    	for(i = 0; i < data.length; i++){
+		        $('#inputSede').append('<option value="'+data[i].id_sede+'">'+data[i].nombre+'</option>') 
+		    }
+		    $('#inputSede').val(localStorage.id_sede == 'null' ? '-1' : localStorage.id_sede)	
+		     
+	    }else{
+	    	$('#inputSede').css('display','none')
+	    	$('#mensajeSede').css('display','')
+	    	$('#footer-asignar').css('display','none')
+	    	 
+	    	
+	    }
+
+	     
+
+    $('#asignarModal').modal({backdrop: 'static', keyboard: false},'show')
+    
+}
+
+function guardarAsignacion(){
+
+	$('#inputSede').removeClass('is-invalid')
+	$.ajax({
+        method:'POST',
+        url: webservice+'/sede/guarda-liceo-cupo',
+        headers: {
+            't': JSON.parse(localStorage.user).token
+        },
+        crossDomain: true,
+        dataType:'text',
+        data :{ 
+            id_usuario: JSON.parse(localStorage.user).id_usuario,
+            id_sede :  $('#inputSede').val() == '-1' ? localStorage.id_sede : $('#inputSede').val() ,
+            id_estimacion: $('#inputSede').val() == '-1' ? '-1' : localStorage.id_estimacion 
+        },
+        success: function(data, textStatus, jqXHR) {
+            data = JSON.parse(data) 
+            console.log(data)
+
+            if (data.resultado == undefined) {
+                getListaEstimacion1()
+				getListaEstimacion2()
+            }else {
+                showFeedback("error",data.resultado,"Error");
+                console.log("invalidos");
+            }
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            showFeedback("error","Error en el servidor","Datos incorrectos");
+            console.log("error del servidor, datos incorrectos");
+ 
+        }
+    })
+
+ 
+ 
 }
