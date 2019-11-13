@@ -408,5 +408,10 @@ table.dataTable.no-footer {
   color: currentColor;
   cursor: not-allowed;
   opacity: 0.5;
-  text-decoration: none;
+  text-decoration: n
+  one;
+}
+.blockUI.blockMsg.blockPage {
+
+    background-color: transparent !important;
 }
