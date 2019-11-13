@@ -16,6 +16,36 @@ class SedeController extends Controller
 		$this->fields = array();	
     }	
 
+	public function inscritosDia(Request $request)
+    {
+	
+		$totalWns = DB::select("select updated_at from rrhh.persona where id_persona in (
+				SELECT rrhh.persona.id_persona
+											FROM rrhh.persona
+											INNER JOIN rrhh.persona_cargo ON rrhh.persona_cargo.id_persona = rrhh.persona.id_persona
+											INNER JOIN rrhh.cargo ON rrhh.persona_cargo.id_cargo = rrhh.cargo.id_cargo
+											INNER JOIN core.comuna ON rrhh.persona.id_comuna_postulacion = core.comuna.id_comuna
+											INNER JOIN core.region ON core.comuna.id_region = core.region.id_region 
+											WHERE rrhh.persona.modificado = TRUE 
+											AND rrhh.persona.borrado = FALSE 
+				)
+				AND rrhh.persona.id_comuna_postulacion in (SELECT
+                            comuna.id_comuna
+							FROM core.region as region, core.comuna as comuna, infraestructura.sede as sede
+							WHERE region.id_region =  comuna.id_region AND sede.id_comuna = comuna.id_comuna 
+                            ) order by updated_at");
+							
+		foreach($totalWns as $totalWnsAux){
+			@$t[substr($totalWnsAux->updated_at,0,10)]++;
+		}
+		arreglo($t);
+		foreach($t as $totalWnsAux){
+			@$tt+=$totalWnsAux;
+		}
+		
+		echo $tt;
+	}
+
 	public function guardaLiceoCupo(Request $request)
     {
 		

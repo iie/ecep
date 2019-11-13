@@ -38,6 +38,8 @@ class MonitoreoInfraestructuraController extends Controller
                             infraestructura.estimacion.anfitriones,
                             infraestructura.estimacion.supervisores,
                             infraestructura.estimacion.jefes_sede,
+                            infraestructura.estimacion.dia,
+                            infraestructura.estimacion.id_sede_ecep,
                             infraestructura.sede.id_sede,
                             SUM(infraestructura.sede.salas_disponibles) as salas_disponibles
                             FROM
@@ -70,6 +72,8 @@ class MonitoreoInfraestructuraController extends Controller
             $arr[$value->id_estimacion][$value->region][$value->provincia][$value->comuna]["jefes_sede"] = $value->jefes_sede;
             $arr[$value->id_estimacion][$value->region][$value->provincia][$value->comuna]["salas_disponibles"] = $value->salas_disponibles;
             $arr[$value->id_estimacion][$value->region][$value->provincia][$value->comuna]["id_sede"] = $value->id_sede;
+            $arr[$value->id_estimacion][$value->region][$value->provincia][$value->comuna]["dia"] = $value->dia;
+            $arr[$value->id_estimacion][$value->region][$value->provincia][$value->comuna]["id_sede_ecep"] = $value->id_sede_ecep;
         }
 
         $arrFinal = [];

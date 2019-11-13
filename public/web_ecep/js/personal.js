@@ -1075,9 +1075,11 @@ function verDocs(id){
         },
         success: function(data, textStatus, jqXHR) {
             data = JSON.parse(data) 
-            console.log(data)
+            
+            
 
             if (data.resultado == undefined) {
+
                 cargarDocs(data)
             }else {
                 showFeedback("error",data.resultado,"Error");
@@ -1115,11 +1117,16 @@ function cargarDocs(data){
         columns:[
             {data: "doc",
                 render: function(data, type, row){ 
+
+                    
+                    console.log(row.tipo+row.nombre_archivo);
                     return  row.tipo+row.nombre_archivo;
                 }
             },
             {data: "descargar",
                 render: function(data, type, row){ 
+                    console.log(data)
+                    
                     return '<button type="button" class="btn btn-primary btn-sm _btn-item"><i class="fa fa-pencil-alt"></i></button>'
                     
                 }
@@ -1133,7 +1140,26 @@ function cargarDocs(data){
             $('td:eq(1)', row).find('button').on('click',verDocumento);
         },
   });
- 
+    
+    var documentosget= data==null?'':data;
+        documentosget= documentosget==null?'': documentosget.tipo
+     trData = '';
+                trData+= ''; 
+                
+                trData+= (documentosget!="certificado_titulo") ? '<tr><td style="">Certificado titulo</td>'+`<td><div class="input-group"><input type="hidden" id="_token" value="{{ csrf_token() }}">
+            <input type="file" class="form-control documento" id="documento_3" onchange="encodeDocumento(3);" accept=".doc, .docx, .pdf, .png, .jpg"></div></td></tr>` : ''
+                
+                trData+= (documentosget!="cedula_identidad") ? '<tr><td style="">Cedula identidad</td>'+`<td><div class="input-group"><input type="hidden" id="_token" value="{{ csrf_token() }}">
+            <input type="file" class="form-control documento" id="documento_4" onchange="encodeDocumento(4);" accept=".doc, .docx, .pdf, .png, .jpg"></div></td></tr>` : ''
+                
+                trData+= (documentosget!="certificado_antecedentes") ? '<tr><td style="">Certificado antecedentes</td>'+`<td><div class="input-group"><input type="hidden" id="_token" value="{{ csrf_token() }}">
+            <input type="file" class="form-control documento" id="documento_2" onchange="encodeDocumento(2);" accept=".doc, .docx, .pdf, .png, .jpg"></div></td></tr>` : ''
+                
+                trData+= (documentosget!="curriculum") ? '<tr><td style="">Curriculum</td>'+`<td><div class="input-group"><input type="hidden" id="_token" value="{{ csrf_token() }}">
+            <input type="file" class="form-control documento" id="documento_1" onchange="encodeDocumento(1);" accept=".doc, .docx, .pdf, .png, .jpg"></div></td></tr>` :''  
+            
+
+        $('#lista-documentos').append(trData); 
     $('#docsModal').modal({backdrop: 'static', keyboard: false},'show') 
 }
 
@@ -1164,6 +1190,72 @@ function extranjero(){
         $('#comunaNacimiento').css('display','none')
     }
 }
+
+function encodeDocumento(contador) {
+    //localStorage.removeItem($('.documento')[0].files[0].name+"_64");
+    //var file = document.getElementById("documento_"+contador).files[0];
+    //var file = $("#documento_" + contador)[0].files[0];
+    console.log(contador)
+    var reader = new FileReader();
+
+    reader.onloadend = function() {
+        localStorage.setItem(($('#documento_' + contador)[0].files[0].name + "_64").trim(), (reader.result).split("base64,")[1]);
+        
+
+        subirDocumento(contador);
+    };
+
+    reader.readAsDataURL(document.getElementById("documento_" + contador).files[0]);
+
+}
+
+var contador = 0;
+var regs=-1;
+var regs1=-1;
+var regs2=-1;
+var regs3=-1;
+function subirDocumento(contador) {
+    
+    $("#load_" + contador).show();
+    $("#mensajeUpload_" + contador).html("Subiendo Documento");
+    $("#mensajeUpload_" + contador).addClass("text-dark");
+
+    showFeedback("warning", "Subiendo Documento", "Guardando");
+    var unno="";
+    var doctype= contador;
+        doctype= (doctype==1) ? doctype="cedula_identidad"  : (doctype==2) ? doctype="curriculum"  : (doctype==3) ? doctype="certificado_antecedentes": doctype="certificado_titulo" ;
+        unno= (contador==1) ? unno=regs : (contador==2) ? unno=regs1 : (contador==3) ?  unno=regs2: unno=regs3;
+        
+   
+    
+    $.ajax({
+        method: 'POST',
+        
+        url: webservice+'/personas/subirarchivos',
+        crossDomain: true,
+        headers: {
+            't': JSON.parse(localStorage.user).token
+        },
+        data: {
+
+            id_persona_archivo: unno,
+            run: $("#run").val(),
+            documento: localStorage.getItem(($('#documento_' + contador)[0].files[0].name + "_64").trim()),
+            nombreArchivo: $("#tipoDocumento_" + contador + " :selected").text() + "_" + $("#run").val() + "." + ($("#documento_" + contador)[0].files[0].name).split(".")[1],
+            tipo:doctype
+        },
+        success: function(data, textStatus, jqXHR) {
+            $("#load" + contador).hide();
+            showFeedback("success", data.descripcion, "Guardado");
+            
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            showFeedback("success", data.descripcion, "No guardado");
+            console.log(errorThrown);
+        }
+    });
+}
+
 
 function cargarDatos(data){
     $('#div-search').css('display','none')

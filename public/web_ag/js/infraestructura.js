@@ -145,9 +145,16 @@ function llenarVista(data){
                 //var sum= data[j]["data_region"][k].data_comuna.reclutado+data[j]["data_region"][k].data_comuna.capacitado+data[j]["data_region"][k].data_comuna.seleccionado+data[j]["data_region"][k].data_comuna.contratado
                 
                 var data2 =data1[j].data_region[k].data_provincia[l].data_comuna.visita_previa
-                 data2= (data2 == false) ? 'No' : ((data2 == true) ? 'Si' : '-');
+                data2= (data2 == false) ? 'No' : ((data2 == true) ? 'Si' : '-');
+
                 var data_val_sede= data1[j].data_region[k].data_provincia[l].data_comuna.id_sede
-                 data_val_sede= data_val_sede == null ? '-' : data_val_sede;
+                data_val_sede= data_val_sede == null ? '-' : data_val_sede;
+                 
+
+                var data_val_sede_ecep= data1[j].data_region[k].data_provincia[l].data_comuna.id_sede_ecep
+                data_val_sede_ecep = data_val_sede_ecep == null ? '-' : data_val_sede_ecep;
+
+
                 var valida_sede= data1[j].data_region[k].data_provincia[l].data_comuna.id_sede == null ? 'No' :'Si';
                 var valida_confirm= data1[j].data_region[k].data_provincia[l].data_comuna.salas_disponibles;
                     valida_confirm= valida_confirm==null?'-':valida_confirm;
@@ -157,7 +164,8 @@ function llenarVista(data){
                 trData+= '<td>' + data1[j].nombre_region + '</td>'
                 trData+= '<td>' + data1[j].data_region[k].nombre_provincia + '</td>'
                 trData+= '<td>' + data1[j].data_region[k].data_provincia[l].nombre_comuna + '</td>'
-                trData+= '<td style="text-align:center">' + data_val_sede + '</td>'
+                trData+= '<td style="text-align:center">' + data_val_sede_ecep + '</td>'
+                trData+= '<td style="text-align:center">' + data1[j].data_region[k].data_provincia[l].data_comuna.dia + '</td>'
                 trData+= '<td style="text-align:center">' + valida_sede + '</td>'
                 trData+= '<td style="text-align:center">' + data1[j].data_region[k].data_provincia[l].data_comuna.docentes + '</td>'
                 trData+= '<td style="text-align:center">' + data1[j].data_region[k].data_provincia[l].data_comuna.salas_requeridas + '</td>'

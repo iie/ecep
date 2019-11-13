@@ -1,6 +1,6 @@
 /node_modules
-/public/web_ecep/vendor/utils.js
-/public/web_ag/vendor/utils.js
+/public/web_ecep/vendor
+/public/web_ag/vendor
 /public/hot
 /public/storage
 /public/tmp_file*
@@ -16,4 +16,3 @@ npm-debug.log
 yarn-error.log
 .env
 .phpunit.result.cache
-

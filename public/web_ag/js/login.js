@@ -23,6 +23,7 @@ function loginSubmit(){
             backgroundColor:'transparent',        
         } 
     }); 
+
     if(user != "" && passw != ""){
         $.ajax({
             method:'GET',

@@ -197,17 +197,57 @@ class CapacitacionController extends Controller
             return response()->json(array("resultado"=>"error","descripcion"=>$validacion->errors()), 422); 
         }
 
+        /*$persona = DB::table('rrhh.persona')
+                    ->join('rrhh.persona_cargo' , 'rrhh.persona.id_persona','=','rrhh.persona_cargo.id_persona')
+                    ->leftJoin('rrhh.cargo' , 'rrhh.persona_cargo.id_cargo','=','rrhh.cargo.id_cargo')
+
+                    ->leftJoin('rrhh.capacitacion_persona', 'rrhh.persona_cargo.id_persona_cargo','=','rrhh.capacitacion_persona.id_persona_cargo')
+                    ->leftJoin('rrhh.capacitacion', 'rrhh.capacitacion_persona.id_capacitacion','=','rrhh.capacitacion.id_capacitacion')
+
+                    ->leftJoin('rrhh.capacitacion_prueba', 'rrhh.capacitacion_persona.id_capacitacion_persona','=','rrhh.capacitacion_prueba.id_capacitacion_persona')
+
+                    ->select('rrhh.persona.id_persona','rrhh.persona.nombres','rrhh.persona.apellido_paterno',
+                        'rrhh.persona.apellido_materno','rrhh.persona_cargo.id_persona_cargo','rrhh.cargo.nombre_rol',
+                        'rrhh.capacitacion_persona.id_capacitacion_persona','rrhh.capacitacion_prueba.id_capacitacion_prueba')
+                    ->where('rrhh.persona_cargo.id_cargo','=',$post['id_cargo'])
+                    ->where('rrhh.capacitacion_persona.id_capacitacion','=',$post['id_capacitacion'])
+                    ->toSql();*/
+        $capacitacionPrueba =  DB::table('rrhh.capacitacion_prueba')
+                    ->orderBy('prueba','asc')
+                    ->get();
+        $pruebas = [];
+        foreach ($capacitacionPrueba as $prueba) {             
+            $pruebas[$prueba->id_capacitacion_persona][] = $prueba;
+        }
+
+  
+ 
+        /*$persona = DB::select("select rrhh.persona.id_persona, rrhh.persona.nombres, rrhh.persona.apellido_paterno, rrhh.persona.apellido_materno, 
+            rrhh.persona_cargo.id_persona_cargo, rrhh.cargo.nombre_rol, rrhh.capacitacion_persona.id_capacitacion_persona
+            from rrhh.persona 
+            inner join rrhh.persona_cargo on rrhh.persona.id_persona = rrhh.persona_cargo.id_persona 
+            left join rrhh.cargo on rrhh.persona_cargo.id_cargo = rrhh.cargo.id_cargo 
+            left join rrhh.capacitacion_persona on rrhh.persona_cargo.id_persona_cargo = rrhh.capacitacion_persona.id_persona_cargo 
+            left join rrhh.capacitacion on rrhh.capacitacion_persona.id_capacitacion = rrhh.capacitacion.id_capacitacion 
+            where rrhh.persona_cargo.id_cargo = ".$post['id_cargo']."
+                and rrhh.capacitacion_persona.id_capacitacion = ".$post['id_capacitacion']);*/
         $persona = DB::table('rrhh.persona')
                     ->join('rrhh.persona_cargo' , 'rrhh.persona.id_persona','=','rrhh.persona_cargo.id_persona')
                     ->leftJoin('rrhh.cargo' , 'rrhh.persona_cargo.id_cargo','=','rrhh.cargo.id_cargo')
+
                     ->leftJoin('rrhh.capacitacion_persona', 'rrhh.persona_cargo.id_persona_cargo','=','rrhh.capacitacion_persona.id_persona_cargo')
                     ->leftJoin('rrhh.capacitacion', 'rrhh.capacitacion_persona.id_capacitacion','=','rrhh.capacitacion.id_capacitacion')
+
                     ->select('rrhh.persona.id_persona','rrhh.persona.nombres','rrhh.persona.apellido_paterno',
                         'rrhh.persona.apellido_materno','rrhh.persona_cargo.id_persona_cargo','rrhh.cargo.nombre_rol',
                         'rrhh.capacitacion_persona.id_capacitacion_persona')
                     ->where('rrhh.persona_cargo.id_cargo','=',$post['id_cargo'])
                     ->where('rrhh.capacitacion_persona.id_capacitacion','=',$post['id_capacitacion'])
                     ->get();
+        foreach ($persona as $index => $per) {             
+            $persona[$index]->capacitacion_prueba = isset($pruebas[$persona[$index]->id_capacitacion_persona]) ?
+                $pruebas[$persona[$index]->id_capacitacion_persona] : null;
+        }
 
         if (empty($persona)) {
             return response()->json(['resultado'=>'error','descripcion'=>'No se encuentra la Persona']);
@@ -465,42 +505,49 @@ class CapacitacionController extends Controller
 
         if(isset($post['evaluado'])){
             foreach ($post['evaluado'] as $evaluado) {
-                $capacitacionPrueba = CapacitacionPrueba::where('id_capacitacion_persona',$evaluado->id_capacitacion)
-                                ->get();
-         
-                if(isset($capacitacionPrueba)){
-                    
-                    if($personal['asignar'] == 1){
-                        $capacitacionPersona->borrado = false;
-                    }else{
-                        $capacitacionPersona->borrado = true;
-                    }
+
+                $capacitacionPrueba = CapacitacionPrueba::where('id_capacitacion_persona',$evaluado['id_capacitacion_persona'])
+                    ->get();
+ 
+                if(count($capacitacionPrueba) > 0){
 
                     try{
-                        $capacitacionPersona->save();
-                        //arreglo($capacitacionPersona);exit();
+                        foreach ($capacitacionPrueba as $prueba) {
+                            if($prueba->prueba == 'Psicologica'){
+                                $prueba->nota = $evaluado['nota_psicologica'];
+                                $prueba->puntaje = $evaluado['puntaje_psicologica'];
+                            }else{
+                                $prueba->nota = $evaluado['nota_contenido'];
+                                $prueba->puntaje = $evaluado['puntaje_contenido'];
+                            }
+
+                            $prueba->save();
+                        }
+
                     }catch (\Exception $e){
                         DB::rollback();
                         return response()->json(['resultado'=>'error','descripcion'=>'Error al modificar la asignación. ()'. $e->getMessage()]);
                     }
            
-                }else{ 
-
+                }else{
+       
                     try{
                         $capacitacionPrueba = new CapacitacionPrueba;
-                        $capacitacionPrueba->nota = $evaluado->nota_psicologica;
-                        $capacitacionPrueba->puntaje = $evaluado->puntaje_psicologica;
+                        $capacitacionPrueba->nota = $evaluado['nota_psicologica'];
+                        $capacitacionPrueba->puntaje = $evaluado['puntaje_psicologica'];
                         $capacitacionPrueba->prueba = 'Psicologica';
-
+                        $capacitacionPrueba->id_capacitacion_persona = $evaluado['id_capacitacion_persona']; 
+                         
                         $capacitacionPrueba->save();
                         
                         $capacitacionPrueba = new CapacitacionPrueba;
-                        $capacitacionPrueba->nota = $evaluado->nota_contenido;
-                        $capacitacionPrueba->puntaje = $evaluado->puntaje_contenido;
+                        $capacitacionPrueba->nota = $evaluado['nota_contenido'];
+                        $capacitacionPrueba->puntaje = $evaluado['puntaje_contenido'];
                         $capacitacionPrueba->prueba = 'Contenido';
-
-                        $capacitacionPrueba->save();
+                        $capacitacionPrueba->id_capacitacion_persona = $evaluado['id_capacitacion_persona'];
                         
+                        $capacitacionPrueba->save();
+
                     }catch (\Exception $e){
                         DB::rollback();
                         return response()->json(['resultado'=>'error','descripcion'=>'Error al guardar asignación. ()'. $e->getMessage()]);

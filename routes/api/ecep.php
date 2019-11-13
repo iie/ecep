@@ -8,6 +8,7 @@ Route::get('importa-evaluados' , 'Api\ecep\SalaController@importaEvaluados');
 Route::get('importa-asignaturas' , 'Api\ecep\SalaController@importaAsignaturas');	
 Route::get('sqltotable' , 'Api\ecep\SalaController@sqlToTable');	
 Route::get('sincroniza-estimacion' , 'Api\ecep\SalaController@sincronizaEstimacion');	
+Route::get('inscritos-dia' , 'Api\ecep\SedeController@inscritosDia');	
 
 //Route::middleware('auth:api')->post('sede/lista' , 'Api\ecep\SedeController@lista');	
 
@@ -75,5 +76,4 @@ Route::get('sincroniza-estimacion' , 'Api\ecep\SalaController@sincronizaEstimaci
 //MONITOREO MP3
 	Route::get('web/monitoreo/mp3/lista' , 'Api\ecep\MonitoreoMP3Controller@lista');
 	Route::get('web/monitoreo/mp3/guardar' , 'Api\ecep\MonitoreoMP3Controller@guardar');
- 
 ?>

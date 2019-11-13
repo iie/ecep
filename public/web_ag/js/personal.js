@@ -150,10 +150,10 @@ function getpostula(response){
     //attr preselect
     $("#tab-preseleccionado").show()
     //tabs
-    $("#tab-postulacion").html("Postulantes")
-    $("#tab-zonal").html("Capacitados")
-    $("#tab-regional").html("Seleccionados")
-    $("#tab-centro").html("Contratados")
+    $("#tab-postulacion").html("Postulación")
+    $("#tab-zonal").html("Capacitación")
+    $("#tab-regional").html("Selección")
+    $("#tab-centro").html("Contratación")
     //vista 1
     $("#ttotal_supervisor").html("SUPERVISORES")
     $("#ttotal_capacitados").html("EXAMINADORES")
@@ -173,7 +173,9 @@ function getpostula(response){
     $("#change_capa2").html("EXAMINADORES")
     $("#change_sele2").html("EXAM. DE APOYO")
     $("#change_contr2").html("ANFITRION")
-    $("#ratiototal2").html("POSTULANTES")
+    $("#ratiototal2").html("CAPACITADOS")
+    $("#change_tota2").html("POSTULANTES")
+    
     //vista 3
     $("#ttotal_supervisor3").html("SUPERVISORES")
     $("#ttotal_capacitados3").html("EXAMINADORES")
@@ -183,7 +185,8 @@ function getpostula(response){
     $("#change_capa3").html("EXAMINADORES")
     $("#change_sele3").html("EXAM. DE APOYO")
     $("#change_contr3").html("ANFITRION")
-    $("#ratiototal3").html("POSTULANTES")
+    $("#ratiototal3").html("SELECCIONADOS")
+    $("#change_tota3").html("POSTULANTES")
     //vista 4
     $("#ttotal_supervisor4").html("SUPERVISORES")
     $("#ttotal_capacitados4").html("EXAMINADORES")
@@ -193,10 +196,10 @@ function getpostula(response){
     $("#change_cap4").html("EXAMINADORES")
     $("#change_sel4").html("EXAM. DE APOYO")
     $("#change_cont4").html("ANFITRION")
-    $("#ratiototal4").html("POSTULANTES")
-
-
-    llenarVista(response["descripcion"]["0"]["data_estado"],response["descripcion"]["contador"]["reclutado"],response["descripcion"]["contador"].total_reclutado);
+    $("#ratiototal4").html("CONTRATADOS")
+    $("#change_tota4").html("POSTULANTES")
+    console.log()
+    llenarVista(response["descripcion"]["0"]["data_estado"],response["descripcion"]["contador"]["reclutado"],response["descripcion"]["contador"].totalWns);
     llenarVista2(response["descripcion"]["2"]["data_estado"],response["descripcion"]["contador"]["capacitado"],response["descripcion"]["contador"].total_capacitado);
     llenarVista3(response["descripcion"]["3"]["data_estado"],response["descripcion"]["contador"]["seleccionado"],response["descripcion"]["contador"].total_seleccionado);
     llenarVista4(response["descripcion"]["4"]["data_estado"],response["descripcion"]["contador"]["contratado"],response["descripcion"]["contador"].total_contratado);
@@ -314,7 +317,7 @@ function llenarVista(data,data2,data3){
                 nro++;
                 }
                 if ($("#select-view").val()==2) {
-                    var sum= data[j]["data_region"][k].data_comuna.Supervisor+data[j]["data_region"][k].data_comuna.Examinador+data[j]["data_region"][k].data_comuna.examinador_de_apoyo+data[j]["data_region"][k].data_comuna.anfitrion
+                    var sum= data[j]["data_region"][k].data_comuna.wnsUnicos
                     
 
                     var one=data[j]["data_region"][k].data_comuna.requeridos==null?0:data[j]["data_region"][k].data_comuna.requeridos.Supervisor;
@@ -517,6 +520,7 @@ function llenarVista(data,data2,data3){
             }
             $("#change_aventg").show()
             $("#change_tota").show();*/
+            $("#clear-filtros1").show();
             $('#total_supervisor').html(data2.Supervisor)
             $('#total_capacitados').html(data2.Examinador)
             $('#total_seleccionados').html(data2.examinador_de_apoyo)
@@ -573,7 +577,6 @@ function llenarVista2(data,data2,data3){
                 trData+= '<td id="preselected2_'+nro +'" style="text-align:center">'+data[j]["data_region"][k].data_comuna.postulante+'</td>'
                 trData+= '<td id="tototalcol2_'+nro +'" style="text-align:center">' + conDecimal + '%</td>'
                 trData+= '<td id="supervisor2_'+nro +'" style="text-align:center">' + data[j]["data_region"][k].data_comuna.reclutado + '</td>'
-
                 trData+= '<td style="text-align:center">' + data[j]["data_region"][k].data_comuna.capacitado + '</td>'
                 trData+= '<td style="text-align:center">' + data[j]["data_region"][k].data_comuna.seleccionado + '</td>'
                 trData+= '<td style="text-align:center">' + data[j]["data_region"][k].data_comuna.contratado + '</td>'
@@ -583,7 +586,7 @@ function llenarVista2(data,data2,data3){
                 nro++;
                 }
                 if ($("#select-view").val()==2) {
-                    var sum= data[j]["data_region"][k].data_comuna.Supervisor+data[j]["data_region"][k].data_comuna.Examinador+data[j]["data_region"][k].data_comuna.examinador_de_apoyo+data[j]["data_region"][k].data_comuna.anfitrion
+                    var sum= data[j]["data_region"][k].data_comuna.wnsUnicos
                     var one=data[j]["data_region"][k].data_comuna.requeridos==null?0:data[j]["data_region"][k].data_comuna.requeridos.Supervisor;
                         one= one.Supervisor==null?0:one.Supervisor;
                     var two=data[j]["data_region"][k].data_comuna.requeridos==null?0:data[j]["data_region"][k].data_comuna.requeridos;
@@ -594,14 +597,18 @@ function llenarVista2(data,data2,data3){
                         four= four.anfitrion==null?0:four.anfitrion;
                     var sumrquerido = parseInt(one) + parseInt(two) + parseInt(three) + parseInt(four)
 
+                    var porcentaje = sum * 100;
+                        porcentaje= sumrquerido==0?0:porcentaje/sumrquerido;
+                        var conDecimal = porcentaje.toFixed(0);
+
                      trData+= '<tr>';    
                 trData+= '<td style="text-align:center">' + nro + '</td>'
                 trData+= '<td>' + data[j]["region"] + '</td>'
                 trData+= '<td>' + data[j]["data_region"][k].comuna + '</td>'
-                trData+= '<td style="text-align:center">' + sumrquerido + '</td>'
-                trData+= '<td style="text-align:center">' + sum + '</td>'
+                trData+= '<td id="1requeridos2_'+nro +'" style="text-align:center">' + sumrquerido + '</td>'
                 trData+= '<td id="preselected2_'+nro +'" style="text-align:center">' + sum + '</td>'
-                trData+= '<td style="text-align:center">' + data[j]["data_region"][k].data_comuna.Supervisor + '</td>'
+                trData+= '<td id="tototalcol2_'+nro +'" style="text-align:center">' + conDecimal + '%</td>'
+                trData+= '<td id="supervisor2_'+nro +'" style="text-align:center">' + data[j]["data_region"][k].data_comuna.Supervisor + '</td>'
                 trData+= '<td style="text-align:center">' + data[j]["data_region"][k].data_comuna.Examinador + '</td>'
                 trData+= '<td style="text-align:center">' + data[j]["data_region"][k].data_comuna.examinador_de_apoyo + '</td>'
                 trData+= '<td style="text-align:center">' + data[j]["data_region"][k].data_comuna.anfitrion + '</td>'
@@ -784,7 +791,7 @@ function llenarVista2(data,data2,data3){
                
             }
             
-            $('#total_supervisor2').html(data2.reclutado)
+            $('#total_supervisor2').html(data2.postulante)
             $('#total_capacitados2').html(data2.capacitado)
             $('#total_seleccionados2').html(data2.seleccionado)
             $('#total_contratados2').html(data2.contratado)
@@ -795,6 +802,8 @@ function llenarVista2(data,data2,data3){
                 $("#supervisor2_"+w).show();
                $("#preselected2_"+w).show(); 
             }
+            $("#clear-filtros2").show();
+            $("#change_post2").show(); 
             $("#change_aventg2").show()
             $('#total_supervisor2').html(data2.Supervisor)
             $('#total_capacitados2').html(data2.Examinador)
@@ -838,14 +847,19 @@ function llenarVista3(data,data2,data3){
             
                 
                 if ($("#select-view").val()==1) {
+                    var req = data[j]["data_region"][k].data_comuna.requeridos != null ? data[j]["data_region"][k].data_comuna.requeridos : 0
                     var sum= data[j]["data_region"][k].data_comuna.reclutado+data[j]["data_region"][k].data_comuna.capacitado+data[j]["data_region"][k].data_comuna.seleccionado+data[j]["data_region"][k].data_comuna.contratado
+                    var porcentaje = data[j]["data_region"][k].data_comuna.postulante * 100;
+                        porcentaje= sum==0?0:porcentaje/sum;
+                        var conDecimal = porcentaje.toFixed(0);
                     trData+= '<tr>';    
                 trData+= '<td style="text-align:center">' + nro + '</td>'
                 trData+= '<td>' + data[j]["region"] + '</td>'
                 trData+= '<td>' + data[j]["data_region"][k].comuna + '</td>'
-                trData+= '<td style="text-align:center">' + data[j]["data_region"][k].data_comuna.reclutado + '</td>'
-                trData+= '<td id="id="preselected3_'+nro +'" style="text-align:center">nope</td>'
-                trData+= '<td style="text-align:center">' + sum + '</td>'
+                trData+= '<td id="requeridos3_'+nro +'" style="text-align:center">' + req + '</td>'
+                trData+= '<td id="preselected3_'+nro +'" style="text-align:center">'+data[j]["data_region"][k].data_comuna.postulante+'</td>'
+                trData+= '<td id="tototalcol3_'+nro +'" style="text-align:center">' + conDecimal + '%</td>'
+                trData+= '<td id="supervisor3_'+nro +'" style="text-align:center">' + data[j]["data_region"][k].data_comuna.reclutado + '</td>'
                 trData+= '<td style="text-align:center">' + data[j]["data_region"][k].data_comuna.capacitado + '</td>'
                 trData+= '<td style="text-align:center">' + data[j]["data_region"][k].data_comuna.seleccionado + '</td>'
                 trData+= '<td style="text-align:center">' + data[j]["data_region"][k].data_comuna.contratado + '</td>'
@@ -855,7 +869,7 @@ function llenarVista3(data,data2,data3){
                 nro++;
                 }
                 if ($("#select-view").val()==2) {
-                    var sum= data[j]["data_region"][k].data_comuna.Supervisor+data[j]["data_region"][k].data_comuna.Examinador+data[j]["data_region"][k].data_comuna.examinador_de_apoyo+data[j]["data_region"][k].data_comuna.anfitrion
+                    var sum= data[j]["data_region"][k].data_comuna.wnsUnicos
                     var one=data[j]["data_region"][k].data_comuna.requeridos==null?0:data[j]["data_region"][k].data_comuna.requeridos.Supervisor;
                         one= one.Supervisor==null?0:one.Supervisor;
                     var two=data[j]["data_region"][k].data_comuna.requeridos==null?0:data[j]["data_region"][k].data_comuna.requeridos;
@@ -865,15 +879,19 @@ function llenarVista3(data,data2,data3){
                     var four=data[j]["data_region"][k].data_comuna.requeridos==null?0:data[j]["data_region"][k].data_comuna.requeridos;
                         four= four.anfitrion==null?0:four.anfitrion;
                     var sumrquerido = parseInt(one) + parseInt(two) + parseInt(three) + parseInt(four)
+                        
+                        var porcentaje = sum * 100;
+                        porcentaje= sumrquerido==0?0:porcentaje/sumrquerido;
+                        var conDecimal = porcentaje.toFixed(0);
 
                      trData+= '<tr>';    
                 trData+= '<td style="text-align:center">' + nro + '</td>'
                 trData+= '<td>' + data[j]["region"] + '</td>'
                 trData+= '<td>' + data[j]["data_region"][k].comuna + '</td>'
-                trData+= '<td style="text-align:center">' + sumrquerido + '</td>'
+                trData+= '<td id="1requeridos3_'+nro +'" style="text-align:center">' + sumrquerido + '</td>'
                 trData+= '<td id="preselected3_'+nro +'" style="text-align:center">' + sum + '</td>'
-                trData+= '<td style="text-align:center">' + sum + '</td>'
-                trData+= '<td style="text-align:center">' + data[j]["data_region"][k].data_comuna.Supervisor + '</td>'
+                trData+= '<td id="tototalcol3_'+nro +'" style="text-align:center">' + conDecimal + '%</td>'
+                trData+= '<td id="supervisor3_'+nro +'" style="text-align:center">' + data[j]["data_region"][k].data_comuna.Supervisor + '</td>'
                 trData+= '<td style="text-align:center">' + data[j]["data_region"][k].data_comuna.Examinador + '</td>'
                 trData+= '<td style="text-align:center">' + data[j]["data_region"][k].data_comuna.examinador_de_apoyo + '</td>'
                 trData+= '<td style="text-align:center">' + data[j]["data_region"][k].data_comuna.anfitrion + '</td>'
@@ -1045,20 +1063,26 @@ function llenarVista3(data,data2,data3){
   });
 
     if ($("#select-view").val()==1) {
-            /*for (var w = 0; w < nro; w++){
-               $("#preselected3_"+w).hide(); 
+             $("#clear-filtros3").hide();
+            $("#change_post3").hide(); 
+            for (var w = 0; w < nro; w++){
+                
+                $("#supervisor3_"+w).hide(); 
+               
             }
-            $("#change_aventg3").hide()*/
-            $('#total_supervisor3').html(data2.reclutado)
+            $('#total_supervisor3').html(data2.postulante)
             $('#total_capacitados3').html(data2.capacitado)
             $('#total_seleccionados3').html(data2.seleccionado)
             $('#total_contratados3').html(data2.contratado)
             $('#ttotal3').html(data2.reclutado+data2.seleccionado+data2.capacitado+data2.contratado)
         }
         if ($("#select-view").val()==2) {
-            /*for (var w = 0; w < nro; w++){
+            for (var w = 0; w < nro; w++){
+                $("#supervisor3_"+w).show();
                $("#preselected3_"+w).show(); 
-            }*/
+            }
+            $("#clear-filtros3").show();
+            $("#change_post3").show();
             $("#change_aventg3").show()
             $('#total_supervisor3').html(data2.Supervisor)
             $('#total_capacitados3').html(data2.Examinador)
@@ -1103,14 +1127,19 @@ function llenarVista4(data,data2,data3){
             
                 
                 if ($("#select-view").val()==1) {
+                    var req = data[j]["data_region"][k].data_comuna.requeridos != null ? data[j]["data_region"][k].data_comuna.requeridos : 0
                     var sum= data[j]["data_region"][k].data_comuna.reclutado+data[j]["data_region"][k].data_comuna.capacitado+data[j]["data_region"][k].data_comuna.seleccionado+data[j]["data_region"][k].data_comuna.contratado
+                    var porcentaje = data[j]["data_region"][k].data_comuna.postulante * 100;
+                        porcentaje= sum==0?0:porcentaje/sum;
+                        var conDecimal = porcentaje.toFixed(0);
                     trData+= '<tr>';    
                 trData+= '<td style="text-align:center">' + nro + '</td>'
                 trData+= '<td>' + data[j]["region"] + '</td>'
                 trData+= '<td>' + data[j]["data_region"][k].comuna + '</td>'
-                trData+= '<td style="text-align:center">' + data[j]["data_region"][k].data_comuna.reclutado + '</td>'
-                trData+= '<td id="id="preselected4_'+nro +'" style="text-align:center"></td>'
-                trData+= '<td style="text-align:center">' + sum + '</td>'
+                trData+= '<td id="requeridos4_'+nro +'" style="text-align:center">' + req + '</td>'
+                trData+= '<td id="preselected4_'+nro +'" style="text-align:center">'+data[j]["data_region"][k].data_comuna.postulante+'</td>'
+                trData+= '<td id="tototalcol4_'+nro +'" style="text-align:center">' + conDecimal + '%</td>'
+                trData+= '<td id="supervisor4_'+nro +'" style="text-align:center">' + data[j]["data_region"][k].data_comuna.reclutado + '</td>'
                 trData+= '<td style="text-align:center">' + data[j]["data_region"][k].data_comuna.capacitado + '</td>'
                 trData+= '<td style="text-align:center">' + data[j]["data_region"][k].data_comuna.seleccionado + '</td>'
                 trData+= '<td style="text-align:center">' + data[j]["data_region"][k].data_comuna.contratado + '</td>'
@@ -1120,7 +1149,7 @@ function llenarVista4(data,data2,data3){
                 nro++;
                 }
                 if ($("#select-view").val()==2) {
-                    var sum= data[j]["data_region"][k].data_comuna.Supervisor+data[j]["data_region"][k].data_comuna.Examinador+data[j]["data_region"][k].data_comuna.examinador_de_apoyo+data[j]["data_region"][k].data_comuna.anfitrion
+                    var sum= data[j]["data_region"][k].data_comuna.wnsUnicos
                     var one=data[j]["data_region"][k].data_comuna.requeridos==null?0:data[j]["data_region"][k].data_comuna.requeridos.Supervisor;
                         one= one.Supervisor==null?0:one.Supervisor;
                     var two=data[j]["data_region"][k].data_comuna.requeridos==null?0:data[j]["data_region"][k].data_comuna.requeridos;
@@ -1130,16 +1159,18 @@ function llenarVista4(data,data2,data3){
                     var four=data[j]["data_region"][k].data_comuna.requeridos==null?0:data[j]["data_region"][k].data_comuna.requeridos;
                         four= four.anfitrion==null?0:four.anfitrion;
                     var sumrquerido = parseInt(one) + parseInt(two) + parseInt(three) + parseInt(four)
-
+                    var porcentaje = sum * 100;
+                        porcentaje= sumrquerido==0?0:porcentaje/sumrquerido;
+                        var conDecimal = porcentaje.toFixed(0);
 
                      trData+= '<tr>';    
                 trData+= '<td style="text-align:center">' + nro + '</td>'
                 trData+= '<td>' + data[j]["region"] + '</td>'
                 trData+= '<td>' + data[j]["data_region"][k].comuna + '</td>'
-                trData+= '<td style="text-align:center">' + sumrquerido + '</td>'
+                trData+= '<td id="1requeridos4_'+nro +'" style="text-align:center">' + sumrquerido + '</td>'
                 trData+= '<td id="preselected4_'+nro +'" style="text-align:center">' + sum + '</td>'
-                trData+= '<td style="text-align:center">' + sum + '</td>'
-                trData+= '<td style="text-align:center">' + data[j]["data_region"][k].data_comuna.Supervisor + '</td>'
+                trData+= '<td id="tototalcol4_'+nro +'" style="text-align:center">' + conDecimal + '%</td>'
+                trData+= '<td id="supervisor4_'+nro +'" style="text-align:center">' + data[j]["data_region"][k].data_comuna.Supervisor + '</td>'
                 trData+= '<td style="text-align:center">' + data[j]["data_region"][k].data_comuna.Examinador + '</td>'
                 trData+= '<td style="text-align:center">' + data[j]["data_region"][k].data_comuna.examinador_de_apoyo + '</td>'
                 trData+= '<td style="text-align:center">' + data[j]["data_region"][k].data_comuna.anfitrion + '</td>'
@@ -1312,20 +1343,26 @@ function llenarVista4(data,data2,data3){
   });
 
     if ($("#select-view").val()==1) {
+             $("#clear-filtros4").hide();
+            $("#change_pos4").hide(); 
             for (var w = 0; w < nro; w++){
-               $("#preselected4_"+w).hide(); 
+                
+                $("#supervisor4_"+w).hide(); 
+               
             }
-            $("#change_aventg4").hide()
-            $('#total_supervisor4').html(data2.reclutado)
+            $('#total_supervisor4').html(data2.postulante)
             $('#total_capacitados4').html(data2.capacitado)
             $('#total_seleccionados4').html(data2.seleccionado)
             $('#total_contratados4').html(data2.contratado)
             $('#ttotal4').html(data2.reclutado+data2.seleccionado+data2.capacitado+data2.contratado)
         }
         if ($("#select-view").val()==2) {
-            for (var w = 0; w < nro; w++){
+             for (var w = 0; w < nro; w++){
+                $("#supervisor4_"+w).show();
                $("#preselected4_"+w).show(); 
             }
+            $("#clear-filtros4").show();
+            $("#change_pos4").show();
             $("#change_aventg4").show()
             $('#total_supervisor4').html(data2.Supervisor)
             $('#total_capacitados4').html(data2.Examinador)

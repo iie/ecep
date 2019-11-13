@@ -1050,12 +1050,17 @@ function cargarNotas(data){
     $('#body-evaluacion').empty();
     $('#nombreCapacitacion').html(data)
     for ( var i = 0; i < data.length; i++) {
+  
         tr = '<tr id="tr-'+i+'">'+
                 '<td>'+data[i].nombres+' '+data[i].apellido_paterno+' '+data[i].apellido_paterno+'</td>'+
-                '<td><input class="form-control"></input></td>'+
-                '<td><input class="form-control"></input></td>'+
-                '<td><input class="form-control"></input></td>'+
-                '<td><input class="form-control"></input></td>'+
+                '<td><input class="form-control" value="'+(data[i].capacitacion_prueba != null ? 
+                    data[i].capacitacion_prueba[0].puntaje : "")+'" oninput="this.value=Numeros(this.value)"></input></td>'+
+                '<td><input class="form-control" value="'+(data[i].capacitacion_prueba != null ? 
+                    data[i].capacitacion_prueba[0].nota : "" )+'" oninput="this.value=notasPG(this.value)"></input></td>'+
+                '<td><input class="form-control" value="'+(data[i].capacitacion_prueba != null ? 
+                    data[i].capacitacion_prueba[1].puntaje : "" )+'" oninput="this.value=Numeros(this.value)"></input></td>'+
+                '<td><input class="form-control" value="'+(data[i].capacitacion_prueba != null ? 
+                    data[i].capacitacion_prueba[1].nota : "")+'"  oninput="this.value=notasPG(this.value)"></input></td>'+
             '</tr>'
         $('#body-evaluacion').append(tr);
 
@@ -1075,10 +1080,10 @@ function guardarEvaluacion(){
         var id_persona = $(this).find('tr').data('id_persona')
         var id_persona_cargo = $(this).find('tr').data('id_persona_cargo')
         var id_capacitacion_persona = $(this).find('tr').data('id_capacitacion_persona')
-        var puntaje_psicologica = $(this).find('td:nth-child(2) input').val() == "" ? 0 : $(this).find('td:nth-child(2) input').val()
-        var nota_psicologica = $(this).find('td:nth-child(3) input').val() == "" ? 0 : $(this).find('td:nth-child(3) input').val()
-        var puntaje_contenido = $(this).find('td:nth-child(4) input').val() == "" ? 0 : $(this).find('td:nth-child(4) input').val()
-        var nota_contenido = $(this).find('td:nth-child(5) input').val() == "" ? 0 : $(this).find('td:nth-child(5) input').val()
+        var puntaje_contenido = $(this).find('td:nth-child(2) input').val() == "" ? 0 : $(this).find('td:nth-child(2) input').val()
+        var nota_contenido = $(this).find('td:nth-child(3) input').val() == "" ? 0 : $(this).find('td:nth-child(3) input').val()
+        var puntaje_psicologica = $(this).find('td:nth-child(4) input').val() == "" ? 0 : $(this).find('td:nth-child(4) input').val()
+        var nota_psicologica = $(this).find('td:nth-child(5) input').val() == "" ? 0 : $(this).find('td:nth-child(5) input').val()
         
         evaluaciones.push({id_persona: id_persona, id_persona_cargo: id_persona_cargo, 
             id_capacitacion_persona: id_capacitacion_persona, puntaje_psicologica: puntaje_psicologica, 
