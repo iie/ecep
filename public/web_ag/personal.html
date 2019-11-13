@@ -61,6 +61,8 @@
     <script type="text/javascript" src="js/personal.js"></script>
 
     <script type="text/javascript" src="vendor/jquery-nice-select-1.1.0/js/jquery.nice-select.js"></script>
+    
+    <script type="text/javascript" src="vendor/moment/moment.js"></script>
 
 
 
@@ -181,7 +183,10 @@
                             <a class="nav-link pr-5 pl-5" id="tab-centro" data-toggle="pill" href="#tabCentro" role="tab" aria-controls="tabCentro" aria-selected="false">Anfitrión</a>
 
                         </li>
-                        <div class="col-sm-4" style="position:absolute;right: -196px;">
+                        <div class="col-sm-4" style="position:absolute;right: -115px;">
+                            <button class="btn btn-secondary datatable-excel" role="button" id="inscritosDia" type="button">
+                                        <!-- <i class="fas fa-download"></i> --> Inscritos por día
+                                    </button> 
                             <select class="form-control custom-select" style="width: 38%; border:2px solid;" name="select-view" id="select-view">
                                 <option value="2">Vista por proceso</option>
                                 <option value="1">Vista por perfil</option>
@@ -529,6 +534,36 @@
 
             </div>  
 
+        </div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="modalInscritos" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalScrollableTitle">Inscritos por día</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <table id="table-inscritos" class=" table table-hover _table-link dataTable " style="width:100%;">
+                    <thead>         
+                        <tr>
+                            <th style="text-align:center">FECHA</th>
+                            <th style="text-align:center">CANTIDAD</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="lista-inscritos"></tbody>
+
+                </table>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+              </div>
+            </div>
+          </div>
         </div>
 
     </body>

@@ -68,6 +68,7 @@ Route::get('inscritos-dia' , 'Api\ecep\SedeController@inscritosDia');
 //MONITOREO RRHH 
 	Route::get('web/monitoreo/personal/lista' , 'Api\ecep\MonitoreoPersonalController@listaPersonal');
 	Route::get('web/monitoreo/personal-por-estado/lista' , 'Api\ecep\MonitoreoPersonalController@listaPersonalPorEstado');
+	Route::get('web/monitoreo/inscritos-dia' , 'Api\ecep\MonitoreoPersonalController@inscritosDia');	
 
 //MONITOREO INFRAESTRUCTURA 	
 	Route::get('web/monitoreo/infraestructura/lista' , 'Api\ecep\MonitoreoInfraestructuraController@listaSedes');
