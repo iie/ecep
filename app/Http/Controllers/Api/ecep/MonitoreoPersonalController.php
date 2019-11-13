@@ -23,7 +23,34 @@ class MonitoreoPersonalController extends Controller
         $this->fields = array();    
     }   
 
-    public function listaPersonal(Request $request){
+	public function inscritosDia(Request $request){
+		$totalWns = DB::select("SELECT updated_at FROM rrhh.persona WHERE id_persona in (
+				                    SELECT rrhh.persona.id_persona
+                                    FROM rrhh.persona
+                                    INNER JOIN rrhh.persona_cargo ON rrhh.persona_cargo.id_persona = rrhh.persona.id_persona
+                                    INNER JOIN rrhh.cargo ON rrhh.persona_cargo.id_cargo = rrhh.cargo.id_cargo
+                                    INNER JOIN core.comuna ON rrhh.persona.id_comuna_postulacion = core.comuna.id_comuna
+                                    INNER JOIN core.region ON core.comuna.id_region = core.region.id_region 
+                                    WHERE rrhh.persona.modificado = TRUE 
+                                    AND rrhh.persona.borrado = FALSE)
+                                    AND rrhh.persona.id_comuna_postulacion in (SELECT
+                                    comuna.id_comuna
+                                    FROM core.region as region, core.comuna as comuna, infraestructura.sede as sede
+                                    WHERE region.id_region =  comuna.id_region AND sede.id_comuna = comuna.id_comuna)
+                                    ORDER BY updated_at");
+							
+		foreach($totalWns as $totalWnsAux){
+			@$t[substr($totalWnsAux->updated_at,0,10)]++;
+		}
+		foreach($t as $fecha=>$inscritos){
+			$res['fecha'] = $fecha;
+			$res['inscritos'] = $inscritos;
+			$resFinal[] = $res;
+		}
+		return response()->json($resFinal);
+	}
+
+	public function listaPersonal(Request $request){
         
         $post = $request->all();    
 		
@@ -39,7 +66,7 @@ class MonitoreoPersonalController extends Controller
 		$sql = DB::select("SELECT
                             region.nombre as region,
                             comuna.nombre as comuna
-							FROM core.region as region, core.comuna as comuna, infraestructura.sede as sede
+							FROM core.region as region, core.comuna as comuna, infraestructura.estimacion as sede
 							WHERE region.id_region =  comuna.id_region AND sede.id_comuna = comuna.id_comuna
                             ORDER BY region.orden_geografico, comuna.nombre
 							");
@@ -56,7 +83,6 @@ class MonitoreoPersonalController extends Controller
 		$_estado[] = 'seleccionado';
 		$_estado[] = 'contratado';
         
-		
 		foreach($_cargo as $_cargoAux){
 			foreach($_region as $region=>$comunas){
 				foreach($comunas as $comuna){
@@ -77,6 +103,7 @@ class MonitoreoPersonalController extends Controller
                 FROM
                 infraestructura.estimacion
                 INNER JOIN core.comuna ON infraestructura.estimacion.id_comuna = core.comuna.id_comuna
+				WHERE infraestructura.estimacion.dia = 1
                 GROUP BY core.comuna.nombre
                 ORDER BY core.comuna.nombre");
        
@@ -115,7 +142,6 @@ class MonitoreoPersonalController extends Controller
 				$comunas = array();
                 foreach ($data_region as $comuna => $data_comuna) {
 					$auxCargo = array();
-					// $auxCargo["postulante"] = 0;
                     foreach ($data_comuna as $cargo => $cont) {
                         if(in_array($comuna, $arrComunas)){
                             switch ($rol) {
@@ -146,10 +172,7 @@ class MonitoreoPersonalController extends Controller
                                 }          
                             }
                         }
-                        
-                        
                     }
-
                     if(in_array($comuna, $arrComunas)){
                         $auxComuna["comuna"] = $comuna;
 				        $auxCargo["requeridos"] = isset($req_comuna[$comuna][$_rol]) ? $req_comuna[$comuna][$_rol] : null;
@@ -174,7 +197,6 @@ class MonitoreoPersonalController extends Controller
     }
 
     public function listaPersonalPorEstado(Request $request){
-        
         $post = $request->all();    
 		
 		//******INICIO INICIALIZAMOS
@@ -189,7 +211,7 @@ class MonitoreoPersonalController extends Controller
 		$sql = DB::select("SELECT
                             region.nombre as region,
                             comuna.nombre as comuna
-							FROM core.region as region, core.comuna as comuna, infraestructura.sede as sede
+							FROM core.region as region, core.comuna as comuna, infraestructura.estimacion as sede
 							WHERE region.id_region =  comuna.id_region AND sede.id_comuna = comuna.id_comuna
                             ORDER BY region.orden_geografico, comuna.nombre
 							");
@@ -207,6 +229,7 @@ class MonitoreoPersonalController extends Controller
                 FROM
                 infraestructura.estimacion
                 INNER JOIN core.comuna ON infraestructura.estimacion.id_comuna = core.comuna.id_comuna
+				WHERE infraestructura.estimacion.dia = 1
                 GROUP BY core.comuna.nombre
                 ORDER BY core.comuna.nombre");
        
@@ -235,8 +258,6 @@ class MonitoreoPersonalController extends Controller
             }
         }
 
-
-
         // Contadores
         $count_reclutado = DB::select("SELECT
                             COUNT (distinct rrhh.persona.run) AS cuenta_persona
@@ -261,11 +282,9 @@ class MonitoreoPersonalController extends Controller
 							
 							AND core.comuna.id_comuna in (SELECT
                             core.comuna.id_comuna
-							FROM core.region as region, core.comuna as comuna, infraestructura.sede as sede
+							FROM core.region as region, core.comuna as comuna, infraestructura.estimacion as sede
 							WHERE region.id_region =  comuna.id_region AND sede.id_comuna = comuna.id_comuna
-                            ORDER BY region.orden_geografico, comuna.nombre)							
-
-							");
+                            ORDER BY region.orden_geografico, comuna.nombre)");
         $total_reclutado = $count_reclutado[0]->cuenta_persona;
 
         $count_capacitado = DB::select("SELECT
@@ -290,7 +309,7 @@ class MonitoreoPersonalController extends Controller
                             AND rrhh.persona.borrado = FALSE )		
 							AND core.comuna.id_comuna in (SELECT
                             core.comuna.id_comuna
-							FROM core.region as region, core.comuna as comuna, infraestructura.sede as sede
+							FROM core.region as region, core.comuna as comuna, infraestructura.estimacion as sede
 							WHERE region.id_region =  comuna.id_region AND sede.id_comuna = comuna.id_comuna
                             ORDER BY region.orden_geografico, comuna.nombre)							
 							
@@ -320,7 +339,7 @@ class MonitoreoPersonalController extends Controller
                             AND rrhh.persona.borrado = FALSE )		
 							AND core.comuna.id_comuna in (SELECT
                             core.comuna.id_comuna
-							FROM core.region as region, core.comuna as comuna, infraestructura.sede as sede
+							FROM core.region as region, core.comuna as comuna, infraestructura.estimacion as sede
 							WHERE region.id_region =  comuna.id_region AND sede.id_comuna = comuna.id_comuna
                             ORDER BY region.orden_geografico, comuna.nombre)							
 
@@ -350,7 +369,7 @@ class MonitoreoPersonalController extends Controller
                             AND rrhh.persona.borrado = FALSE )	
 							AND core.comuna.id_comuna in (SELECT
                             core.comuna.id_comuna
-							FROM core.region as region, core.comuna as comuna, infraestructura.sede as sede
+							FROM core.region as region, core.comuna as comuna, infraestructura.estimacion as sede
 							WHERE region.id_region =  comuna.id_region AND sede.id_comuna = comuna.id_comuna
                             ORDER BY region.orden_geografico, comuna.nombre)							
 							
@@ -379,16 +398,14 @@ class MonitoreoPersonalController extends Controller
                             AND rrhh.persona.borrado = FALSE )		
 							AND core.comuna.id_comuna in (SELECT
                             core.comuna.id_comuna
-							FROM core.region as region, core.comuna as comuna, infraestructura.sede as sede
+							FROM core.region as region, core.comuna as comuna, infraestructura.estimacion as sede
 							WHERE region.id_region =  comuna.id_region AND sede.id_comuna = comuna.id_comuna
                             ORDER BY region.orden_geografico, comuna.nombre)							
 							
 							");
         $total_preseleccionado = $count_preseleccionado[0]->cuenta_persona;
         //******FIN INICIALIZAMOS
-        
-		
-		
+
 		$sql = DB::select("SELECT distinct(rrhh.persona.id_persona), rrhh.persona.id_comuna_postulacion, core.comuna.nombre
 											FROM rrhh.persona
 											INNER JOIN rrhh.persona_cargo ON rrhh.persona_cargo.id_persona = rrhh.persona.id_persona
@@ -400,7 +417,7 @@ class MonitoreoPersonalController extends Controller
 											
 							AND core.comuna.id_comuna in (SELECT
                             core.comuna.id_comuna
-							FROM core.region as region, core.comuna as comuna, infraestructura.sede as sede
+							FROM core.region as region, core.comuna as comuna, infraestructura.estimacion as sede
 							WHERE region.id_region =  comuna.id_region AND sede.id_comuna = comuna.id_comuna
                             ORDER BY region.orden_geografico, comuna.nombre)							
 							
@@ -408,7 +425,6 @@ class MonitoreoPersonalController extends Controller
         foreach ($sql as $value) {
             @$_arrComuna[$value->nombre]++;
         }
-		
 		
 		$sql = DB::select("SELECT
                             rrhh.persona_cargo.estado,
@@ -468,20 +484,11 @@ class MonitoreoPersonalController extends Controller
 							}
                             @$arrCont[$estado][$_rol] += $cont;
 							
-							// if(array_key_exists($comuna, $_arrComuna)){
-								// $postulantesUnicos[$_rol] = $_arrComuna[$comuna]; //$cont;	
-							// }
-							// else{
-								// $postulantesUnicos[$_rol] = 0;
-							// }
-							
 						}
-						$auxRol[$_rol] = $cont;	//$cont;	
-                        
+						$auxRol[$_rol] = $cont;
                     }
                     if(in_array($comuna, $arrComunas)){
                         $auxComuna["comuna"] = $comuna;
-					
                         $auxComuna["data_comuna"] = $auxRol;
                         $auxComuna["data_comuna"]["requeridos"] = isset($req_comuna[$comuna]) ? $req_comuna[$comuna] : null;
 						$auxComuna["data_comuna"]["wnsUnicos"] = isset($_arrComuna[$comuna]) ? $_arrComuna[$comuna] : 0;
@@ -493,32 +500,28 @@ class MonitoreoPersonalController extends Controller
                 unset($comunas);
                 $regiones[] = $auxRegion;
             }
-            
 			$auxEstado["estado"] = $estado;
             $auxEstado["data_estado"] = $regiones;
             unset($regiones);
             $arrFinal[] = $auxEstado;
         }
 		
-		
-		$totalWns = DB::select("select count(*) as totalwns from rrhh.persona where id_persona in (
-				SELECT rrhh.persona.id_persona
-											FROM rrhh.persona
-											INNER JOIN rrhh.persona_cargo ON rrhh.persona_cargo.id_persona = rrhh.persona.id_persona
-											INNER JOIN rrhh.cargo ON rrhh.persona_cargo.id_cargo = rrhh.cargo.id_cargo
-											INNER JOIN core.comuna ON rrhh.persona.id_comuna_postulacion = core.comuna.id_comuna
-											INNER JOIN core.region ON core.comuna.id_region = core.region.id_region 
-											WHERE rrhh.persona.modificado = TRUE 
-											AND rrhh.persona.borrado = FALSE 
-				)
-				AND rrhh.persona.id_comuna_postulacion in (SELECT
-                            comuna.id_comuna
-							FROM core.region as region, core.comuna as comuna, infraestructura.sede as sede
-							WHERE region.id_region =  comuna.id_region AND sede.id_comuna = comuna.id_comuna
-                            )");
+		$totalWns = DB::select("SELECT count(*) as totalwns FROM rrhh.persona WHERE id_persona in (
+                                    SELECT rrhh.persona.id_persona
+                                    FROM rrhh.persona
+                                    INNER JOIN rrhh.persona_cargo ON rrhh.persona_cargo.id_persona = rrhh.persona.id_persona
+                                    INNER JOIN rrhh.cargo ON rrhh.persona_cargo.id_cargo = rrhh.cargo.id_cargo
+                                    INNER JOIN core.comuna ON rrhh.persona.id_comuna_postulacion = core.comuna.id_comuna
+                                    INNER JOIN core.region ON core.comuna.id_region = core.region.id_region 
+                                    WHERE rrhh.persona.modificado = TRUE 
+                                    AND rrhh.persona.borrado = FALSE 
+                                    )
+				                AND rrhh.persona.id_comuna_postulacion in (SELECT
+                                comuna.id_comuna
+                                FROM core.region as region, core.comuna as comuna, infraestructura.estimacion as sede
+                                WHERE region.id_region =  comuna.id_region AND sede.id_comuna = comuna.id_comuna
+                                )");
 
-
-		
         $arrFinal["contador"] = $arrCont;
 		$arrFinal["contador"]["totalWns"] = $totalWns[0]->totalwns;
 		$arrFinal["contador"]["total_reclutado"] = $total_reclutado;
