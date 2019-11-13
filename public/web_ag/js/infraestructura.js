@@ -264,8 +264,8 @@ function llenarVista(data){
             } 
         ],*/
         "initComplete": function(settings, json) {
-            var placeholder = ["Región","","Comuna"]
-            this.api().columns([0,2]).every( function (index) {
+            var placeholder = ["Región","","Comuna","","Día"]
+            this.api().columns([0,2,4]).every( function (index) {
             var column = this;
             var select = $('<select class="form-control col-sm-2 small _filtros"  id="selectR_'+index+'" >'+
                     '<option value="" selected="selected">'+placeholder[index]+'</option></select>')
@@ -303,9 +303,8 @@ function llenarVista(data){
 
         "drawCallback": function(){
 
-            var placeholder = ["Región","","Comuna"]
-
-            this.api().columns([0,2]).every( function (index) {
+            var placeholder = ["Región","","Comuna","","Día"]
+            this.api().columns([0,2,4]).every( function (index) {
 
                 var columnFiltered = this;
 
@@ -600,6 +599,7 @@ function btnClearFilters(){
 
     $('#selectR_1').val("").niceSelect('update');
     $('#selectR_2').val("").niceSelect('update');
+    $('#selectR_4').val("").niceSelect('update');
 
     $('#selectO_1').val("").niceSelect('update');
     $('#selectO_2').val("").niceSelect('update');
