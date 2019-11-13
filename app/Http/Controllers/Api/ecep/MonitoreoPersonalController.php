@@ -35,7 +35,7 @@ class MonitoreoPersonalController extends Controller
                                     AND rrhh.persona.borrado = FALSE)
                                     AND rrhh.persona.id_comuna_postulacion in (SELECT
                                     comuna.id_comuna
-                                    FROM core.region as region, core.comuna as comuna, infraestructura.sede as sede
+                                    FROM core.region as region, core.comuna as comuna, infraestructura.estimacion as sede
                                     WHERE region.id_region =  comuna.id_region AND sede.id_comuna = comuna.id_comuna)
                                     ORDER BY updated_at");
 							
