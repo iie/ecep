@@ -406,24 +406,79 @@ class MonitoreoPersonalController extends Controller
         $total_preseleccionado = $count_preseleccionado[0]->cuenta_persona;
         //******FIN INICIALIZAMOS
 
+        /* Contador unico postulantes*/
 		$sql = DB::select("SELECT distinct(rrhh.persona.id_persona), rrhh.persona.id_comuna_postulacion, core.comuna.nombre
-											FROM rrhh.persona
-											INNER JOIN rrhh.persona_cargo ON rrhh.persona_cargo.id_persona = rrhh.persona.id_persona
-											INNER JOIN rrhh.cargo ON rrhh.persona_cargo.id_cargo = rrhh.cargo.id_cargo
-											INNER JOIN core.comuna ON rrhh.persona.id_comuna_postulacion = core.comuna.id_comuna
-											INNER JOIN core.region ON core.comuna.id_region = core.region.id_region 
-											WHERE rrhh.persona.modificado = TRUE 
-											AND rrhh.persona.borrado = FALSE 
-											
-							AND core.comuna.id_comuna in (SELECT
+                            FROM rrhh.persona
+                            INNER JOIN rrhh.persona_cargo ON rrhh.persona_cargo.id_persona = rrhh.persona.id_persona
+                            INNER JOIN rrhh.cargo ON rrhh.persona_cargo.id_cargo = rrhh.cargo.id_cargo
+                            INNER JOIN core.comuna ON rrhh.persona.id_comuna_postulacion = core.comuna.id_comuna
+                            INNER JOIN core.region ON core.comuna.id_region = core.region.id_region 
+                            WHERE rrhh.persona.modificado = TRUE 
+                            AND rrhh.persona.borrado = FALSE 
+                            AND core.comuna.id_comuna in (SELECT
                             core.comuna.id_comuna
-							FROM core.region as region, core.comuna as comuna, infraestructura.estimacion as sede
-							WHERE region.id_region =  comuna.id_region AND sede.id_comuna = comuna.id_comuna
-                            ORDER BY region.orden_geografico, comuna.nombre)							
-							
-											");
+                            FROM core.region as region, core.comuna as comuna, infraestructura.estimacion as sede
+                            WHERE region.id_region =  comuna.id_region AND sede.id_comuna = comuna.id_comuna
+                            ORDER BY region.orden_geografico, comuna.nombre)");
         foreach ($sql as $value) {
-            @$_arrComuna[$value->nombre]++;
+            @$_arrComuna[$value->nombre]["reclutado"]++;
+        }
+
+        /* Contador unico capacitados*/
+        $sql = DB::select("SELECT distinct(rrhh.persona.id_persona), rrhh.persona.id_comuna_postulacion, core.comuna.nombre
+                            FROM rrhh.persona
+                            INNER JOIN rrhh.persona_cargo ON rrhh.persona_cargo.id_persona = rrhh.persona.id_persona
+                            INNER JOIN rrhh.cargo ON rrhh.persona_cargo.id_cargo = rrhh.cargo.id_cargo
+                            INNER JOIN core.comuna ON rrhh.persona.id_comuna_postulacion = core.comuna.id_comuna
+                            INNER JOIN core.region ON core.comuna.id_region = core.region.id_region 
+                            WHERE rrhh.persona.modificado = TRUE 
+                            AND rrhh.persona.borrado = FALSE 
+                            AND rrhh.persona_cargo.estado LIKE 'capacitado'
+                            AND core.comuna.id_comuna in (SELECT
+                            core.comuna.id_comuna
+                            FROM core.region as region, core.comuna as comuna, infraestructura.estimacion as sede
+                            WHERE region.id_region =  comuna.id_region AND sede.id_comuna = comuna.id_comuna
+                            ORDER BY region.orden_geografico, comuna.nombre)");
+        foreach ($sql as $value) {
+            @$_arrComuna[$value->nombre]["capacitado"]++;
+        }
+
+        /* Contador unico seleccionados*/
+        $sql = DB::select("SELECT distinct(rrhh.persona.id_persona), rrhh.persona.id_comuna_postulacion, core.comuna.nombre
+                            FROM rrhh.persona
+                            INNER JOIN rrhh.persona_cargo ON rrhh.persona_cargo.id_persona = rrhh.persona.id_persona
+                            INNER JOIN rrhh.cargo ON rrhh.persona_cargo.id_cargo = rrhh.cargo.id_cargo
+                            INNER JOIN core.comuna ON rrhh.persona.id_comuna_postulacion = core.comuna.id_comuna
+                            INNER JOIN core.region ON core.comuna.id_region = core.region.id_region 
+                            WHERE rrhh.persona.modificado = TRUE 
+                            AND rrhh.persona.borrado = FALSE 
+                            AND rrhh.persona_cargo.estado LIKE 'seleccionado'
+                            AND core.comuna.id_comuna in (SELECT
+                            core.comuna.id_comuna
+                            FROM core.region as region, core.comuna as comuna, infraestructura.estimacion as sede
+                            WHERE region.id_region =  comuna.id_region AND sede.id_comuna = comuna.id_comuna
+                            ORDER BY region.orden_geografico, comuna.nombre)");
+        foreach ($sql as $value) {
+            @$_arrComuna[$value->nombre]["seleccionado"]++;
+        }
+
+        /* Contador unico contratados*/
+        $sql = DB::select("SELECT distinct(rrhh.persona.id_persona), rrhh.persona.id_comuna_postulacion, core.comuna.nombre
+                            FROM rrhh.persona
+                            INNER JOIN rrhh.persona_cargo ON rrhh.persona_cargo.id_persona = rrhh.persona.id_persona
+                            INNER JOIN rrhh.cargo ON rrhh.persona_cargo.id_cargo = rrhh.cargo.id_cargo
+                            INNER JOIN core.comuna ON rrhh.persona.id_comuna_postulacion = core.comuna.id_comuna
+                            INNER JOIN core.region ON core.comuna.id_region = core.region.id_region 
+                            WHERE rrhh.persona.modificado = TRUE 
+                            AND rrhh.persona.borrado = FALSE 
+                            AND rrhh.persona_cargo.estado LIKE 'contratado'
+                            AND core.comuna.id_comuna in (SELECT
+                            core.comuna.id_comuna
+                            FROM core.region as region, core.comuna as comuna, infraestructura.estimacion as sede
+                            WHERE region.id_region =  comuna.id_region AND sede.id_comuna = comuna.id_comuna
+                            ORDER BY region.orden_geografico, comuna.nombre)");
+        foreach ($sql as $value) {
+            @$_arrComuna[$value->nombre]["contratado"]++;
         }
 		
 		$sql = DB::select("SELECT
@@ -479,7 +534,7 @@ class MonitoreoPersonalController extends Controller
                                     $_rol = $rol;
                                     break;
                             }
-							if($estado == 'preseleccionado'){
+							if($estado == 'preseleccionado' || $estado == 'rechazado'){
 								$estado = 'reclutado';
 							}
                             @$arrCont[$estado][$_rol] += $cont;
@@ -491,7 +546,7 @@ class MonitoreoPersonalController extends Controller
                         $auxComuna["comuna"] = $comuna;
                         $auxComuna["data_comuna"] = $auxRol;
                         $auxComuna["data_comuna"]["requeridos"] = isset($req_comuna[$comuna]) ? $req_comuna[$comuna] : null;
-						$auxComuna["data_comuna"]["wnsUnicos"] = isset($_arrComuna[$comuna]) ? $_arrComuna[$comuna] : 0;
+						$auxComuna["data_comuna"]["wnsUnicos"] = isset($_arrComuna[$comuna][$estado]) ? $_arrComuna[$comuna][$estado] : 0;
                         $comunas[] = $auxComuna;
                     }
                 }
