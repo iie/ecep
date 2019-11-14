@@ -47,7 +47,7 @@ class MonitoreoInfraestructuraController extends Controller
                             INNER JOIN core.comuna ON infraestructura.estimacion.id_comuna = core.comuna.id_comuna
                             INNER JOIN core.provincia ON core.comuna.id_provincia = core.provincia.id_provincia
                             INNER JOIN core.region ON core.provincia.id_region = core.region.id_region
-                            LEFT JOIN infraestructura.sede ON infraestructura.sede.id_estimacion = infraestructura.estimacion.id_estimacion
+                            LEFT JOIN infraestructura.sede ON infraestructura.sede.id_sede = infraestructura.estimacion.id_sede
                             GROUP BY infraestructura.estimacion.id_estimacion,
                             core.region.orden_geografico,
                             core.region.nombre,
@@ -81,6 +81,7 @@ class MonitoreoInfraestructuraController extends Controller
         $cont_salas_disponibles = 0;
         $cont_salas_requeridas = 0;
         $cont_sedes_confirmadas = 0;
+        
         foreach ($arr as $estimacion => $data_estimacion){
             foreach ($data_estimacion as $region => $data_region) {
                 foreach ($data_region as $provincia => $data_provincia) {
