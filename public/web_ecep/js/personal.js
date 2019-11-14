@@ -62,7 +62,15 @@ function getPersonal(){
             id_usuario: JSON.parse(localStorage.user).id_usuario,
         },
         success: function(data, textStatus, jqXHR) {
-            llenarVista(data)
+            if(JSON.parse(data).resultado != undefined) {
+  
+                if(JSON.parse(data).resultado == "error"){
+                    showFeedback("error",JSON.parse(data).descripcion,"Datos incorrectos");
+                }
+            }else{
+                llenarVista(data)
+            } 
+             
         },
         error: function(jqXHR, textStatus, errorThrown) {
             showFeedback("error","Error en el servidor","Datos incorrectos");
@@ -88,8 +96,17 @@ function getPersonalCoordinadorZonal(){
             id_persona: JSON.parse(localStorage.user).id_persona
         },
         success: function(data, textStatus, jqXHR) {
-            llenarVista(data)
-            llenarVista3(JSON.parse(data))
+
+            if(JSON.parse(data).resultado != undefined) {
+  
+                if(JSON.parse(data).resultado == "error"){
+                    showFeedback("error",JSON.parse(data).descripcion,"Datos incorrectos");
+                }
+            }else{
+                llenarVista(data)
+                llenarVista3(JSON.parse(data))
+            }  
+
         },
         error: function(jqXHR, textStatus, errorThrown) {
             showFeedback("error","Error en el servidor","Datos incorrectos");
@@ -114,7 +131,14 @@ function getPersonalCoordinador(){
             id_persona: JSON.parse(localStorage.user).id_persona
         },
         success: function(data, textStatus, jqXHR) {
-            llenarVista(data)
+            if(JSON.parse(data).resultado != undefined) {
+  
+                if(JSON.parse(data).resultado == "error"){
+                    showFeedback("error",JSON.parse(data).descripcion,"Datos incorrectos");
+                }
+            }else{
+                llenarVista(data)
+            } 
         },
         error: function(jqXHR, textStatus, errorThrown) {
             showFeedback("error","Error en el servidor","Datos incorrectos");
@@ -128,11 +152,20 @@ anfitrion = 0;
 examinador = 0;
 eApoyo = 0;
 supervisor = 0;
+var strg;
 
 validarTabla = 0;
+var rutss = new Object();
 function llenarVista(data){
-
+	strg=JSON.parse(data).personal_postulacion
+			
+	
+	 	
+	 
+	
+            
     data = JSON.parse(data)
+
     $('#filtros-postulacion').empty();
     if($.fn.dataTable.isDataTable('#table-postulacion')){
         $('#table-postulacion').DataTable().destroy();
@@ -194,9 +227,13 @@ function llenarVista(data){
             {data: "nivel_estudios"},
             {data: "estado"},
             {data: "opciones",className: "text-center",
-                render: function(data, type, row){                
-                    return '<button type="button" id="persona_'+row.id_persona+'" onclick="modificar('+row.id_persona+','+row.id_persona_cargo+',true)" class="btn btn-primary btn-sm _btn-item"><i class="fa fa-pencil-alt"></i></button>'+
-                        '<button type="button" id="docPersona_'+row.id_persona+'" onclick="verDocs('+row.id_persona+')" class="ml-2 btn btn-primary btn-sm _btn-item"><i class="fas fa-file-alt"></i></button>'        
+                render: function(data, type, row){  
+                    
+                    
+                    return ''
+                    //console.log(strg)
+                  /*  return '<button type="button" id="persona_'+row.id_persona+'" onclick="modificar('+row.id_persona+','+row.id_persona_cargo+',true)" class="btn btn-primary btn-sm _btn-item"><i class="fa fa-pencil-alt"></i></button>'+
+                        '<button type="button" id="docPersona_'+row.id_persona+'"  class="ml-2 btn btn-primary btn-sm _btn-item"><i class="fas fa-file-alt"></i></button>'       */ 
                 }
             },
             {data: "id_sexo"},
@@ -233,9 +270,16 @@ function llenarVista(data){
                                 }else{
                                     select += '<option value="contratado" disabled>Contratado</option>'
                                 }
-                    select += '<option value="rechazado">Rechazado</option>'
+                    select += '<option value="rechazado">Rechazado</option>'+
+                        '</select>'
 
-            select += '</select>'
+
+            acciones='<button type="button" id="persona_'+data.id_persona+'" onclick="modificar('+data.id_persona+','+data.id_persona_cargo+',true)" class="btn btn-primary btn-sm _btn-item"><i class="fa fa-pencil-alt"></i></button>'+
+                         '<button type="button" id="docPersona_'+data.id_persona+'"  class="ml-2 btn btn-primary btn-sm _btn-item"><i class="fas fa-file-alt"></i></button>'  
+                        $('td:eq(11)', row).html(acciones)
+
+
+
             if(JSON.parse(localStorage.user).id_cargo != 1004){
                 $('td:eq(10)', row).html(select)
                 $('td:eq(10)', row).find('select').val(data.estado)
@@ -243,12 +287,20 @@ function llenarVista(data){
                     $('td:eq(10)', row).find('select').prop('disabled',true)
                 }
                 $('td:eq(10)', row).find('select').data('id_persona_cargo',data.id_persona_cargo);
+
                 $('td:eq(10)', row).find('select').on('change',cambiarEstado);
+
+                $('td:eq(11)', row).find('#docPersona_'+data.id_persona).data('run',data.run);
+                $('td:eq(11)', row).find('#docPersona_'+data.id_persona).data('id_persona',data.id_persona);
+                $('td:eq(11)', row).find('#docPersona_'+data.id_persona).on('click',verDocs);
+   
             }else{
                 if(validarTabla ==  0){
                     col = 10
+                    col2 = 11
                 } else{
                     col = 9
+                    col2 = 10
                 }
 
                 $('td:eq('+col+')', row).html(select)
@@ -258,6 +310,10 @@ function llenarVista(data){
                 }
                 $('td:eq('+col+')', row).find('select').data('id_persona_cargo',data.id_persona_cargo);
                 $('td:eq('+col+')', row).find('select').on('change',cambiarEstado);
+
+                $('td:eq('+col2+')', row).find('#docPersona_'+data.id_persona).data('run',data.run);
+                $('td:eq('+col2+')', row).find('#docPersona_'+data.id_persona).data('id_persona',data.id_persona);
+                $('td:eq('+col2+')', row).find('#docPersona_'+data.id_persona).on('click',verDocs);
 
             }
 
@@ -485,7 +541,7 @@ function llenarVista2(data){
     }
  
 }
-
+var idusr;
 function llenarVista3(data){
      
     $('#filtros-regional').empty();
@@ -746,6 +802,7 @@ function cambiarEstado(){
         }).then((result) => {
           if (result.value) {
             cambiar($(this).data('id_persona_cargo'), $(this).val())
+
           }
         })
     }else if($(this).val() == 'rechazado'){
@@ -808,6 +865,7 @@ var regiones = ''
 function llenarSelects(data){
     
     regiones = data.regiones;
+    regiones_postulante = data.regiones_postulante;
     $('#inputSexo').html('').append('<option value="-1" selected="">Elegir...</option>') 
     for(i = 0; i < data.sexo.length; i++){
         $('#inputSexo').append('<option value="'+data.sexo[i].id_tabla_maestra+'">'+data.sexo[i].descripcion_larga+'</option>') 
@@ -835,20 +893,32 @@ function llenarSelects(data){
     }
 
     $('#inputRegionPostulacion').html('').append('<option value="-1" selected="">Elegir...</option>') 
-    for(i = 0; i < data.regiones.length; i++){
-        $('#inputRegionPostulacion').append('<option value="'+data.regiones[i].id_region+'">'+data.regiones[i].nombre+'</option>') 
+    for(i = 0; i < data.regiones_postulante.length; i++){
+        $('#inputRegionPostulacion').append('<option value="'+data.regiones_postulante[i].id_region+'">'+data.regiones_postulante[i].nombre+'</option>') 
     }
 }
 
 function cargarComunas(input,id){
     $('#'+input).html('')
     $('#'+input).append('<option value="-1" selected="">Elegir...</option>') 
-    for(h = 0; h < regiones.length; h++){
-        if(regiones[h].id_region == id){
-            for(i = 0; i < regiones[h].comunas.length; i++){
-                $('#'+input).append('<option value="'+regiones[h].comunas[i].id_comuna+'">'+regiones[h].comunas[i].nombre+'</option>') 
+    if(input =='inputComunaPostulacion'){
+        for(h = 0; h < regiones_postulante.length; h++){
+            if(regiones_postulante[h].id_region == id){
+                for(i = 0; i < regiones_postulante[h].comunas.length; i++){
+                    $('#'+input).append('<option value="'+regiones_postulante[h].comunas[i].id_comuna+'">'+regiones_postulante[h].comunas[i].nombre+'</option>') 
+                }
             }
         }
+ 
+    }else{
+        for(h = 0; h < regiones.length; h++){
+            if(regiones[h].id_region == id){
+                for(i = 0; i < regiones[h].comunas.length; i++){
+                    $('#'+input).append('<option value="'+regiones[h].comunas[i].id_comuna+'">'+regiones[h].comunas[i].nombre+'</option>') 
+                }
+            }
+        }
+
     }
 }
 
@@ -1060,7 +1130,29 @@ function modificar(id,idPersonaCargo,postula){
     }) 
 }
 
-function verDocs(id){
+var run;
+
+var consultadc;
+function verDocs(){
+    console.log( ($(this).data('run')))
+    console.log( ($(this).data('id_persona')))
+    
+    
+   	console.log(strg);
+   	if($(this).data('id_persona')==null){
+   		idusr =	gidUser
+   	}else{
+   		idusr= $(this).data('id_persona')
+   		gidUser=idusr
+   		console.log( gidUser)
+   	}
+    
+
+    found = strg.find(function(element) {
+        return element.id_persona ==idusr;
+        });
+    run=found.run;
+    console.log(found.run);
     $.ajax({
         method:'POST',
         url: webservice+'/personal/documentos',
@@ -1071,15 +1163,15 @@ function verDocs(id){
         dataType:'text',
         data :{ 
                 id_usuario: JSON.parse(localStorage.user).id_usuario,
-                id_persona : id,
+                id_persona : idusr,
         },
         success: function(data, textStatus, jqXHR) {
             data = JSON.parse(data) 
-            
+            console.log(data)
             
 
             if (data.resultado == undefined) {
-
+                
                 cargarDocs(data)
             }else {
                 showFeedback("error",data.resultado,"Error");
@@ -1119,13 +1211,13 @@ function cargarDocs(data){
                 render: function(data, type, row){ 
 
                     
-                    console.log(row.tipo+row.nombre_archivo);
+                    
                     return  row.tipo+row.nombre_archivo;
                 }
             },
             {data: "descargar",
                 render: function(data, type, row){ 
-                    console.log(data)
+                    
                     
                     return '<button type="button" class="btn btn-primary btn-sm _btn-item"><i class="fa fa-pencil-alt"></i></button>'
                     
@@ -1141,34 +1233,58 @@ function cargarDocs(data){
         },
   });
     
-    var documentosget= data==null?'':data;
-        documentosget= documentosget==null?'': documentosget.tipo
-     trData = '';
-                trData+= ''; 
-                
-                trData+= (documentosget!="certificado_titulo") ? '<tr><td style="">Certificado titulo</td>'+`<td><div class="input-group"><input type="hidden" id="_token" value="{{ csrf_token() }}">
-            <input type="file" class="form-control documento" id="documento_3" onchange="encodeDocumento(3);" accept=".doc, .docx, .pdf, .png, .jpg"></div></td></tr>` : ''
-                
-                trData+= (documentosget!="cedula_identidad") ? '<tr><td style="">Cedula identidad</td>'+`<td><div class="input-group"><input type="hidden" id="_token" value="{{ csrf_token() }}">
-            <input type="file" class="form-control documento" id="documento_4" onchange="encodeDocumento(4);" accept=".doc, .docx, .pdf, .png, .jpg"></div></td></tr>` : ''
-                
-                trData+= (documentosget!="certificado_antecedentes") ? '<tr><td style="">Certificado antecedentes</td>'+`<td><div class="input-group"><input type="hidden" id="_token" value="{{ csrf_token() }}">
-            <input type="file" class="form-control documento" id="documento_2" onchange="encodeDocumento(2);" accept=".doc, .docx, .pdf, .png, .jpg"></div></td></tr>` : ''
-                
-                trData+= (documentosget!="curriculum") ? '<tr><td style="">Curriculum</td>'+`<td><div class="input-group"><input type="hidden" id="_token" value="{{ csrf_token() }}">
-            <input type="file" class="form-control documento" id="documento_1" onchange="encodeDocumento(1);" accept=".doc, .docx, .pdf, .png, .jpg"></div></td></tr>` :''  
-            
+	var found1=''
+    var found2=''
+    var found3=''
+    var found4=''
+    for (var j = 0; j < data.length; j++){
+        data[j].tipo!=null?found1 = data.find(function(element1) {
+
+        return element1.tipo =='certificado_titulo';
+        }):''
+        data[j].tipo!=null?found2 = data.find(function(element2) {
+        return element2.tipo =='cedula_identidad';
+        }):''
+        data[j].tipo!=null?found3 = data.find(function(element3) {
+        return element3.tipo =='certificado_antecedentes';
+        }):'-'
+        data[j].tipo!=null?found4 = data.find(function(element4) {
+        return element4.tipo =='curriculum';
+        }):''
+
+    }
+   
+    found1=found1==null?'':found1.tipo;
+    found2=found2==null?'':found2.tipo;
+    found3=found3==null?'':found3.tipo;
+    found4=found4==null?'':found4.tipo;
+    
+    console.log(found1,found2,found3,found4)
+    trData= ''; 
+    
+    trData+= (found1!='certificado_titulo') ? '<tr><td style="">Certificado titulo</td>'+`<td><div class="input-group"><input type="hidden" id="_token" value="{{ csrf_token() }}">
+<input type="file" class="form-control documento" id="documento_4" onchange="encodeDocumento(4);" accept=".doc, .docx, .pdf, .png, .jpg"></div></td></tr>` : ''
+    
+    trData+= (found2!='cedula_identidad') ? '<tr><td style="">Cedula identidad</td>'+`<td><div class="input-group"><input type="hidden" id="_token" value="{{ csrf_token() }}">
+<input type="file" class="form-control documento" id="documento_1" onchange="encodeDocumento(1);" accept=".doc, .docx, .pdf, .png, .jpg"></div></td></tr>` : ''
+    
+    trData+= (found3!='certificado_antecedentes') ? '<tr><td style="">Certificado antecedentes</td>'+`<td><div class="input-group"><input type="hidden" id="_token" value="{{ csrf_token() }}">
+<input type="file" class="form-control documento" id="documento_3" onchange="encodeDocumento(3);" accept=".doc, .docx, .pdf, .png, .jpg"></div></td></tr>` : ''
+    
+    trData+= (found4!='curriculum') ? '<tr><td style="">Curriculum</td>'+`<td><div class="input-group"><input type="hidden" id="_token" value="{{ csrf_token() }}">
+<input type="file" class="form-control documento" id="documento_2" onchange="encodeDocumento(2);" accept=".doc, .docx, .pdf, .png, .jpg"></div></td></tr>` :''  
 
         $('#lista-documentos').append(trData); 
     $('#docsModal').modal({backdrop: 'static', keyboard: false},'show') 
+     
 }
 
 function verDocumento(){
     $('#titulo_modal_doc').html('Documento: ' +$(this).data('doc_nombre'))
     if($(this).data('extension') == 'png' || $(this).data('extension') == 'jpg'){
-        $('#content-doc').html('<img class="ver-docs" src="https://ecep2019.iie.cl/public/api/personas/descarga/archivo/'+$(this).data('t_descarga')+'">')
+        $('#content-doc').html('<img class="ver-docs" src="https://pruebadeconocimientos.iie.cl/public/api/personas/descarga/archivo/'+$(this).data('t_descarga')+'">')
     }else{
-        $('#content-doc').html('<iframe id="iframeDoc" class="ver-docs" src="https://docs.google.com/viewer?url=https://ecep2019.iie.cl/public/api/personas/descarga/archivo/'+$(this).data('t_descarga')+'&embedded=true"></iframe>')
+        $('#content-doc').html('<iframe id="iframeDoc" class="ver-docs" src="https://docs.google.com/viewer?url=https://pruebadeconocimientos.iie.cl/public/api/personas/descarga/archivo/'+$(this).data('t_descarga')+'&embedded=true"></iframe>')
          //$('#iframeDoc').attr('src','https://docs.google.com/viewer?url=https://ecep2019.iie.cl/public/api/personas/descarga/archivo/'+ $(this).data('t_descarga')+'&embedded=true')
     }
     
@@ -1189,6 +1305,8 @@ function extranjero(){
         $('#reginNacimiento').css('display','none')
         $('#comunaNacimiento').css('display','none')
     }
+
+
 }
 
 function encodeDocumento(contador) {
@@ -1214,8 +1332,9 @@ var regs=-1;
 var regs1=-1;
 var regs2=-1;
 var regs3=-1;
+var gidUser;
 function subirDocumento(contador) {
-    
+    $('#docsModal').modal('hide') 
     $("#load_" + contador).show();
     $("#mensajeUpload_" + contador).html("Subiendo Documento");
     $("#mensajeUpload_" + contador).addClass("text-dark");
@@ -1225,13 +1344,13 @@ function subirDocumento(contador) {
     var doctype= contador;
         doctype= (doctype==1) ? doctype="cedula_identidad"  : (doctype==2) ? doctype="curriculum"  : (doctype==3) ? doctype="certificado_antecedentes": doctype="certificado_titulo" ;
         unno= (contador==1) ? unno=regs : (contador==2) ? unno=regs1 : (contador==3) ?  unno=regs2: unno=regs3;
+       
+       
         
-   
-    
     $.ajax({
         method: 'POST',
         
-        url: webservice+'/personas/subirarchivos',
+        url: 'https://pruebadeconocimientos.iie.cl/api/personas/subirarchivos',
         crossDomain: true,
         headers: {
             't': JSON.parse(localStorage.user).token
@@ -1239,18 +1358,21 @@ function subirDocumento(contador) {
         data: {
 
             id_persona_archivo: unno,
-            run: $("#run").val(),
+            run: run,
             documento: localStorage.getItem(($('#documento_' + contador)[0].files[0].name + "_64").trim()),
-            nombreArchivo: $("#tipoDocumento_" + contador + " :selected").text() + "_" + $("#run").val() + "." + ($("#documento_" + contador)[0].files[0].name).split(".")[1],
+            nombreArchivo: "_" + run + "." + ($("#documento_" + contador)[0].files[0].name).split(".")[1],
             tipo:doctype
         },
         success: function(data, textStatus, jqXHR) {
             $("#load" + contador).hide();
             showFeedback("success", data.descripcion, "Guardado");
-            
+            console.log(gidUser)
+            gidUser=idusr;
+            console.log(gidUser)
+            verDocs()
         },
         error: function(jqXHR, textStatus, errorThrown) {
-            showFeedback("success", data.descripcion, "No guardado");
+            showFeedback("error", errorThrown, "No guardado");
             console.log(errorThrown);
         }
     });
