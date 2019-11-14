@@ -1282,9 +1282,9 @@ function cargarDocs(data){
 function verDocumento(){
     $('#titulo_modal_doc').html('Documento: ' +$(this).data('doc_nombre'))
     if($(this).data('extension') == 'png' || $(this).data('extension') == 'jpg'){
-        $('#content-doc').html('<img class="ver-docs" src="https://pruebadeconocimientos.iie.cl/public/api/personas/descarga/archivo/'+$(this).data('t_descarga')+'">')
+        $('#content-doc').html('<img class="ver-docs" src="'+webservice2+'personas/descarga/archivo/'+$(this).data('t_descarga')+'">')
     }else{
-        $('#content-doc').html('<iframe id="iframeDoc" class="ver-docs" src="https://docs.google.com/viewer?url=https://pruebadeconocimientos.iie.cl/public/api/personas/descarga/archivo/'+$(this).data('t_descarga')+'&embedded=true"></iframe>')
+        $('#content-doc').html('<iframe id="iframeDoc" class="ver-docs" src="https://docs.google.com/viewer?url='+webservice2+'personas/descarga/archivo/'+$(this).data('t_descarga')+'&embedded=true"></iframe>')
          //$('#iframeDoc').attr('src','https://docs.google.com/viewer?url=https://ecep2019.iie.cl/public/api/personas/descarga/archivo/'+ $(this).data('t_descarga')+'&embedded=true')
     }
     
@@ -1350,7 +1350,7 @@ function subirDocumento(contador) {
     $.ajax({
         method: 'POST',
         
-        url: 'https://pruebadeconocimientos.iie.cl/api/personas/subirarchivos',
+        url: webservice2+'personas/subirarchivos',
         crossDomain: true,
         headers: {
             't': JSON.parse(localStorage.user).token
