@@ -42,6 +42,7 @@ Route::get('inscritos-dia' , 'Api\ecep\SedeController@inscritosDia');
 
 //RRHH
 	Route::middleware('auth:api')->post('web/personal/lista' , 'Api\ecep\PersonalController@lista');
+	Route::middleware('auth:api')->post('web/personal/listaPostulantes' , 'Api\ecep\PersonalController@listaPostulantes'); 
 	Route::middleware('auth:api')->post('web/personal/modificar' , 'Api\ecep\PersonalController@modificar');
 	Route::middleware('auth:api')->post('web/personal/guardar' , 'Api\ecep\PersonalController@guardar');
 	Route::middleware('auth:api')->post('web/personal/documentos' , 'Api\ecep\PersonalController@documentos');
@@ -54,6 +55,7 @@ Route::get('inscritos-dia' , 'Api\ecep\SedeController@inscritosDia');
 //CAPACITACION
 	Route::middleware('auth:api')->post('web/capacitacion/lista' , 'Api\ecep\CapacitacionController@lista');
 	Route::middleware('auth:api')->post('web/capacitacion/guardar' , 'Api\ecep\CapacitacionController@guardar');
+	Route::middleware('auth:api')->post('web/capacitacion/modificarCapacitacion' , 'Api\ecep\CapacitacionController@modificarCapacitacion');
 	Route::middleware('auth:api')->post('web/capacitacion/obtenerPersonal' , 'Api\ecep\CapacitacionController@obtenerPersonal');
 	Route::middleware('auth:api')->post('web/capacitacion/asignarCapacitacion' , 'Api\ecep\CapacitacionController@asignarCapacitacion');
 	Route::middleware('auth:api')->post('web/capacitacion/listaRelator' , 'Api\ecep\CapacitacionController@listaRelator');
@@ -77,4 +79,7 @@ Route::get('inscritos-dia' , 'Api\ecep\SedeController@inscritosDia');
 //MONITOREO MP3
 	Route::get('web/monitoreo/mp3/lista' , 'Api\ecep\MonitoreoMP3Controller@lista');
 	Route::get('web/monitoreo/mp3/guardar' , 'Api\ecep\MonitoreoMP3Controller@guardar');
+
+//MONITOREO CALL CENTER
+	Route::get('web/monitoreo/call-center/lista' , 'Api\ecep\MonitoreoCallCenterController@lista');
 ?>

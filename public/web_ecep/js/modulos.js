@@ -1,4 +1,5 @@
 $(document).ready(function(){
+	loginvalid(localStorage.getItem('user'))
 	tipoUsuario()
     $('#nombre_usuario').html(JSON.parse(localStorage.user).nombres+' '+JSON.parse(localStorage.user).apellidos+' ')
 });
@@ -9,18 +10,18 @@ $(".custom-file-input").on("change", function() {
 });
 
 function tipoUsuario(){
-	if(JSON.parse(localStorage.user).id_tipo_usuario == 28 && JSON.parse(localStorage.user).id_cargo == 1008){
+	if(JSON.parse(localStorage.user).id_tipo_usuario == 1052){
 		redirectCapacitacion()
 		
 	}else if(JSON.parse(localStorage.user).id_tipo_usuario == 28){
 		$('#card-infraestructura').remove();
 		$('#card-evaluados').remove();
 		$('#card-centros').remove();
-		$('#card-capacitacion').remove();
+		$('#card-capacitacion').css('display','')
 		$('#card-rrhh').css('display','')
 		$('#card-asignacion').css('display','')
 		
-	}else{
+	}else if(JSON.parse(localStorage.user).id_tipo_usuario == 1051){
 		$('#card-infraestructura').css('display','')
 		$('#card-evaluados').css('display','')
 		$('#card-rrhh').css('display','')
