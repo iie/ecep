@@ -19,38 +19,55 @@ class SedeController extends Controller
 	public function inscritosDia(Request $request)
     {
 	
-		$totalWns = DB::select("select updated_at from rrhh.persona where id_persona in (
-				SELECT rrhh.persona.id_persona
-											FROM rrhh.persona
-											INNER JOIN rrhh.persona_cargo ON rrhh.persona_cargo.id_persona = rrhh.persona.id_persona
-											INNER JOIN rrhh.cargo ON rrhh.persona_cargo.id_cargo = rrhh.cargo.id_cargo
-											INNER JOIN core.comuna ON rrhh.persona.id_comuna_postulacion = core.comuna.id_comuna
-											INNER JOIN core.region ON core.comuna.id_region = core.region.id_region 
-											WHERE rrhh.persona.modificado = TRUE 
-											AND rrhh.persona.borrado = FALSE 
-				)
-				AND rrhh.persona.id_comuna_postulacion in (SELECT
-                            comuna.id_comuna
-							FROM core.region as region, core.comuna as comuna, infraestructura.sede as sede
-							WHERE region.id_region =  comuna.id_region AND sede.id_comuna = comuna.id_comuna 
-                            ) order by updated_at");
+		// $totalWns = DB::select("select created_at, updated_at, id_persona from rrhh.persona where id_persona in (
+				// SELECT rrhh.persona.id_persona
+											// FROM rrhh.persona
+											// INNER JOIN rrhh.persona_cargo ON rrhh.persona_cargo.id_persona = rrhh.persona.id_persona
+											// INNER JOIN rrhh.cargo ON rrhh.persona_cargo.id_cargo = rrhh.cargo.id_cargo
+											// INNER JOIN core.comuna ON rrhh.persona.id_comuna_postulacion = core.comuna.id_comuna
+											// INNER JOIN core.region ON core.comuna.id_region = core.region.id_region 
+											// WHERE rrhh.persona.modificado = TRUE 
+											// AND rrhh.persona.borrado = FALSE 
+				// )
+				// AND rrhh.persona.id_comuna_postulacion in (SELECT
+                            // comuna.id_comuna
+							// FROM core.region as region, core.comuna as comuna, infraestructura.sede as sede
+							// WHERE region.id_region =  comuna.id_region AND sede.id_comuna = comuna.id_comuna 
+                            // ) order by created_at");
+							
+		$totalWns = DB::select("select rrhh.persona_archivo.created_at as archivo_creado, 
+		rrhh.persona.created_at as persona_creada,  
+		rrhh.persona.id_persona 
+		from rrhh.persona, rrhh.persona_archivo 
+		where rrhh.persona.id_persona = rrhh.persona_archivo.id_persona 
+		and rrhh.persona.created_at<'2019-10-27 23:00:00'");
+		//arreglo($totalWns);exit;
+							
 							
 		foreach($totalWns as $totalWnsAux){
-			@$t[substr($totalWnsAux->updated_at,0,10)]++;
+			
+			//if($totalWnsAux->created_at == null){
+				//DB::select("update rrhh.persona set creado_el = '".$totalWnsAux->archivo_creado."' where id_persona = ".$totalWnsAux->id_persona);
+				
+			//}
+			//@$t[substr($totalWnsAux->created_at,0,10)]++;
 		}
-		arreglo($t);
-		foreach($t as $totalWnsAux){
-			@$tt+=$totalWnsAux;
-		}
+		//arreglo($t);
+		exit;
+		return response()->json($t);
+		// arreglo($t);
+		// foreach($t as $totalWnsAux){
+			// @$tt+=$totalWnsAux;
+		// }
 		
-		echo $tt;
+		// echo $tt;
 	}
 
 	public function guardaLiceoCupo(Request $request)
     {
 		
 		$post = $request->all();	
-
+ 
 		$validacion = Validator::make($post, [
 			'id_usuario' => 'int|required',
 			'id_estimacion' => 'int|required',
@@ -60,24 +77,23 @@ class SedeController extends Controller
 		if ($validacion->fails()) {
 			return response()->json(array("respuesta"=>"error","descripcion"=>$validacion->errors()), 422); 
 		}
+ 
+		//$estimacion = Estimacion::where('id_sede',$post["id_sede"])->first();
+		$estimacion = Estimacion::find($post["id_estimacion"]);
+		if(isset($estimacion->id_estimacion)){
 
-		$sede = Sede::find($post["id_sede"]);
-		if(isset($sede->id_sede)){
-
-			if($sede->id_estimacion == $post["id_estimacion"]){
+			if($estimacion->id_sede == $post["id_sede"]){
 				return response()->json(["respuesta"=>"error","descripcion"=>"Esta sede sede ya fue asignada a este cupo"]);
 			} 
-			
-			$sede->id_estimacion = $post["id_estimacion"];
-			$sede->id_sede = $post["id_sede"];
+			//$estimacion->id_estimacion = $post["id_estimacion"];
+			$estimacion->id_sede = $post["id_sede"];
 			DB::beginTransaction();
 			try{
-				$sede->save(); 
+				$estimacion->save(); 
 			}catch (\Exception $e){
 				DB::rollback();
 				return response()->json(['resultado'=>'error','descripcion'=>'Error al guardar. ()'. $e->getMessage()]);
 			}
-
 			DB::commit();
 			return response()->json(["respuesta"=>"ok","descripcion"=>"Se ha guardado con exito"]);
 			
@@ -92,6 +108,7 @@ class SedeController extends Controller
 		$validacion = Validator::make($post, [
 			'id_usuario' => 'int|required',
 			'id_comuna' => 'int|required',
+			'dia' => 'int|required',
 		]);
 
 		if ($validacion->fails()) {
@@ -99,14 +116,14 @@ class SedeController extends Controller
 		}
 
 		$sedeComunas = DB::select('SELECT comuna.id_comuna, sede.rbd, sede.nombre, sede.direccion, sede.id_sede
-				FROM infraestructura.sede , core.comuna as comuna , core.region as region
-				where sede.id_comuna = comuna.id_comuna 
-				and comuna.id_region = region.id_region
-				and comuna.id_comuna  = '.$post["id_comuna"].'
-				
-				and sede.estado = 2 and id_estimacion is null
-				order by  region, comuna');
-		
+									FROM infraestructura.sede , core.comuna as comuna , core.region as region
+									where sede.id_comuna = comuna.id_comuna 
+									and comuna.id_region = region.id_region
+									and comuna.id_comuna  = '.$post["id_comuna"].'
+									and sede.estado = 2 
+									and sede.id_sede not in (select infraestructura.estimacion.id_sede from infraestructura.estimacion where infraestructura.estimacion.id_sede is not null and dia = '.$post["dia"].')
+									order by  region, comuna');
+
 		return response()->json($sedeComunas);	
 	}	
 		
@@ -128,11 +145,13 @@ class SedeController extends Controller
             ->join('core.region', 'core.comuna.id_region', '=', 'core.region.id_region')
             ->leftJoin('infraestructura.sala', 'infraestructura.sede.id_sede', '=', 'infraestructura.sala.id_sede')
             ->leftJoin('infraestructura.centro_operaciones', 'infraestructura.sede.id_centro_operaciones', '=', 'infraestructura.centro_operaciones.id_centro_operaciones')
-            ->select('infraestructura.sede.*', 'core.region.nombre as region', 'core.region.id_region','core.provincia.id_provincia','core.provincia.nombre as provincia','core.comuna.nombre as comuna', 'core.comuna.id_comuna','infraestructura.centro_operaciones.id_centro_operaciones','infraestructura.centro_operaciones.nombre as centro',
+            ->leftJoin('infraestructura.estimacion', 'infraestructura.sede.id_sede', '=', 'infraestructura.estimacion.id_sede')
+            ->select('infraestructura.sede.*', 'core.region.nombre as region', 'core.region.id_region','core.provincia.id_provincia','core.provincia.nombre as provincia','core.comuna.nombre as comuna', 'core.comuna.id_comuna','infraestructura.centro_operaciones.id_centro_operaciones','infraestructura.centro_operaciones.nombre as centro','infraestructura.estimacion.id_sede_ecep','infraestructura.estimacion.id_estimacion','infraestructura.estimacion.dia',
         		DB::raw("count(infraestructura.sala.id_sala) as salas"))
             ->orderBy('core.region.orden_geografico', 'asc')
             ->orderBy('core.comuna.nombre', 'asc')
-            ->groupBy('infraestructura.sede.id_sede','core.region.id_region','core.comuna.nombre','core.provincia.id_provincia','core.comuna.id_comuna','infraestructura.centro_operaciones.id_centro_operaciones')
+            ->groupBy('infraestructura.sede.id_sede','core.region.id_region','core.comuna.nombre','core.provincia.id_provincia','core.comuna.id_comuna','infraestructura.centro_operaciones.id_centro_operaciones','infraestructura.estimacion.id_sede_ecep','infraestructura.estimacion.id_estimacion',
+        		'infraestructura.estimacion.dia')
             ->get();
 
       	$reg = DB::select("SELECT r.numero as numero_region, r.nombre as nombre_region , co.id_comuna, co.nombre
@@ -183,8 +202,8 @@ class SedeController extends Controller
 			return response()->json(array("respuesta"=>"error","descripcion"=>$validacion->errors()), 422); 
 		}
 
-		$sede = DB::select('SELECT comuna.id_comuna,  estimacion.id_estimacion, estimacion.docentes, estimacion.dia , region.nombre as region, comuna.nombre as comuna, salas, docentes, sede.rbd, sede.nombre	, sede.direccion, sede.id_sede
-				FROM infraestructura.estimacion as estimacion left join infraestructura.sede on (estimacion.id_estimacion = sede.id_estimacion), core.comuna as comuna , core.region as region
+		$sede = DB::select('SELECT comuna.id_comuna,  estimacion.id_estimacion, estimacion.docentes, estimacion.dia , region.nombre as region, comuna.nombre as comuna, salas, docentes, sede.rbd, sede.nombre	, sede.direccion, estimacion.id_sede_ecep
+				FROM infraestructura.estimacion as estimacion left join infraestructura.sede on (estimacion.id_sede = sede.id_sede), core.comuna as comuna , core.region as region
 				where estimacion.id_comuna = comuna.id_comuna 
 				and comuna.id_region = region.id_region
 				and estimacion.dia = '.$post['dia'].'

@@ -75,25 +75,47 @@ class PersonalController extends Controller
             $listaFinal[] = $region;
         }
 
+        $regPostulacion = DB::select("SELECT r.numero as numero_region, r.nombre as nombre_region , co.id_comuna, co.nombre
+                        from core.region r
+                        INNER JOIN core.comuna co ON (r.id_region = co.id_region)
+                        where r.numero != '-1'
+                        and co.id_comuna in (select id_comuna from infraestructura.estimacion)
+                        order by r.orden_geografico, co.nombre");
+
+        foreach ($regPostulacion as $key => $value) {
+            $listaAnidadaPostulacion[$value->numero_region][] = $value;
+        }
+
+        foreach ($listaAnidadaPostulacion as $id_region => $comunas) {
+            $region2["id_region"]  = $comunas[0]->numero_region;
+            $region2["nombre"]  = $comunas[0]->nombre_region;
+            $_comunas = array();
+            foreach ($comunas as $value) {
+                $_comunas[] = $value;
+            }
+            $region2["comunas"]  = $_comunas;
+            $listaFinalPostulante[] = $region2;
+        }
+
         $comunas = Comuna::get();
         foreach ($comunas as $com) {             
             $comuna[$com->id_comuna] = $com->nombre;
         }
         $personaP = DB::table('rrhh.persona')
-            ->join('rrhh.persona_cargo' , 'rrhh.persona.id_persona','=','rrhh.persona_cargo.id_persona')
-            ->leftJoin('rrhh.cargo' , 'rrhh.persona_cargo.id_cargo','=','rrhh.cargo.id_cargo')
+            //->join('rrhh.persona_cargo' , 'rrhh.persona.id_persona','=','rrhh.persona_cargo.id_persona')
+            //->leftJoin('rrhh.cargo' , 'rrhh.persona_cargo.id_cargo','=','rrhh.cargo.id_cargo')
             ->leftJoin('core.comuna' , 'rrhh.persona.id_comuna_postulacion','=','core.comuna.id_comuna')
             ->leftJoin('core.region' , 'core.comuna.id_region','=','core.region.id_region')
             ->leftJoin('infraestructura.zona_region' , 'core.region.id_region','=','infraestructura.zona_region.id_region')
             ->leftJoin('infraestructura.zona' , 'infraestructura.zona_region.id_zona','=','infraestructura.zona.id_zona')
-            ->select('rrhh.persona.*','core.comuna.nombre as comuna','core.region.nombre as region','rrhh.persona_cargo.id_persona_cargo','rrhh.persona_cargo.estado','rrhh.cargo.nombre_rol','rrhh.cargo.id_cargo',
+            ->select('rrhh.persona.*','core.comuna.nombre as comuna','core.region.nombre as region',/*'rrhh.persona_cargo.id_persona_cargo',*/'rrhh.persona.estado'/*,'rrhh.cargo.nombre_rol','rrhh.cargo.id_cargo'*/,
                     'infraestructura.zona.nombre as nombre_zona')
-            ->where('rrhh.cargo.id_cargo','!=',1003)
-            ->where('rrhh.cargo.id_cargo','!=',1004)
-            ->where('rrhh.cargo.id_cargo','!=',13)
+            //->where('rrhh.cargo.id_cargo','!=',1003)
+            //->where('rrhh.cargo.id_cargo','!=',1004)
+            //->where('rrhh.cargo.id_cargo','!=',13)
             ->where('rrhh.persona.borrado','=', false)
             ->where('rrhh.persona.modificado','=',true)
-            ->where('rrhh.persona_cargo.borrado','=', false)
+            //->where('rrhh.persona_cargo.borrado','=', false)
             ->orderBy('infraestructura.zona.nombre','asc')
             ->orderBy('core.region.orden_geografico','asc')
             ->orderBy('core.comuna.nombre','asc')
@@ -155,6 +177,7 @@ class PersonalController extends Controller
         $datos['estadoCivil'] = $estadoCivil;
         $datos['rol'] = $rol;
         $datos['regiones'] = $listaFinal;
+        $datos['regiones_postulante'] = $listaFinalPostulante;
         $datos['institucion'] = $institucion ;
         return response()->json($datos);    
     }
@@ -258,7 +281,16 @@ class PersonalController extends Controller
                 $usuario = new Usuario;
                 $usuario->usuario = isset($post['usuario']) ? $post['usuario'] : null;
                 $usuario->contrasena = isset($post['contrasena']) ? md5($post['contrasena']) : null;
-                $usuario->id_tipo_usuario = 28;
+                 
+                foreach ($post['id_cargo'] as $cargo) {
+                    if($cargo == 1008){
+                        //Tipo Relator
+                        $usuario->id_tipo_usuario = 1052;
+                    }else{
+                        $usuario->id_tipo_usuario = 28;
+                    }                     
+                }
+
                 $usuario->save(); 
 
                 $persona->id_usuario = $usuario->id_usuario; 
@@ -274,10 +306,12 @@ class PersonalController extends Controller
             if($post['id_persona_cargo'] == -1 && isset($post['id_cargo'])){
                 //arreglo('asas');
                 foreach ($post['id_cargo'] as $cargo) {
-                    $personaCargo = new PersonaCargo;
-                    $personaCargo->id_persona = $persona->id_persona;
-                    $personaCargo->id_cargo = $cargo;
-                    $personaCargo->save(); 
+                    if($cargo != 1008){
+                        $personaCargo = new PersonaCargo;
+                        $personaCargo->id_persona = $persona->id_persona;
+                        $personaCargo->id_cargo = $cargo;
+                        $personaCargo->save(); 
+                    }                   
                 }
             }
         }catch (\Exception $e){
@@ -490,6 +524,28 @@ class PersonalController extends Controller
             $listaFinal[] = $region;
         }
 
+        $regPostulacion = DB::select("SELECT r.numero as numero_region, r.nombre as nombre_region , co.id_comuna, co.nombre
+                        from core.region r
+                        INNER JOIN core.comuna co ON (r.id_region = co.id_region)
+                        where r.numero != '-1'
+                        and co.id_comuna in (select id_comuna from infraestructura.estimacion)
+                        order by r.orden_geografico, co.nombre");
+
+        foreach ($regPostulacion as $key => $value) {
+            $listaAnidadaPostulacion[$value->numero_region][] = $value;
+        }
+
+        foreach ($listaAnidadaPostulacion as $id_region => $comunas) {
+            $region2["id_region"]  = $comunas[0]->numero_region;
+            $region2["nombre"]  = $comunas[0]->nombre_region;
+            $_comunas = array();
+            foreach ($comunas as $value) {
+                $_comunas[] = $value;
+            }
+            $region2["comunas"]  = $_comunas;
+            $listaFinalPostulante[] = $region2;
+        }
+
         $comunas = Comuna::get();
         foreach ($comunas as $com) {             
             $comuna[$com->id_comuna] = $com->nombre;
@@ -565,6 +621,7 @@ class PersonalController extends Controller
         $datos['estadoCivil'] = $estadoCivil;
         $datos['rol'] = $rol;
         $datos['regiones'] = $listaFinal;
+        $datos['regiones_postulante'] = $listaFinalPostulante;
         $datos['institucion'] = $institucion ;
         return response()->json($datos);    
     }
@@ -623,6 +680,28 @@ class PersonalController extends Controller
             $listaFinal[] = $region;
         }
 
+        $regPostulacion = DB::select("SELECT r.numero as numero_region, r.nombre as nombre_region , co.id_comuna, co.nombre
+                        from core.region r
+                        INNER JOIN core.comuna co ON (r.id_region = co.id_region)
+                        where r.numero != '-1'
+                        and co.id_comuna in (select id_comuna from infraestructura.estimacion)
+                        order by r.orden_geografico, co.nombre");
+
+        foreach ($regPostulacion as $key => $value) {
+            $listaAnidadaPostulacion[$value->numero_region][] = $value;
+        }
+
+        foreach ($listaAnidadaPostulacion as $id_region => $comunas) {
+            $region2["id_region"]  = $comunas[0]->numero_region;
+            $region2["nombre"]  = $comunas[0]->nombre_region;
+            $_comunas = array();
+            foreach ($comunas as $value) {
+                $_comunas[] = $value;
+            }
+            $region2["comunas"]  = $_comunas;
+            $listaFinalPostulante[] = $region2;
+        }
+
         $comunas = Comuna::get();
         foreach ($comunas as $com) {             
             $comuna[$com->id_comuna] = $com->nombre;
@@ -675,6 +754,7 @@ class PersonalController extends Controller
         $datos['estadoCivil'] = $estadoCivil;
         $datos['rol'] = $rol;
         $datos['regiones'] = $listaFinal;
+        $datos['regiones_postulante'] = $listaFinalPostulante;
         $datos['institucion'] = $institucion ;
         return response()->json($datos);    
     }

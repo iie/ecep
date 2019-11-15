@@ -24,7 +24,7 @@ class MonitoreoPersonalController extends Controller
     }   
 
 	public function inscritosDia(Request $request){
-		$totalWns = DB::select("SELECT updated_at FROM rrhh.persona WHERE id_persona in (
+		$totalWns = DB::select("SELECT created_at FROM rrhh.persona WHERE id_persona in (
 				                    SELECT rrhh.persona.id_persona
                                     FROM rrhh.persona
                                     INNER JOIN rrhh.persona_cargo ON rrhh.persona_cargo.id_persona = rrhh.persona.id_persona
@@ -35,12 +35,12 @@ class MonitoreoPersonalController extends Controller
                                     AND rrhh.persona.borrado = FALSE)
                                     AND rrhh.persona.id_comuna_postulacion in (SELECT
                                     comuna.id_comuna
-                                    FROM core.region as region, core.comuna as comuna, infraestructura.estimacion as sede
+                                    FROM core.region as region, core.comuna as comuna, infraestructura.sede as sede
                                     WHERE region.id_region =  comuna.id_region AND sede.id_comuna = comuna.id_comuna)
-                                    ORDER BY updated_at");
+                                    ORDER BY created_at desc");
 							
 		foreach($totalWns as $totalWnsAux){
-			@$t[substr($totalWnsAux->updated_at,0,10)]++;
+			@$t[substr($totalWnsAux->created_at,0,10)]++;
 		}
 		foreach($t as $fecha=>$inscritos){
 			$res['fecha'] = $fecha;

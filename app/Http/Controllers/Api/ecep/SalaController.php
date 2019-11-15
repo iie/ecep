@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Infraestructura\Sala;
 use App\Models\Core\Comuna;
+use App\Models\RRHH\Persona;
 use App\Models\Infraestructura\Estimacion;
 use App\Models\Infraestructura\Sede;
 use App\Models\Evaluado\Asignatura;
@@ -23,7 +24,62 @@ class SalaController extends Controller
 		$this->fields = array();	
     }	
 
-    public function sincronizaEstimacion(Request $request){
+     public function sincronizaEstimacion(Request $request){
+		
+		
+		$evaluadosSede = DB::select("select p.id_persona, pc.id_cargo, pc.estado from rrhh.persona as p, rrhh.persona_cargo as pc 
+				where p.id_persona = pc.id_persona and p.borrado = false and pc.borrado = false");
+		
+		// contratado						
+		// capacitado
+		// seleccionado
+		// preseleccionado
+		// reclutado
+		// rechazado
+
+		foreach($evaluadosSede as $evaluadosSedeAux){
+			$cargoFinal[$evaluadosSedeAux->id_persona][$evaluadosSedeAux->id_cargo] = $evaluadosSedeAux->estado;
+		}		
+		
+		foreach($cargoFinal as $idPersona=>$cargos){
+			foreach($cargos as $id_cargo=>$estado){
+				if($estado == 'contratado'){
+					$estadoFinal[$idPersona] = $estado;
+					//break;
+				}
+				elseif($estado == 'capacitado'){
+					$estadoFinal[$idPersona] = $estado;
+					//break;
+				}	
+				elseif($estado == 'seleccionado'){
+					$estadoFinal[$idPersona] = $estado;
+					//break;
+				}	
+				elseif($estado == 'preseleccionado'){
+					$estadoFinal[$idPersona] = $estado;
+					//break;
+				}	
+				elseif($estado == 'reclutado'){
+					$estadoFinal[$idPersona] = $estado;
+					//break;
+				}	
+				elseif($estado == 'rechazado'){
+					$estadoFinal[$idPersona] = $estado;
+					
+				}	
+			}
+		}
+		
+		foreach($estadoFinal as $id_persona => $estado){
+			$p = Persona::find($id_persona);
+			$p->estado = $estado;
+			//$p->save();
+		}
+		//arreglo($estadoFinal); 
+		//arreglo($cargoFinal);
+		
+		
+		
 		exit;
 		// $evaluadosSede = DB::select("SELECT _estimacion.id_estimacion,id_sede_ecep, count(id_evaluado) as total FROM infraestructura.sala, infraestructura._estimacion, evaluado.evaluado where 
 		// infraestructura.sala.id_estimacion = infraestructura._estimacion.id_estimacion
@@ -74,7 +130,7 @@ class SalaController extends Controller
 			else{
 				$sede = Sede::find($idSede);
 				$sede->id_estimacion = null;
-				$sede->save();	
+				//$sede->save();	
 			}
 			
 		}
