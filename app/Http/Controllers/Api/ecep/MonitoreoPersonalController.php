@@ -24,7 +24,7 @@ class MonitoreoPersonalController extends Controller
     }   
 
 	public function inscritosDia(Request $request){
-		$totalWns = DB::select("SELECT created_at FROM rrhh.persona WHERE id_persona in (
+		$totalWns = DB::select("SELECT created_at, id_persona FROM rrhh.persona WHERE id_persona in (
 				                    SELECT rrhh.persona.id_persona
                                     FROM rrhh.persona
                                     INNER JOIN rrhh.persona_cargo ON rrhh.persona_cargo.id_persona = rrhh.persona.id_persona
@@ -35,11 +35,17 @@ class MonitoreoPersonalController extends Controller
                                     AND rrhh.persona.borrado = FALSE)
                                     AND rrhh.persona.id_comuna_postulacion in (SELECT
                                     comuna.id_comuna
-                                    FROM core.region as region, core.comuna as comuna, infraestructura.sede as sede
+                                    FROM core.region as region, core.comuna as comuna, infraestructura.estimacion as sede
                                     WHERE region.id_region =  comuna.id_region AND sede.id_comuna = comuna.id_comuna)
                                     ORDER BY created_at desc");
 							
 		foreach($totalWns as $totalWnsAux){
+			
+			if(($totalWnsAux->created_at=="") || ($totalWnsAux->created_at ==null)){
+				$p = Persona::find($totalWnsAux->id_persona);
+				$p->created_at = date("Y-m-d H:i:s");
+				$p->save();
+			}
 			@$t[substr($totalWnsAux->created_at,0,10)]++;
 		}
 		foreach($t as $fecha=>$inscritos){
@@ -49,7 +55,8 @@ class MonitoreoPersonalController extends Controller
 		}
 		return response()->json($resFinal);
 	}
-
+	
+	
 	public function listaPersonal(Request $request){
         
         $post = $request->all();    
@@ -116,11 +123,11 @@ class MonitoreoPersonalController extends Controller
         //******FIN INICIALIZAMOS
         
 		$sql = DB::select("SELECT
-                            rrhh.persona_cargo.estado,
+                            rrhh.persona.estado_proceso as estado,
                             core.region.nombre as region,
                             core.comuna.nombre as comuna,
                             rrhh.cargo.nombre_rol,
-                            count (rrhh.persona_cargo.estado) as cuenta_estado
+                            count (rrhh.persona.estado_proceso) as cuenta_estado
                             FROM
                             rrhh.persona
                             INNER JOIN rrhh.persona_cargo ON rrhh.persona_cargo.id_persona = rrhh.persona.id_persona
@@ -128,7 +135,7 @@ class MonitoreoPersonalController extends Controller
                             INNER JOIN core.comuna ON rrhh.persona.id_comuna_postulacion = core.comuna.id_comuna 
                             INNER JOIN core.region ON core.comuna.id_region = core.region.id_region
                             WHERE rrhh.persona.modificado = true AND rrhh.persona.borrado = false
-                            GROUP BY rrhh.persona_cargo.estado, core.region.nombre, core.region.orden_geografico, core.comuna.nombre, rrhh.cargo.nombre_rol order by core.region.orden_geografico, core.comuna.nombre");
+                            GROUP BY rrhh.persona.estado_proceso, core.region.nombre, core.region.orden_geografico, core.comuna.nombre, rrhh.cargo.nombre_rol order by core.region.orden_geografico, core.comuna.nombre");
 
         foreach ($sql as $value) {
             $arr[$value->nombre_rol][$value->region][$value->comuna][$value->estado] = $value->cuenta_estado;
@@ -270,7 +277,7 @@ class MonitoreoPersonalController extends Controller
                             WHERE
                             rrhh.persona.modificado = TRUE 
                             AND rrhh.persona.borrado = FALSE
-                            AND rrhh.persona_cargo.estado like 'reclutado' 
+                            AND rrhh.persona.estado_proceso like 'reclutado' 
 							and rrhh.persona.id_persona in (SELECT rrhh.persona.id_persona
                             FROM rrhh.persona
                             INNER JOIN rrhh.persona_cargo ON rrhh.persona_cargo.id_persona = rrhh.persona.id_persona
@@ -298,7 +305,7 @@ class MonitoreoPersonalController extends Controller
                             WHERE
                             rrhh.persona.modificado = TRUE 
                             AND rrhh.persona.borrado = FALSE
-                            AND rrhh.persona_cargo.estado like 'capacitado'
+                            AND rrhh.persona.estado_proceso like 'capacitado'
 							and rrhh.persona.id_persona in (SELECT rrhh.persona.id_persona
                             FROM rrhh.persona
                             INNER JOIN rrhh.persona_cargo ON rrhh.persona_cargo.id_persona = rrhh.persona.id_persona
@@ -328,7 +335,7 @@ class MonitoreoPersonalController extends Controller
                             WHERE
                             rrhh.persona.modificado = TRUE 
                             AND rrhh.persona.borrado = FALSE
-                            AND rrhh.persona_cargo.estado like 'seleccionado'
+                            AND rrhh.persona.estado_proceso like 'seleccionado'
 							and rrhh.persona.id_persona in (SELECT rrhh.persona.id_persona
                             FROM rrhh.persona
                             INNER JOIN rrhh.persona_cargo ON rrhh.persona_cargo.id_persona = rrhh.persona.id_persona
@@ -358,7 +365,7 @@ class MonitoreoPersonalController extends Controller
                             WHERE
                             rrhh.persona.modificado = TRUE 
                             AND rrhh.persona.borrado = FALSE
-                            AND rrhh.persona_cargo.estado like 'contratado'
+                            AND rrhh.persona.estado_proceso like 'contratado'
 							and rrhh.persona.id_persona in (SELECT rrhh.persona.id_persona
                             FROM rrhh.persona
                             INNER JOIN rrhh.persona_cargo ON rrhh.persona_cargo.id_persona = rrhh.persona.id_persona
@@ -387,7 +394,7 @@ class MonitoreoPersonalController extends Controller
                             WHERE
                             rrhh.persona.modificado = TRUE 
                             AND rrhh.persona.borrado = FALSE
-                            AND rrhh.persona_cargo.estado like 'preseleccionado'
+                            AND rrhh.persona.estado_proceso like 'preseleccionado'
 							and rrhh.persona.id_persona in (SELECT rrhh.persona.id_persona
                             FROM rrhh.persona
                             INNER JOIN rrhh.persona_cargo ON rrhh.persona_cargo.id_persona = rrhh.persona.id_persona
@@ -433,7 +440,7 @@ class MonitoreoPersonalController extends Controller
                             INNER JOIN core.region ON core.comuna.id_region = core.region.id_region 
                             WHERE rrhh.persona.modificado = TRUE 
                             AND rrhh.persona.borrado = FALSE 
-                            AND rrhh.persona_cargo.estado LIKE 'capacitado'
+                            AND rrhh.persona.estado_proceso LIKE 'capacitado'
                             AND core.comuna.id_comuna in (SELECT
                             core.comuna.id_comuna
                             FROM core.region as region, core.comuna as comuna, infraestructura.estimacion as sede
@@ -452,7 +459,7 @@ class MonitoreoPersonalController extends Controller
                             INNER JOIN core.region ON core.comuna.id_region = core.region.id_region 
                             WHERE rrhh.persona.modificado = TRUE 
                             AND rrhh.persona.borrado = FALSE 
-                            AND rrhh.persona_cargo.estado LIKE 'seleccionado'
+                            AND rrhh.persona.estado_proceso LIKE 'seleccionado'
                             AND core.comuna.id_comuna in (SELECT
                             core.comuna.id_comuna
                             FROM core.region as region, core.comuna as comuna, infraestructura.estimacion as sede
@@ -471,7 +478,7 @@ class MonitoreoPersonalController extends Controller
                             INNER JOIN core.region ON core.comuna.id_region = core.region.id_region 
                             WHERE rrhh.persona.modificado = TRUE 
                             AND rrhh.persona.borrado = FALSE 
-                            AND rrhh.persona_cargo.estado LIKE 'contratado'
+                            AND rrhh.persona.estado_proceso LIKE 'contratado'
                             AND core.comuna.id_comuna in (SELECT
                             core.comuna.id_comuna
                             FROM core.region as region, core.comuna as comuna, infraestructura.estimacion as sede
@@ -482,7 +489,7 @@ class MonitoreoPersonalController extends Controller
         }
 		
 		$sql = DB::select("SELECT
-                            rrhh.persona_cargo.estado,
+                            rrhh.persona.estado_proceso as estado,
                             core.region.nombre AS region,
                             core.comuna.nombre AS comuna,
                             rrhh.cargo.nombre_rol,
@@ -495,7 +502,7 @@ class MonitoreoPersonalController extends Controller
                             WHERE rrhh.persona.modificado = TRUE 
                             AND rrhh.persona.borrado = FALSE 
                             GROUP BY
-                            rrhh.persona_cargo.estado,
+                            rrhh.persona.estado_proceso,
                             core.region.nombre,
                             core.region.orden_geografico,
                             core.comuna.nombre,
@@ -534,13 +541,18 @@ class MonitoreoPersonalController extends Controller
                                     $_rol = $rol;
                                     break;
                             }
+                            $auxRol[$_rol] = $cont;
 							if($estado == 'preseleccionado' || $estado == 'rechazado'){
 								$estado = 'reclutado';
-							}
-                            @$arrCont[$estado][$_rol] += $cont;
-							
+                            }
+                            if($estado == 'capacitado'){
+                                @$arrCont[$estado]["Examinador"] += $cont;
+                            }
+                            @$arrCont[$estado][$_rol] += $estado != "capacitado" ? $cont : 0;
+                            if($estado == 'capacitado' || $estado == 'seleccionado' || $estado == 'contratado'){
+                                @$arrCont["reclutado"][$_rol] += $cont;
+                            }
 						}
-						$auxRol[$_rol] = $cont;
                     }
                     if(in_array($comuna, $arrComunas)){
                         $auxComuna["comuna"] = $comuna;
@@ -571,11 +583,11 @@ class MonitoreoPersonalController extends Controller
                                     WHERE rrhh.persona.modificado = TRUE 
                                     AND rrhh.persona.borrado = FALSE 
                                     )
-				                AND rrhh.persona.id_comuna_postulacion in (SELECT
-                                comuna.id_comuna
-                                FROM core.region as region, core.comuna as comuna, infraestructura.estimacion as sede
-                                WHERE region.id_region =  comuna.id_region AND sede.id_comuna = comuna.id_comuna
-                                )");
+                                    AND rrhh.persona.id_comuna_postulacion in (SELECT
+                                    comuna.id_comuna
+                                    FROM core.region as region, core.comuna as comuna, infraestructura.estimacion as sede
+                                    WHERE region.id_region =  comuna.id_region AND sede.id_comuna = comuna.id_comuna
+                                    )");
 
         $arrFinal["contador"] = $arrCont;
 		$arrFinal["contador"]["totalWns"] = $totalWns[0]->totalwns;
