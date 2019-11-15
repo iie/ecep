@@ -23,6 +23,190 @@ class PersonalController extends Controller
         $this->fields = array();    
     }   
 
+    public function listaPostulantes(Request $request)
+    {
+             $post = $request->all();    
+
+        $validacion = Validator::make($post, [
+            'id_usuario' => 'required|int', 
+        ]); 
+        $sexo =TablaMaestra::select('id_tabla_maestra','descripcion_larga') 
+            ->where('discriminador','=','28')->get();
+        foreach ($sexo as $s) {          
+            $sexos[$s->id_tabla_maestra] = $s->descripcion_larga;
+        }
+
+        $estadoCivil =TablaMaestra::select('id_tabla_maestra','descripcion_larga') 
+            ->where('discriminador','=','29')->get();
+        foreach ($estadoCivil as $estado) {          
+            $civil[$estado->id_tabla_maestra] = $estado->descripcion_larga;
+        }
+
+        $institucion = Institucion::select('institucion','id_institucion')->orderBy('institucion')->get();
+        foreach ($institucion as $ins) {             
+            $inst[$ins->id_institucion] = $ins->institucion;
+        }
+
+        $comunas = Comuna::get();
+        foreach ($comunas as $com) {             
+            $comuna[$com->id_comuna] = $com->nombre;
+        }
+
+
+
+        $personaP = Persona::
+            //->join('rrhh.persona_cargo' , 'rrhh.persona.id_persona','=','rrhh.persona_cargo.id_persona')
+            //->leftJoin('rrhh.cargo' , 'rrhh.persona_cargo.id_cargo','=','rrhh.cargo.id_cargo')
+            leftJoin('core.comuna' , 'rrhh.persona.id_comuna_postulacion','=','core.comuna.id_comuna')
+            ->leftJoin('core.region' , 'core.comuna.id_region','=','core.region.id_region')
+            ->leftJoin('infraestructura.zona_region' , 'core.region.id_region','=','infraestructura.zona_region.id_region')
+            ->leftJoin('infraestructura.zona' , 'infraestructura.zona_region.id_zona','=','infraestructura.zona.id_zona')
+            ->select('rrhh.persona.*','core.comuna.nombre as comuna','core.region.nombre as region','rrhh.persona.estado_proceso as estado',
+                    'infraestructura.zona.nombre as nombre_zona')
+            //->where('rrhh.cargo.id_cargo','!=',1003)
+            //->where('rrhh.cargo.id_cargo','!=',1004)
+            //->where('rrhh.cargo.id_cargo','!=',13)
+            ->where('rrhh.persona.borrado','=', false)
+            ->where('rrhh.persona.modificado','=',true)
+            //->where('rrhh.persona_cargo.borrado','=', false)
+            ->orderBy('infraestructura.zona.nombre','asc')
+            ->orderBy('core.region.orden_geografico','asc')
+            ->orderBy('core.comuna.nombre','asc')
+            ->get();
+
+        foreach ($personaP as $index => $per) {
+            $personaP[$index]->id_institucion = $personaP[$index]->id_institucion == null ? null : $inst[$personaP[$index]->id_institucion];
+            $personaP[$index]->id_estado_civil = $personaP[$index]->id_estado_civil == null ? null : $civil[$personaP[$index]->id_estado_civil];
+            $personaP[$index]->id_sexo = $personaP[$index]->id_sexo == null ? null : $sexos[$personaP[$index]->id_sexo];
+            $personaP[$index]->id_comuna_nacimiento =  $personaP[$index]->id_comuna_nacimiento == null ? null : $comuna[$personaP[$index]->id_comuna_nacimiento];
+            $personaP[$index]->id_comuna_residencia =  $personaP[$index]->id_comuna_residencia == null ? null : $comuna[$personaP[$index]->id_comuna_residencia];
+        }
+
+
+        $columns=array(
+            0=> "nombre_zona",
+            1=> "region",
+            2=> "comuna",
+            3=> "run",
+            4=> "nombres",
+            5=> "apellido_paterno",
+            6=> "apellido_materno",
+            7=> "email",
+        );
+
+        $totalData = count($personaP);
+        $limit = $request->input('length');
+        $start = $request->input('start');
+        $order = $columns[$request->input('order.0.column')];
+        $dir = $request->input('order.0.dir');
+        
+        $searchCol0 =$request->input("columns.0.search.value");
+        $searchCol1 =$request->input("columns.1.search.value");
+        $searchCol2 =$request->input("columns.2.search.value");
+        $quitar = array("$", "^");
+        $searchCol0 = str_replace($quitar, "", $searchCol0);
+        $searchCol1 = str_replace($quitar, "", $searchCol1);
+        $searchCol2 = str_replace($quitar, "", $searchCol2);
+        if(empty($request->input('search.value')) && $searchCol0 == '' && $searchCol1 == '' && $searchCol2 == ''){
+
+            $post = Persona::
+            //->join('rrhh.persona_cargo' , 'rrhh.persona.id_persona','=','rrhh.persona_cargo.id_persona')
+            //->leftJoin('rrhh.cargo' , 'rrhh.persona_cargo.id_cargo','=','rrhh.cargo.id_cargo')
+            leftJoin('core.comuna' , 'rrhh.persona.id_comuna_postulacion','=','core.comuna.id_comuna')
+            ->leftJoin('core.region' , 'core.comuna.id_region','=','core.region.id_region')
+            ->leftJoin('infraestructura.zona_region' , 'core.region.id_region','=','infraestructura.zona_region.id_region')
+            ->leftJoin('infraestructura.zona' , 'infraestructura.zona_region.id_zona','=','infraestructura.zona.id_zona')
+            ->select('rrhh.persona.*','core.comuna.nombre as comuna','core.region.nombre as region','rrhh.persona.estado_proceso as estado',
+                    'infraestructura.zona.nombre as nombre_zona')
+            //->where('rrhh.cargo.id_cargo','!=',1003)
+            //->where('rrhh.cargo.id_cargo','!=',1004)
+            //->where('rrhh.cargo.id_cargo','!=',13)
+            ->where('rrhh.persona.borrado','=', false)
+            ->where('rrhh.persona.modificado','=',true)
+            //->where('rrhh.persona_cargo.borrado','=', false)
+           
+                ->offset($start)
+                ->limit($limit)
+                ->orderBy($order,$dir)
+                ->get();
+            $totalFiltered =  count($personaP);
+        }else{
+            $sql = "select rrhh.persona.*, core.comuna.nombre as comuna, core.region.nombre as region, rrhh.persona.estado_proceso as estado, infraestructura.zona.nombre as nombre_zona 
+                        from rrhh.persona 
+                        left join core.comuna on rrhh.persona.id_comuna_postulacion = core.comuna.id_comuna 
+                        left join core.region on core.comuna.id_region = core.region.id_region 
+                        left join infraestructura.zona_region on core.region.id_region = infraestructura.zona_region.id_region 
+                        left join infraestructura.zona on infraestructura.zona_region.id_zona = infraestructura.zona.id_zona 
+                        where rrhh.persona.borrado = false and rrhh.persona.modificado = true";
+
+            if($searchCol0 !=  ''){
+
+                     $sql .= " and infraestructura.zona.nombre = '".$searchCol0."'" ;
+
+            }
+            if($searchCol1 !=  ''){
+             
+                 $sql .= " and core.region.nombre = '".$searchCol1."'";
+                 
+            }
+            if($searchCol2 !=  ''){
+           
+                 $sql .= " and core.comuna.nombre = '".$searchCol2."'";
+
+            }
+           
+            if(!empty($request->input('search.value'))){
+      
+                $search = $request->input('search.value');
+
+
+                $sql .= " and rrhh.persona.nombres ilike '%{$search}%'";
+                $sql .= " or rrhh.persona.apellido_paterno ilike '%{$search}%'";
+                $sql .= " or rrhh.persona.apellido_materno ilike '%{$search}%'";
+                $sql .= " or rrhh.persona.run ilike  '%{$search}%'";
+
+            }
+
+              $sql .= " order by ".$order." ". $dir." limit ".$limit." offset ".$start;
+
+              $post = DB::select($sql);
+ 
+              $totalFiltered = count($post);
+
+        }
+
+
+
+        $data = array();
+
+            if($post ){
+                foreach ($post as $r) {
+                    $nestedData['nombre_zona'] = $r->nombre_zona;
+ 
+                    $nestedData['region'] = $r->region;
+                    $nestedData['comuna'] = $r->comuna;
+
+                    $nestedData['run'] = $r->run;
+                    $nestedData['nombres'] = $r->nombres;
+                    $nestedData['apellido_paterno'] = $r->apellido_paterno;
+                    $nestedData['apellido_materno'] = $r->apellido_materno;
+                    $nestedData['email'] = $r->email;
+                    $data [] =$nestedData;
+                }
+
+            }
+
+        $json_data = array(
+            "draw" => intval($request->input('draw')),
+            "recordsTotal" => intval($totalData),
+            "recordsFiltered"=> intval($totalFiltered),
+            "data"=> $data
+        );
+        return json_encode($json_data);
+
+        arreglo($personaP );
+    }
+
     public function lista(Request $request)
     {
         
@@ -476,7 +660,7 @@ class PersonalController extends Controller
             return response()->json(array("resultado"=>"error","descripcion"=>$validacion->errors()), 422); 
         }
 
-        $docs = PersonaArchivo::select('id_persona_archivo','id_persona','nombre_archivo','tipo','token_descarga','extension')
+        $docs = PersonaArchivo::select('id_persona_archivo','id_persona','nombre_archivo','tipo','created_at','token_descarga','extension')
             ->where('id_persona',$post['id_persona'])
             ->where('borrado',false)
             ->get();

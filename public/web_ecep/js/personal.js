@@ -1213,7 +1213,7 @@ function cargarDocs(data){
         $('#table-documentos').DataTable().destroy();
         $('#lista-documentos').empty();
     }
-
+    console.log(data)
     var tablaD = $("#table-documentos").DataTable({
         //dom: "<'search'f>",
         lengthMenu: [[10, 15, 20, -1], [10, 15, 20, "Todos"]],
@@ -1234,6 +1234,14 @@ function cargarDocs(data){
                     
                     
                     return  row.tipo+row.nombre_archivo;
+                }
+            },
+            {data: "created_at",
+                render: function(data, type, row){ 
+
+                    
+                    
+                    return  row.created_at;
                 }
             },
             {data: "descargar",
@@ -1283,28 +1291,28 @@ function cargarDocs(data){
     console.log(found1,found2,found3,found4)
     trData= ''; 
     
-    trData+= (found1!='certificado_titulo') ? '<tr><td style="">Certificado titulo</td>'+`<td><div class="input-group"><input type="hidden" id="_token" value="{{ csrf_token() }}">
+    trData+= (found1!='certificado_titulo') ? '<tr><td style="">Certificado titulo</td>'+`<td colspan="3"><div class="input-group"><input type="hidden" id="_token" value="{{ csrf_token() }}">
 <input type="file" class="form-control documento" id="documento_4" onchange="guardarConfirm(4);" accept=".doc, .docx, .pdf, .png, .jpg"></div></td></tr>` : ''
     
-    trData+= (found2!='cedula_identidad') ? '<tr><td style="">Cédula identidad</td>'+`<td><div class="input-group"><input type="hidden" id="_token" value="{{ csrf_token() }}">
+    trData+= (found2!='cedula_identidad') ? '<tr><td style="">Cédula identidad</td>'+`<td colspan="3"><div class="input-group"><input type="hidden" id="_token" value="{{ csrf_token() }}">
 <input type="file" class="form-control documento" id="documento_1" onchange="guardarConfirm(1);" accept=".doc, .docx, .pdf, .png, .jpg"></div></td></tr>` : ''
     
-    trData+= (found3!='certificado_antecedentes') ? '<tr><td style="">Certificado antecedentes</td>'+`<td><div class="input-group"><input type="hidden" id="_token" value="{{ csrf_token() }}">
+    trData+= (found3!='certificado_antecedentes') ? '<tr><td style="">Certificado antecedentes</td>'+`<td colspan="3"><div class="input-group"><input type="hidden" id="_token" value="{{ csrf_token() }}">
 <input type="file" class="form-control documento" id="documento_3" onchange="guardarConfirm(3);" accept=".doc, .docx, .pdf, .png, .jpg"></div></td></tr>` : ''
     
-    trData+= (found4!='curriculum') ? '<tr><td style="">Curriculum</td>'+`<td><div class="input-group"><input type="hidden" id="_token" value="{{ csrf_token() }}">
+    trData+= (found4!='curriculum') ? '<tr><td style="">Curriculum</td>'+`<td colspan="3"><div class="input-group"><input type="hidden" id="_token" value="{{ csrf_token() }}">
 <input type="file" class="form-control documento" id="documento_2" onchange="guardarConfirm(2);" accept=".doc, .docx, .pdf, .png, .jpg"></div></td></tr>` :''  
 
-    trData+= `<tr><td style=""><select class="form-control custom-select tipoDocumento" onchange="cargarTipoDoc()" id="tipoDocumento" style="max-width: 233px;">
-             <option value="">Seleccione Tipo de Documento</option>
+    trData+= `<tr><th colspan="3">Actualizar Documento</th></tr>
+            <tr><td style=""><select class="form-control custom-select tipoDocumento" onchange="cargarTipoDoc()" id="tipoDocumento" style="max-width: 233px;">
+            <option value="">Seleccione Tipo de Documento</option>
             <option value="1">Cédula Identidad</option>
             <option value="2">Curriculum</option>
             <option value="3">Certificado antecedentes</option>
-
             <option value="4">Certificado titulo</option>
             
 
-        </select></td>`+`<td><div class="input-group"><input type="hidden" id="_token" value="{{ csrf_token() }}">
+        </select></td>`+`<td colspan="3"><div class="input-group"><input type="hidden" id="_token" value="{{ csrf_token() }}">
 <input type="file" class="form-control documento" id="documento_otro" onchange="guardarConfirmOtro();" accept=".doc, .docx, .pdf, .png, .jpg"></div></td></tr>`
         $('#lista-documentos').append(trData); 
     $('#docsModal').modal({ keyboard: false},'show') 
