@@ -246,8 +246,6 @@ function llenarVista(data){
             {data: "estado"},
             {data: "opciones",className: "text-center",
                 render: function(data, type, row){  
-                    
-                    
                     return ''
                     //console.log(strg)
                   /*  return '<button type="button" id="persona_'+row.id_persona+'" onclick="modificar('+row.id_persona+','+row.id_persona_cargo+',true)" class="btn btn-primary btn-sm _btn-item"><i class="fa fa-pencil-alt"></i></button>'+
@@ -1222,7 +1220,7 @@ function cargarDocs(data){
         info: false,
         paging: false,
         displayLength: -1,
-        ordering: true, 
+        ordering: false, 
         order: [],
         searching: false,
         data: data,
@@ -1254,11 +1252,11 @@ function cargarDocs(data){
             },
         ],
         "rowCallback": function( row, data ) {
-            console.log($('td:eq(1)', row).find('button'))
-            $('td:eq(1)', row).find('button').data('doc_nombre',data.tipo+data.nombre_archivo);
-            $('td:eq(1)', row).find('button').data('t_descarga',data.token_descarga);
-            $('td:eq(1)', row).find('button').data('extension',data.extension);
-            $('td:eq(1)', row).find('button').on('click',verDocumento);
+            console.log($('td:eq(2)', row).find('button'))
+            $('td:eq(2)', row).find('button').data('doc_nombre',data.tipo+data.nombre_archivo);
+            $('td:eq(2)', row).find('button').data('t_descarga',data.token_descarga);
+            $('td:eq(2)', row).find('button').data('extension',data.extension);
+            $('td:eq(2)', row).find('button').on('click',verDocumento);
         },
   });
     
