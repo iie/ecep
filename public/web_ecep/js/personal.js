@@ -1486,49 +1486,50 @@ function subirDocumentox(contador) {
 var docO_b64;
 var docO_ext;
 function guardarConfirmOtro() {
-       
-        
-        numDoc == null ? null : encodeDocumentoOtro(numDoc);
-        
-        let esperarSubida = new Promise((resolve, reject) => {
-          $.blockUI({ message: 'Procesando archivos. Espere un momento...' });  
-          setTimeout(function(){
-            if(numDoc == 1){
-                if(docO_b64 == null){
-                    reject("Archivo 1 mal subido");
-                }
-                if(numDoc == 2){
-                     if(docO_b64 == null){
-                        reject("Archivo 2 mal subido");
-                    }
-                }
-                if(numDoc ==3){
+        if (numDoc==null) {
+            showFeedback("error", "Debes selecionar el tipo de documento", "No guardado");
+        }else{
+            numDoc == null ? null : encodeDocumentoOtro(numDoc);
+            let esperarSubida = new Promise((resolve, reject) => {
+              $.blockUI({ message: 'Procesando archivos. Espere un momento...' });  
+              setTimeout(function(){
+                if(numDoc == 1){
                     if(docO_b64 == null){
-                        reject("Archivo 3 mal subido");
+                        reject("Archivo 1 mal subido");
+                    }
+                    if(numDoc == 2){
+                         if(docO_b64 == null){
+                            reject("Archivo 2 mal subido");
+                        }
+                    }
+                    if(numDoc ==3){
+                        if(docO_b64 == null){
+                            reject("Archivo 3 mal subido");
+                        }
+                    }
+                    if(numDoc == 4){
+                     if(docO_b64 == null){
+                        reject("Archivo 4 mal subido");
+                    }
                     }
                 }
-                if(numDoc == 4){
-                 if(docO_b64 == null){
-                    reject("Archivo 4 mal subido");
-                }
-                }
-            }
-            resolve(true);
-          }, 3000);
-        });
+                resolve(true);
+              }, 3000);
+            });
 
-        esperarSubida.then((successMessage) => {
-            $.unblockUI();
-            if(successMessage == true){
-                subirDocumentoOtro(numDoc)
-            }
-        })
-        .catch(
-            function(reason) {
+            esperarSubida.then((successMessage) => {
                 $.unblockUI();
-                /* TODO: En caso de fallar mostrar alerta y permitir reintentar*/
-                console.log('Sin éxito: ('+reason+').');
-        });
+                if(successMessage == true){
+                    subirDocumentoOtro(numDoc)
+                }
+            })
+            .catch(
+                function(reason) {
+                    $.unblockUI();
+                    /* TODO: En caso de fallar mostrar alerta y permitir reintentar*/
+                    console.log('Sin éxito: ('+reason+').');
+            });
+        }
 }
 function encodeDocumentoOtro() {
     //localStorage.removeItem($('.documento')[0].files[0].name+"_64");
@@ -1545,7 +1546,7 @@ function encodeDocumentoOtro() {
         // localStorage.setItem((contador +"_64").trim(), (reader.result).split("base64,")[1]);
         // subirDocumento(contador);
     };
-    reader.readAsDataURL(document.getElementById("documento_" + contador).files[0]);
+    reader.readAsDataURL(document.getElementById("documento_otro").files[0]);
     return true;
 
 }
@@ -1580,7 +1581,7 @@ function subirDocumentoOtro(contador) {
 
             id_persona_archivo: unno,
             run: run,
-            documento: doc1_b64,
+            documento: docO_b64,
             nombreArchivo: "_" + run + "." + ext,
             tipo:doctype
         },
