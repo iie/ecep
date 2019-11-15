@@ -108,7 +108,7 @@ class PersonalController extends Controller
             ->leftJoin('core.region' , 'core.comuna.id_region','=','core.region.id_region')
             ->leftJoin('infraestructura.zona_region' , 'core.region.id_region','=','infraestructura.zona_region.id_region')
             ->leftJoin('infraestructura.zona' , 'infraestructura.zona_region.id_zona','=','infraestructura.zona.id_zona')
-            ->select('rrhh.persona.*','core.comuna.nombre as comuna','core.region.nombre as region',/*'rrhh.persona_cargo.id_persona_cargo',*/'rrhh.persona.estado'/*,'rrhh.cargo.nombre_rol','rrhh.cargo.id_cargo'*/,
+            ->select('rrhh.persona.*','core.comuna.nombre as comuna','core.region.nombre as region','rrhh.persona.estado_proceso as estado',
                     'infraestructura.zona.nombre as nombre_zona')
             //->where('rrhh.cargo.id_cargo','!=',1003)
             //->where('rrhh.cargo.id_cargo','!=',1004)
@@ -136,8 +136,10 @@ class PersonalController extends Controller
             ->leftJoin('infraestructura.zona' , 'rrhh.persona_cargo.id_persona_cargo','=','infraestructura.zona.id_coordinador')   
             /*->leftJoin('infraestructura.zona_region' , 'infraestructura.zona.id_zona','=','infraestructura.zona_region.id_zona') */     
             /*->leftJoin('core.region' , 'infraestructura.zona_region.id_region','=','core.region.id_region')*/
-            ->select('rrhh.persona.id_persona', 'rrhh.persona.id_comuna_residencia','rrhh.persona.run','rrhh.persona.nombres','rrhh.persona.apellido_paterno','rrhh.persona.apellido_materno','rrhh.persona.email','rrhh.persona.telefono',/*'core.region.nombre as region',*/'rrhh.persona_cargo.id_persona_cargo','rrhh.persona_cargo.estado','rrhh.cargo.nombre_rol','infraestructura.zona.id_zona','infraestructura.zona.nombre as nombre_zona','core.comuna.nombre as comuna')
+            ->select('rrhh.persona.id_persona', 'rrhh.persona.id_comuna_residencia','rrhh.persona.run','rrhh.persona.nombres','rrhh.persona.apellido_paterno','rrhh.persona.apellido_materno','rrhh.persona.email','rrhh.persona.telefono',
+			'rrhh.persona.estado_proceso as estado',/*'rrhh.persona_cargo.id_persona_cargo','rrhh.persona_cargo.estado',*/'rrhh.cargo.nombre_rol','infraestructura.zona.id_zona','infraestructura.zona.nombre as nombre_zona','core.comuna.nombre as comuna')
             ->where('rrhh.persona_cargo.id_cargo','=',1003)
+            ->where('rrhh.persona_cargo.borrado','=',false)
             ->where('rrhh.persona.borrado','=', false)
             ->orderBy('infraestructura.zona.id_zona','asc')
             /*->orderBy('core.region.orden_geografico','asc')*/
@@ -150,8 +152,10 @@ class PersonalController extends Controller
             ->leftJoin('infraestructura.zona' , 'infraestructura.zona_region.id_zona','=','infraestructura.zona.id_zona')   
             ->leftJoin('core.comuna' , 'rrhh.persona.id_comuna_residencia','=','core.comuna.id_comuna')
             ->leftJoin('core.region' , 'infraestructura.zona_region.id_region','=','core.region.id_region')
-            ->select('rrhh.persona.id_persona', 'rrhh.persona.id_comuna_residencia','rrhh.persona.run','rrhh.persona.nombres','rrhh.persona.apellido_paterno','rrhh.persona.apellido_materno','rrhh.persona.email','rrhh.persona.telefono','core.comuna.nombre as comuna','core.region.nombre as region','rrhh.persona_cargo.id_persona_cargo','rrhh.persona_cargo.estado','rrhh.cargo.nombre_rol','infraestructura.zona.id_zona','infraestructura.zona.nombre as zona_nombre')
+            ->select('rrhh.persona.id_persona', 'rrhh.persona.id_comuna_residencia','rrhh.persona.run','rrhh.persona.nombres','rrhh.persona.apellido_paterno','rrhh.persona.apellido_materno','rrhh.persona.email','rrhh.persona.telefono','core.comuna.nombre as comuna','core.region.nombre as region',
+			'rrhh.persona.estado_proceso as estado',/*'rrhh.persona_cargo.id_persona_cargo','rrhh.persona_cargo.estado',*/'rrhh.cargo.nombre_rol','infraestructura.zona.id_zona','infraestructura.zona.nombre as zona_nombre')
             ->where('rrhh.persona_cargo.id_cargo','=',1004)
+            ->where('rrhh.persona_cargo.borrado','=',false)
             ->where('rrhh.persona.borrado','=', false)
             ->orderBy('core.region.orden_geografico','asc')
             ->get();
@@ -163,8 +167,9 @@ class PersonalController extends Controller
             ->leftJoin('infraestructura.zona_region' , 'infraestructura.centro_operaciones.id_zona_region','=','infraestructura.zona_region.id_zona_region')  
             ->leftJoin('core.comuna' , 'infraestructura.centro_operaciones.id_comuna','=','core.comuna.id_comuna')
             ->leftJoin('core.region' , 'infraestructura.zona_region.id_region','=','core.region.id_region')
-            ->select('rrhh.persona.id_persona', 'rrhh.persona.id_comuna_residencia','rrhh.persona.run','rrhh.persona.nombres','rrhh.persona.apellido_paterno','rrhh.persona.apellido_materno','rrhh.persona.email','rrhh.persona.telefono','core.comuna.nombre as comuna','core.region.nombre as region','rrhh.persona_cargo.id_persona_cargo','rrhh.persona_cargo.estado','rrhh.cargo.nombre_rol')
+            ->select('rrhh.persona.id_persona', 'rrhh.persona.id_comuna_residencia','rrhh.persona.run','rrhh.persona.nombres','rrhh.persona.apellido_paterno','rrhh.persona.apellido_materno','rrhh.persona.email','rrhh.persona.telefono','core.comuna.nombre as comuna','core.region.nombre as region','rrhh.persona.estado_proceso as estado',/*'rrhh.persona_cargo.id_persona_cargo','rrhh.persona_cargo.estado'*/'rrhh.cargo.nombre_rol')
             ->where('rrhh.persona_cargo.id_cargo','=',13)
+            ->where('rrhh.persona_cargo.borrado','=',false)
             ->where('rrhh.persona.borrado','=', false)
             ->orderBy('core.region.orden_geografico','asc')
             ->get();
@@ -233,16 +238,19 @@ class PersonalController extends Controller
                 $personaCargo = PersonaCargo::where('id_persona',$post['id_persona'])
                                 ->where('id_cargo',$cargos['id_cargo'])
                                 ->first();
-         
+ 
                 if(isset($personaCargo)){
-                    if($personaCargo->estado != 'contratado'){
+
+         
+
+                    if($persona->estado_proceso != 'contratado'){
                         if($cargos['cargo'] == 1){
                             $personaCargo->borrado = false;
                         }else{
                             $personaCargo->borrado = true;
                         }
-
-                         try{
+   
+                        try{
                             $personaCargo->save();
                         }catch (\Exception $e){
                             DB::rollback();
@@ -268,14 +276,24 @@ class PersonalController extends Controller
                 $personaCargo->save(); */
             }
         }
-        
+              
         DB::beginTransaction();
         try{
             $persona->save(); 
             if($persona->id_usuario != null){
+
                 $usuario = Usuario::where("id_usuario", $post["usuario_id"])->first();
                 $usuario->usuario = isset($post['usuario']) ? $post['usuario'] : $usuario->usuario;
                 $usuario->contrasena = isset($post['contrasena']) ? md5($post['contrasena']) : $usuario->contrasena;
+                foreach ($post['id_cargo'] as $cargo) {
+ 
+                    if($cargo == 1008){
+                        //Tipo Relator
+                        $usuario->id_tipo_usuario = 1052;
+                    }else{
+                        $usuario->id_tipo_usuario = 28;
+                    }                     
+                }
                 $usuario->save(); 
             }else{
                 $usuario = new Usuario;
@@ -296,6 +314,7 @@ class PersonalController extends Controller
                 $persona->id_usuario = $usuario->id_usuario; 
                 $persona->save(); 
             }
+
             /*if($post['id_persona_cargo'] != -1){
 
                 $personaCargo = PersonaCargo::where('id_persona_cargo',$post['id_persona_cargo'])->first();
@@ -304,12 +323,12 @@ class PersonalController extends Controller
                 $personaCargo->save(); 
             }else */
             if($post['id_persona_cargo'] == -1 && isset($post['id_cargo'])){
-                //arreglo('asas');
-                foreach ($post['id_cargo'] as $cargo) {
-                    if($cargo != 1008){
+
+                foreach ($post['id_cargo'] as $cargoAux) {
+                    if($cargoAux != 1008){
                         $personaCargo = new PersonaCargo;
                         $personaCargo->id_persona = $persona->id_persona;
-                        $personaCargo->id_cargo = $cargo;
+                        $personaCargo->id_cargo = $cargoAux;
                         $personaCargo->save(); 
                     }                   
                 }
@@ -330,7 +349,7 @@ class PersonalController extends Controller
         $validacion = Validator::make($post, [
             'id_usuario' => 'required|int', 
             'id_persona' => 'required|integer', 
-            'id_persona_cargo' => 'required|integer',   
+            //'id_persona_cargo' => 'required|integer',   
         ]); 
 
         if ($validacion->fails()) {
@@ -360,7 +379,7 @@ class PersonalController extends Controller
             $persona['id_region_postulacion'] = $persona->id_comuna_postulacion == null ? null : $comuna[$persona->id_comuna_postulacion];
             $persona['cargos'] = PersonaCargo::where('id_persona',$post["id_persona"])
                                     ->where('borrado',false)
-                                    ->select('id_persona_cargo','id_cargo','estado')
+                                    ->select('id_persona_cargo','id_cargo')
                                     ->get();
         }
  
@@ -392,7 +411,7 @@ class PersonalController extends Controller
         $persona = Persona::leftJoin('core.usuario','rrhh.persona.id_usuario','=','core.usuario.id_usuario')
             ->leftJoin('rrhh.persona_cargo','rrhh.persona.id_persona','=','rrhh.persona_cargo.id_persona')
             ->where('rrhh.persona.run', $post['run'])
-            ->select('rrhh.persona.*','rrhh.persona_cargo.id_persona_cargo','rrhh.persona_cargo.id_cargo','rrhh.persona_cargo.estado','core.usuario.usuario','core.usuario.id_usuario')
+            ->select('rrhh.persona.*','rrhh.persona_cargo.id_persona_cargo','rrhh.persona_cargo.id_cargo',/*'rrhh.persona_cargo.estado',*/'core.usuario.usuario','core.usuario.id_usuario')
             ->first();
         if(!empty($persona)){
             if($persona->id_persona_cargo == null){
@@ -417,7 +436,7 @@ class PersonalController extends Controller
         $validacion = Validator::make($post, [
             'id_usuario' => 'required|int', 
             'id_cargo' => 'required|int', 
-            'id_persona_cargo' => 'required|int',
+            'id_persona' => 'required|int',
     
         ]); 
 
@@ -429,13 +448,13 @@ class PersonalController extends Controller
             return response()->json(['resultado'=>'error','descripcion'=>'No tiene autorización para Contratar.']);
         }
         
-        $personaCargo = PersonaCargo::where('id_persona_cargo',$post['id_persona_cargo'])->first();
-        $personaCargo->estado =  $personaCargo->estado  == 'contratado' ? $personaCargo->estado : 
-                                    $personaCargo->estado == 'rechazado' ? $personaCargo->estado : $post['estado'];
+        $persona = Persona::where('id_persona',$post['id_persona'])->first();
+        $persona->estado_proceso =  $persona->estado_proceso  == 'contratado' ? $persona->estado_proceso : 
+                                    $persona->estado_proceso == 'rechazado' ? $persona->estado_proceso : $post['estado'];
 
         DB::beginTransaction();
         try{
-            $personaCargo->save(); 
+            $persona->save(); 
         }catch (\Exception $e){
             DB::rollback();
             return response()->json(['resultado'=>'error','descripcion'=>'Error al guardar. ()'. $e->getMessage()]);
@@ -560,7 +579,7 @@ class PersonalController extends Controller
             $zonas[] = $cargoAux->id_zona;
         }
 
-        $personaP = DB::select("select rrhh.persona.*,persona_cargo.*,cargo.*,comuna.nombre as comuna,region.nombre as region, zona.nombre as nombre_zona 
+        $personaP = DB::select("select rrhh.persona.*,rrhh.persona.estado_proceso as estado, persona_cargo.*,cargo.*,comuna.nombre as comuna,region.nombre as region, zona.nombre as nombre_zona 
 			from infraestructura.zona_region as zona_region, rrhh.persona, rrhh.persona_cargo as persona_cargo, rrhh.cargo as cargo, core.comuna as comuna, core.region as region , infraestructura.zona as zona where persona.borrado = false and persona.modificado = true and id_comuna_postulacion in (
             select id_comuna from infraestructura.zona as zona, infraestructura.zona_region as zona_region, core.region as region , core.comuna as comuna
             where zona.id_zona = zona_region.id_zona
@@ -608,8 +627,9 @@ class PersonalController extends Controller
             ->leftJoin('infraestructura.zona' , 'infraestructura.zona_region.id_zona','=','infraestructura.zona.id_zona')   
             ->leftJoin('core.comuna' , 'rrhh.persona.id_comuna_residencia','=','core.comuna.id_comuna')
             ->leftJoin('core.region' , 'infraestructura.zona_region.id_region','=','core.region.id_region')
-            ->select('rrhh.persona.id_persona', 'rrhh.persona.id_comuna_residencia','rrhh.persona.run','rrhh.persona.nombres','rrhh.persona.apellido_paterno','rrhh.persona.apellido_materno','rrhh.persona.email','rrhh.persona.telefono','core.comuna.nombre as comuna','core.region.nombre as region','rrhh.persona_cargo.id_persona_cargo','rrhh.persona_cargo.estado','rrhh.cargo.nombre_rol','infraestructura.zona.id_zona','infraestructura.zona.nombre as zona_nombre')
+            ->select('rrhh.persona.id_persona', 'rrhh.persona.id_comuna_residencia','rrhh.persona.run','rrhh.persona.nombres','rrhh.persona.apellido_paterno','rrhh.persona.apellido_materno','rrhh.persona.email','rrhh.persona.telefono','core.comuna.nombre as comuna','core.region.nombre as region','rrhh.persona.estado_proceso as estado',/*'rrhh.persona_cargo.id_persona_cargo','rrhh.persona_cargo.estado',*/'rrhh.cargo.nombre_rol','infraestructura.zona.id_zona','infraestructura.zona.nombre as zona_nombre')
             ->where('rrhh.persona_cargo.id_cargo','=',1004)
+            ->where('rrhh.persona_cargo.borrado','=',false)
             ->whereIn('infraestructura.zona.id_zona', $zonas)
             ->orderBy('core.region.orden_geografico','asc')
             ->get();  
@@ -721,7 +741,7 @@ class PersonalController extends Controller
 		$personaP = array(); 
         
 		if($zonas[0] != ""){
-			$personaP = DB::select("select rrhh.persona.*,persona_cargo.*,cargo.*,comuna.nombre as comuna,region.nombre as region , zona.nombre as nombre_zona 
+			$personaP = DB::select("select rrhh.persona.*,rrhh.persona.estado_proceso as estado, persona_cargo.*,cargo.*,comuna.nombre as comuna,region.nombre as region , zona.nombre as nombre_zona 
             from rrhh.persona, rrhh.persona_cargo as persona_cargo, rrhh.cargo as cargo, core.comuna as comuna, core.region as region, infraestructura.zona as zona , infraestructura.zona_region as zona_region 
             where persona.borrado = false and persona.modificado = true and id_comuna_postulacion in (
             select id_comuna from infraestructura.zona as zona, infraestructura.zona_region as zona_region, core.region as region , core.comuna as comuna

@@ -1,4 +1,5 @@
 $(document).ready(function(){
+    loginvalid(localStorage.getItem('user'))
     $('#nombre_usuario').html(JSON.parse(localStorage.user).nombres+' '+JSON.parse(localStorage.user).apellidos+' ')
     $('#redirect').css('display','');
     $('#redirect').on('click',redirectModulo);
@@ -9,6 +10,15 @@ $(document).ready(function(){
         
     $('#guardar_persona').click(guardarPersonal);
     $('input:radio[name=inputExtranjero]').on('change',extranjero)
+
+    $.blockUI({  
+        baseZ: 3000,
+        message: '<img style="width: 10%;" src="images/loading.gif" />',
+        css: {
+            border:     'none',
+            backgroundColor:'transparent',        
+        } 
+    });
 
      $("#inputRun").rut({
         formatOn: 'keyup',
@@ -64,9 +74,10 @@ function getPersonal(){
         success: function(data, textStatus, jqXHR) {
             if(JSON.parse(data).resultado != undefined) {
   
-                if(JSON.parse(data).resultado == "error"){
+                if(JSON.parse(data).resultado == "error"){            
                     showFeedback("error",JSON.parse(data).descripcion,"Datos incorrectos");
                 }
+                $.unblockUI();
             }else{
                 llenarVista(data)
             } 
@@ -75,6 +86,7 @@ function getPersonal(){
         error: function(jqXHR, textStatus, errorThrown) {
             showFeedback("error","Error en el servidor","Datos incorrectos");
             console.log("error del servidor, datos incorrectos");
+            $.unblockUI();
  
         }
     })
@@ -100,8 +112,10 @@ function getPersonalCoordinadorZonal(){
             if(JSON.parse(data).resultado != undefined) {
   
                 if(JSON.parse(data).resultado == "error"){
+                   
                     showFeedback("error",JSON.parse(data).descripcion,"Datos incorrectos");
                 }
+                $.unblockUI();
             }else{
                 llenarVista(data)
                 llenarVista3(JSON.parse(data))
@@ -109,6 +123,7 @@ function getPersonalCoordinadorZonal(){
 
         },
         error: function(jqXHR, textStatus, errorThrown) {
+            $.unblockUI();
             showFeedback("error","Error en el servidor","Datos incorrectos");
             console.log("error del servidor, datos incorrectos");
  
@@ -134,8 +149,10 @@ function getPersonalCoordinador(){
             if(JSON.parse(data).resultado != undefined) {
   
                 if(JSON.parse(data).resultado == "error"){
+
                     showFeedback("error",JSON.parse(data).descripcion,"Datos incorrectos");
                 }
+                $.unblockUI();
             }else{
                 llenarVista(data)
             } 
@@ -143,6 +160,7 @@ function getPersonalCoordinador(){
         error: function(jqXHR, textStatus, errorThrown) {
             showFeedback("error","Error en el servidor","Datos incorrectos");
             console.log("error del servidor, datos incorrectos");
+            $.unblockUI();
  
         }
     })
@@ -157,12 +175,12 @@ var strg;
 validarTabla = 0;
 var rutss = new Object();
 function llenarVista(data){
-	strg=JSON.parse(data).personal_postulacion
-			
-	
-	 	
-	 
-	
+    strg=JSON.parse(data).personal_postulacion
+            
+    
+        
+     
+    
             
     data = JSON.parse(data)
 
@@ -186,7 +204,7 @@ function llenarVista(data){
                     columns: [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
                 }*/
                 exportOptions: {
-                    columns: [ 0,1, 2, 3, 4, 5, 6, 7, 8, 9, 10,12,14,15,16,17,18,19,20,21,22,11,23,24,25,26,27],
+                    columns: [ 0,1, 2, 3, 4, 5, 6, 7, 8, 9, 10,12,14,15,16,17,18,19,20,21,22,11,23,24,25,26],
                 }
             }
         ],
@@ -217,7 +235,7 @@ function llenarVista(data){
             {data: "nombre_zona"},
             {data: "region"},
             {data: "comuna"},
-            {data: "nombre_rol"},
+            /*{data: "nombre_rol"},*/
             {data: "run"},
             {data: "nombres"},
             {data: "apellido_paterno"},
@@ -254,7 +272,7 @@ function llenarVista(data){
         ],
         "columnDefs": [
             {
-                "targets": [ 9,10,14,15,16,17,18,19,20,21,22,23,24,25,26,27 ],
+                "targets": [ 8,9,13,14,15,16,17,18,19,20,21,22,23,24,25,26],
                 "visible": false,
                 "searchable": false
             },
@@ -274,33 +292,33 @@ function llenarVista(data){
                         '</select>'
 
 
-            acciones='<button type="button" id="persona_'+data.id_persona+'" onclick="modificar('+data.id_persona+','+data.id_persona_cargo+',true)" class="btn btn-primary btn-sm _btn-item"><i class="fa fa-pencil-alt"></i></button>'+
+            acciones='<button type="button" id="persona_'+data.id_persona+'" onclick="modificar('+data.id_persona+',true)" class="btn btn-primary btn-sm _btn-item"><i class="fa fa-pencil-alt"></i></button>'+
                          '<button type="button" id="docPersona_'+data.id_persona+'"  class="ml-2 btn btn-primary btn-sm _btn-item"><i class="fas fa-file-alt"></i></button>'  
-                        $('td:eq(11)', row).html(acciones)
+                        $('td:eq(10)', row).html(acciones)
 
 
 
             if(JSON.parse(localStorage.user).id_cargo != 1004){
-                $('td:eq(10)', row).html(select)
-                $('td:eq(10)', row).find('select').val(data.estado)
+                $('td:eq(9)', row).html(select)
+                $('td:eq(9)', row).find('select').val(data.estado)
                 if(data.estado=='contratado' || data.estado=='rechazado'){
-                    $('td:eq(10)', row).find('select').prop('disabled',true)
+                    $('td:eq(9)', row).find('select').prop('disabled',true)
                 }
-                $('td:eq(10)', row).find('select').data('id_persona_cargo',data.id_persona_cargo);
+                $('td:eq(9)', row).find('select').data('id_persona',data.id_persona);
 
-                $('td:eq(10)', row).find('select').on('change',cambiarEstado);
+                $('td:eq(9)', row).find('select').on('change',cambiarEstado);
 
-                $('td:eq(11)', row).find('#docPersona_'+data.id_persona).data('run',data.run);
-                $('td:eq(11)', row).find('#docPersona_'+data.id_persona).data('id_persona',data.id_persona);
-                $('td:eq(11)', row).find('#docPersona_'+data.id_persona).on('click',verDocs);
+                $('td:eq(10)', row).find('#docPersona_'+data.id_persona).data('run',data.run);
+                $('td:eq(10)', row).find('#docPersona_'+data.id_persona).data('id_persona',data.id_persona);
+                $('td:eq(10)', row).find('#docPersona_'+data.id_persona).on('click',verDocs);
    
             }else{
                 if(validarTabla ==  0){
-                    col = 10
-                    col2 = 11
-                } else{
                     col = 9
                     col2 = 10
+                } else{
+                    col = 8
+                    col2 = 9
                 }
 
                 $('td:eq('+col+')', row).html(select)
@@ -308,7 +326,7 @@ function llenarVista(data){
                 if(data.estado=='contratado' || data.estado=='rechazado'){
                     $('td:eq('+col+')', row).find('select').prop('disabled',true)
                 }
-                $('td:eq('+col+')', row).find('select').data('id_persona_cargo',data.id_persona_cargo);
+                $('td:eq('+col+')', row).find('select').data('id_persona',data.id_persona);
                 $('td:eq('+col+')', row).find('select').on('change',cambiarEstado);
 
                 $('td:eq('+col2+')', row).find('#docPersona_'+data.id_persona).data('run',data.run);
@@ -317,7 +335,7 @@ function llenarVista(data){
 
             }
 
-            if(data.id_cargo == 1006){
+         /*   if(data.id_cargo == 1006){
                 anfitrion++; 
             }else if(data.id_cargo == 8){
                 examinador++;
@@ -325,7 +343,7 @@ function llenarVista(data){
                 eApoyo++;
             }else if(data.id_cargo == 9){
                 supervisor++;
-            }
+            }*/
         },
         "initComplete": function(settings, json) {
             validarTabla++;
@@ -345,8 +363,8 @@ function llenarVista(data){
             $('#divRol').css('display','none')
             $('#divUsuario').css('display','none')
              
-            var placeholder = ["","Zona","Región","Comuna","Cargo","","","","","","","","Estado"]
-            this.api().columns([1,2,3,4,12]).every( function (index) {
+            var placeholder = ["","Zona","Región","Comuna","","","","","","","","Estado"]
+            this.api().columns([1,2,3,11]).every( function (index) {
                 if(JSON.parse(localStorage.user).id_cargo == 1004 && index == 1){
                     return;
                 }else{
@@ -381,8 +399,8 @@ function llenarVista(data){
                 var api = new $.fn.dataTable.Api(settings);
                 api.columns([1]).visible(false);
             }
-            var placeholder = ["","Zona","Región","Comuna","Cargo","","","","","","","","Estado"]
-            this.api().columns([1,2,3,4,12]).every( function (index) {
+            var placeholder = ["","Zona","Región","Comuna","","","","","","","","Estado"]
+            this.api().columns([1,2,3,11]).every( function (index) {
                 if(JSON.parse(localStorage.user).id_cargo == 1004 && index == 1){
                     return;
                 }else{
@@ -408,17 +426,20 @@ function llenarVista(data){
     $("#descargar-lista").on("click", function() {
         tablaD.button( '.buttons-excel' ).trigger();
     });
-    $('#total_anfitrion').html(anfitrion+'/-')
+/*    $('#total_anfitrion').html(anfitrion+'/-')
     $('#total_examinador').html(examinador+'/-')
     $('#total_examinador_apoyo').html(eApoyo+'/-')
-    $('#tatal_supervisor').html(supervisor+'/-')
-       
+    $('#tatal_supervisor').html(supervisor+'/-')*/
+        	
+    $('#total_personal').html(data.personal_postulacion.length)
     $("#table-postulacion").show();  
 
     llenarSelects(data)
     if(JSON.parse(localStorage.user).id_cargo != 1003 && JSON.parse(localStorage.user).id_cargo != 1004){
         llenarVista2(data)
     }
+
+    $.unblockUI();
      
 }
 
@@ -479,7 +500,7 @@ function llenarVista2(data){
             {data: "telefono"},*/
             {data: "opciones",className: "text-center",
                 render: function(data, type, row){
-                    return '<button type="button" id="persona_'+row.id_persona+'" onclick="modificar('+row.id_persona+','+row.id_persona_cargo+',false)" class="btn btn-primary btn-sm _btn-item"><i class="fa fa-pencil-alt"></i></button>'
+                    return '<button type="button" id="persona_'+row.id_persona+'" onclick="modificar('+row.id_persona+',false)" class="btn btn-primary btn-sm _btn-item"><i class="fa fa-pencil-alt"></i></button>'
                                
                 }
             }
@@ -600,7 +621,7 @@ function llenarVista3(data){
             {data: "telefono"},*/
             {data: "opciones",className: "text-center",
                 render: function(data, type, row){
-                    return '<button type="button" id="persona_'+row.id_persona+'" onclick="modificar('+row.id_persona+','+row.id_persona_cargo+',false)" class="btn btn-primary btn-sm _btn-item"><i class="fa fa-pencil-alt"></i></button>'
+                    return '<button type="button" id="persona_'+row.id_persona+'" onclick="modificar('+row.id_persona+',false)" class="btn btn-primary btn-sm _btn-item"><i class="fa fa-pencil-alt"></i></button>'
                                
                 }
             }
@@ -720,7 +741,7 @@ function llenarVista4(data){
             },
             {data: "region"},
             {data: "comuna"},
-            {data: "nombre_rol"},
+      /*      {data: "nombre_rol"},*/
             {data: "run"},
             {data: "nombres"},
             {data: "apellido_paterno"},
@@ -729,7 +750,7 @@ function llenarVista4(data){
             {data: "telefono"},
             {data: "opciones",className: "text-center",
                 render: function(data, type, row){
-                    return '<button type="button" id="persona_'+row.id_persona+'" onclick="modificar('+row.id_persona+','+row.id_persona_cargo+',false)" class="btn btn-primary btn-sm _btn-item"><i class="fa fa-pencil-alt"></i></button>'
+                    return '<button type="button" id="persona_'+row.id_persona+'" onclick="modificar('+row.id_persona+',false)" class="btn btn-primary btn-sm _btn-item"><i class="fa fa-pencil-alt"></i></button>'
                                
                 }
             }
@@ -801,7 +822,7 @@ function cambiarEstado(){
           confirmButtonText: 'Confirmar'
         }).then((result) => {
           if (result.value) {
-            cambiar($(this).data('id_persona_cargo'), $(this).val())
+            cambiar($(this).data('id_persona'), $(this).val())
 
           }
         })
@@ -817,14 +838,14 @@ function cambiarEstado(){
           confirmButtonText: 'Confirmar'
         }).then((result) => {
           if (result.value) {
-            cambiar($(this).data('id_persona_cargo'), $(this).val())
+            cambiar($(this).data('id_persona'), $(this).val())
           }
         })
     }else{
-        cambiar($(this).data('id_persona_cargo'), $(this).val())
+        cambiar($(this).data('id_persona'), $(this).val())
     }
     select = $(this);
-    function cambiar(cargo, option){
+    function cambiar(persona, option){
         $.ajax({
             method:'POST',
             url: webservice+'/personal/cambiarEstado',
@@ -836,7 +857,7 @@ function cambiarEstado(){
             data :{ 
                     id_usuario: JSON.parse(localStorage.user).id_usuario,
                     id_cargo: JSON.parse(localStorage.user).id_cargo,
-                    id_persona_cargo: cargo,
+                    id_persona: persona,
                     estado: option
                 },
             success: function(data, textStatus, jqXHR) {
@@ -1061,7 +1082,7 @@ function searchRUN() {
     });
 }
 
-function modificar(id,idPersonaCargo,postula){
+function modificar(id,postula){
 
     if(postula == true){
         $('#divRegionPostulacion').css('display','')
@@ -1109,7 +1130,7 @@ function modificar(id,idPersonaCargo,postula){
         data :{ 
                 id_usuario: JSON.parse(localStorage.user).id_usuario,
                 id_persona : id,
-                id_persona_cargo : idPersonaCargo
+               // id_persona_cargo : idPersonaCargo
         },
         success: function(data, textStatus, jqXHR) {
             data = JSON.parse(data) 
@@ -1138,14 +1159,14 @@ function verDocs(){
     console.log( ($(this).data('id_persona')))
     
     
-   	console.log(strg);
-   	if($(this).data('id_persona')==null){
-   		idusr =	gidUser
-   	}else{
-   		idusr= $(this).data('id_persona')
-   		gidUser=idusr
-   		console.log( gidUser)
-   	}
+    console.log(strg);
+    if($(this).data('id_persona')==null){
+        idusr = gidUser
+    }else{
+        idusr= $(this).data('id_persona')
+        gidUser=idusr
+        console.log( gidUser)
+    }
     
 
     found = strg.find(function(element) {
@@ -1233,7 +1254,7 @@ function cargarDocs(data){
         },
   });
     
-	var found1=''
+    var found1=''
     var found2=''
     var found3=''
     var found4=''
@@ -1263,19 +1284,30 @@ function cargarDocs(data){
     trData= ''; 
     
     trData+= (found1!='certificado_titulo') ? '<tr><td style="">Certificado titulo</td>'+`<td><div class="input-group"><input type="hidden" id="_token" value="{{ csrf_token() }}">
-<input type="file" class="form-control documento" id="documento_4" onchange="encodeDocumento(4);" accept=".doc, .docx, .pdf, .png, .jpg"></div></td></tr>` : ''
+<input type="file" class="form-control documento" id="documento_4" onchange="guardarConfirm(4);" accept=".doc, .docx, .pdf, .png, .jpg"></div></td></tr>` : ''
     
-    trData+= (found2!='cedula_identidad') ? '<tr><td style="">Cedula identidad</td>'+`<td><div class="input-group"><input type="hidden" id="_token" value="{{ csrf_token() }}">
-<input type="file" class="form-control documento" id="documento_1" onchange="encodeDocumento(1);" accept=".doc, .docx, .pdf, .png, .jpg"></div></td></tr>` : ''
+    trData+= (found2!='cedula_identidad') ? '<tr><td style="">Cédula identidad</td>'+`<td><div class="input-group"><input type="hidden" id="_token" value="{{ csrf_token() }}">
+<input type="file" class="form-control documento" id="documento_1" onchange="guardarConfirm(1);" accept=".doc, .docx, .pdf, .png, .jpg"></div></td></tr>` : ''
     
     trData+= (found3!='certificado_antecedentes') ? '<tr><td style="">Certificado antecedentes</td>'+`<td><div class="input-group"><input type="hidden" id="_token" value="{{ csrf_token() }}">
-<input type="file" class="form-control documento" id="documento_3" onchange="encodeDocumento(3);" accept=".doc, .docx, .pdf, .png, .jpg"></div></td></tr>` : ''
+<input type="file" class="form-control documento" id="documento_3" onchange="guardarConfirm(3);" accept=".doc, .docx, .pdf, .png, .jpg"></div></td></tr>` : ''
     
     trData+= (found4!='curriculum') ? '<tr><td style="">Curriculum</td>'+`<td><div class="input-group"><input type="hidden" id="_token" value="{{ csrf_token() }}">
-<input type="file" class="form-control documento" id="documento_2" onchange="encodeDocumento(2);" accept=".doc, .docx, .pdf, .png, .jpg"></div></td></tr>` :''  
+<input type="file" class="form-control documento" id="documento_2" onchange="guardarConfirm(2);" accept=".doc, .docx, .pdf, .png, .jpg"></div></td></tr>` :''  
 
+    trData+= `<tr><td style=""><select class="form-control custom-select tipoDocumento" onchange="cargarTipoDoc()" id="tipoDocumento" style="max-width: 233px;">
+             <option value="">Seleccione Tipo de Documento</option>
+            <option value="1">Cédula Identidad</option>
+            <option value="2">Curriculum</option>
+            <option value="3">Certificado antecedentes</option>
+
+            <option value="4">Certificado titulo</option>
+            
+
+        </select></td>`+`<td><div class="input-group"><input type="hidden" id="_token" value="{{ csrf_token() }}">
+<input type="file" class="form-control documento" id="documento_otro" onchange="guardarConfirmOtro();" accept=".doc, .docx, .pdf, .png, .jpg"></div></td></tr>`
         $('#lista-documentos').append(trData); 
-    $('#docsModal').modal({backdrop: 'static', keyboard: false},'show') 
+    $('#docsModal').modal({ keyboard: false},'show') 
      
 }
 
@@ -1294,6 +1326,11 @@ function verDocumento(){
 function cerrarDoc(){
   $('#verDocModal').modal('hide')    
 }
+var numDoc;
+function cargarTipoDoc(){
+console.log($('#tipoDocumento').val())
+numDoc=$('#tipoDocumento').val()
+}
  
 function extranjero(){
     if(this.value == 'No'){
@@ -1308,44 +1345,112 @@ function extranjero(){
 
 
 }
+var doc1_b64=null;
+var doc2_b64=null;
+var doc3_b64=null;
+var doc4_b64=null;
 
+var doc1_ext=null;
+var doc2_ext=null;
+var doc3_ext=null;
+var doc4_ext=null;
+function guardarConfirm(contador) {
+       
+        
+        contador == null ? null : encodeDocumento(contador);
+        
+        let esperarSubida = new Promise((resolve, reject) => {
+          $.blockUI({ message: 'Procesando archivos. Espere un momento...' });  
+          setTimeout(function(){
+            if(contador == 1){
+                if(doc1_b64 == null){
+                    reject("Archivo 1 mal subido");
+                }
+                if(contador == 2){
+                     if(doc2_b64 == null){
+                        reject("Archivo 2 mal subido");
+                    }
+                }
+                if(contador ==3){
+                    if(doc3_b64 == null){
+                        reject("Archivo 3 mal subido");
+                    }
+                }
+                if(contador == 4){
+                 if(doc4_b64 == null){
+                    reject("Archivo 4 mal subido");
+                }
+                }
+            }
+            resolve(true);
+          }, 3000);
+        });
+
+        esperarSubida.then((successMessage) => {
+            $.unblockUI();
+            if(successMessage == true){
+                subirDocumentox(contador)
+            }
+        })
+        .catch(
+            function(reason) {
+                $.unblockUI();
+                /* TODO: En caso de fallar mostrar alerta y permitir reintentar*/
+                console.log('Sin éxito: ('+reason+').');
+        });
+}
 function encodeDocumento(contador) {
+    if (contador == null){
+        return false;
+    }
     //localStorage.removeItem($('.documento')[0].files[0].name+"_64");
     //var file = document.getElementById("documento_"+contador).files[0];
     //var file = $("#documento_" + contador)[0].files[0];
-    console.log(contador)
+    //console.log(contador)
+
     var reader = new FileReader();
-
+    
     reader.onloadend = function() {
-        localStorage.setItem(($('#documento_' + contador)[0].files[0].name + "_64").trim(), (reader.result).split("base64,")[1]);
-        
-
-        subirDocumento(contador);
+        switch (contador) {
+            case 1:
+                doc1_b64 = (reader.result).split("base64,")[1]
+                doc1_ext = (($("#documento_1"))[0].files[0].name + "_64").trim()
+                break;
+            case 2:
+                doc2_b64 = (reader.result).split("base64,")[1]
+                doc2_ext = (($("#documento_2"))[0].files[0].name + "_64").trim()
+                break;
+            case 3:
+                doc3_b64 = (reader.result).split("base64,")[1]
+                doc3_ext = (($("#documento_3"))[0].files[0].name + "_64").trim()
+                break;
+            case 4:
+                doc4_b64 = (reader.result).split("base64,")[1]
+                doc4_ext = (($("#documento_4"))[0].files[0].name + "_64").trim()
+                break;
+        }
+        // console.log("ENTRO");
+        // localStorage.setItem((contador +"_64").trim(), (reader.result).split("base64,")[1]);
+        // subirDocumento(contador);
     };
-
     reader.readAsDataURL(document.getElementById("documento_" + contador).files[0]);
-
+    return true;
 }
-
-var contador = 0;
-var regs=-1;
-var regs1=-1;
-var regs2=-1;
-var regs3=-1;
-var gidUser;
-function subirDocumento(contador) {
+function subirDocumentox(contador) {
     $('#docsModal').modal('hide') 
-    $("#load_" + contador).show();
-    $("#mensajeUpload_" + contador).html("Subiendo Documento");
-    $("#mensajeUpload_" + contador).addClass("text-dark");
-
-    showFeedback("warning", "Subiendo Documento", "Guardando");
-    var unno="";
+    
+    
+   
     var doctype= contador;
         doctype= (doctype==1) ? doctype="cedula_identidad"  : (doctype==2) ? doctype="curriculum"  : (doctype==3) ? doctype="certificado_antecedentes": doctype="certificado_titulo" ;
+    var unno="";
         unno= (contador==1) ? unno=regs : (contador==2) ? unno=regs1 : (contador==3) ?  unno=regs2: unno=regs3;
-       
-       
+    var nomdoc="";
+        nomdoc= (contador==1) ? doc1_b64 : (contador==2) ?doc2_b64 : (contador==3) ?  doc3_b64: doc4_b64;
+    var ext="";
+        ext= (contador==1) ?  ($("#documento_1")[0].files[0].name).split(".")[1] : (contador==2) ?($("#documento_2")[0].files[0].name).split(".")[1] : (contador==3) ?  ($("#documento_3")[0].files[0].name).split(".")[1]: ($("#documento_4")[0].files[0].name).split(".")[1];
+   
+        console.log(ext)
         
     $.ajax({
         method: 'POST',
@@ -1359,16 +1464,16 @@ function subirDocumento(contador) {
 
             id_persona_archivo: unno,
             run: run,
-            documento: localStorage.getItem(($('#documento_' + contador)[0].files[0].name + "_64").trim()),
-            nombreArchivo: "_" + run + "." + ($("#documento_" + contador)[0].files[0].name).split(".")[1],
+            documento: nomdoc,
+            nombreArchivo: "_" + run + "." + ext,
             tipo:doctype
         },
         success: function(data, textStatus, jqXHR) {
-            $("#load" + contador).hide();
+            
             showFeedback("success", data.descripcion, "Guardado");
-            console.log(gidUser)
+            
             gidUser=idusr;
-            console.log(gidUser)
+            
             verDocs()
         },
         error: function(jqXHR, textStatus, errorThrown) {
@@ -1378,6 +1483,121 @@ function subirDocumento(contador) {
     });
 }
 
+var docO_b64;
+var docO_ext;
+function guardarConfirmOtro() {
+       
+        
+        numDoc == null ? null : encodeDocumentoOtro(numDoc);
+        
+        let esperarSubida = new Promise((resolve, reject) => {
+          $.blockUI({ message: 'Procesando archivos. Espere un momento...' });  
+          setTimeout(function(){
+            if(numDoc == 1){
+                if(docO_b64 == null){
+                    reject("Archivo 1 mal subido");
+                }
+                if(numDoc == 2){
+                     if(docO_b64 == null){
+                        reject("Archivo 2 mal subido");
+                    }
+                }
+                if(numDoc ==3){
+                    if(docO_b64 == null){
+                        reject("Archivo 3 mal subido");
+                    }
+                }
+                if(numDoc == 4){
+                 if(docO_b64 == null){
+                    reject("Archivo 4 mal subido");
+                }
+                }
+            }
+            resolve(true);
+          }, 3000);
+        });
+
+        esperarSubida.then((successMessage) => {
+            $.unblockUI();
+            if(successMessage == true){
+                subirDocumentoOtro(numDoc)
+            }
+        })
+        .catch(
+            function(reason) {
+                $.unblockUI();
+                /* TODO: En caso de fallar mostrar alerta y permitir reintentar*/
+                console.log('Sin éxito: ('+reason+').');
+        });
+}
+function encodeDocumentoOtro() {
+    //localStorage.removeItem($('.documento')[0].files[0].name+"_64");
+    //var file = document.getElementById("documento_"+contador).files[0];
+   var reader = new FileReader();
+    
+    reader.onloadend = function() {
+        
+                docO_b64 = (reader.result).split("base64,")[1]
+                docO_ext = (($("#documento_otro"))[0].files[0].name + "_64").trim()
+             
+        
+        // console.log("ENTRO");
+        // localStorage.setItem((contador +"_64").trim(), (reader.result).split("base64,")[1]);
+        // subirDocumento(contador);
+    };
+    reader.readAsDataURL(document.getElementById("documento_" + contador).files[0]);
+    return true;
+
+}
+
+
+var contador = 0;
+var regs=-1;
+var regs1=-1;
+var regs2=-1;
+var regs3=-1;
+var gidUser;
+function subirDocumentoOtro(contador) {
+    $('#docsModal').modal('hide') 
+    
+    var doctype= contador;
+        doctype= (doctype==1) ? doctype="cedula_identidad"  : (doctype==2) ? doctype="curriculum"  : (doctype==3) ? doctype="certificado_antecedentes": doctype="certificado_titulo" ;
+    var unno="";
+        unno= (contador==1) ? unno=regs : (contador==2) ? unno=regs1 : (contador==3) ?  unno=regs2: unno=regs3;
+    var ext=($("#documento_otro")[0].files[0].name).split(".")[1] ;
+   
+        console.log(ext)
+        
+    $.ajax({
+        method: 'POST',
+        
+        url: webservice2+'personas/subirarchivos',
+        crossDomain: true,
+        headers: {
+            't': JSON.parse(localStorage.user).token
+        },
+        data: {
+
+            id_persona_archivo: unno,
+            run: run,
+            documento: doc1_b64,
+            nombreArchivo: "_" + run + "." + ext,
+            tipo:doctype
+        },
+        success: function(data, textStatus, jqXHR) {
+            
+            showFeedback("success", data.descripcion, "Guardado");
+            
+            gidUser=idusr;
+            
+            verDocs()
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            showFeedback("error", errorThrown, "No guardado");
+            console.log(errorThrown);
+        }
+    });
+}
 
 function cargarDatos(data){
     $('#div-search').css('display','none')
@@ -1472,12 +1692,14 @@ function cargarDatos(data){
 function guardarPersonal(){
     var checkbox = $('input:checkbox[name=inputRolAsignado]')
     cargos = [];
-    for (var i = 0; i < checkbox.length; i++) {
-        if(checkbox[i].checked == true){
-            cargos.push(checkbox[i].value)
-        }
-         
-    }
+    if($('#divRol').is(":visible")){
+	    for (var i = 0; i < checkbox.length; i++) {
+	        if(checkbox[i].checked == true){
+	            cargos.push(checkbox[i].value)
+	        }
+	         
+	    }
+	}
 
     cargosPostulante = [];
     if($('#divRolPostulante').is(":visible")){
@@ -1542,8 +1764,15 @@ function guardarPersonal(){
                 if (data.resultado != "error") {
                     showFeedback("success", data.descripcion, "Guardado");
                     $('#personalModal').modal('hide');
-                    getPersonal()
-                } else {
+                        if(JSON.parse(localStorage.user).id_cargo == 1004){
+					        getPersonalCoordinador();
+					    }else if(JSON.parse(localStorage.user).id_cargo == 1003){
+					        getPersonalCoordinadorZonal();
+					    }else{
+					        getPersonal();
+					    }
+
+                }else {
                     showFeedback("error","Error al guardar","Error");
                     console.log("invalidos");
                 }
@@ -1990,7 +2219,7 @@ function verCentros(){
 }
 
 function mostrarCentros(data){
-
+	$('#filtros-modalCentro').empty();
     if($.fn.dataTable.isDataTable('#table-centros')){
         $('#table-centros').DataTable().destroy();
         $('#lista-centros').empty();
