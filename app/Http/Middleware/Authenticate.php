@@ -31,58 +31,65 @@ class Authenticate
 		if(count($usuario)>0){
 			
 			//SEDE
-				$denedado['api/web/sede/lista'] = array(28, 1040);
-				$denedado['api/web/sede/lista-sedes-comuna'] = array(28, 1040);
-				$denedado['api/web/sede/guarda-liceo-cupo'] = array(28, 1040);
-				$denedado['api/web/sede/lista-estimacion'] = array(28, 1040);
-				$denedado['api/web/sede/obtenerDataLiceo'] = array(28, 1040);
-				$denedado['api/web/sede/modificar'] = array(28, 1040);
-				$denedado['api/web/sede/guardar'] = array(28, 1040);
+				$denegado['api/web/sede/lista'] = array(28, 1040);
+				$denegado['api/web/sede/lista-sedes-comuna'] = array(28, 1040);
+				$denegado['api/web/sede/guarda-liceo-cupo'] = array(28, 1040);
+				$denegado['api/web/sede/lista-estimacion'] = array(28, 1040);
+				$denegado['api/web/sede/obtenerDataLiceo'] = array(28, 1040);
+				$denegado['api/web/sede/modificar'] = array(28, 1040);
+				$denegado['api/web/sede/guardar'] = array(28, 1040);
 			
 			//SALA
-				$denedado['api/web/sala/lista'] = array(28, 1040);
-				$denedado['api/web/sala/guardar'] = array(28, 1040);
-				$denedado['api/web/sala/modificar'] = array(28, 1040);
+				$denegado['api/web/sala/lista'] = array(28, 1040);
+				$denegado['api/web/sala/guardar'] = array(28, 1040);
+				$denegado['api/web/sala/modificar'] = array(28, 1040);
 
 			//EVALUADO
-				$denedado['api/web/evaluado/lista'] = array(28, 1040, 1042);
+				$denegado['api/web/evaluado/lista'] = array(28, 1040, 1042);
 
 			//CENTRO OPERACIONES
-				$denedado['api/web/centro/lista'] = array(28, 1040, 1042);
-				$denedado['api/web/centro/guardar'] = array(28, 1040, 1042);
-				$denedado['api/web/centro/modificar'] = array(28, 1040, 1042);
-				$denedado['api/web/centro/zonas'] = array(28, 1040, 1042);
-				$denedado['api/web/centro/modificarZona'] = array(28, 1040, 1042);
-				$denedado['api/web/centro/zonasRegion'] = array(28, 1040, 1042);
-				$denedado['api/web/centro/modificarZonaRegion'] = array(28, 1040, 1042);
-				$denedado['api/web/centro/centros'] = array(28, 1040, 1042);
-				$denedado['api/web/centro/modificarEncargadoCentro'] = array(28, 1040, 1042);
-				$denedado['api/web/centro/listaMonitoreo'] = array(28, 1040, 1042);
-
-			//RRHH
-				$denedado['api/web/personal/lista'] = array(1040, 1042);
-				$denedado['api/web/personal/modificar'] = array(1040, 1042);
-				$denedado['api/web/personal/guardar'] = array(1040, 1042);
-				$denedado['api/web/personal/documentos'] = array(1040, 1042);
-				$denedado['api/web/personal/cambiarEstado'] = array(1040, 1042);
-				$denedado['api/web/personal/obtenerPersona'] = array(1040, 1042);
-				$denedado['api/web/personal/listaCoordinadorZonal'] = array(1040, 1042);
-				$denedado['api/web/personal/listaCoordinador'] = array(1040, 1042);
+				$denegado['api/web/centro/lista'] = array(28, 1040, 1042);
+				$denegado['api/web/centro/guardar'] = array(28, 1040, 1042);
+				$denegado['api/web/centro/modificar'] = array(28, 1040, 1042);
+				$denegado['api/web/centro/zonas'] = array(28, 1040, 1042);
+				$denegado['api/web/centro/modificarZona'] = array(28, 1040, 1042);
+				$denegado['api/web/centro/zonasRegion'] = array(1040, 1042);
+				$denegado['api/web/centro/modificarZonaRegion'] = array( 1040, 1042);
+				$denegado['api/web/centro/centros'] = array(28, 1040, 1042);
+				$denegado['api/web/centro/modificarEncargadoCentro'] = array(28, 1040, 1042);
+				$denegado['api/web/centro/listaMonitoreo'] = array(28, 1040, 1042);
 
 			//CAPACITACION
-				$denedado['api/web/capacitacion/lista'] = array(28, 1040, 1042);
-				$denedado['api/web/capacitacion/guardar'] = array(28, 1040, 1042);
-				$denedado['api/web/capacitacion/obtenerPersonal'] = array(28, 1040, 1042);
-				$denedado['api/web/capacitacion/asignarCapacitacion'] = array(28, 1040, 1042);
-				$denedado['api/web/capacitacion/listaRelator'] = array(28, 1040, 1042);
-				$denedado['api/web/capacitacion/modificarPersona'] = array(28, 1040, 1042);
-				$denedado['api/web/capacitacion/guardarPersona'] = array(28, 1040, 1042);
-				$denedado['api/web/capacitacion/evaluacion'] = array(28, 1040, 1042);
+				$denegado['api/web/capacitacion/lista'] = array( 1040, 1042);
+				$denegado['api/web/capacitacion/obtenerPersonal'] = array(28, 1040, 1042);
+				$denegado['api/web/capacitacion/listaRelator'] = array(28, 1040, 1042);
+				$denegado['api/web/capacitacion/guardar'] = array(1040, 1042);
+				$denegado['api/web/capacitacion/modificarCapacitacion'] = array(1052);
+				$denegado['api/web/capacitacion/asignarCapacitacion'] = array(1040, 1042);
+				$denegado['api/web/capacitacion/modificarPersona'] = array(28, 1040, 1042);
+				$denegado['api/web/capacitacion/guardarPersona'] = array(28, 1040, 1042);
+				$denegado['api/web/capacitacion/evaluacion'] = array(28, 1040, 1042);
+
+			//RRHH
+				//solo obtienen datos
+				$denegado['api/web/personal/lista'] = array(1040, 1042);
+				$denegado['api/web/personal/listaCoordinadorZonal'] = array(1040, 1042);
+				$denegado['api/web/personal/listaCoordinador'] = array(1040, 1042);
+				$denegado['api/web/personal/documentos'] = array(1040, 1042);
+				$denegado['api/web/personal/obtenerPersona'] = array(1040, 1042);
+				$denegado['api/web/personal/listaPostulantes'] = array(1040, 1042);
+				//cambian valores es BD
+				$denegado['api/web/personal/modificar'] = array(1040, 1042);
+				$denegado['api/web/personal/guardar'] = array(1040, 1042);
+				$denegado['api/web/personal/cambiarEstado'] = array(1040, 1042);
 
 			//ASIGNACION
-				$denedado['api/web/asignacion/lista'] = array(28, 1040, 1042);
-				$denedado['api/web/asignacion/listaCoordinador'] = array(28, 1040, 1042);
-				$denedado['api/web/asignacion/guardar'] = array(28, 1040, 1042);
+				//solo obtienen datos
+				$denegado['api/web/asignacion/lista'] = array(1040, 1042);
+				$denegado['api/web/asignacion/listaCoordinador'] = array(1040, 1042);
+				
+				//cambian valores es BD
+				$denegado['api/web/asignacion/guardar'] = array(1040, 1042);
 	
 			
 			//validacion para cada tipo de usuario.
@@ -90,13 +97,13 @@ class Authenticate
 			//el tipo de usuario 1040 agencia
 			//el tipo de usuario 1051 es admin	
 			//el tipo de usuario 1042 infraestructura
-			if(array_key_exists($request->path(), $denedado)){
-				if(in_array($usuario[0]->id_tipo_usuario, $denedado[$request->path()])){
-					echo "acceso denegado 1"; exit;
+			if(array_key_exists($request->path(), $denegado)){
+				if(in_array($usuario[0]->id_tipo_usuario, $denegado[$request->path()])){
+					return response()->json(['resultado'=>'error','descripcion'=>'Acceso Denegado 1']);
 				}
 			}
 			else{
-				echo "acceso denegado 2"; exit;
+				return response()->json(['resultado'=>'error','descripcion'=>'Acceso Denegado 2']);
 			}
 			
 
@@ -104,26 +111,49 @@ class Authenticate
 			//1003-> Ejecutivo iie
 			//1004-> Encargado Regional
 			//1008-> Relator
-			
-			// if($usuario[0]->id_tipo_usuario == 28){
-					// //RRHH				
-					// $denedadoRRHH['api/web/personal/lista'] = array();
-					// $denedadoRRHH['api/web/personal/modificar'] = array();
-					// $denedadoRRHH['api/web/personal/guardar'] = array();
-					// $denedadoRRHH['api/web/personal/documentos'] = array();
-					// $denedadoRRHH['api/web/personal/cambiarEstado'] = array();
-					// $denedadoRRHH['api/web/personal/obtenerPersona'] = array();
-					// $denedadoRRHH['api/web/personal/listaCoordinadorZonal'] = array(1004);
-					// $denedadoRRHH['api/web/personal/listaCoordinador'] = array();	
-					// // if(array_key_exists($request->path(), $denedadoRRHH)){
-						// // if(in_array($usuario[0]->id_tipo_usuario, $denedadoRRHH[$request->path()])){
-							// // echo "acceso denegado 1"; exit;
-						// // }
-					// // }
-					// // else{
-						// // echo "acceso denegado 2"; exit;
-					// // }					
-			// }
+			$personaCargo = \DB::select("SELECT id_cargo FROM rrhh.persona_cargo 
+				inner join rrhh.persona on rrhh.persona_cargo.id_persona = rrhh.persona.id_persona 
+				WHERE rrhh.persona.id_usuario = '".$usuario[0]->id_usuario."' ");
+
+ /*			if($usuario[0]->id_tipo_usuario == 28){
+					//RRHH				
+					$denegadoRRHH['api/web/personal/lista'] = array();
+					$denegadoRRHH['api/web/personal/modificar'] = array();
+					$denegadoRRHH['api/web/personal/guardar'] = array();
+					$denegadoRRHH['api/web/personal/documentos'] = array();
+					$denegadoRRHH['api/web/personal/cambiarEstado'] = array();
+					$denegadoRRHH['api/web/personal/obtenerPersona'] = array();
+					$denegadoRRHH['api/web/personal/listaCoordinadorZonal'] = array(1004);
+					$denegadoRRHH['api/web/personal/listaCoordinador'] = array(1003);	
+					$denegadoRRHH['api/web/asignacion/lista'] = array(1040, 1042);
+					$denegadoRRHH['api/web/asignacion/listaCoordinador'] = array(1040, 1042);
+					$denegadoRRHH['api/web/asignacion/guardar'] = array(1040, 1042);
+
+					//CENTRO OPERACIONES
+					$denegadoRRHH['api/web/centro/lista'] = array(28, 1040, 1042);
+					$denegadoRRHH['api/web/centro/guardar'] = array(28, 1040, 1042);
+					$denegadoRRHH['api/web/centro/modificar'] = array(28, 1040, 1042);
+					$denegadoRRHH['api/web/centro/zonas'] = array(28, 1040, 1042);
+					$denegadoRRHH['api/web/centro/modificarZona'] = array(28, 1040, 1042);
+					$denegadoRRHH['api/web/centro/zonasRegion'] = array(1040, 1042);
+					$denegadoRRHH['api/web/centro/modificarZonaRegion'] = array( 1040, 1042);
+
+					//CAPACITACION
+					$denegadoRRHH['api/web/capacitacion/lista'] = array(1040, 1042);
+					$denegadoRRHH['api/web/capacitacion/guardar'] = array(1040, 1042);
+					$denegadoRRHH['api/web/capacitacion/modificarCapacitacion'] = array(1052);
+					$denegadoRRHH['api/web/capacitacion/asignarCapacitacion'] = array(1040, 1042);
+				
+					if(array_key_exists($request->path(), $denegadoRRHH)){
+						if(in_array($personaCargo[0]->id_cargo, $denegadoRRHH[$request->path()])){
+						 	return response()->json(['resultado'=>'error','descripcion'=>'Acceso Denegado 3']);
+							 
+						}
+					}
+					else{
+						return response()->json(['resultado'=>'error','descripcion'=>'Acceso Denegado 4']);
+					}					
+			}*/
 
 			
 			
