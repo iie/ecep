@@ -94,13 +94,13 @@ class LoginController extends Controller
 							$idCargo = 1004; //1004-> Encargado Regional
 						}
 						else{
-							$personaCargo = PersonaCargo::where("id_persona", $persona->id_persona)->where("id_cargo", 1008)->first();
-							if(isset($personaCargo->id_persona_cargo)){
-								$idCargo = 1008; //1008->   Relator
-							}	
-							else{
+							//$personaCargo = PersonaCargo::where("id_persona", $persona->id_persona)->where("id_cargo", 1008)->first();
+							//if(isset($personaCargo->id_persona_cargo)){
+							//	$idCargo = 1008; //1008->   Relator
+							//}	
+							//else{
 								return response()->json(array("respuesta"=>"error","descripcion"=>"No autorizado."));			
-							}
+							//}
 						}
 					//}
 				}
@@ -112,18 +112,22 @@ class LoginController extends Controller
 		
 		//1051->admin
 		//1040->agencia
-		elseif(($pers->id_tipo_usuario == 1040)||($pers->id_tipo_usuario == 1051)||($pers->id_tipo_usuario == 1042)){		
+		//1052->relator
+		elseif(($pers->id_tipo_usuario == 1040)||($pers->id_tipo_usuario == 1051)||($pers->id_tipo_usuario == 1042)||($pers->id_tipo_usuario == 1052)){		
 			
-			//$persona = Persona::where("id_usuario", $pers->id_usuario)->first();
-			//if(isset($persona->id_persona)){
+			$persona = Persona::where("id_usuario", $pers->id_usuario)->first();
+			if(!isset($persona->id_persona)){
 				$persona = new Persona;
 				$persona->nombres = $usuarioPass->usuario;
 				$persona->apellido_paterno = "";
 				$persona->apellido_materno = "";
-				$tipoUsuario = $pers->id_tipo_usuario;
-				$idCargo = -1;
-
-			//}	
+				$persona->id_persona = null;
+			}	
+			//else{
+			//}
+			$tipoUsuario = $pers->id_tipo_usuario;
+			$idCargo = -1;
+			
 		}		
 		else{
 			return response()->json(array("respuesta"=>"error","descripcion"=>"No autorizado"));			
