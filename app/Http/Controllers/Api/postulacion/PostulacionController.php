@@ -638,7 +638,7 @@ class PostulacionController extends Controller
 			$mail->MsgHTML($html);
 			$mail->addAddress($post["correo_electronico_principal"], $nombre_completo);
 			$mail->addBCC("alberto.paillao@iie.cl", "Alberto Paillao");
-			$mail->addBCC("roberto.novoa@iie.cl", "Pul Ento");
+			//$mail->addBCC("roberto.novoa@iie.cl", "Pul Ento");
 			try {
 				$mail->send();
 			} catch (phpmailerException $e) {
@@ -761,14 +761,14 @@ class PostulacionController extends Controller
 			$mail->SMTPAuth = true;  // use smpt auth
 			$mail->Host = "mail.smtp2go.com"; 
 			$mail->Port = 443;//2525; //443; 
-			$mail->Username = "postulaciones-ecep@iie.cl";
-			$mail->Password = "K1lL@iie2019@k1lL@;Hola@2019";
-			$mail->setFrom("postulaciones-ecep@iie.cl", "ECEP");
+			$mail->Username = "postulaciones@ecep2019.iie.cl";
+			$mail->Password = "MXA5cXkzdzJwcWZp";
+			$mail->setFrom("postulaciones@ecep2019.iie.cl", "ECEP");
 			$mail->Subject = $subject;
 			$mail->MsgHTML($html);
 			$mail->addAddress($correo, $nombre);
 			$mail->addBCC("alberto.paillao@iie.cl", "Alberto Paillao");
-			$mail->addBCC("roberto.novoa@iie.cl", "Pul Ento");
+			//$mail->addBCC("roberto.novoa@iie.cl", "Pul Ento");
 			$mail->send();
 		} catch (phpmailerException $e) {
 			return;
@@ -776,46 +776,6 @@ class PostulacionController extends Controller
 			return;			
 		}
 		return true;
-	}
-
-	function enviarNotificacionPreseleccion($correo, $nombre, $fecha, $direccion) {
-		$subject = "Preseleccionado - Evaluación Conocimientos Específicos y Pedagógicos";
-		$html = "
-		<p>Estimado " . $nombre . " </p>
-		<p>Usted ha sido preseleccionado para participar en Evaluación Conocimientos Específicos y Pedagógicos</p>
-		<p>De acuerdo a su confirmación telefónica deberá participar de una jornada de capacitación, que se realizará el día " .$fecha. " en " . $direccion . ". Para ese día debe haber leído el manual de capacitación adjunto.</p>
-		<p>Además deberá  firmar un acuerdo de confidencialidad, el cual se adjunta en este correo.</p>
-		<br>
-		<p>Saludos cordiales</p>
-		<p>Equipo de Aplicación ECEP</p>";
-			
-		// $mail = new PHPMailer(true); 
-		
-		// try {
-			// $mail->isSMTP(); // tell to use smtp
-			// $mail->CharSet = "utf-8"; // set charset to utf8
-			// $mail->SMTPDebug = 0;
-			// $mail->Debugoutput = 'html';
-
-			// $mail->SMTPSecure = "tls"; // tls or ssl
-			// $mail->SMTPAuth = true;  // use smpt auth
-			// $mail->Host = "smtp.gmail.com"; 
-			// $mail->Port = 587; //443; 
-			// $mail->Username = "postulaciones-ecep@iie.cl";
-			// $mail->Password = "ecep2019@iie@";
-			// $mail->setFrom("postulaciones-ecep@iie.cl", "ECEP");
-			// $mail->Subject = $subject;
-			// $mail->MsgHTML($html);
-			// $mail->addAddress($correo, $nombre);
-			// $mail->addCc("alberto.paillao@iie.cl", "Alberto Paillao");
-			// $mail->send();
-		// } catch (phpmailerException $e) {
-			// //echo($e);
-			// arreglo($e->errorMessage());exit;
-		// } catch (Exception $e) {
-			// arreglo($e->errorMessage());exit;
-			// //echo($e);				
-		// }
 	}
 
 	function enviarNotificacionError($error, $proceso, $post) {
@@ -843,13 +803,14 @@ class PostulacionController extends Controller
 		$mail->SMTPAuth = true;  // use smpt auth
 		$mail->Host = "mail.smtp2go.com"; 
 		$mail->Port = 443;//2525; //443; 
-		$mail->Username = "postulaciones-ecep@iie.cl";
-		$mail->Password = "K1lL@iie2019@k1lL@;Hola@2019";
-		$mail->setFrom("postulaciones-ecep@iie.cl", "ECEP");
+		$mail->Username = "postulaciones@ecep2019.iie.cl";
+		$mail->Password = "MXA5cXkzdzJwcWZp";
+		$mail->setFrom("postulaciones@ecep2019.iie.cl", "ECEP");
 		$mail->Subject = $subject;
 		$mail->MsgHTML($html);
 		$mail->addAddress("alberto.paillao@iie.cl", "Alberto Paillao");
-		$mail->addBCC("roberto.novoa@iie.cl", "Pul Ento");
+		//$mail->addBCC("roberto.novoa@iie.cl", "Pul Ento");
+
 		try {
 			$mail->send();
 		} catch (phpmailerException $e) {
