@@ -469,30 +469,33 @@ class PersonalController extends Controller
                 $usuario = Usuario::where("id_usuario", $post["usuario_id"])->first();
                 $usuario->usuario = isset($post['usuario']) ? $post['usuario'] : $usuario->usuario;
                 $usuario->contrasena = isset($post['contrasena']) ? md5($post['contrasena']) : $usuario->contrasena;
-                foreach ($post['id_cargo'] as $cargo) {
- 
-                    if($cargo == 1008){
-                        //Tipo Relator
-                        $usuario->id_tipo_usuario = 1052;
-                    }else{
-                        $usuario->id_tipo_usuario = 28;
-                    }                     
+                if(isset($post['id_cargo'])){
+                    foreach ($post['id_cargo'] as $cargo) {
+     
+                        if($cargo == 1008){
+                            //Tipo Relator
+                            $usuario->id_tipo_usuario = 1052;
+                        }else{
+                            $usuario->id_tipo_usuario = 28;
+                        }                     
+                    }
                 }
+                   
                 $usuario->save(); 
             }else{
                 $usuario = new Usuario;
                 $usuario->usuario = isset($post['usuario']) ? $post['usuario'] : null;
                 $usuario->contrasena = isset($post['contrasena']) ? md5($post['contrasena']) : null;
-                 
-                foreach ($post['id_cargo'] as $cargo) {
-                    if($cargo == 1008){
-                        //Tipo Relator
-                        $usuario->id_tipo_usuario = 1052;
-                    }else{
-                        $usuario->id_tipo_usuario = 28;
-                    }                     
+                if(isset($post['id_cargo'])){
+                    foreach ($post['id_cargo'] as $cargo) {
+                        if($cargo == 1008){
+                            //Tipo Relator
+                            $usuario->id_tipo_usuario = 1052;
+                        }else{
+                            $usuario->id_tipo_usuario = 28;
+                        }                     
+                    }
                 }
-
                 $usuario->save(); 
 
                 $persona->id_usuario = $usuario->id_usuario; 
@@ -763,13 +766,14 @@ class PersonalController extends Controller
             $zonas[] = $cargoAux->id_zona;
         }
 
-        $personaP = DB::select("select rrhh.persona.*,rrhh.persona.estado_proceso as estado, persona_cargo.*,cargo.*,comuna.nombre as comuna,region.nombre as region, zona.nombre as nombre_zona 
-			from infraestructura.zona_region as zona_region, rrhh.persona, rrhh.persona_cargo as persona_cargo, rrhh.cargo as cargo, core.comuna as comuna, core.region as region , infraestructura.zona as zona where persona.borrado = false and persona.modificado = true and id_comuna_postulacion in (
+        $personaP = DB::select("select rrhh.persona.*,rrhh.persona.estado_proceso as estado,comuna.nombre as comuna,region.nombre as region, zona.nombre as nombre_zona 
+			from infraestructura.zona_region as zona_region, rrhh.persona, core.comuna as comuna, core.region as region , infraestructura.zona as zona where persona.borrado = false and persona.modificado = true and id_comuna_postulacion in (
             select id_comuna from infraestructura.zona as zona, infraestructura.zona_region as zona_region, core.region as region , core.comuna as comuna
             where zona.id_zona = zona_region.id_zona
             and zona_region.id_region =  region.id_region
             and region.id_region =  comuna.id_region
-            and zona.id_zona in (".implode($zonas,",").") ) and persona_cargo.id_persona = persona.id_persona and persona_cargo.id_cargo = cargo.id_cargo
+            and zona.id_zona in (".implode($zonas,",").") ) 
+			
             and id_comuna_postulacion = comuna.id_comuna
             and region.id_region = comuna.id_region
 			and zona.id_zona = zona_region.id_zona
@@ -925,22 +929,39 @@ class PersonalController extends Controller
 		$personaP = array(); 
         
 		if($zonas[0] != ""){
-			$personaP = DB::select("select rrhh.persona.*,rrhh.persona.estado_proceso as estado, persona_cargo.*,cargo.*,comuna.nombre as comuna,region.nombre as region , zona.nombre as nombre_zona 
-            from rrhh.persona, rrhh.persona_cargo as persona_cargo, rrhh.cargo as cargo, core.comuna as comuna, core.region as region, infraestructura.zona as zona , infraestructura.zona_region as zona_region 
+
+		$personaP = DB::select("select rrhh.persona.*,rrhh.persona.estado_proceso as estado, comuna.nombre as comuna,region.nombre as region , zona.nombre as nombre_zona 
+            from rrhh.persona, core.comuna as comuna, core.region as region, infraestructura.zona as zona , infraestructura.zona_region as zona_region 
             where persona.borrado = false and persona.modificado = true and id_comuna_postulacion in (
             select id_comuna from infraestructura.zona as zona, infraestructura.zona_region as zona_region, core.region as region , core.comuna as comuna
             where zona.id_zona = zona_region.id_zona
             and zona_region.id_region =  region.id_region
             and region.id_region =  comuna.id_region
-            and zona.id_zona in (".implode($zonas,",").") ) 
-            and persona_cargo.id_persona = persona.id_persona 
-            and persona_cargo.id_cargo = cargo.id_cargo
+			and zona.id_zona in (".implode($zonas,",").") ) 
             and id_comuna_postulacion = comuna.id_comuna
             and region.id_region = comuna.id_region
             and zona_region.id_region =  region.id_region
             and zona.id_zona = zona_region.id_zona
             and zona_region.id_coordinador = ". $cargo[0]->id_persona_cargo."
             ");
+
+			
+			// $personaP = DB::select("select rrhh.persona.*,rrhh.persona.estado_proceso as estado, persona_cargo.*,cargo.*,comuna.nombre as comuna,region.nombre as region , zona.nombre as nombre_zona 
+            // from rrhh.persona, rrhh.persona_cargo as persona_cargo, rrhh.cargo as cargo, core.comuna as comuna, core.region as region, infraestructura.zona as zona , infraestructura.zona_region as zona_region 
+            // where persona.borrado = false and persona.modificado = true and id_comuna_postulacion in (
+            // select id_comuna from infraestructura.zona as zona, infraestructura.zona_region as zona_region, core.region as region , core.comuna as comuna
+            // where zona.id_zona = zona_region.id_zona
+            // and zona_region.id_region =  region.id_region
+            // and region.id_region =  comuna.id_region
+            // and zona.id_zona in (".implode($zonas,",").") ) 
+            // and persona_cargo.id_persona = persona.id_persona 
+            // and persona_cargo.id_cargo = cargo.id_cargo
+            // and id_comuna_postulacion = comuna.id_comuna
+            // and region.id_region = comuna.id_region
+            // and zona_region.id_region =  region.id_region
+            // and zona.id_zona = zona_region.id_zona
+            // and zona_region.id_coordinador = ". $cargo[0]->id_persona_cargo."
+            // ");
 		}	
         /*
         foreach ($personaP as $index => $per) {
