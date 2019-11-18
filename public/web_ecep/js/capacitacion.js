@@ -208,6 +208,7 @@ function llenarVista(data){
         "rowCallback": function( row, data ) {
             $('td:eq(10)', row).find('#persona_'+data.id_persona).data('id_persona',data.id_persona);
             $('td:eq(10)', row).find('#persona_'+data.id_persona).data('id_comuna',data.id_comuna_postulacion);
+            $('td:eq(10)', row).find('#persona_'+data.id_persona).data('id_region',data.id_region_postulacion);
             $('td:eq(10)', row).find('#persona_'+data.id_persona).data('id_capacitacion',data.id_capacitacion);
             $('td:eq(10)', row).find('#persona_'+data.id_persona).data('borrado_capacitacion',data.borrado_capacitacion);
             $('td:eq(10)', row).find('#persona_'+data.id_persona).data('nombre',data.nombres+' '+data.apellido_paterno);
@@ -216,6 +217,7 @@ function llenarVista(data){
             $('td:eq(10)', row).find('#persona_'+data.id_persona).on('click',asignar);
 
             $('td:eq(10)', row).find('#seleccionarPersonas_'+data.id_persona).data('id_comuna',data.id_comuna_postulacion);
+            $('td:eq(10)', row).find('#seleccionarPersonas_'+data.id_persona).data('id_region',data.id_region_postulacion);
             $('td:eq(10)', row).find('#seleccionarPersonas_'+data.id_persona).data('id_capacitacion',data.id_capacitacion);
             $('td:eq(10)', row).find('#seleccionarPersonas_'+data.id_persona).data('borrado_capacitacion',data.borrado_capacitacion);
             $('td:eq(10)', row).find('#seleccionarPersonas_'+data.id_persona).on('click',asignarVarios);
@@ -1141,10 +1143,10 @@ function cargarComunas(id){
  
     $('#selectComuna').html('')
     $('#selectComuna').append('<option value="-1" selected="">Elegir...</option>') 
-    for(h = 0; h < regiones_postulante.length; h++){
-        if(regiones_postulante[h].id_region == id){
-            for(i = 0; i < regiones_postulante[h].comunas.length; i++){
-                $('#selectComuna').append('<option value="'+regiones_postulante[h].comunas[i].id_comuna+'">'+regiones_postulante[h].comunas[i].nombre+'</option>') 
+    for(h = 0; h < regiones.length; h++){
+        if(regiones[h].id_region == id){
+            for(i = 0; i < regiones[h].comunas.length; i++){
+                $('#selectComuna').append('<option value="'+regiones[h].comunas[i].id_comuna+'">'+regiones[h].comunas[i].nombre+'</option>') 
             }
         }
     }
@@ -1403,6 +1405,7 @@ function asignar(){
     localStorage.id_capacitacion = $(this).data('id_capacitacion') 
     localStorage.borrado_capacitacion = $(this).data('borrado_capacitacion') 
     localStorage.comuna = $(this).data('id_comuna') 
+    localStorage.region = $(this).data('id_region') 
     localStorage.id_persona = $(this).data('id_persona') 
 
     $('#div_personas').html('');
@@ -1412,8 +1415,7 @@ function asignar(){
     $('#telefonoPersona').html($(this).data('telefono'))
     
 
-    id =  $(this).data('id_comuna') 
-    console.log(capacitaciones)
+    id =  $(this).data('id_region') 
     if(capacitaciones[id] != undefined){
         $('#selectCapacitacion').append('<option value="-1" selected="">Elegir...</option>') 
         for(h = 0; h < capacitaciones[id].length; h++){
@@ -1440,12 +1442,13 @@ function asignarVarios(){
 
     localStorage.id_capacitacion = $(this).data('id_capacitacion') 
     localStorage.borrado_capacitacion = $(this).data('borrado_capacitacion') 
-    localStorage.comuna = $(this).data('id_comuna') 
+    localStorage.comuna = $(this).data('id_comuna')     
+    localStorage.region = $(this).data('id_region') 
  
     $('#div_personas').html('');
     $('#selectCapacitacionAll').html('')
 
-    id =  $(this).data('id_comuna') 
+    id =  $(this).data('id_region') 
 
     if(capacitaciones[id] != undefined){
         $('#selectCapacitacionAll').append('<option value="-1" selected="">Elegir...</option>') 
@@ -1486,7 +1489,7 @@ function verPersonal(){
             dataType:'text',
             data :{ 
                     id_usuario: JSON.parse(localStorage.user).id_usuario,
-                    id_comuna:  localStorage.comuna,
+                    id_region:  localStorage.region,
                     //id_persona:  localStorage.id_persona,
                     id_capacitacion:  $('#selectCapacitacionAll').val()
             },

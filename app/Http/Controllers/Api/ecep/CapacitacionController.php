@@ -105,12 +105,13 @@ class CapacitacionController extends Controller
         $listaAnidadaC=[];
         $cap = DB::table('rrhh.capacitacion')
                  ->leftJoin('core.comuna' , 'rrhh.capacitacion.id_comuna','=','core.comuna.id_comuna')
-                 ->select('rrhh.capacitacion.*')
+                 ->leftJoin('core.region' , 'core.comuna.id_region','=','core.region.id_region')
+                 ->select('rrhh.capacitacion.*','core.region.id_region')
                  ->orderBy('core.comuna.nombre','asc')
                  ->get();
 
         foreach ($cap as $key => $value) {
-            $listaAnidadaC[$value->id_comuna][] = $value;
+            $listaAnidadaC[$value->id_region][] = $value;
         }
 
         if($post['id_tipo_usuario'] == 1051){
@@ -152,7 +153,7 @@ class CapacitacionController extends Controller
 	        $personaP = DB::select("select DISTINCT 
 	                rrhh.persona.*, core.comuna.nombre as comuna, core.region.nombre as region, 
 	                infraestructura.zona.nombre as nombre_zona, core.region.orden_geografico,
-	                rrhh.capacitacion_persona.id_capacitacion_persona,rrhh.capacitacion_persona.id_capacitacion, rrhh.capacitacion.lugar, 
+	                rrhh.capacitacion_persona.id_capacitacion_persona,rrhh.capacitacion_persona.id_capacitacion, rrhh.capacitacion.lugar, core.region.id_region as id_region_postulacion,
 	                rrhh.capacitacion.fecha_hora, rrhh.capacitacion_persona.borrado as borrado_capacitacion 
 	                from rrhh.persona 
 	                inner join rrhh.persona_cargo on rrhh.persona.id_persona = rrhh.persona_cargo.id_persona 
@@ -172,7 +173,7 @@ class CapacitacionController extends Controller
                         and rrhh.persona.id_persona not in (select id_persona from rrhh.capacitacion_persona where estado != false)
 	                    and rrhh.persona_cargo.borrado = false
 					and zona.id_zona in (".implode($zonas,",").")
-	                GROUP BY rrhh.persona.id_persona,core.comuna.nombre,core.region.nombre, infraestructura.zona.nombre, rrhh.capacitacion_persona.id_capacitacion_persona, rrhh.capacitacion.lugar,
+	                GROUP BY rrhh.persona.id_persona,core.comuna.nombre,core.region.nombre, infraestructura.zona.nombre, rrhh.capacitacion_persona.id_capacitacion_persona, rrhh.capacitacion.lugar,core.region.id_region,
 	                rrhh.capacitacion.fecha_hora,core.region.orden_geografico
 	                ORDER BY infraestructura.zona.nombre asc, 
 	                    core.region.orden_geografico asc, 
@@ -227,7 +228,7 @@ class CapacitacionController extends Controller
                     ORDER BY infraestructura.zona.nombre asc, 
                         core.region.orden_geografico asc, 
                         core.comuna.nombre asc");
-            
+
             foreach ($personaCapacitadas as $index => $per) {
 
                 $personaCapacitadas[$index]->pruebas = isset($listaAnidadaPruebas[$per->id_capacitacion_persona])?$listaAnidadaPruebas[$per->id_capacitacion_persona]:null;
@@ -424,6 +425,8 @@ class CapacitacionController extends Controller
                     ->where('rrhh.capacitacion_persona.id_capacitacion','=',$post['id_capacitacion'])
                     ->where('rrhh.persona.estado_proceso','=', 'preseleccionado')
                     ->where('rrhh.capacitacion_persona.borrado','=',false)
+                    ->orderBy('rrhh.persona.nombres','asc')
+                    ->orderBy('rrhh.persona.apellido_paterno','asc')
                     ->get();
         foreach ($persona as $index => $per) {             
             $persona[$index]->capacitacion_prueba = isset($pruebas[$persona[$index]->id_capacitacion_persona]) ?
@@ -623,7 +626,7 @@ class CapacitacionController extends Controller
         //capacitaciones por cargo?
         $validacion = Validator::make($post, [
             'id_usuario' => 'required|int',
-            'id_comuna' => 'required|int',
+            'id_region' => 'required|int',
            // 'id_cargo' => 'required|int',
             'id_capacitacion' => 'required|int',
         ]); 
@@ -632,6 +635,7 @@ class CapacitacionController extends Controller
             return response()->json(array("resultado"=>"error","descripcion"=>$validacion->errors()), 422); 
         }
 
+        // rrhh.persona.id_comuna_postulacion = ".$post['id_comuna']."
         $personaP = DB::select("select DISTINCT rrhh.persona.nombres, rrhh.persona.apellido_paterno, rrhh.persona.apellido_materno, 
             rrhh.persona.id_persona, core.comuna.nombre as comuna,
             rrhh.capacitacion_persona.id_capacitacion, rrhh.capacitacion_persona.borrado as borrado_capacitacion, rrhh.persona.estado_proceso
@@ -639,9 +643,10 @@ class CapacitacionController extends Controller
         left join rrhh.persona_cargo on rrhh.persona.id_persona = rrhh.persona_cargo.id_persona 
         left join rrhh.cargo on rrhh.persona_cargo.id_cargo = rrhh.cargo.id_cargo 
         left join core.comuna on rrhh.persona.id_comuna_postulacion = core.comuna.id_comuna 
+        left join core.region on core.comuna.id_region = core.region.id_region 
         left join rrhh.capacitacion_persona on rrhh.persona.id_persona = rrhh.capacitacion_persona.id_persona 
         left join rrhh.capacitacion on rrhh.capacitacion_persona.id_capacitacion = rrhh.capacitacion.id_capacitacion 
-        where rrhh.persona.id_comuna_postulacion = ".$post['id_comuna']."
+        where core.region.id_region = ".$post['id_region']."
             and rrhh.persona.borrado = false
             and rrhh.persona.modificado = true
             and rrhh.persona.estado_proceso = 'preseleccionado'
