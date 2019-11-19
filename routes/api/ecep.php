@@ -10,8 +10,6 @@ Route::get('sqltotable' , 'Api\ecep\SalaController@sqlToTable');
 Route::get('sincroniza-estimacion' , 'Api\ecep\SalaController@sincronizaEstimacion');	
 Route::get('inscritos-dia' , 'Api\ecep\SedeController@inscritosDia');	
 
-//Route::middleware('auth:api')->post('sede/lista' , 'Api\ecep\SedeController@lista');	
-
 //SEDE
 	Route::middleware('auth:api')->post('web/sede/lista' , 'Api\ecep\SedeController@lista');	
 	Route::middleware('auth:api')->post('web/sede/lista-sedes-comuna' , 'Api\ecep\SedeController@listaSedeComuna');	
@@ -25,9 +23,6 @@ Route::get('inscritos-dia' , 'Api\ecep\SedeController@inscritosDia');
 	Route::middleware('auth:api')->post('web/sala/guardar' , 'Api\ecep\SalaController@guardar');
 	Route::middleware('auth:api')->post('web/sala/modificar' , 'Api\ecep\SalaController@modificar');
 
-//EVALUADO
-	Route::middleware('auth:api')->post('web/evaluado/lista' , 'Api\ecep\EvaluadoController@lista');
-
 //CENTRO OPERACIONES
 	Route::middleware('auth:api')->post('web/centro/lista' , 'Api\ecep\CentroController@lista');
 	Route::middleware('auth:api')->post('web/centro/guardar' , 'Api\ecep\CentroController@guardar');
@@ -39,6 +34,9 @@ Route::get('inscritos-dia' , 'Api\ecep\SedeController@inscritosDia');
 	Route::middleware('auth:api')->post('web/centro/centros' , 'Api\ecep\CentroController@centros');
 	Route::middleware('auth:api')->post('web/centro/modificarEncargadoCentro' , 'Api\ecep\CentroController@modificarEncargadoCentro');
 	Route::middleware('auth:api')->post('web/centro/listaMonitoreo' , 'Api\ecep\CentroController@listaMonitoreo');
+
+//EVALUADO
+	Route::middleware('auth:api')->post('web/evaluado/lista' , 'Api\ecep\EvaluadosController@lista');
 
 //RRHH
 	Route::middleware('auth:api')->post('web/personal/lista' , 'Api\ecep\PersonalController@lista');
@@ -62,6 +60,11 @@ Route::get('inscritos-dia' , 'Api\ecep\SedeController@inscritosDia');
 	Route::middleware('auth:api')->post('web/capacitacion/modificarPersona' , 'Api\ecep\CapacitacionController@modificarPersona');
 	Route::middleware('auth:api')->post('web/capacitacion/guardarPersona' ,'Api\ecep\CapacitacionController@guardarPersona');
 	Route::middleware('auth:api')->post('web/capacitacion/evaluacion' ,'Api\ecep\CapacitacionController@evaluacion');
+	//Route::middleware('auth:api')->post('web/capacitacion/evaluacion' ,'Api\ecep\CapacitacionController@evaluacion');
+	Route::middleware('auth:api')->post('web/capacitacion/lista-regional' ,'Api\ecep\CapacitacionController@listaRegional');
+	Route::get('web/capacitacion/confirma/{idCapPersona}' ,'Api\ecep\CapacitacionController@infoConfirmacion');
+	Route::post('web/capacitacion/guarda-confirmacion' ,'Api\ecep\CapacitacionController@guardarConfirmacion');
+	
 //ASIGNACION
 	Route::middleware('auth:api')->post('web/asignacion/lista' , 'Api\ecep\AsignacionController@lista');
 	Route::middleware('auth:api')->post('web/asignacion/listaCoordinador' , 'Api\ecep\AsignacionController@listaCoordinador');

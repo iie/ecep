@@ -17,6 +17,14 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
+require realpath(__DIR__ . '/../../../../..').'/vendor/phpmailer/phpmailer/src/Exception.php';
+require realpath(__DIR__ . '/../../../../..').'/vendor/phpmailer/phpmailer/src/PHPMailer.php';
+require realpath(__DIR__ . '/../../../../..').'/vendor/phpmailer/phpmailer/src/SMTP.php';
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
+
 class CapacitacionController extends Controller
 {
      
@@ -179,7 +187,7 @@ class CapacitacionController extends Controller
 	                    core.region.orden_geografico asc, 
 	                    core.comuna.nombre asc");
 
-	        $listaCapacitaciones = DB::select("select rrhh.capacitacion.*, core.comuna.nombre as comuna, core.region.nombre as region, rrhh.persona.nombres,
+	        $listaCapacitaciones = DB::select("select rrhh.capacitacion.*, core.comuna.nombre as comuna, core.region.nombre as region, core.region.id_region, rrhh.persona.nombres,
         				 rrhh.persona.apellido_paterno, rrhh.persona.apellido_materno 
 					from rrhh.capacitacion 
 					left join rrhh.persona on rrhh.capacitacion.id_relator = rrhh.persona.id_persona 
@@ -294,6 +302,270 @@ class CapacitacionController extends Controller
         return response()->json($datos);    
     }
 
+    public function listaRegional(Request $request)
+    {
+        
+        $post = $request->all();    
+
+        $validacion = Validator::make($post, [
+            'id_usuario' => 'required|int', 
+            'id_cargo' => 'required|int',
+            //'id_persona' => 'int',
+            'id_tipo_usuario' => 'int',
+
+        ]); 
+
+        if ($validacion->fails()) {
+            return response()->json(array("resultado"=>"error","descripcion"=>$validacion->errors()), 422); 
+        }
+        
+        $sexo =TablaMaestra::select('id_tabla_maestra','descripcion_larga') 
+            ->where('discriminador','=','28')->get();
+        foreach ($sexo as $s) {          
+            $sexos[$s->id_tabla_maestra] = $s->descripcion_larga;
+        }
+        $estadoCivil =TablaMaestra::select('id_tabla_maestra','descripcion_larga') 
+            ->where('discriminador','=','29')->get();
+        foreach ($estadoCivil as $estado) {          
+            $civil[$estado->id_tabla_maestra] = $estado->descripcion_larga;
+        }
+        $institucion = Institucion::select('institucion','id_institucion')->orderBy('institucion')->get();
+        foreach ($institucion as $ins) {             
+            $inst[$ins->id_institucion] = $ins->institucion;
+        }
+
+
+
+        $reg = DB::select("SELECT r.numero as numero_region, r.nombre as nombre_region , co.id_comuna, co.nombre
+                        from core.region r
+                        INNER JOIN core.comuna co ON (r.id_region = co.id_region)
+                        where r.numero != '-1'
+                       order by r.orden_geografico, co.nombre");
+
+        foreach ($reg as $key => $value) {
+            $listaAnidada[$value->numero_region][] = $value;
+        }
+
+        foreach ($listaAnidada as $id_region => $comunas) {
+            $region["id_region"]  = $comunas[0]->numero_region;
+            $region["nombre"]  = $comunas[0]->nombre_region;
+            $_comunas = array();
+            foreach ($comunas as $value) {
+                $_comunas[] = $value;
+            }
+            $region["comunas"]  = $_comunas;
+            $listaFinal[] = $region;
+        }
+
+        $regPostulacion = DB::select("SELECT r.numero as numero_region, r.nombre as nombre_region , co.id_comuna, co.nombre
+                        from core.region r
+                        INNER JOIN core.comuna co ON (r.id_region = co.id_region)
+                        where r.numero != '-1'
+                        and co.id_comuna in (select id_comuna from infraestructura.estimacion)
+                        order by r.orden_geografico, co.nombre");
+
+        foreach ($regPostulacion as $key => $value) {
+            $listaAnidadaPostulacion[$value->numero_region][] = $value;
+        }
+
+        foreach ($listaAnidadaPostulacion as $id_region => $comunas) {
+            $region2["id_region"]  = $comunas[0]->numero_region;
+            $region2["nombre"]  = $comunas[0]->nombre_region;
+            $_comunas = array();
+            foreach ($comunas as $value) {
+                $_comunas[] = $value;
+            }
+            $region2["comunas"]  = $_comunas;
+            $listaFinalPostulante[] = $region2;
+        }
+
+        $listaAnidadaC=[];
+        $cap = DB::table('rrhh.capacitacion')
+                 ->leftJoin('core.comuna' , 'rrhh.capacitacion.id_comuna','=','core.comuna.id_comuna')
+                 ->leftJoin('core.region' , 'core.comuna.id_region','=','core.region.id_region')
+                 ->select('rrhh.capacitacion.*','core.region.id_region')
+                 ->orderBy('core.comuna.nombre','asc')
+                 ->get();
+
+        foreach ($cap as $key => $value) {
+            $listaAnidadaC[$value->id_region][] = $value;
+        }
+
+ 
+
+        $cargo = DB::table('rrhh.persona_cargo')
+                ->leftJoin('infraestructura.zona_region','rrhh.persona_cargo.id_persona_cargo','=','infraestructura.zona_region.id_coordinador')
+                ->leftJoin('infraestructura.zona','infraestructura.zona_region.id_zona','=','infraestructura.zona.id_zona')
+                ->where('rrhh.persona_cargo.id_persona',$post['id_persona'])
+                ->where('rrhh.persona_cargo.id_cargo',$post['id_cargo'])
+                ->get();
+
+        $zonas = array();
+        foreach($cargo as $cargoAux){
+            $zonas[] = $cargoAux->id_zona;
+        }
+   
+                    
+
+        $personaP = array(); 
+        /*$relatores = array(); */
+        $listaCapacitaciones = array(); 
+        $listaAnidadaR = []; 
+        $finalRegCapacitaciones = [];
+        if(count($zonas) > 0){
+            
+            //todas las personas que ya están en una capacitación no se pueden meter a otra capacitación a menos que hayan estado en una capacitación pero hayan reprobado
+            
+            
+            
+            //ahora de todas las personas que confirmacion asistencia los que pueden volver a ser convocados son los rechazados
+            
+            
+            $personaP = DB::select("select DISTINCT 
+                    rrhh.persona.*, core.comuna.nombre as comuna, core.region.nombre as region, 
+                    infraestructura.zona.nombre as nombre_zona, core.region.orden_geografico,
+                    rrhh.capacitacion_persona.id_capacitacion_persona,rrhh.capacitacion_persona.id_capacitacion, rrhh.capacitacion.lugar, core.region.id_region as id_region_postulacion,
+                    rrhh.capacitacion.fecha_hora, rrhh.capacitacion_persona.borrado as borrado_capacitacion 
+                    from rrhh.persona 
+                    inner join rrhh.persona_cargo on rrhh.persona.id_persona = rrhh.persona_cargo.id_persona 
+                    left join rrhh.cargo on rrhh.persona_cargo.id_cargo = rrhh.cargo.id_cargo 
+                    left join core.comuna on rrhh.persona.id_comuna_postulacion = core.comuna.id_comuna 
+                    left join core.region on core.comuna.id_region = core.region.id_region 
+                    left join infraestructura.zona_region on core.region.id_region = infraestructura.zona_region.id_region 
+                    left join infraestructura.zona on infraestructura.zona_region.id_zona = infraestructura.zona.id_zona 
+                    left join rrhh.capacitacion_persona on rrhh.persona.id_persona = rrhh.capacitacion_persona.id_persona 
+                    left join rrhh.capacitacion on rrhh.capacitacion_persona.id_capacitacion = rrhh.capacitacion.id_capacitacion 
+                    where  rrhh.cargo.id_cargo != 1003
+                        and rrhh.cargo.id_cargo != 1004 
+                        and rrhh.cargo.id_cargo != 13 
+                        and rrhh.persona.borrado = false
+                        and rrhh.persona.modificado = true 
+                        and rrhh.persona.estado_proceso = 'preseleccionado'
+                        and rrhh.persona.id_persona not in (select id_persona from rrhh.capacitacion_persona where estado != false)
+                        and rrhh.persona_cargo.borrado = false
+                    and zona.id_zona in (".implode($zonas,",").")
+                    and infraestructura.zona_region.id_coordinador = ". $cargo[0]->id_persona_cargo."
+                    GROUP BY rrhh.persona.id_persona,core.comuna.nombre,core.region.nombre, infraestructura.zona.nombre, rrhh.capacitacion_persona.id_capacitacion_persona, rrhh.capacitacion.lugar,core.region.id_region,
+                    rrhh.capacitacion.fecha_hora,core.region.orden_geografico
+                    ORDER BY infraestructura.zona.nombre asc, 
+                        core.region.orden_geografico asc, 
+                        core.comuna.nombre asc");
+
+            $listaCapacitaciones = DB::select("select rrhh.capacitacion.*, core.comuna.nombre as comuna, core.region.nombre as region, core.region.id_region, rrhh.persona.nombres,
+                         rrhh.persona.apellido_paterno, rrhh.persona.apellido_materno 
+                    from rrhh.capacitacion 
+                    left join rrhh.persona on rrhh.capacitacion.id_relator = rrhh.persona.id_persona 
+                    left join core.comuna on rrhh.capacitacion.id_comuna = core.comuna.id_comuna 
+                    left join core.region on core.comuna.id_region = core.region.id_region 
+                    left join infraestructura.zona_region on core.region.id_region = infraestructura.zona_region.id_region 
+                    left join infraestructura.zona on infraestructura.zona_region.id_zona = infraestructura.zona.id_zona 
+                    where zona.id_zona in (".implode($zonas,",").")
+                    order by core.region.orden_geografico asc, core.comuna.nombre asc");
+
+
+            $pruebas = DB::select("SELECT rrhh.capacitacion_prueba.*,rrhh.capacitacion_persona.id_capacitacion_persona,rrhh.capacitacion.id_relator
+                    FROM rrhh.capacitacion_prueba,rrhh.capacitacion,rrhh.capacitacion_persona
+                    where rrhh.capacitacion_prueba.id_capacitacion_persona = rrhh.capacitacion_persona.id_capacitacion_persona
+                    and rrhh.capacitacion_persona.id_capacitacion = rrhh.capacitacion.id_capacitacion 
+                    order by rrhh.capacitacion_prueba.prueba asc");
+
+            foreach ($pruebas as $key => $value) {
+                    $listaAnidadaPruebas[$value->id_capacitacion_persona][] = $value;
+            }
+
+            $personaCapacitadas = DB::select("select DISTINCT 
+                    rrhh.persona.*, core.comuna.nombre as comuna, core.region.nombre as region, 
+                    infraestructura.zona.nombre as nombre_zona, core.region.orden_geografico,
+                    rrhh.capacitacion_persona.id_capacitacion_persona,rrhh.capacitacion_persona.id_capacitacion, rrhh.capacitacion.lugar, 
+                    rrhh.capacitacion.fecha_hora, rrhh.capacitacion_persona.borrado as borrado_capacitacion 
+                    from rrhh.persona 
+                    inner join rrhh.persona_cargo on rrhh.persona.id_persona = rrhh.persona_cargo.id_persona 
+                    left join rrhh.cargo on rrhh.persona_cargo.id_cargo = rrhh.cargo.id_cargo 
+                    left join core.comuna on rrhh.persona.id_comuna_postulacion = core.comuna.id_comuna 
+                    left join core.region on core.comuna.id_region = core.region.id_region 
+                    left join infraestructura.zona_region on core.region.id_region = infraestructura.zona_region.id_region 
+                    left join infraestructura.zona on infraestructura.zona_region.id_zona = infraestructura.zona.id_zona 
+                    left join rrhh.capacitacion_persona on rrhh.persona.id_persona = rrhh.capacitacion_persona.id_persona 
+                    left join rrhh.capacitacion on rrhh.capacitacion_persona.id_capacitacion = rrhh.capacitacion.id_capacitacion 
+                    where  rrhh.cargo.id_cargo != 1003
+                        and rrhh.cargo.id_cargo != 1004 
+                        and rrhh.cargo.id_cargo != 13 
+                        and rrhh.persona.borrado = false
+                        and rrhh.persona.modificado = true 
+                        and rrhh.persona.estado_proceso = 'capacitado'
+                        and rrhh.persona_cargo.borrado = false
+                    and zona.id_zona in (".implode($zonas,",").")
+                    GROUP BY rrhh.persona.id_persona,core.comuna.nombre,core.region.nombre, infraestructura.zona.nombre, rrhh.capacitacion_persona.id_capacitacion_persona, rrhh.capacitacion.lugar,
+                    rrhh.capacitacion.fecha_hora,core.region.orden_geografico
+                    ORDER BY infraestructura.zona.nombre asc, 
+                        core.region.orden_geografico asc, 
+                        core.comuna.nombre asc");
+
+            foreach ($personaCapacitadas as $index => $per) {
+
+                $personaCapacitadas[$index]->pruebas = isset($listaAnidadaPruebas[$per->id_capacitacion_persona])?$listaAnidadaPruebas[$per->id_capacitacion_persona]:null;
+            }   
+
+
+            $regCapacitaciones = DB::select("SELECT r.numero as numero_region, r.nombre as nombre_region , co.id_comuna, co.nombre
+                        from core.region r
+                        INNER JOIN core.comuna co ON (r.id_region = co.id_region)
+                        INNER JOIN infraestructura.zona_region zr ON (r.id_region = zr.id_region)
+                        INNER JOIN infraestructura.zona z ON (zr.id_zona = z.id_zona)
+                        where r.numero != '-1' 
+                            and z.id_zona in (".implode($zonas,",").")
+                        order by r.orden_geografico, co.nombre");
+
+            foreach ($regCapacitaciones as $key => $value) {
+                $listaAnidadaCap[$value->numero_region][] = $value;
+            }
+
+            foreach ($listaAnidadaCap as $id_region => $comunas) {
+                $region["id_region"]  = $comunas[0]->numero_region;
+                $region["nombre"]  = $comunas[0]->nombre_region;
+                $_comunas = array();
+                foreach ($comunas as $value) {
+                    $_comunas[] = $value;
+                }
+                $region["comunas"]  = $_comunas;
+                $finalRegCapacitaciones[] = $region;
+            }
+
+
+            $relatores = DB::select("select rrhh.persona.nombres, rrhh.persona.apellido_paterno, rrhh.persona.apellido_materno, rrhh.persona.id_persona, core.comuna.id_comuna, 
+                core.comuna.nombre as comuna, core.region.nombre as region, rrhh.persona.run 
+                from rrhh.persona 
+                left join core.usuario on rrhh.persona.id_usuario = core.usuario.id_usuario 
+                left join core.comuna on rrhh.persona.id_comuna_postulacion = core.comuna.id_comuna 
+                left join core.region on core.comuna.id_region = core.region.id_region 
+                left join infraestructura.zona_region on core.region.id_region = infraestructura.zona_region.id_region 
+                left join infraestructura.zona on infraestructura.zona_region.id_zona = infraestructura.zona.id_zona 
+                where core.usuario.id_tipo_usuario = 1052
+                    and rrhh.persona.borrado = false 
+                    and zona.id_zona in (".implode($zonas,",").")
+                order by core.comuna.nombre asc");
+            /*
+            foreach ($relatores as $key => $value) {
+                $listaAnidadaR[$value->id_comuna][] = $value;
+            }*/
+
+        }
+ 
+        $datos['personal_postulacion'] = $personaP;
+        $datos['lista_capacitados'] = $personaCapacitadas;
+        $datos['regiones'] = $listaFinal;
+        $datos['regiones_postulante'] = $listaFinalPostulante;
+        $datos['regiones_capacitacion'] = $finalRegCapacitaciones;
+        $datos['lista_reladores'] = $relatores;
+        /*$datos['relatores'] = $listaAnidadaR;*/
+        $datos['capacitaciones'] = $listaAnidadaC;
+        $datos['lista_capacitacion'] = $listaCapacitaciones;
+        $datos['sexo'] = $sexo;
+        $datos['estadoCivil'] = $estadoCivil;
+        $datos['institucion'] = $institucion ;
+        return response()->json($datos);    
+    }
+
     public function modificarCapacitacion(Request $request){
 
         $post = $request->all();
@@ -350,7 +622,7 @@ class CapacitacionController extends Controller
         $capacitacion->lugar = $post['lugar'];
         $capacitacion->fecha_hora = $post['fecha'];
         $capacitacion->observacion = isset($post['observacion']) ? $post['observacion'] : null;
-       //  arreglo($capacitacion);exit();
+        $capacitacion->capacidad = $post['capacidad'];
         DB::beginTransaction();
         try{
            $capacitacion->save();
@@ -439,6 +711,7 @@ class CapacitacionController extends Controller
             return response()->json($persona);  
         }
     }
+
     public function obtenerPersona(Request $request){
 
         $post = $request->all();    
@@ -636,8 +909,8 @@ class CapacitacionController extends Controller
         }
 
         // rrhh.persona.id_comuna_postulacion = ".$post['id_comuna']."
-        $personaP = DB::select("select DISTINCT rrhh.persona.nombres, rrhh.persona.apellido_paterno, rrhh.persona.apellido_materno, 
-            rrhh.persona.id_persona, core.comuna.nombre as comuna,
+        $personaP = DB::select("select DISTINCT rrhh.persona.run, rrhh.persona.nombres, rrhh.persona.apellido_paterno, rrhh.persona.apellido_materno, 
+            rrhh.persona.id_persona, core.comuna.nombre as comuna, core.region.id_region,core.region.nombre as region, core.region.orden_geografico,
             rrhh.capacitacion_persona.id_capacitacion, rrhh.capacitacion_persona.borrado as borrado_capacitacion, rrhh.persona.estado_proceso
         from rrhh.persona 
         left join rrhh.persona_cargo on rrhh.persona.id_persona = rrhh.persona_cargo.id_persona 
@@ -654,8 +927,8 @@ class CapacitacionController extends Controller
             and (rrhh.capacitacion_persona.borrado is null or rrhh.capacitacion_persona.borrado = false)
             and (rrhh.capacitacion_persona.id_capacitacion is null 
             or rrhh.capacitacion_persona.id_capacitacion = ".$post['id_capacitacion'].")
-        GROUP BY rrhh.persona.id_persona, rrhh.capacitacion_persona.id_capacitacion, comuna, borrado_capacitacion 
-        order by comuna asc");
+        GROUP BY rrhh.persona.id_persona, rrhh.capacitacion_persona.id_capacitacion, comuna, borrado_capacitacion ,core.region.id_region 
+        order by core.region.orden_geografico asc,core.comuna.nombre asc, rrhh.persona.nombres asc,rrhh.persona.apellido_paterno asc");
 
         $datos['personal_capacitacion'] = $personaP;
         return response()->json($datos);    
@@ -675,8 +948,6 @@ class CapacitacionController extends Controller
             return response()->json(array("resultado"=>"error","descripcion"=>$validacion->errors()), 422); 
         }
 
-
-
         if(isset($post['personal_capacitacion'])){
             foreach ($post['personal_capacitacion'] as $personal) {
                 if($post['id_capacitacion'] != -1){
@@ -685,7 +956,12 @@ class CapacitacionController extends Controller
                                     ->first();
              
                     if(isset($capacitacionPersona)){
-          				
+                        $cap = Capacitacion::find($post['id_capacitacion']);
+                        $persona = Persona::find($capacitacionPersona->id_persona);
+                        $nombre_completo = $persona->nombres . " " . $persona->apellido_paterno;
+                        $correo = $persona->email;
+                        $lugar = $cap->lugar;
+                        $fecha_hora = $cap->fecha_hora;
                         if($personal['asignar'] == 1){
                             $capacitacionPersona->borrado = false;
                         }else{
@@ -694,7 +970,7 @@ class CapacitacionController extends Controller
 
                         try{
                             $capacitacionPersona->save();
-                            //arreglo($capacitacionPersona);exit();
+                            $this->enviarCorreoConfirmacion($correo, $nombre_completo, $fecha_hora, $lugar, $capacitacionPersona->id_capacitacion_persona);
                         }catch (\Exception $e){
                             DB::rollback();
                             return response()->json(['resultado'=>'error','descripcion'=>'Error al modificar la asignación. ()'. $e->getMessage()]);
@@ -704,9 +980,16 @@ class CapacitacionController extends Controller
                         $newCapacitacionPersona = new CapacitacionPersona;
                         $newCapacitacionPersona->id_capacitacion = $post['id_capacitacion'];
                         $newCapacitacionPersona->id_persona = $personal['id_persona'];
-
+                        // Datos para envío de correo
+                        $cap = Capacitacion::find($post['id_capacitacion']);
+                        $persona = Persona::find($personal['id_persona']);
+                        $nombre_completo = $persona->nombres . " " . $persona->apellido_paterno;
+                        $correo = $persona->email;
+                        $lugar = $cap->lugar;
+                        $fecha_hora = $cap->fecha_hora;
                         try{
                             $newCapacitacionPersona->save();
+                            $this->enviarCorreoConfirmacion($correo, $nombre_completo, $fecha_hora, $lugar, $newCapacitacionPersona->id_capacitacion_persona);
                         }catch (\Exception $e){
                             DB::rollback();
                             return response()->json(['resultado'=>'error','descripcion'=>'Error al guardar asignación. ()'. $e->getMessage()]);
@@ -726,13 +1009,9 @@ class CapacitacionController extends Controller
                 }
  
             }
-
             DB::commit();
         	return response()->json(["resultado"=>"ok","descripcion"=>"Se ha guardado con exito"]);
         }
-
-          
-
     }
 
     public function evaluacion(Request $request)
@@ -747,8 +1026,6 @@ class CapacitacionController extends Controller
         if ($validacion->fails()) {
             return response()->json(array("resultado"=>"error","descripcion"=>$validacion->errors()), 422); 
         }
-
-
 
         if(isset($post['evaluado'])){
             foreach ($post['evaluado'] as $evaluado) {
@@ -790,8 +1067,6 @@ class CapacitacionController extends Controller
 						$_p->estado_proceso = 'preseleccionado';	
 					}
 					$_p->save();
-					
-					
 
                 }catch (\Exception $e){
                     DB::rollback();
@@ -819,9 +1094,8 @@ class CapacitacionController extends Controller
                         DB::rollback();
                         return response()->json(['resultado'=>'error','descripcion'=>'Error al modificar la Evaluación. ()'. $e->getMessage()]);
                     }
-           
                 }else{
-       
+
                     try{
                         $capacitacionPrueba = new CapacitacionPrueba;
                         //$capacitacionPrueba->nota = $evaluado['nota_psicologica'];
@@ -849,14 +1123,91 @@ class CapacitacionController extends Controller
                 }
  
             }
-
             DB::commit();
             return response()->json(["resultado"=>"ok","descripcion"=>"Se ha guardado con exito"]);
         }
-
-          
-
     }
+
+    public function infoConfirmacion($idCapPersona)
+    {
+        $cap = CapacitacionPersona::find($idCapPersona);
+        $pers = Persona::find($cap->id_persona);
+        $nombre = $pers->nombres . " " . $pers->apellido_paterno;
+        return response()->json(["resultado"=>"ok","descripcion"=>$nombre]);
+    }
+
+    public function guardarConfirmacion(Request $request)
+    {
+        // web/capacitacion/guarda-confirmacion
+        $post = $request->all();    
+        $validacion = Validator::make($post, [
+            'id_capacitacion_persona' => 'required|int',
+            'confirma' => 'required|int',
+        ]); 
+
+        $cap = CapacitacionPersona::find($post["id_capacitacion_persona"]);
+        $cap->confirma_asistencia = $post["confirma"];
+        $cap->save();
+        return response()->json(["resultado"=>"ok","descripcion"=>"Respuesta guardada"]);
+    }
+
+    function enviarCorreoConfirmacion($correo, $nombre, $fecha, $direccion, $idCapPersona){
+        $url = url()->current();
+        $aux_ruta = explode("//", $url);
+        $aux2_ruta = explode(".iie.cl", $aux_ruta[1]);
+        $ruta = $aux2_ruta[0];
+
+        $hoy = getdate();
+        if($fecha < $hoy){
+            $correo = 'mesa_endfid_2019@iie.cl';
+        }
+        $path_files = realpath('') . '/archivos/';
+
+        $subject = "Postulación - Evaluación Conocimientos Específicos y Pedagógicos";
+        $html = "
+        <p>Estimado/a " . $nombre . " </p>
+        <p>Usted ha sido preseleccionado/a para participar en la Evaluación de Conocimientos Específicos y Pedagógicos, ECEP 2019.</p>
+        <p>Le informamos que está cordialmente invitado a la Capacitación de carácter obligatorio para postulantes a ECEP 2019.</p>
+        <p>     Fecha/Hora: <b>" . $fecha . "</b></p>
+        <p>     Lugar: <b>" . $direccion . "</b></p>
+        <p>Esta tiene una duración aproximada de 4 horas y finaliza con 2 evaluaciones complementarias al proceso de selección.
+        <p>Es importante que lea el manual de aplicación adjunto por si surge alguna duda respecto al proceso y pueda resolverla en la capacitación, cabe mencionar que este es de conocimiento general independiente al Rol al cual esté postulando. Adjuntamos también un acuerdo de confidencialidad a modo informativo y de lectura previa, el cual debe firmar el día de la capacitación.</p>
+        <p>Le sugerimos que lleve lápiz y papel para que pueda tomar notas.</p>
+        <p>Por favor, confirme su asistencia en el siguiente enlace: https://".$ruta.".iie.cl/public/web_ecep/confirma_capacitacion.html?idCapPersona=".$idCapPersona."</p>
+		<br>
+		<p><b>Atentamente</b></p>
+        <p><b>Equipo de Aplicación ECEP 2019</b></p>";
+        
+        $mail = new PHPMailer(true); 
+
+		try {
+			$mail->isSMTP(); // tell to use smtp
+			$mail->CharSet = "utf-8"; // set charset to utf8
+			// $mail->SMTPDebug = 0;
+			// $mail->Debugoutput = 'html';
+
+			$mail->SMTPSecure = "ssl"; // tls or ssl
+			$mail->SMTPAuth = true;  // use smpt auth
+			$mail->Host = "mail.smtp2go.com"; 
+			$mail->Port = 443;//2525; //443; 
+			$mail->Username = "postulaciones@ecep2019.iie.cl";
+			$mail->Password = "MXA5cXkzdzJwcWZp";
+			$mail->setFrom("postulaciones@ecep2019.iie.cl", "ECEP");
+			$mail->Subject = $subject;
+			$mail->MsgHTML($html);
+			$mail->addAddress($correo, $nombre);
+            $mail->addBCC("alberto.paillao@iie.cl", "Alberto Paillao");
+            $mail->addAttachment($path_files."Acuerdo confidencialidad POSTULANTE ECEP s.f.pdf");
+            $mail->addAttachment($path_files."Manual aplicación 2019_2410.pdf");
+			$mail->send();
+		} catch (phpmailerException $e) {
+			return;
+		} catch (Exception $e) {
+			return;			
+		}
+		return true;
+    }
+
 }
 
 
