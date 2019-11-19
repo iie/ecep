@@ -200,7 +200,10 @@ examinador = 0;
 examinadorap = 0;
 anfitrion = 0;
 
+
+
 function llenarVista(data, data2, data3) {
+    
     $('#filtros-postulacion').empty();
     if ($.fn.dataTable.isDataTable('#table-postulacion')) {
         $('#table-postulacion').DataTable().destroy();
@@ -209,14 +212,24 @@ function llenarVista(data, data2, data3) {
 
     trData = '';
     nro = 1;
+    var requeridos_totales=0;
+    var requeridos_totalesPer=0;
     for (var j = 0; j < data.length; j++) {
         for (var k = 0; k < data[j]["data_region"].length; k++) {
             if ($("#select-view").val() == 1) {
+                var comunaP= data[j]["data_region"][k];
                 var req = data[j]["data_region"][k].data_comuna.requeridos != null ? data[j]["data_region"][k].data_comuna.requeridos : 0
                 var sum = data[j]["data_region"][k].data_comuna.reclutado + data[j]["data_region"][k].data_comuna.capacitado + data[j]["data_region"][k].data_comuna.seleccionado + data[j]["data_region"][k].data_comuna.contratado
                 var porcentaje = data[j]["data_region"][k].data_comuna.postulante * 100;
                 porcentaje = req == 0 ? 0 : porcentaje / req;
                 var conDecimal = porcentaje.toFixed(0);
+                requeridos_totalesPer+= req
+
+                arrayFinal = {detalle: "string", fechaDoc: "date", fechaPag: "date", montoDecl: "number", montoTotDoc: "number"}
+
+                //console.log(comunaP);
+
+                //document.getElementsByTagName("body")[0].innerHTML="<button onclick='modal("+ JSON.stringify(arrayFinal) +")'>funcion modal()</button>";
 
                 trData += '<tr>';
                 trData += '<td style="text-align:center">' + nro + '</td>'
@@ -229,6 +242,7 @@ function llenarVista(data, data2, data3) {
                 trData += '<td style="text-align:center">' + data[j]["data_region"][k].data_comuna.capacitado + '</td>'
                 trData += '<td style="text-align:center">' + data[j]["data_region"][k].data_comuna.seleccionado + '</td>'
                 trData += '<td style="text-align:center">' + data[j]["data_region"][k].data_comuna.contratado + '</td>'
+                //trData += "<td style='text-align:center' id='buttonComuna_"+nro+"'><button type='button' id='comuna_"+data[j]["data_region"][k].comuna+"' onclick='verComuna("+ JSON.stringify(comunaP) +")'  class='btn btn-volver' style='min-width: 89px;''>Ver</button></td>"
                 trData += '</tr>';
                 nro++;
             }
@@ -246,7 +260,8 @@ function llenarVista(data, data2, data3) {
                 var porcentaje = sum * 100;
                 porcentaje = sumrquerido == 0 ? 0 : porcentaje / sumrquerido;
                 var conDecimal = porcentaje.toFixed(0);
-
+                var comuna1= data[j]["data_region"][k];
+                requeridos_totales+=sumrquerido
                 trData += '<tr>';
                 trData += '<td style="text-align:center">' + nro + '</td>'
                 trData += '<td>' + data[j]["region"] + '</td>'
@@ -258,26 +273,18 @@ function llenarVista(data, data2, data3) {
                 trData += '<td style="text-align:center">' + data[j]["data_region"][k].data_comuna.Examinador + '</td>'
                 trData += '<td style="text-align:center">' + data[j]["data_region"][k].data_comuna.examinador_de_apoyo + '</td>'
                 trData += '<td style="text-align:center">' + data[j]["data_region"][k].data_comuna.anfitrion + '</td>'
+                //trData += "<td style='text-align:center' id='buttonComuna1_"+nro+"'><button type='button' id='comuna_"+data[j]["data_region"][k].comuna+"' onclick='verComuna("+ JSON.stringify(comuna1) +")'  class='btn btn-volver' style='min-width: 89px;''>Ver</button></td>"
                 trData += '</tr>';
                 nro++;
             }
         }
     }
+    
 
     $('#lista-postulacion').append(trData);
-
+    console.log(requeridos_totales)
     var tablaD = $("#table-postulacion").DataTable({
         dom: "",
-        buttons: [
-            {
-                extend: 'excel',
-                title: 'Postulantes',
-                exportOptions: {
-                    columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26],
-                }
-            }
-        ],
-
         lengthMenu: [[10, 15, 20, -1], [10, 15, 20, "Todos"]],
         language: spanishTranslation,
         lengthChange: true,
@@ -291,6 +298,7 @@ function llenarVista(data, data2, data3) {
         responsive: true,
 
         "rowCallback": function (row, data) {
+
             supervisor++;
         },
 
@@ -345,10 +353,14 @@ function llenarVista(data, data2, data3) {
     });
 
     if ($("#select-view").val() == 1) {
+        //grafico(requeridos_totalesPer,data2.reclutado + data2.seleccionado + data2.capacitado + data2.contratado)
+        grafico1Barras(requeridos_totalesPer,data2.postulante,data2.seleccionado,data2.contratado)
+        //$("#change_accion").hide();
         $("#clear-filtros1").hide();
         $("#change_post").hide();
         for (var az = 0; az < nro; az++) {
             $("#supervisor_" + az).hide();
+            //$("#buttonComuna_" + az).hide();
         }
         $('#total_supervisor').html(data2.postulante)
         $('#total_capacitados').html(data2.capacitado)
@@ -357,10 +369,15 @@ function llenarVista(data, data2, data3) {
         $('#ttotal').html(data2.reclutado + data2.seleccionado + data2.capacitado + data2.contratado)
     }
     if ($("#select-view").val() == 2) {
+        //grafico(requeridos_totales,data3)
+        graficoBarras(requeridos_totales,data3)
+        //$("#change_accion").hide();
         $("#clear-filtros1").show();
         $("#change_post").show();
         for (var bz = 0; bz < nro; bz++) {
             $("#supervisor_" + bz).show();
+            //$("#buttonComuna1_" + az).hide();
+            
         }
 
         $("#clear-filtros1").show();
@@ -375,8 +392,345 @@ function llenarVista(data, data2, data3) {
         tablaD.button('.buttons-excel').trigger();
     });
     $("#table-postulacion").show();
+
+
 }
 
+function grafico1Barras(data,data1,data2,data3,data4){
+    //$("highcharts-credits").removeClass('highcharts-credits')
+    Highcharts.chart('containerTest', {
+    chart: {
+        type: 'bar',
+        marginBottom: '70',
+        marginLeft:'50'
+    },
+    title: {
+        text: 'Avance Total'
+    },
+    subtitle: {
+        text: ''
+    },
+    xAxis: {
+        categories: [''],
+        title: {
+            text: null
+        }
+    },
+    yAxis: {
+        min: 0,
+        title: {
+            text: '',
+            align: 'high'
+        },
+        labels: {
+            overflow: 'justify'
+        }
+    },
+    tooltip: {
+        valueSuffix: ' Personas'
+    },
+    plotOptions: {
+        bar: {
+            dataLabels: {
+                enabled: true
+
+            }
+        }
+    },
+    legend: {
+        itemStyle: {
+            
+            color: '#000000',
+            fontSize: "9px",
+            textOverflow: "ellipsis",
+            itemWidth: '2',
+            margin:'1'
+        }
+    },
+    credits: {
+        enabled: false
+    },
+    series: [{
+        name: 'REQUERIDOS',
+        data: [ parseInt(data)]
+    }, {
+        name: 'POSTULANTES',
+        data: [parseInt(data1)]
+
+    }
+    , {
+        name: 'CAPACITADOS',
+        data: [parseInt(data2)]
+    
+    }
+    , {
+        name: 'SELECCIONADOS',
+        data: [parseInt(data3)]
+    
+    }
+    , {
+        name: 'CONTRATADOS',
+        data: [parseInt(data4)]
+    
+    }]
+});
+}
+
+function graficoBarras(data,data1){
+    //$("highcharts-credits").removeClass('highcharts-credits')
+    Highcharts.chart('containerTest', {
+    chart: {
+        type: 'bar'
+    },
+    title: {
+        text: 'Avance Total'
+    },
+    subtitle: {
+        text: ''
+    },
+    xAxis: {
+        categories: [''],
+        title: {
+            text: null
+        }
+    },
+    yAxis: {
+        min: 0,
+        title: {
+            text: '',
+            align: 'high'
+        },
+        labels: {
+            overflow: 'justify'
+        }
+    },
+    tooltip: {
+        valueSuffix: ' Personas'
+    },
+    plotOptions: {
+        bar: {
+            dataLabels: {
+                enabled: true
+            }
+        }
+    },
+    
+    credits: {
+        enabled: false
+    },
+    series: [{
+        name: 'POSTULANTES',
+        data: [ parseInt(data1)]
+    }, {
+        name: 'REQUERIDOS',
+        data: [parseInt(data)]
+    }]
+});
+}
+
+/*function grafico(data,data1){
+    
+
+
+    Highcharts.chart('container', {
+        chart: {
+            plotBackgroundColor: null,
+            plotBorderWidth: 0,
+            plotShadow: false,
+            margin: [0, 0, 0, 0]
+        },
+        title: {
+            text: 'Avance Total',
+            align: 'center',
+            verticalAlign: 'middle',
+            y: 30
+        },
+        tooltip: {
+            pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+        },
+        credits: {
+            enabled: false
+        },
+        plotOptions: {
+            pie: {
+                showInLegend: true,
+                dataLabels: {
+                     enabled: false
+                },
+                startAngle: -90,
+                endAngle: 90,
+                center: ['50%', '75%'],
+                size: '150%'
+            }
+        },
+        
+        series: [{
+            type: 'pie',
+            name: 'Total',
+            innerSize: '70%',
+            data: [
+                ['POSTULANTES', parseInt(data1)],
+                ['REQUERIDOS', parseInt(data)],
+            ]
+        }]
+    });
+
+}*/
+
+ function verComuna(data){
+    /*console.log(typeof(data));
+    console.log(data);*/
+    if($.fn.dataTable.isDataTable('#table-capacitados')){
+        $('#table-capacitados').DataTable().destroy();
+        $('#lista-capacitados').empty();
+    }
+    
+    //console.log(data.data_comuna)
+    console.log(Object.entries(data.data_comuna))
+    var data1=Object.entries(data.data_comuna);
+        data1=data1[11][1]
+    console.log(data1)
+    var tablaD = $("#table-capacitados").DataTable({
+        dom: "<'search'f>",
+        buttons: [
+            {
+                extend: 'excel',
+                title: 'Postulantes',
+                 exportOptions: {
+                    columns: [ 0,1, 2, 3, 4, 5, 6],
+                }
+            }
+        ],
+        lengthMenu: [[10, 15, 20, -1], [10, 15, 20, "Todos"]],
+        language:spanishTranslation,
+        lengthChange: true,
+        info: false,
+        paging: false,
+        displayLength: -1,
+        ordering: true, 
+        order: [],
+        searching: true,
+        data: data1,
+        responsive: true, 
+        columns:[
+            {data: "rut"},
+            {data: "nombre"},
+            {data: "apellido"},
+            {data: "asistencia",className: "text-center"},
+            {data: "tecnica_pts",className: "text-center"},
+            {data: "psicologica_pts",className: "text-center"},
+            {data: "estado",className: "text-center",
+                render: function(data, type, row){  
+                    if (data==true) {
+                        return 'Aprobado'
+                    } else {
+                         return 'Reprobado'
+                    }
+                    
+                   
+                }
+            }
+        ],
+        "rowCallback": function( row, data ) {
+           
+        },
+  });
+    
+    $("#descargar-listado").on("click", function () {
+        tablaD.button('.buttons-excel').trigger();
+    });
+  
+    $('#confirmaAsistencia').modal({ keyboard: false},'show') 
+
+
+    }
+
+
+function verCapComuna(data){
+    console.log(data)
+    if($.fn.dataTable.isDataTable('#table-capacitaciones')){
+        $('#table-capacitaciones').DataTable().destroy();
+        $('#lista-capacitaciones').empty();
+    }
+    
+
+    var tablaD = $("#table-capacitaciones").DataTable({
+        dom: "<'search'f>",
+        buttons: [
+            {
+                extend: 'excel',
+                title: 'Postulantes',
+                    exportOptions: {
+                    columns: [ 0,1, 2, 3, 4, 5, 6],
+                }
+            }
+        ],
+        lengthMenu: [[10, 15, 20, -1], [10, 15, 20, "Todos"]],
+        language:spanishTranslation,
+        lengthChange: true,
+        info: false,
+        paging: false,
+        displayLength: -1,
+        ordering: true, 
+        order: [],
+        searching: true,
+        data: data,
+        responsive: true, 
+        columns:[
+            {data: "nro",
+                render: function(data, type, full, meta){
+                    return  meta.row + 1;
+                }
+            },
+            {data: "lugar"},
+            {data: "fecha_hora"},
+            {data: "nombre"},
+            {data: "run",className: "text-center"},
+            {data: "archivo",
+                render: function(data, type, full, meta){
+                    var url = "https://pruebadeconocimientos.iie.cl/api/web/monitoreo/capacitaciones/descarga-archivo/" + data;
+                    return "<a href='" + url + "'>DESCARGAR</a>";
+                }
+            },
+        ],
+        "rowCallback": function( row, data ) {
+            
+        },
+    });
+    
+    // $("#descargar-listado").on("click", function () {
+    //     tablaD.button('.buttons-excel').trigger();
+    // });
+    
+    $('#modal_caps').modal({ keyboard: false},'show') 
+}
+    
+function obtenerCapacitaciones(nombreComuna){
+    console.log(nombreComuna)
+    $.ajax({
+        method: 'POST',
+        url: webservice + '/monitoreo/capacitaciones-por-comuna',
+        headers: {
+        },
+        crossDomain: true,
+        dataType: 'text',
+        data: {
+            nombre_comuna: nombreComuna,
+        },
+        success: function (data, textStatus, jqXHR) {
+            dataCap = JSON.parse(data);
+            console.log(dataCap.resultado)
+            if(dataCap.resultado != "error"){
+                verCapComuna(dataCap.descripcion)
+            }else{
+                showFeedback("warning", dataCap.descripcion, "Sin capacitaciones");
+            }
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            showFeedback("error", "Error en el servidor", "Datos incorrectos");
+        }
+    })
+}
 
 
 function llenarVista2(data, data2, data3) {
@@ -387,14 +741,18 @@ function llenarVista2(data, data2, data3) {
     }
     trData = '';
     nro = 1;
+    var requeridos_totales = 0;
+    var requeridos_totalesPer = 0;
     for (var j = 0; j < data.length; j++) {
         for (var k = 0; k < data[j]["data_region"].length; k++) {
             if ($("#select-view").val() == 1) {
+                var comunaP= data[j]["data_region"][k];
                 var req = data[j]["data_region"][k].data_comuna.requeridos != null ? data[j]["data_region"][k].data_comuna.requeridos : 0
                 var sum = data[j]["data_region"][k].data_comuna.reclutado + data[j]["data_region"][k].data_comuna.capacitado + data[j]["data_region"][k].data_comuna.seleccionado + data[j]["data_region"][k].data_comuna.contratado
                 var porcentaje = data[j]["data_region"][k].data_comuna.postulante * 100;
                 porcentaje = sum == 0 ? 0 : porcentaje / sum;
                 var conDecimal = porcentaje.toFixed(0);
+                requeridos_totalesPer += req;
                 trData += '<tr>';
                 trData += '<td style="text-align:center">' + nro + '</td>'
                 trData += '<td>' + data[j]["region"] + '</td>'
@@ -406,10 +764,13 @@ function llenarVista2(data, data2, data3) {
                 trData += '<td style="text-align:center">' + data[j]["data_region"][k].data_comuna.capacitado + '</td>'
                 trData += '<td style="text-align:center">' + data[j]["data_region"][k].data_comuna.seleccionado + '</td>'
                 trData += '<td style="text-align:center">' + data[j]["data_region"][k].data_comuna.contratado + '</td>'
+                trData += "<td style='text-align:center' id='btnHiden_"+nro+"'><button type='button' id='comuna_"+nro+"' onclick='verComuna("+ JSON.stringify(comunaP) +")'  class='btn btn-volver' style='min-width: 89px;''>Ver</button></td>"
                 trData += '</tr>';
                 nro++;
             }
             if ($("#select-view").val() == 2) {
+                var comunaP= data[j]["data_region"][k];
+                var nombre_comuna = comunaP.data_comuna.nombre_comuna;
                 var sum = data[j]["data_region"][k].data_comuna.wnsUnicos
                 var one = data[j]["data_region"][k].data_comuna.requeridos == null ? 0 : data[j]["data_region"][k].data_comuna.requeridos;
                 one = one.Supervisor == null ? 0 : one.Supervisor;
@@ -423,7 +784,7 @@ function llenarVista2(data, data2, data3) {
                 var porcentaje = sum * 100;
                 porcentaje = sumrquerido == 0 ? 0 : porcentaje / sumrquerido;
                 var conDecimal = porcentaje.toFixed(0);
-
+                requeridos_totales += sumrquerido;
                 trData += '<tr>';
                 trData += '<td style="text-align:center">' + nro + '</td>'
                 trData += '<td>' + data[j]["region"] + '</td>'
@@ -432,14 +793,18 @@ function llenarVista2(data, data2, data3) {
                 trData += '<td id="preselected2_' + nro + '" style="text-align:center">' + sum + '</td>'
                 trData += '<td id="tototalcol2_' + nro + '" style="text-align:center">' + conDecimal + '%</td>'
                 trData += '<td id="supervisor2_' + nro + '" style="text-align:center">' + data[j]["data_region"][k].data_comuna.Supervisor + '</td>'
-                trData += '<td style="text-align:center">' + data[j]["data_region"][k].data_comuna.Examinador + '</td>'
+                trData += '<td style="text-align:center">' + sum + '</td>'
                 trData += '<td style="text-align:center">' + data[j]["data_region"][k].data_comuna.examinador_de_apoyo + '</td>'
                 trData += '<td style="text-align:center">' + data[j]["data_region"][k].data_comuna.anfitrion + '</td>'
+                trData += "<td style='text-align:center' ><button type='button' id='comuna1_"+nro+"' onclick='verComuna("+ JSON.stringify(comunaP) +")' class='btn btn-volver' style='min-width: 89px;''><i class='fa fa-user'></i></button>" +
+                            "<button type='button' id = 'caps_comuna_"+nro+"' onclick=obtenerCapacitaciones(\'"+ nombre_comuna +"\') class='btn btn-volver' style='min-width: 89px;'><i class='fa fa-briefcase'></i></button></td>";
                 trData += '</tr>';
                 nro++;
+                //data[j]["data_region"][k].data_comuna.Examinador
             }
         }
     }
+    
     $('#lista-zonal').append(trData);
 
     var tablaD = $("#table-zonal").DataTable({
@@ -503,10 +868,15 @@ function llenarVista2(data, data2, data3) {
     });
 
     if ($("#select-view").val() == 1) {
+        grafico2Barras2(requeridos_totalesPer,data2.postulante,data2.seleccionado,data2.contratado)
+        //grafico2(requeridos_totalesPer,data2.reclutado + data2.seleccionado + data2.capacitado + data2.contratado)
+        $("#change_accion2").hide();
         $("#clear-filtros2").hide();
         $("#change_post2").hide();
         for (var w = 0; w < nro; w++) {
             $("#supervisor2_" + w).hide();
+            $('#btnHiden_' + w).hide();
+            $('#comuna_' + w).hide();
         }
         $('#total_supervisor2').html(data2.postulante)
         $('#total_capacitados2').html(data2.capacitado)
@@ -515,6 +885,9 @@ function llenarVista2(data, data2, data3) {
         $('#ttotal2').html(data2.reclutado + data2.seleccionado + data2.capacitado + data2.contratado)
     }
     if ($("#select-view").val() == 2) {
+        graficoBarras2(requeridos_totales,data3)
+        //grafico2(requeridos_totales,data3)
+        $("#change_accion2").show();
         for (var w = 0; w < nro; w++) {
             $("#supervisor2_" + w).show();
             $("#preselected2_" + w).show();
@@ -533,6 +906,187 @@ function llenarVista2(data, data2, data3) {
     $("#table-zonal").show();
 }
 
+function grafico2Barras2(data,data1,data2,data3,data4){
+    //$("highcharts-credits").removeClass('highcharts-credits')
+    Highcharts.chart('containerTest2', {
+    chart: {
+        type: 'bar',
+        marginBottom: '70',
+        marginLeft:'50'
+    },
+    title: {
+        text: 'Avance Total'
+    },
+    subtitle: {
+        text: ''
+    },
+    xAxis: {
+        categories: [''],
+        title: {
+            text: null
+        }
+    },
+    yAxis: {
+        min: 0,
+        title: {
+            text: '',
+            align: 'high'
+        },
+        labels: {
+            overflow: 'justify'
+        }
+    },
+    tooltip: {
+        valueSuffix: ' Personas'
+    },
+    plotOptions: {
+        bar: {
+            dataLabels: {
+                enabled: true
+
+            }
+        }
+    },
+    legend: {
+        itemStyle: {
+            
+            color: '#000000',
+            fontSize: "9px",
+            textOverflow: "ellipsis",
+            itemWidth: '2',
+            margin:'1'
+        }
+    },
+    credits: {
+        enabled: false
+    },
+    series: [{
+        name: 'REQUERIDOS',
+        data: [ parseInt(data)]
+    }, {
+        name: 'POSTULANTES',
+        data: [parseInt(data1)]
+
+    }
+    , {
+        name: 'CAPACITADOS',
+        data: [parseInt(data2)]
+    
+    }
+    , {
+        name: 'SELECCIONADOS',
+        data: [parseInt(data3)]
+    
+    }
+    , {
+        name: 'CONTRATADOS',
+        data: [parseInt(data4)]
+    
+    }]
+});
+}
+
+function graficoBarras2(data,data1){
+    //$("highcharts-credits").removeClass('highcharts-credits')
+    Highcharts.chart('containerTest2', {
+    chart: {
+        type: 'bar'
+    },
+    title: {
+        text: 'Avance Total'
+    },
+    subtitle: {
+        text: ''
+    },
+    xAxis: {
+        categories: [''],
+        title: {
+            text: null
+        }
+    },
+    yAxis: {
+        min: 0,
+        title: {
+            text: '',
+            align: 'high'
+        },
+        labels: {
+            overflow: 'justify'
+        }
+    },
+    tooltip: {
+        valueSuffix: ' Personas'
+    },
+    plotOptions: {
+        bar: {
+            dataLabels: {
+                enabled: true
+            }
+        }
+    },
+    
+    credits: {
+        enabled: false
+    },
+    series: [{
+        name: 'CAPACITADOS',
+        data: [ parseInt(data1)]
+    }, {
+        name: 'REQUERIDOS',
+        data: [parseInt(data)]
+    }]
+});
+}
+
+/*function grafico2(data,data1){
+    
+
+
+    Highcharts.chart('container2', {
+        chart: {
+            plotBackgroundColor: null,
+            plotBorderWidth: 0,
+            plotShadow: false,
+            margin: [0, 0, 0, 0]
+        },
+        title: {
+            text: 'Avance Total',
+            align: 'center',
+            verticalAlign: 'middle',
+            y: 30
+        },
+        tooltip: {
+            pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+        },
+        credits: {
+            enabled: false
+        },
+        plotOptions: {
+            pie: {
+                showInLegend: true,
+                dataLabels: {
+                     enabled: false
+                },
+                startAngle: -90,
+                endAngle: 90,
+                center: ['50%', '75%'],
+                size: '150%'
+            }
+        },
+        
+        series: [{
+            type: 'pie',
+            name: 'Total',
+            innerSize: '70%',
+            data: [
+                ['CAPACITADOS', parseInt(data1)],
+                ['REQUERIDOS', parseInt(data)],
+            ]
+        }]
+    });
+
+}*/
+
 function llenarVista3(data, data2, data3) {
     $('#filtros-regional').empty();
     if ($.fn.dataTable.isDataTable('#table-regional')) {
@@ -542,6 +1096,8 @@ function llenarVista3(data, data2, data3) {
 
     trData = '';
     nro = 1;
+    var requeridos_totales =0;
+    var requeridos_totalesPer =0;
     for (var j = 0; j < data.length; j++) {
         for (var k = 0; k < data[j]["data_region"].length; k++) {
             if ($("#select-view").val() == 1) {
@@ -550,6 +1106,7 @@ function llenarVista3(data, data2, data3) {
                 var porcentaje = data[j]["data_region"][k].data_comuna.postulante * 100;
                 porcentaje = sum == 0 ? 0 : porcentaje / sum;
                 var conDecimal = porcentaje.toFixed(0);
+                requeridos_totalesPer += req;
                 trData += '<tr>';
                 trData += '<td style="text-align:center">' + nro + '</td>'
                 trData += '<td>' + data[j]["region"] + '</td>'
@@ -561,6 +1118,7 @@ function llenarVista3(data, data2, data3) {
                 trData += '<td style="text-align:center">' + data[j]["data_region"][k].data_comuna.capacitado + '</td>'
                 trData += '<td style="text-align:center">' + data[j]["data_region"][k].data_comuna.seleccionado + '</td>'
                 trData += '<td style="text-align:center">' + data[j]["data_region"][k].data_comuna.contratado + '</td>'
+                //trData += '<td style="text-align:center">THE FAKING BUTTON</td>'
                 trData += '</tr>';
                 nro++;
             }
@@ -578,7 +1136,7 @@ function llenarVista3(data, data2, data3) {
                 var porcentaje = sum * 100;
                 porcentaje = sumrquerido == 0 ? 0 : porcentaje / sumrquerido;
                 var conDecimal = porcentaje.toFixed(0);
-
+                requeridos_totales += sumrquerido;
                 trData += '<tr>';
                 trData += '<td style="text-align:center">' + nro + '</td>'
                 trData += '<td>' + data[j]["region"] + '</td>'
@@ -590,11 +1148,13 @@ function llenarVista3(data, data2, data3) {
                 trData += '<td style="text-align:center">' + data[j]["data_region"][k].data_comuna.Examinador + '</td>'
                 trData += '<td style="text-align:center">' + data[j]["data_region"][k].data_comuna.examinador_de_apoyo + '</td>'
                 trData += '<td style="text-align:center">' + data[j]["data_region"][k].data_comuna.anfitrion + '</td>'
+                //trData += '<td style="text-align:center">THE FAKING BUTTON</td>'
                 trData += '</tr>';
                 nro++;
             }
         }
     }
+    
     $('#lista-regional').append(trData);
 
     var tablaD = $("#table-regional").DataTable({
@@ -660,6 +1220,8 @@ function llenarVista3(data, data2, data3) {
     });
 
     if ($("#select-view").val() == 1) {
+        grafico3Barras3(requeridos_totalesPer,data2.postulante,data2.seleccionado,data2.contratado)
+        //grafico3(requeridos_totalesPer,data2.reclutado + data2.seleccionado + data2.capacitado + data2.contratado)
         $("#clear-filtros3").hide();
         $("#change_post3").hide();
         for (var w = 0; w < nro; w++) {
@@ -672,6 +1234,8 @@ function llenarVista3(data, data2, data3) {
         $('#ttotal3').html(data2.reclutado + data2.seleccionado + data2.capacitado + data2.contratado)
     }
     if ($("#select-view").val() == 2) {
+        graficoBarras3(requeridos_totales,data3)
+        //grafico3(requeridos_totales,data3)
         for (var w = 0; w < nro; w++) {
             $("#supervisor3_" + w).show();
             $("#preselected3_" + w).show();
@@ -688,7 +1252,184 @@ function llenarVista3(data, data2, data3) {
     $('#limpiar-filtros-examinadorap').click(btnClearFilters);
     $("#table-regional").show();
 }
+function grafico3Barras3(data,data1,data2,data3,data4){
+    //$("highcharts-credits").removeClass('highcharts-credits')
+    Highcharts.chart('containerTest3', {
+    chart: {
+        type: 'bar',
+        marginBottom: '70',
+        marginLeft:'50'
+    },
+    title: {
+        text: 'Avance Total'
+    },
+    subtitle: {
+        text: ''
+    },
+    xAxis: {
+        categories: [''],
+        title: {
+            text: null
+        }
+    },
+    yAxis: {
+        min: 0,
+        title: {
+            text: '',
+            align: 'high'
+        },
+        labels: {
+            overflow: 'justify'
+        }
+    },
+    tooltip: {
+        valueSuffix: ' Personas'
+    },
+    plotOptions: {
+        bar: {
+            dataLabels: {
+                enabled: true
 
+            }
+        }
+    },
+    legend: {
+        itemStyle: {
+            
+            color: '#000000',
+            fontSize: "9px",
+            textOverflow: "ellipsis",
+            itemWidth: '2',
+            margin:'1'
+        }
+    },
+    credits: {
+        enabled: false
+    },
+    series: [{
+        name: 'REQUERIDOS',
+        data: [ parseInt(data)]
+    }, {
+        name: 'POSTULANTES',
+        data: [parseInt(data1)]
+
+    }
+    , {
+        name: 'CAPACITADOS',
+        data: [parseInt(data2)]
+    
+    }
+    , {
+        name: 'SELECCIONADOS',
+        data: [parseInt(data3)]
+    
+    }
+    , {
+        name: 'CONTRATADOS',
+        data: [parseInt(data4)]
+    
+    }]
+});
+}
+function graficoBarras3(data,data1){
+    //$("highcharts-credits").removeClass('highcharts-credits')
+    Highcharts.chart('containerTest3', {
+    chart: {
+        type: 'bar'
+    },
+    title: {
+        text: 'Avance Total'
+    },
+    subtitle: {
+        text: ''
+    },
+    xAxis: {
+        categories: [''],
+        title: {
+            text: null
+        }
+    },
+    yAxis: {
+        min: 0,
+        title: {
+            text: '',
+            align: 'high'
+        },
+        labels: {
+            overflow: 'justify'
+        }
+    },
+    tooltip: {
+        valueSuffix: ' Personas'
+    },
+    plotOptions: {
+        bar: {
+            dataLabels: {
+                enabled: true
+            }
+        }
+    },
+    
+    credits: {
+        enabled: false
+    },
+    series: [{
+        name: 'SELECCIONADOS',
+        data: [ parseInt(data1)]
+    }, {
+        name: 'REQUERIDOS',
+        data: [parseInt(data)]
+    }]
+});
+}
+/*function grafico3(data,data1){
+    
+
+
+    Highcharts.chart('container3', {
+        chart: {
+            plotBackgroundColor: null,
+            plotBorderWidth: 0,
+            plotShadow: false,
+            margin: [0, 0, 0, 0]
+        },
+        title: {
+            text: 'Avance Total',
+            align: 'center',
+            verticalAlign: 'middle',
+            y: 30
+        },
+        tooltip: {
+            pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+        },
+        credits: {
+            enabled: false
+        },
+        plotOptions: {
+            pie: {
+                showInLegend: true,
+                dataLabels: {
+                     enabled: false
+                },
+                startAngle: -90,
+                endAngle: 90,
+                center: ['50%', '75%'],
+                size: '150%'
+            }
+        },
+        
+        series: [{
+            type: 'pie',
+            name: 'Total',
+            innerSize: '70%',
+            data: [
+                ['SELECCIONADOS', parseInt(data1)],
+                ['REQUERIDOS', parseInt(data)],
+            ]
+        }]
+    });
+
+}*/
 
 
 function llenarVista4(data, data2, data3) {
@@ -700,6 +1441,8 @@ function llenarVista4(data, data2, data3) {
 
     trData = '';
     nro = 1;
+    var requeridos_totales=0;
+    var requeridos_totalesPer=0;
     for (var j = 0; j < data.length; j++) {
         for (var k = 0; k < data[j]["data_region"].length; k++) {
             if ($("#select-view").val() == 1) {
@@ -708,6 +1451,7 @@ function llenarVista4(data, data2, data3) {
                 var porcentaje = data[j]["data_region"][k].data_comuna.postulante * 100;
                 porcentaje = sum == 0 ? 0 : porcentaje / sum;
                 var conDecimal = porcentaje.toFixed(0);
+                requeridos_totalesPer += req;
                 trData += '<tr>';
                 trData += '<td style="text-align:center">' + nro + '</td>'
                 trData += '<td>' + data[j]["region"] + '</td>'
@@ -719,6 +1463,7 @@ function llenarVista4(data, data2, data3) {
                 trData += '<td style="text-align:center">' + data[j]["data_region"][k].data_comuna.capacitado + '</td>'
                 trData += '<td style="text-align:center">' + data[j]["data_region"][k].data_comuna.seleccionado + '</td>'
                 trData += '<td style="text-align:center">' + data[j]["data_region"][k].data_comuna.contratado + '</td>'
+                //trData += '<td style="text-align:center">THE FAKING BUTTON</td>'
                 trData += '</tr>';
                 nro++;
             }
@@ -736,7 +1481,7 @@ function llenarVista4(data, data2, data3) {
                 var porcentaje = sum * 100;
                 porcentaje = sumrquerido == 0 ? 0 : porcentaje / sumrquerido;
                 var conDecimal = porcentaje.toFixed(0);
-
+                requeridos_totales += sumrquerido
                 trData += '<tr>';
                 trData += '<td style="text-align:center">' + nro + '</td>'
                 trData += '<td>' + data[j]["region"] + '</td>'
@@ -748,11 +1493,13 @@ function llenarVista4(data, data2, data3) {
                 trData += '<td style="text-align:center">' + data[j]["data_region"][k].data_comuna.Examinador + '</td>'
                 trData += '<td style="text-align:center">' + data[j]["data_region"][k].data_comuna.examinador_de_apoyo + '</td>'
                 trData += '<td style="text-align:center">' + data[j]["data_region"][k].data_comuna.anfitrion + '</td>'
+                //trData += '<td style="text-align:center">THE FAKING BUTTON</td>'
                 trData += '</tr>';
                 nro++;
             }
         }
     }
+    
     $('#lista-centro').append(trData);
     var tablaD = $("#table-centro").DataTable({
         dom: "",
@@ -768,6 +1515,8 @@ function llenarVista4(data, data2, data3) {
         data: data.coordinador_centro,
         responsive: true,
         "rowCallback": function (row, data) {
+            
+
             anfitrion++;
         },
 
@@ -816,6 +1565,10 @@ function llenarVista4(data, data2, data3) {
     });
 
     if ($("#select-view").val() == 1) {
+        grafico4Barras4(requeridos_totalesPer,data2.postulante,data2.seleccionado,data2.contratado)
+        //graficoBarras4(requeridos_totalesPer,data2.postulante)
+        //grafico4(requeridos_totalesPer,data2.reclutado + data2.seleccionado + data2.capacitado + data2.contratado)
+        
         $("#clear-filtros4").hide();
         $("#change_pos4").hide();
         for (var w = 0; w < nro; w++) {
@@ -828,6 +1581,9 @@ function llenarVista4(data, data2, data3) {
         $('#ttotal4').html(data2.reclutado + data2.seleccionado + data2.capacitado + data2.contratado)
     }
     if ($("#select-view").val() == 2) {
+        graficoBarras4(requeridos_totales,data3)
+        //grafico4(requeridos_totales,data3)
+       
         for (var w = 0; w < nro; w++) {
             $("#supervisor4_" + w).show();
             $("#preselected4_" + w).show();
@@ -845,7 +1601,185 @@ function llenarVista4(data, data2, data3) {
     $("#table-centro").show();
 }
 
+function grafico4Barras4(data,data1,data2,data3,data4){
+    //$("highcharts-credits").removeClass('highcharts-credits')
+    Highcharts.chart('containerTest4', {
+    chart: {
+        type: 'bar',
+        marginBottom: '70',
+        marginLeft:'50'
+    },
+    title: {
+        text: 'Avance Total'
+    },
+    subtitle: {
+        text: ''
+    },
+    xAxis: {
+        categories: [''],
+        title: {
+            text: null
+        }
+    },
+    yAxis: {
+        min: 0,
+        title: {
+            text: '',
+            align: 'high'
+        },
+        labels: {
+            overflow: 'justify'
+        }
+    },
+    tooltip: {
+        valueSuffix: ' Personas'
+    },
+    plotOptions: {
+        bar: {
+            dataLabels: {
+                enabled: true
 
+            }
+        }
+    },
+    legend: {
+        itemStyle: {
+            
+            color: '#000000',
+            fontSize: "9px",
+            textOverflow: "ellipsis",
+            itemWidth: '2',
+            margin:'1'
+        }
+    },
+    credits: {
+        enabled: false
+    },
+    series: [{
+        name: 'REQUERIDOS',
+        data: [ parseInt(data)]
+    }, {
+        name: 'POSTULANTES',
+        data: [parseInt(data1)]
+
+    }
+    , {
+        name: 'CAPACITADOS',
+        data: [parseInt(data2)]
+    
+    }
+    , {
+        name: 'SELECCIONADOS',
+        data: [parseInt(data3)]
+    
+    }
+    , {
+        name: 'CONTRATADOS',
+        data: [parseInt(data4)]
+    
+    }]
+});
+}
+
+function graficoBarras4(data,data1){
+    //$("highcharts-credits").removeClass('highcharts-credits')
+    Highcharts.chart('containerTest4', {
+    chart: {
+        type: 'bar'
+    },
+    title: {
+        text: 'Avance Total'
+    },
+    subtitle: {
+        text: ''
+    },
+    xAxis: {
+        categories: [''],
+        title: {
+            text: null
+        }
+    },
+    yAxis: {
+        min: 0,
+        title: {
+            text: '',
+            align: 'high'
+        },
+        labels: {
+            overflow: 'justify'
+        }
+    },
+    tooltip: {
+        valueSuffix: ' Personas'
+    },
+    plotOptions: {
+        bar: {
+            dataLabels: {
+                enabled: true
+            }
+        }
+    },
+    
+    credits: {
+        enabled: false
+    },
+    series: [{
+        name: 'CONTRATADOS',
+        data: [ parseInt(data1)]
+    }, {
+        name: 'REQUERIDOS',
+        data: [parseInt(data)]
+    }]
+});
+}
+/*function grafico4(data,data1){
+    
+
+
+    Highcharts.chart('container4', {
+        chart: {
+            plotBackgroundColor: null,
+            plotBorderWidth: 0,
+            plotShadow: false,
+            margin: [0, 0, 0, 0]
+        },
+        title: {
+            text: 'Avance Total',
+            align: 'center',
+            verticalAlign: 'middle',
+            y: 30
+        },
+        tooltip: {
+            pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+        },
+        credits: {
+            enabled: false
+        },
+        plotOptions: {
+            pie: {
+                showInLegend: true,
+                dataLabels: {
+                     enabled: false
+                },
+                startAngle: -90,
+                endAngle: 90,
+                center: ['50%', '75%'],
+                size: '150%'
+            }
+        },
+        
+        series: [{
+            type: 'pie',
+            name: 'Total',
+            innerSize: '70%',
+            data: [
+                ['CONTRATADOS', parseInt(data1)],
+                ['REQUERIDOS', parseInt(data)],
+            ]
+        }]
+    });
+
+}*/
 
 function btnClearFilters() {
     $('#select1').val("").niceSelect('update');

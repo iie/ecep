@@ -56,6 +56,12 @@
 
     <script type="text/javascript" src="vendor/datatables/jquery.dataTables.min.js"></script>
 
+    <script type="text/javascript" src="vendor/highcharts/highcharts.js"></script>
+   <!--  <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/modules/data.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/modules/accessibility.js"></script> -->
+
     <script type="text/javascript" src="vendor/utils.js"></script>
 
     <script type="text/javascript" src="js/personal.js"></script>
@@ -64,6 +70,10 @@
     
     <script type="text/javascript" src="vendor/moment/moment.js"></script>
 
+
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.1.2/js/dataTables.buttons.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/2.5.0/jszip.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.1.2/js/buttons.html5.min.js"></script>
 
 
     <!-- Toastr -->
@@ -198,18 +208,12 @@
                     </ul>
                     
 
-                    <div class="tab-content pt-4" id="myTabContent">
-
+                    <div class="tab-content pt-4" id="myTabContent" style="padding-top: 4% !important;">
+                            <div hidden id="container" style=" height:150px; "></div>
                         <div class="tab-pane fade show active" id="tabPostulacion" role="tabpanel" aria-labelledby="tab-postulacion">
-
-                            <div class="row pb-4" id="postulacion-Table_filters">
                                 
-                                <div class="row col-6 m-0" id="filtros-postulacion"></div>
-                                    <!--<button class="btn limpiar-filtros" role="button" id="limpiar-filtros-postulacion" type="button">Limpiar Filtros</button>-->
-                                    <div class="col-1 text-left" style="position: absolute;margin-left: 339px;margin-top: 3px;">
-                                        <button class="btn limpiar-filtros" role="button" id="limpiar-filtros-postulacion" type="button">Limpiar Filtros</button>
-                                    </div>
-                                    <div class="col-1 text-center _info" id="clear-filtros">
+                            <div class="row pb-4" id="postulacion-Table_filters">
+                                <div class="col-1 text-center _info" id="clear-filtros">
 
                                         <p class="_text-dato" id="total_supervisor"></p>
                                         <label class="_text-legend" id="ttotal_supervisor">POSTULANTES</label>
@@ -251,10 +255,25 @@
                                         <!-- style="white-space: nowrap;" -->
                                         <label class="_text-legend" id="ratiototal" >POSTULANTES</label>
                                     </div>
+                                
+                                 <figure class="highcharts-figure" style="margin-left: 10%;">
+                                        <div id="containerTest" class="container_grafico"></div>
+                                        <p class="highcharts-description" style="min-width: 550px;">
+                                            
+                                        </p>
+                                </figure>    
+                                <div class="row col-3 m-0" id="filtros-postulacion"></div>
 
+                                    <!--<button class="btn limpiar-filtros" role="button" id="limpiar-filtros-postulacion" type="button">Limpiar Filtros</button>-->
+                                    <div class="col-3 text-left" style="">
+                                        <button class="btn limpiar-filtros" role="button" id="limpiar-filtros-postulacion"  type="button" >Limpiar Filtros</button>
+                                    </div>
+                                    
 
+                                    
                             </div>
 
+                                  
 
 
                             <table id="table-postulacion" class=" table table-hover _table-link dataTable " style="width:100%;">
@@ -272,7 +291,7 @@
                                         <th style="text-align:center"id="change_capa">CAPACITADOS</th>    
                                         <th style="text-align:center" id="change_sele">SELECCIONADOS</th>
                                         <th  style="text-align:center"id="change_contr">CONTRATADOS</th>
-                                        
+                                        <!-- <th  style="text-align:center"id="change_accion">ACCIONES</th> -->
 
                                     </tr>
 
@@ -294,11 +313,7 @@
                             
 
                             <div class="row pb-4" id="zonal-Table_filters">
-
-                                <div class="row col-6 m-0" id="filtros-zonal"></div>
-                                    <div class="col-1 text-left" style="position: absolute;margin-left: 339px;margin-top: 3px;">
-                                        <button class="btn limpiar-filtros" role="button" id="limpiar-filtros-zonal" type="button">Limpiar Filtros</button>
-                                    </div>
+                                <div hidden id="container2" style=" height:150px; "></div>
                                     <div class="col-1 text-center _info" id="clear-filtros">
 
                                         <p class="_text-dato" id="total_supervisor2"></p>
@@ -327,6 +342,17 @@
                                         <p class="_text-dato" id="ttotal2"></p>
                                         <label class="_text-legend" id="ratiototal2">POSTULANTES</label>
                                     </div>
+                                    <figure class="highcharts-figure" style="margin-left: 10%;">
+                                        <div id="containerTest2" class="container_grafico"></div>
+                                        <p class="highcharts-description" style="min-width: 520px;">
+                                            
+                                        </p>
+                                </figure>    
+                                <div class="row col-3 m-0" id="filtros-zonal"></div>
+                                    <div class="col-3 text-left">
+                                        <button class="btn limpiar-filtros" role="button" id="limpiar-filtros-zonal" type="button">Limpiar Filtros</button>
+                                    </div>
+
 
 
                             </div>
@@ -349,7 +375,7 @@
                                         <th style="text-align:center"id="change_capa2">CAPACITADOS</th>    
                                         <th style="text-align:center" id="change_sele2">SELECCIONADOS</th>
                                         <th  style="text-align:center"id="change_contr2">CONTRATADOS</th>
-                                        
+                                        <th  style="text-align:center"id="change_accion2">ACCIONES</th>
 
                                     </tr>
 
@@ -366,11 +392,7 @@
                         <div class="tab-pane fade" id="tabRegional" role="tabpanel" aria-labelledby="tab-regional">
 
                             <div class="row pb-4" id="regional-Table_filters">
-
-                                <div class="row col-6 m-0" id="filtros-regional"></div>
-                                    <div class="col-1 text-left" style="position: absolute;margin-left: 339px;margin-top: 3px;">
-                                        <button class="btn limpiar-filtros" role="button" id="limpiar-filtros-examinadorap" type="button">Limpiar Filtros</button>
-                                    </div>
+                                <div hidden id="container3" style=" height:150px; "></div>
                                     <div class="col-1 text-center _info" id="clear-filtros">
 
                                         <p class="_text-dato" id="total_supervisor3"></p>
@@ -389,10 +411,6 @@
                                         
                                         <p class="_text-dato" id="total_seleccionados3"></p>
                                         <label class="_text-legend" id="ttotal_seleccionados3">SELECCIONADOS</label>
-                                        
-
-                                       
-
                                     </div>
                                      <div class="col-1 text-center _info" id="clear-filtros">
 
@@ -405,10 +423,17 @@
                                         <p class="_text-dato" id="ttotal3"></p>
                                         <label class="_text-legend" id="ratiototal3">POSTULANTES</label>
                                     </div>
-
-
-
-                            </div>
+                                     <figure class="highcharts-figure" style="margin-left: 10%;">
+                                        <div id="containerTest3" class="container_grafico"></div>
+                                        <p class="highcharts-description" style="min-width: 520px;">
+                                            
+                                        </p>
+                                </figure>  
+                                <div class="row col-3 m-0" id="filtros-regional"></div>
+                                    <div class="col-3 text-left" >
+                                        <button class="btn limpiar-filtros" role="button" id="limpiar-filtros-examinadorap" type="button">Limpiar Filtros</button>
+                                    </div>
+                                </div>
 
 
 
@@ -428,7 +453,7 @@
                                         <th style="text-align:center"id="change_capa3">CAPACITADOS</th>    
                                         <th style="text-align:center" id="change_sele3">SELECCIONADOS</th>
                                         <th  style="text-align:center"id="change_contr3">CONTRATADOS</th>
-                                        
+                                        <!-- <th  style="text-align:center"id="">ACCIONES</th> -->
 
                                     </tr>
 
@@ -447,11 +472,7 @@
                             
 
                             <div class="row pb-4" id="centro-Table_filters">
-
-                                <div class="row col-6 m-0" id="filtros-centro"></div>
-                                    <div class="col-1 text-left" style="position: absolute;margin-left: 339px;margin-top: 3px;">
-                                        <button class="btn limpiar-filtros" role="button" id="limpiar-filtros-anfitrion" type="button">Limpiar Filtros</button>
-                                    </div>
+                                <div hidden id="container" style=" height:150px; "></div>
                                     <div class="col-1 text-center _info" id="clear-filtros">
 
                                         <p class="_text-dato" id="total_supervisor4"></p>
@@ -492,10 +513,17 @@
                                         <p class="_text-dato" id="ttotal4"></p>
                                         <label class="_text-legend" id="ratiototal4">POSTULANTES</label>
                                     </div>
-
-
-
-                            </div>
+                                     <figure class="highcharts-figure" style="margin-left: 10%;">
+                                        <div id="containerTest4" class="container_grafico"></div>
+                                        <p class="highcharts-description" style="min-width: 520px;">
+                                            
+                                        </p>
+                                </figure>  
+                                <div class="row col-3 m-0" id="filtros-centro"></div>
+                                    <div class="col-3 text-left">
+                                        <button class="btn limpiar-filtros" role="button" id="limpiar-filtros-anfitrion" type="button" style="float: right;margin-right: 344%;">Limpiar Filtros</button>
+                                    </div>
+                                </div>
 
 
 
@@ -515,7 +543,7 @@
                                         <th style="text-align:center"id="change_cap4">CAPACITADOS</th>    
                                         <th style="text-align:center" id="change_sel4">SELECCIONADOS</th>
                                         <th  style="text-align:center"id="change_cont4">CONTRATADOS</th>
-                                        
+                                        <!-- <th  style="text-align:center"id="">ACCIONES</th> -->
                                     </tr>
 
                                 </thead>
@@ -538,6 +566,87 @@
         </div>
 
         <!-- Modal -->
+        <div class="modal fade" id="confirmaAsistencia" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog  modal-xl" role="document">
+                <div class="modal-content" style="max-height:none!important;">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="titulo_modal">Postulantes</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                            <div class="row pt-3 pb-3 ">
+
+                                <div class="offset-sm-8 col-2 text-right">                                      
+                                    <button class="btn btn-primary datatable-excel" role="button" id="descargar-listado" type="button" style="margin-left: 83%;min-width: 194px;"><i class="fas fa-download"></i> Descargar Lista</button>
+                                             
+                                </div>       
+                            </div>
+                        <table id="table-capacitados" class="stripe table table-hover _table-link dataTable no-footer" style="width:100%;">
+                            <thead>
+                                <tr>
+                                    <th>RUN</th>
+                                    <th>NOMBRE</th>
+                                    <th>APELLIDO</th>
+                                    <th>ASISTENCIA</th>
+                                    <th>PRUEBA TECNICA</th>
+                                    <th>PRUEBA PSICOLOGICA</th>
+                                    <th>ESTADO</th>
+                                </tr>
+                            </thead>
+                            <tbody id="lista-capacitados">
+                                
+                            </tbody>
+                        </table>
+                        <label type="hidden" id="idUsuario">
+                        <label type="hidden" id="idPersona">
+                  </div>
+                </div>
+            </div>
+        </div>    
+
+        <!-- Modal Capacitaciones-->
+        <div class="modal fade" id="modal_caps" tabindex="-1" role="dialog" aria-hidden="true">
+                <div class="modal-dialog  modal-xl" role="document">
+                    <div class="modal-content" style="max-height:none!important;">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="titulo_modal_cap">Capacitaciones</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                                <div class="row pt-3 pb-3 ">
+    
+                                    <!-- <div class="offset-sm-8 col-2 text-right">                                      
+                                        <button class="btn btn-primary datatable-excel" role="button" id="descargar-listado" type="button" style="margin-left: 83%;min-width: 194px;"><i class="fas fa-download"></i> Descargar Lista</button>
+                                                    
+                                    </div>        -->
+                                </div>
+                            <table id="table-capacitaciones" class="stripe table table-hover _table-link dataTable no-footer" style="width:100%;">
+                                <thead>
+                                    <tr>
+                                        <th>NRO</th>
+                                        <th>LUGAR</th>
+                                        <th>FECHA/HORA</th>
+                                        <th>NOMBRE RELATOR</th>
+                                        <th>RUT RELATOR</th>
+                                        <th>ARCHIVO ASISTENCIA</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="lista-capacitaciones">
+                                    
+                                </tbody>
+                            </table>
+                            <label type="hidden" id="idUsuario">
+                            <label type="hidden" id="idPersona">
+                        </div>
+                    </div>
+                </div>
+            </div>    
+        
+        <!-- Modal -->
         <div class="modal fade" id="modalInscritos" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle" aria-hidden="true">
           <div class="modal-dialog modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -548,7 +657,9 @@
                 </button>
               </div>
               <div class="modal-body">
+
                 <table id="table-inscritos" class=" table table-hover _table-link dataTable " style="width:100%;">
+                            
                     <thead>         
                         <tr>
                             <th style="text-align:center">FECHA</th>

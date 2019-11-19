@@ -74,6 +74,8 @@ Route::get('inscritos-dia' , 'Api\ecep\SedeController@inscritosDia');
 	Route::get('web/monitoreo/personal/lista' , 'Api\ecep\MonitoreoPersonalController@listaPersonal');
 	Route::get('web/monitoreo/personal-por-estado/lista' , 'Api\ecep\MonitoreoPersonalController@listaPersonalPorEstado');
 	Route::get('web/monitoreo/inscritos-dia' , 'Api\ecep\MonitoreoPersonalController@inscritosDia');	
+	Route::post('web/monitoreo/capacitaciones-por-comuna' , 'Api\ecep\MonitoreoPersonalController@capacitacionesPorComuna');
+	Route::get('web/monitoreo/capacitaciones/descarga-archivo/{idCapacitacion}' , 'Api\ecep\MonitoreoPersonalController@descargaArchivoCapacitacion');	
 
 //MONITOREO INFRAESTRUCTURA 	
 	Route::get('web/monitoreo/infraestructura/lista' , 'Api\ecep\MonitoreoInfraestructuraController@listaSedes');

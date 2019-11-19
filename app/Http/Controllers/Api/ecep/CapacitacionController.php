@@ -1267,9 +1267,9 @@ class CapacitacionController extends Controller
         $ruta = $aux2_ruta[0];
 
         $hoy = getdate();
-        if($fecha < $hoy){
-            $correo = 'mesa_endfid_2019@iie.cl';
-        }
+        // if($fecha < $hoy){
+        //     $correo = 'mesa_endfid_2019@iie.cl';
+        // }
         $path_files = realpath('') . '/archivos/';
 
         $subject = "Preselección - Evaluación Conocimientos Específicos y Pedagógicos";
