@@ -10,6 +10,12 @@ $(document).ready(function(){
         $('#li-relator').remove();
         $('#tabRelator').remove();
 
+    }else if(JSON.parse(localStorage.user).id_cargo == 1004){
+    	$('#redirect').css('display','');
+        $('#redirect').on('click',redirectModulo);
+        $('#btn-nuevaPersona').remove();
+        getPersonalRegional();
+
     }else{
         $('#redirect').css('display','');
         $('#redirect').on('click',redirectModulo);
@@ -102,7 +108,43 @@ function getPersonal(){
         }
     })
 }
+
+function getPersonalRegional(){
+     $.ajax({
+        method:'POST',
+        url: webservice+'/capacitacion/lista-regional',
+        headers:{
+           't': JSON.parse(localStorage.user).token
+        },
+        crossDomain: true,
+        dataType:'text',
+        data:{ 
+            id_usuario: JSON.parse(localStorage.user).id_usuario,
+            id_cargo: JSON.parse(localStorage.user).id_cargo,
+            id_persona: JSON.parse(localStorage.user).id_persona,
+            id_tipo_usuario: JSON.parse(localStorage.user).id_tipo_usuario
+        },
+        success: function(data, textStatus, jqXHR) {
+            data = JSON.parse(data) 
+            console.log(data)
+
+            if (data.resultado == undefined) {
+                llenarVista(data)
+            }else {
+                if (data.resultado == "error") {
+                   showFeedback("error",data.descripcion,"Error");
+                }
+            }
+    
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            showFeedback("error","Error en el servidor","Datos incorrectos");
+            console.log("error del servidor, datos incorrectos");
  
+        }
+    })
+}
+  
 function getListaRelator(){
      $.ajax({
         method:'POST',
@@ -139,7 +181,6 @@ arrayCapacitacionD = []
 arrayRelator = []
 arrayRelatorD = []
 function llenarVista(data){
-    console.log(data)
     //data = JSON.parse(data)
     $('#filtros-postulacion').empty();
     if($.fn.dataTable.isDataTable('#table-postulacion')){
@@ -155,7 +196,7 @@ function llenarVista(data){
                 extend: 'excel',
                 title: 'Postulantes',
                 exportOptions: {
-                    columns: [ 0,1, 2, 3, 4, 5, 6, 7],
+                    columns: [ 0,1, 2, 3, 4, 5, 6, 7, 8, 9],
                 }
             }
         ],
@@ -176,10 +217,8 @@ function llenarVista(data){
                     return  meta.row + 1;
                 }
             },
-           /* {data: "nombre_zona"},*/
             {data: "region"},
             {data: "comuna"},
-            /*{data: "nombre_rol"},*/
             {data: "run"},
             {data: "nombres"},
             {data: "apellido_paterno"},
@@ -192,16 +231,12 @@ function llenarVista(data){
                         return  row.lugar+', '+moment(row.fecha_hora).format('DD-MM-YYYY  HH:mm');
                     }else{
                         return '';
-                    }
-                     
-                }
-                    
+                    } 
+                }      
             },
             {data: "opciones",className: "text-center",
                 render: function(data, type, row){                
-                    return '<button type="button" id="persona_'+row.id_persona+'"  class="btn btn-primary btn-sm _btn-item mr-1"><i class="fa fa-pencil-alt"></i></button>'+
-                    '<button type="button" id="seleccionarPersonas_'+row.id_persona+'" class="btn btn-primary btn-sm _btn-item"><i class="fas fa-users"></i></button>'
-                        
+                    return '<button type="button" id="persona_'+row.id_persona+'"  class="btn btn-primary btn-sm _btn-item mr-1"><i class="fa fa-pencil-alt"></i></button>'   
                 }
             },
         ],
@@ -216,19 +251,13 @@ function llenarVista(data){
             $('td:eq(10)', row).find('#persona_'+data.id_persona).data('telefono',data.telefono);
             $('td:eq(10)', row).find('#persona_'+data.id_persona).on('click',asignar);
 
-            $('td:eq(10)', row).find('#seleccionarPersonas_'+data.id_persona).data('id_comuna',data.id_comuna_postulacion);
-            $('td:eq(10)', row).find('#seleccionarPersonas_'+data.id_persona).data('id_region',data.id_region_postulacion);
-            $('td:eq(10)', row).find('#seleccionarPersonas_'+data.id_persona).data('id_capacitacion',data.id_capacitacion);
-            $('td:eq(10)', row).find('#seleccionarPersonas_'+data.id_persona).data('borrado_capacitacion',data.borrado_capacitacion);
-            $('td:eq(10)', row).find('#seleccionarPersonas_'+data.id_persona).on('click',asignarVarios);
-        
         },
         "initComplete": function(settings, json) {
             //$('#inputRolAsignado').prop('disabled',true)
-            if(JSON.parse(localStorage.user).id_cargo == 1004){
+            /*if(JSON.parse(localStorage.user).id_cargo == 1004){
                 var api = new $.fn.dataTable.Api(settings);
                 api.columns([1]).visible(false);
-            }
+            }*/
 
             var checkbox = $('input:checkbox[name=inputRolAsignado]')
             for (var i = 0; i < checkbox.length; i++) {
@@ -292,10 +321,10 @@ function llenarVista(data){
         },
         "drawCallback": function(settings){
             arrayRelatorD = []
-            if(JSON.parse(localStorage.user).id_cargo == 1004){
+            /*if(JSON.parse(localStorage.user).id_cargo == 1004){
                 var api = new $.fn.dataTable.Api(settings);
                 api.columns([1]).visible(false);
-            }
+            }*/
             var placeholder = ["","Región","Comuna","","","","","","","Capacitación"]
             this.api().columns([1,2,9]).every( function (index) {
                 if(JSON.parse(localStorage.user).id_cargo == 1004 && index == 1){
@@ -378,7 +407,15 @@ function llenarVistaCapacitacion(data){
 
     var tablaD = $("#table-capacitacion").DataTable({
         dom: "<'search'f>",
-
+        buttons: [
+            {
+                extend: 'excel',
+                title: 'Capacitaciones',
+                exportOptions: {
+                    columns: [ 0,1, 2, 3, 4, 5, 6, 7, 8, 9],
+                }
+            }
+        ],
         lengthMenu: [[10, 15, 20, -1], [10, 15, 20, "Todos"]],
         language:spanishTranslation,
         lengthChange: true,
@@ -409,18 +446,27 @@ function llenarVistaCapacitacion(data){
                     return  row.nombres + ' '+row.apellido_paterno+' '+row.apellido_materno;
                 }
             },
+            {data: "capacidad",className: "text-center"},
+            {data: "convocados",className: "text-center"},
+            {data: "confirmados",className: "text-center"},
             {data: "observacion"},
             {data: "opciones",className: "text-center",
                 render: function(data, type, row){                
-                    return '<button type="button" class="btn btn-primary btn-sm _btn-item"><i class="fa fa-pencil-alt"></i></button>'
+                    return '<button type="button" id="modificarCapacitacion_'+row.id_capacitacion+'" class="btn btn-primary btn-sm _btn-item"><i class="fa fa-pencil-alt"></i></button>'+
+                    		'<button type="button" id="seleccionarPersonas_'+row.id_capacitacion+'" class="btn btn-primary btn-sm _btn-item ml-1"><i class="fas fa-users"></i></button>'
                         
                 }
             },
         ],
         "rowCallback": function( row, data ) {
 
-            $('td:eq(7)', row).find('button').data('id_capacitacion',data.id_capacitacion);
-            $('td:eq(7)', row).find('button').on('click',modificarCapacitacion);
+            $('td:eq(10)', row).find('#modificarCapacitacion_'+data.id_capacitacion).data('id_capacitacion',data.id_capacitacion);
+            $('td:eq(10)', row).find('#modificarCapacitacion_'+data.id_capacitacion).on('click',modificarCapacitacion);
+            $('td:eq(10)', row).find('#seleccionarPersonas_'+data.id_capacitacion).data('id_comuna',data.id_comuna);
+            $('td:eq(10)', row).find('#seleccionarPersonas_'+data.id_capacitacion).data('id_region',data.id_region);
+            $('td:eq(10)', row).find('#seleccionarPersonas_'+data.id_capacitacion).data('id_capacitacion',data.id_capacitacion);
+            //$('td:eq(10)', row).find('#seleccionarPersonas_'+data.id_capacitacion).data('borrado_capacitacion',data.borrado_capacitacion);
+            $('td:eq(10)', row).find('#seleccionarPersonas_'+data.id_capacitacion).on('click',asignarVarios);
 
         },
         "initComplete": function(settings, json) {
@@ -463,7 +509,7 @@ function llenarVistaCapacitacion(data){
                             if(index != 5){
                                 $('#selectC'+index).append( '<option value="'+d.charAt(0).toUpperCase() + d.slice(1)+'">'+d.charAt(0).toUpperCase() + d.slice(1)+'</option>' )         
                             }else{
-                                console.log(d)
+     
                                 arrayCapacitacion.push(d.nombres+' '+d.apellido_paterno+' '+d.apellido_materno);
                             }
                             
@@ -530,6 +576,12 @@ function llenarVistaCapacitacion(data){
  
  
     });
+
+    $('#total_capacitaciones').html(data.length)
+    $("#descargar-lista-capacitaciones").on("click", function() {
+        tablaD.button( '.buttons-excel' ).trigger();
+    });
+     
     $('#limpiar-filtros-capacitacion').click(btnClearFilters);
     $("#table-capacitacion").show();  
  
@@ -546,7 +598,15 @@ function llenarListaRelatores(data){
 
     var tablaD = $("#table-relator").DataTable({
         dom: "<'search'f>",
-
+        buttons: [
+            {
+                extend: 'excel',
+                title: 'Relatores',
+                exportOptions: {
+                    columns: [ 0,1, 2, 3, 4, 5, 6],
+                }
+            }
+        ],
         lengthMenu: [[10, 15, 20, -1], [10, 15, 20, "Todos"]],
         language:spanishTranslation,
         lengthChange: true,
@@ -570,6 +630,7 @@ function llenarListaRelatores(data){
             {data: "nombres"},
             {data: "apellido_paterno"},
             {data: "apellido_materno"},
+            {data: "capacitaciones"},
             {data: "opciones",className: "text-center",
                 render: function(data, type, row){                
                     return '<button type="button" id="persona_'+row.id_persona+'" onclick="modificar('+row.id_persona+')" class="btn btn-primary btn-sm _btn-item"><i class="fa fa-pencil-alt"></i></button>'
@@ -656,6 +717,11 @@ function llenarListaRelatores(data){
  
     });
     $('#limpiar-filtros-relator').click(btnClearFilters);
+    $('#total_relatores').html(data.length)
+    $("#descargar-lista-relatores").on("click", function() {
+        tablaD.button( '.buttons-excel' ).trigger();
+    });
+
     $("#table-relator").show();  
  
 }
@@ -860,7 +926,15 @@ function llenarVistaCapacitacionRelator(data){
 
     var tablaD = $("#table-capacitacion").DataTable({
         dom: "<'search'f>",
-
+         buttons: [
+            {
+                extend: 'excel',
+                title: 'Capacitaciones',
+                exportOptions: {
+                    columns: [ 0,1, 2, 3, 4, 6, 7, 8, 9],
+                }
+            }
+        ],
         lengthMenu: [[10, 15, 20, -1], [10, 15, 20, "Todos"]],
         language:spanishTranslation,
         lengthChange: true,
@@ -891,23 +965,25 @@ function llenarVistaCapacitacionRelator(data){
                     return  row.nombres + ' '+row.apellido_paterno+' '+row.apellido_materno;
                 }
             },
- 
+            {data: "capacidad",className: "text-center"},
+            {data: "convocados",className: "text-center"},
+            {data: "confirmados",className: "text-center"},
             {data: "observacion"},
             {data:  null}
         ],
         "columnDefs": [
             {
-                "targets": [ 5 , 7],
+                "targets": [5,10],
                 "visible": false,
                 "searchable": false
             },
         ],
         "initComplete": function(settings, json) {
             //$('#inputRolAsignado').prop('disabled',true)
-            if(JSON.parse(localStorage.user).id_cargo == 1004){
+            /* if(JSON.parse(localStorage.user).id_cargo == 1004){
                 var api = new $.fn.dataTable.Api(settings);
                 api.columns([1]).visible(false);
-            }
+            }*/
 
             var checkbox = $('input:checkbox[name=inputRolAsignado]')
             for (var i = 0; i < checkbox.length; i++) {
@@ -976,6 +1052,11 @@ function llenarVistaCapacitacionRelator(data){
  
     });
     $('#limpiar-filtros-capacitacion').click(btnClearFilters);
+    $('#total_capacitaciones').html(data.length)
+    $("#descargar-lista-capacitaciones").on("click", function() {
+        tablaD.button( '.buttons-excel' ).trigger();
+    });
+
     $("#table-capacitacion").show();  
  
 }
@@ -991,7 +1072,15 @@ function llenarVistaCapacitados(data){
 
     var tablaD = $("#table-capacitados").DataTable({
         dom: "<'search'f>",
-
+        buttons: [
+            {
+                extend: 'excel',
+                title: 'Capacitados',
+                exportOptions: {
+                    columns: [ 0,1, 2, 3, 4, 5, 6, 7, 8,9],
+                }
+            }
+        ],
         lengthMenu: [[10, 15, 20, -1], [10, 15, 20, "Todos"]],
         language:spanishTranslation,
         lengthChange: true,
@@ -1043,7 +1132,7 @@ function llenarVistaCapacitados(data){
                 render: function(data, type,row){
                     if(row.pruebas !=  null){
                         if(row.pruebas.length > 1){
-                            return  row.pruebas[0].puntaje
+                            return  row.pruebas[0].puntaje == 1 ? 'Recomendado' : row.pruebas[0].puntaje == 0 ? 'No Recomendado' : ''
                         }else{
                             return '';
                         }
@@ -1052,13 +1141,6 @@ function llenarVistaCapacitados(data){
                     }
                      
                 }
-            },
-        ],
-        "columnDefs": [
-            {
-                "targets": [ 5 , 7],
-                "visible": false,
-                "searchable": false
             },
         ],
         "initComplete": function(settings, json) {
@@ -1135,6 +1217,10 @@ function llenarVistaCapacitados(data){
  
     });
     $('#limpiar-filtros-capacitados').click(btnClearFilters);
+    $('#total_capacitados').html(data.length)
+    $("#descargar-lista-capacitados").on("click", function() {
+        tablaD.button( '.buttons-excel' ).trigger();
+    });
     $("#table-capacitados").show();  
  
 }
@@ -1205,35 +1291,131 @@ function btnClearFilters(){
 }
 
 function nuevaCapacitacion(){ 
+    docO_b64 = '';
+    doc0_name = '';
+    $('#titulo_modal_capacitacion').html('Nueva Capacitación')
     localStorage.id_capacitacion = -1
     $('#selectRegion').val('-1')
     $('#selectComuna').prop('disabled',true)
     $('#selectRelator').prop('disabled',true)
     limpiar()
     $('#capacitacionModal').modal({backdrop: 'static', keyboard: false},'show')
+    $("#inputDocumento").val('')
 }
 
  
 function cargarDatosCapacitacion(data){
-    console.log(data)
+    docO_b64 = '';
+    doc0_name = '';
+    $("#inputDocumento").val('')
     limpiar()
+    $('#titulo_modal_capacitacion').html('Modificar Capacitación')
     localStorage.id_capacitacion = data.id_capacitacion
     $('#selectRegion').val(data.id_region)
     cargarComunas(data.id_region)
     $('#selectComuna').val(data.id_comuna)
     cargarRelatores(data.id_comuna)
     $('#selectRelator').val(data.id_relator).prop('disabled',false)
-    $('#inputLugar').val(data.lugar)
-    $('#observacion').val(data.observacion)
     $("#inputFecha").val(moment(data.fecha_hora, "YYYY-MM-DD HH:mm:ss").format("DD-MM-YYYY") )
     $("#inputHora").val(moment(data.fecha_hora, "YYYY-MM-DD HH:mm:ss").format("HH:mm") )
+    $('#inputCapacidad').val(data.capacidad)
+    $('#inputLugar').val(data.lugar)
+    $('#inputObservacion').val(data.observacion)
     $('#capacitacionModal').modal({backdrop: 'static', keyboard: false},'show') 
+
+    if(data.archivo_asistencia != null){
+        ext = diccionarioTipos(data.archivo_mimetype)
+        $('#inputDocumento').css('display','none')
+        $('#inputNombreArchivo').html('<b>'+data.archivo_nombre+'.'+ext+'</b>')
+    }else{
+        $('#inputDocumento').css('display','')
+        $('#inputNombreArchivo').html('')
+    }
+    
+     
+}
+
+function diccionarioTipos(mimeType){
+    salida = "";
+    switch (mimeType) {
+        case 'image/jpeg':
+            salida = "jpg";
+            break;
+        case 'image/png':
+            salida = "png";
+            break;
+        case 'application/pdf':
+            salida = "pdf";
+            break;
+        case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
+            salida = "docx";
+            break;
+        case 'application/msword':
+            salida = "doc";
+            break;
+    }
+    return salida;
+}
+
+function guardarConfirmOtro() {
+     console.log('guardarConfirmOtro')
+    encodeDocumentoOtro();
+    let esperarSubida = new Promise((resolve, reject) => {
+      $.blockUI({ message: 'Procesando archivos. Espere un momento...' });  
+      setTimeout(function(){
+
+        if(docO_b64 == null){ 
+            reject("Archivo 1 mal subido");
+        }
+
+        resolve(true);
+      }, 2000);
+    });
+
+    esperarSubida.then((successMessage) => {
+        $.unblockUI();
+        if(successMessage == true){
+            console.log('successMessage')
+            console.log(docO_b64)
+            guardarCapacitacion()
+        }
+    })
+    .catch(
+        function(reason) {
+            $.unblockUI();
+            /* TODO: En caso de fallar mostrar alerta y permitir reintentar*/
+            console.log('Sin éxito: ('+reason+').');
+    });
+     
+}
+var docO_b64;
+var doc0_name;
+function encodeDocumentoOtro() {
+    console.log('encodeDocumentoOtro')
+    var reader = new FileReader();
+    
+    reader.onloadend = function() {
+                docO_b64 = (reader.result).split("base64,")[1]
+                name = (($("#inputDocumento"))[0].files[0].name).trim();
+                lastDot = name.lastIndexOf('.');
+                //docO_ext = name.substring(lastDot + 1);
+                doc0_name = name.substring(0, lastDot);
+    };
+
+    reader.readAsDataURL(document.getElementById("inputDocumento").files[0]);
+    return true;
+
 }
 
 function guardarCapacitacion(){
-
+ 
     if(validar() == true){
-        $.ajax({
+        if($('#inputDocumento').val() != '' || $('#inputDocumento').val() != null && docO_b64 == null){
+            guardarConfirmOtro()
+        }else{
+            console.log(docO_b64)
+            console.log('guardarCapacitacion')
+            $.ajax({
             method:'POST',
             url: webservice+'/capacitacion/guardar',
             headers:{
@@ -1248,7 +1430,10 @@ function guardarCapacitacion(){
                     id_relator: $('#selectRelator').val(),
                     lugar: $('#inputLugar').val(),
                     fecha:moment($("#inputFecha").val(), "DD-MM-YYYY").format("YYYY-MM-DD") + ' ' + $("#inputHora").val(),
-                    observacion: $('#inputObservacion').val()
+                    capacidad: $('#inputCapacidad').val(),
+                    observacion: $('#inputObservacion').val(),
+                    documento: docO_b64,
+                    nombre_archivo: doc0_name
                 },
             success: function(data, textStatus, jqXHR) {
                 data = JSON.parse(data) 
@@ -1257,7 +1442,12 @@ function guardarCapacitacion(){
                 if (data.resultado != "error") {
                     showFeedback("success", data.descripcion, "Guardado");
                     $('#capacitacionModal').modal('hide');
-                    getPersonal()
+                    if(JSON.parse(localStorage.user).id_cargo == 1004){
+                        getPersonalRegional();
+                    }else{
+                        getPersonal()
+                    }
+
                 } else {
                     showFeedback("error","Error al guardar","Error");
                     console.log("invalidos");
@@ -1269,6 +1459,8 @@ function guardarCapacitacion(){
      
             }
         })
+        }
+         
     }
 }
 
@@ -1351,8 +1543,14 @@ function validar(){
         $('#inputFecha').removeClass('is-invalid')
     }
 
+    if($('#inputCapacidad').val().length < 1){
+        valida = false
+        $('#inputCapacidad').addClass('is-invalid')
+    }else{
+        $('#inputCapacidad').removeClass('is-invalid')
+    }
  
-    
+     
     return valida;
 }
 
@@ -1408,7 +1606,7 @@ function asignar(){
     localStorage.region = $(this).data('id_region') 
     localStorage.id_persona = $(this).data('id_persona') 
 
-    $('#div_personas').html('');
+   // $('#div_personas').html('');
     $('#selectCapacitacion').html('')
     $('#nombrePersona').html($(this).data('nombre'))
     $('#mailPersona').html($(this).data('mail'))
@@ -1445,7 +1643,7 @@ function asignarVarios(){
     localStorage.comuna = $(this).data('id_comuna')     
     localStorage.region = $(this).data('id_region') 
  
-    $('#div_personas').html('');
+    //$('#div_personas').html('');
     $('#selectCapacitacionAll').html('')
 
     id =  $(this).data('id_region') 
@@ -1455,10 +1653,8 @@ function asignarVarios(){
         for(h = 0; h < capacitaciones[id].length; h++){
             $('#selectCapacitacionAll').append('<option value="'+capacitaciones[id][h].id_capacitacion+'">'+moment(capacitaciones[id][h].fecha_hora).format('DD-MM-YYYY - HH:mm')+', '+capacitaciones[id][h].lugar+'</option>') 
         }
-        if(localStorage.id_capacitacion != 'null' && localStorage.borrado_capacitacion == "false"){
-            $('#selectCapacitacionAll').val(localStorage.id_capacitacion)
-            verPersonal()
-        }
+        $('#selectCapacitacionAll').val(localStorage.id_capacitacion)
+        verPersonal()
     }else{
         $('#selectCapacitacionAll').append('<option value="-1" selected="">Sin Capacitaciones...</option>') 
     }
@@ -1476,7 +1672,7 @@ function verPersonal(){
             backgroundColor:'transparent',        
         } 
     });
-    $('#div_personas').html('');
+   // $('#div_personas').html('');
     if($('#selectCapacitacionAll').val() != -1){
    
         $.ajax({
@@ -1515,19 +1711,139 @@ function verPersonal(){
 }
 
 function cargarPeronal(data){
-    $('#div_personas').html('');
+   // $('#div_personas').html('');
 
     if(data.length > 0){
-        for (i = 0;  i < data.length; i++) {
+  /*      for (i = 0;  i < data.length; i++) {
             check = data[i].id_capacitacion != null ?  (data[i].borrado_capacitacion == false ? "checked" : "") : "" 
             div = '<div class="form-check form-check-inline custom-checkbox col-3 mr-0 mb-3">'+
                         '<input type="checkbox" id="check-persona-'+data[i].id_persona+'" name="checkPersonalCapacitacion" value="'+data[i].id_persona+'" '+
                             'class="form-check-input custom-control-input" '+check+'>'+
                         '<label class="form-check-label custom-control-label" for="check-persona-'+data[i].id_persona+'">'+data[i].nombres+' '+data[i].apellido_paterno+'</label>'+
                     '</div>'
+
+                    tr = '<tr>'+
+                    		'<td><input type="checkbox" id="check-persona-'+data[i].id_persona+'" name="checkPersonalCapacitacion" value="'+data[i].id_persona+'" '+
+                            		'class="form-check-input custom-control-input" '+check+'>'+
+                            '</td>'+
+	                        '<td>'+data[i].region+'</td>'+
+	                        '<td>'+data[i].comuna+'</td> '+
+	                        '<td>'+data[i].run+'</td>'+    
+	                        '<td>'+data[i].nombres+'</td>'+
+	                        '<td>'+data[i].apellido_paterno+'</td>'+
+	                        '<td>'+data[i].apellido_materno+'</td>'+     
+	                    '</tr>'
               
-            $('#div_personas').append(div);
+
+            $('#lista-personasVarias').append(tr);
         }
+*/
+    if($.fn.dataTable.isDataTable('#table-personasVarias')){
+        $('#table-personasVarias').DataTable().destroy();
+        $('#lista-personasVarias').empty();
+    }
+
+    var tablaD = $("#table-personasVarias").DataTable({
+        dom: "<'search'f>",
+
+        lengthMenu: [[10, 15, 20, -1], [10, 15, 20, "Todos"]],
+        language:spanishTranslation,
+        lengthChange: true,
+        info: false,
+        paging: false,
+        displayLength: -1,
+        ordering: true, 
+        order: [],
+        search: true,
+        data: data,
+        responsive: true, 
+        columns:[
+            {data: null,
+                render: function(data, type,row){
+                	/*check = data.id_capacitacion != null ?  (data.borrado_capacitacion == false ? "checked" : "") : "" 
+                    disabled = data.id_capacitacion != null ?  (data.borrado_capacitacion == false ? "disabled" : "") : "" 
+                    return  '<input type="checkbox" id="check-persona-'+data.id_persona+'" name="checkPersonalCapacitacion" value="'+data.id_persona+'" '+
+                            		''+check+' '+disabled+'>';*/
+                    if( data.id_capacitacion != null){
+                        return 1;
+                    }else{
+                        return 0;
+                    }
+                }
+            },
+            {data: "region"},
+            {data: "comuna"},
+            {data: "run"},
+            {data: "nombres"},
+            {data: "apellido_paterno"},
+            {data: "apellido_materno"},
+        ],
+        "rowCallback": function( row, data ) {
+            check = data.id_capacitacion != null ?  (data.borrado_capacitacion == false ? "checked" : "") : "" 
+            disabled = data.id_capacitacion != null ?  (data.borrado_capacitacion == false ? "disabled" : "") : "" 
+            $('td:eq(0)', row).html('<input type="checkbox" id="check-persona-'+data.id_persona+'" name="checkPersonalCapacitacion" value="'+data.id_persona+'" '+
+                                    ''+check+' '+disabled+'>');
+
+
+        },
+        "initComplete": function(settings, json) {
+             
+            var placeholder = ["","Región","Comuna"]
+            this.api().columns([1,2]).every( function (index) {
+                if(JSON.parse(localStorage.user).id_cargo == 1004 && index == 1){
+                    return;
+                }else{
+                    var column = this;
+                    var select = $('<select class="form-control col-sm-2 small _filtros"  id="selectCA'+index+'" >'+
+                        '<option value="" selected="selected">'+placeholder[index]+'</option></select>')
+                        .appendTo( $('#filtros-personasVarias'))
+                        .on( 'change', function () {
+                            var val = $.fn.dataTable.util.escapeRegex(
+                                $(this).val()
+                            );
+     
+                            column
+                                .search( val ? '^'+val+'$' : '', true, false )
+                                .draw();
+                        } );
+                    column.data().unique().each( function ( d, j ) {
+                        if(d != null){
+                            $('#selectCA'+index).append( '<option value="'+d.charAt(0).toUpperCase() + d.slice(1)+'">'+d.charAt(0).toUpperCase() + d.slice(1)+'</option>' )     
+                        }
+                        
+                    } );
+                    $('#selectCA'+index).niceSelect();    
+                }
+            })   
+
+            $('.dataTables_length select').addClass('nice-select small');         
+        },
+        "drawCallback": function(settings){
+ 
+            var placeholder = ["","Región","Comuna"]
+            this.api().columns([1,2]).every( function (index) {
+                if(JSON.parse(localStorage.user).id_cargo == 1004 && index == 1){
+                    return;
+                }else{
+                    var columnFiltered = this;
+                    var selectFiltered = $("#selectCA"+index)
+                    if(selectFiltered.val()===''){
+                        selectFiltered.empty()
+                        selectFiltered.append('<option value="">'+placeholder[index]+'</option>')
+                        columnFiltered.column(index,{search:'applied'}).data().unique().each( function ( d, j ) {
+                            if(d != null){
+                                selectFiltered.append( '<option value="'+d.charAt(0).toUpperCase() + d.slice(1)+'">'+d.charAt(0).toUpperCase() + d.slice(1)+'</option>' )    
+                            }                 
+
+                        } );
+                    }
+                    $('select').niceSelect('update');
+                }
+            })
+        }
+ 
+ 
+    });
     }else{
         $('#div_personas').html('No existe personal para el tipo de Rol seleccionado en la Comuna en la que se impartira la Capacitación.')
     }

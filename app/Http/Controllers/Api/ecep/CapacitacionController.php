@@ -187,16 +187,23 @@ class CapacitacionController extends Controller
 	                    core.region.orden_geografico asc, 
 	                    core.comuna.nombre asc");
 
-	        $listaCapacitaciones = DB::select("select rrhh.capacitacion.*, core.comuna.nombre as comuna, core.region.nombre as region, core.region.id_region, rrhh.persona.nombres,
-        				 rrhh.persona.apellido_paterno, rrhh.persona.apellido_materno 
-					from rrhh.capacitacion 
-					left join rrhh.persona on rrhh.capacitacion.id_relator = rrhh.persona.id_persona 
-					left join core.comuna on rrhh.capacitacion.id_comuna = core.comuna.id_comuna 
-					left join core.region on core.comuna.id_region = core.region.id_region 
-				    left join infraestructura.zona_region on core.region.id_region = infraestructura.zona_region.id_region 
-					left join infraestructura.zona on infraestructura.zona_region.id_zona = infraestructura.zona.id_zona 
-					where zona.id_zona in (".implode($zonas,",").")
-					order by core.region.orden_geografico asc, core.comuna.nombre asc");
+	        $listaCapacitaciones = DB::select("select rrhh_c.*, rrhh_c.id_capacitacion ,core.comuna.nombre as comuna, core.region.nombre as region, core.region.id_region, rrhh.persona.nombres,
+                rrhh.persona.apellido_paterno, rrhh.persona.apellido_materno, 
+                    (select count(p.id_capacitacion) from rrhh.capacitacion_persona as p
+                        where p.id_capacitacion = rrhh_c.id_capacitacion
+                        group by p.id_capacitacion) as convocados, 
+                    (select count(p.id_persona) as confirmados from rrhh.capacitacion as c left join rrhh.capacitacion_persona as p
+                        on (c.id_capacitacion = p.id_capacitacion) where confirma_asistencia = 1
+                        and c.id_capacitacion = rrhh_c.id_capacitacion
+                        group by c.id_capacitacion) as confirmados
+            from rrhh.capacitacion as rrhh_c
+            left join rrhh.persona on rrhh_c.id_relator = rrhh.persona.id_persona
+            left join core.comuna on rrhh_c.id_comuna = core.comuna.id_comuna
+            left join core.region on core.comuna.id_region = core.region.id_region
+            left join infraestructura.zona_region on core.region.id_region = infraestructura.zona_region.id_region
+            left join infraestructura.zona on infraestructura.zona_region.id_zona = infraestructura.zona.id_zona
+            where infraestructura.zona.id_zona in (".implode($zonas,",").")
+            order by core.region.orden_geografico asc, core.comuna.nombre asc");
 
 
             $pruebas = DB::select("SELECT rrhh.capacitacion_prueba.*,rrhh.capacitacion_persona.id_capacitacion_persona,rrhh.capacitacion.id_relator
@@ -268,7 +275,7 @@ class CapacitacionController extends Controller
 	        }
 
 
-	        $relatores = DB::select("select rrhh.persona.nombres, rrhh.persona.apellido_paterno, rrhh.persona.apellido_materno, rrhh.persona.id_persona, core.comuna.id_comuna, 
+	        /*$relatores = DB::select("select rrhh.persona.nombres, rrhh.persona.apellido_paterno, rrhh.persona.apellido_materno, rrhh.persona.id_persona, core.comuna.id_comuna, 
 	        	core.comuna.nombre as comuna, core.region.nombre as region, rrhh.persona.run 
 				from rrhh.persona 
 				left join core.usuario on rrhh.persona.id_usuario = core.usuario.id_usuario 
@@ -279,7 +286,24 @@ class CapacitacionController extends Controller
 				where core.usuario.id_tipo_usuario = 1052
 					and rrhh.persona.borrado = false 
 					and zona.id_zona in (".implode($zonas,",").")
-				order by core.comuna.nombre asc");
+				order by core.region.orden_geografico asc, core.comuna.nombre asc");*/
+
+
+            $relatores = DB::select("select rrhh_p.nombres, rrhh_p.apellido_paterno, rrhh_p.apellido_materno,rrhh_p.id_persona, core.comuna.id_comuna,
+               core.comuna.nombre as comuna, core.region.nombre as region, rrhh_p.run, (select count(c.id_capacitacion) from rrhh.capacitacion as c
+                      where c.id_relator= rrhh_p.id_persona
+                      group by c.id_relator) as capacitaciones
+               from rrhh.persona  as rrhh_p
+               left join core.usuario on rrhh_p.id_usuario = core.usuario.id_usuario
+               left join core.comuna on rrhh_p.id_comuna_postulacion = core.comuna.id_comuna
+               left join core.region on core.comuna.id_region = core.region.id_region
+               left join infraestructura.zona_region on core.region.id_region = infraestructura.zona_region.id_region
+               left join infraestructura.zona on infraestructura.zona_region.id_zona = infraestructura.zona.id_zona
+               where core.usuario.id_tipo_usuario = 1052
+                   and rrhh_p.borrado = false
+                   and zona.id_zona in (".implode($zonas,",").")
+               order by core.region.orden_geografico asc, core.comuna.nombre asc");
+
 	        /*
 	        foreach ($relatores as $key => $value) {
 	            $listaAnidadaR[$value->id_comuna][] = $value;
@@ -451,7 +475,7 @@ class CapacitacionController extends Controller
                         core.region.orden_geografico asc, 
                         core.comuna.nombre asc");
 
-            $listaCapacitaciones = DB::select("select rrhh.capacitacion.*, core.comuna.nombre as comuna, core.region.nombre as region, core.region.id_region, rrhh.persona.nombres,
+    /*        $listaCapacitaciones = DB::select("select rrhh.capacitacion.*, core.comuna.nombre as comuna, core.region.nombre as region, core.region.id_region, rrhh.persona.nombres,
                          rrhh.persona.apellido_paterno, rrhh.persona.apellido_materno 
                     from rrhh.capacitacion 
                     left join rrhh.persona on rrhh.capacitacion.id_relator = rrhh.persona.id_persona 
@@ -460,7 +484,27 @@ class CapacitacionController extends Controller
                     left join infraestructura.zona_region on core.region.id_region = infraestructura.zona_region.id_region 
                     left join infraestructura.zona on infraestructura.zona_region.id_zona = infraestructura.zona.id_zona 
                     where zona.id_zona in (".implode($zonas,",").")
-                    order by core.region.orden_geografico asc, core.comuna.nombre asc");
+                    order by core.region.orden_geografico asc, core.comuna.nombre asc");*/
+
+            $listaCapacitaciones = DB::select("select rrhh_c.*, rrhh_c.id_capacitacion ,core.comuna.nombre as comuna, core.region.nombre as region, core.region.id_region, rrhh.persona.nombres,
+                rrhh.persona.apellido_paterno, rrhh.persona.apellido_materno, 
+                    (select count(p.id_capacitacion) from rrhh.capacitacion_persona as p
+                        where p.id_capacitacion = rrhh_c.id_capacitacion
+                        group by p.id_capacitacion) as convocados, 
+                    (select count(p.id_persona) as confirmados from rrhh.capacitacion as c left join rrhh.capacitacion_persona as p
+                        on (c.id_capacitacion = p.id_capacitacion) where confirma_asistencia = 1
+                        and c.id_capacitacion = rrhh_c.id_capacitacion
+                        group by c.id_capacitacion) as confirmados
+            from rrhh.capacitacion as rrhh_c
+            left join rrhh.persona on rrhh_c.id_relator = rrhh.persona.id_persona
+            left join core.comuna on rrhh_c.id_comuna = core.comuna.id_comuna
+            left join core.region on core.comuna.id_region = core.region.id_region
+            left join infraestructura.zona_region on core.region.id_region = infraestructura.zona_region.id_region
+            left join infraestructura.zona on infraestructura.zona_region.id_zona = infraestructura.zona.id_zona
+            where infraestructura.zona.id_zona in (".implode($zonas,",").")
+            order by core.region.orden_geografico asc, core.comuna.nombre asc");
+
+
 
 
             $pruebas = DB::select("SELECT rrhh.capacitacion_prueba.*,rrhh.capacitacion_persona.id_capacitacion_persona,rrhh.capacitacion.id_relator
@@ -532,16 +576,18 @@ class CapacitacionController extends Controller
             }
 
 
-            $relatores = DB::select("select rrhh.persona.nombres, rrhh.persona.apellido_paterno, rrhh.persona.apellido_materno, rrhh.persona.id_persona, core.comuna.id_comuna, 
-                core.comuna.nombre as comuna, core.region.nombre as region, rrhh.persona.run 
-                from rrhh.persona 
-                left join core.usuario on rrhh.persona.id_usuario = core.usuario.id_usuario 
-                left join core.comuna on rrhh.persona.id_comuna_postulacion = core.comuna.id_comuna 
+            $relatores = DB::select("select rrhh_p.nombres, rrhh_p.apellido_paterno, rrhh_p.apellido_materno,rrhh_p.id_persona, core.comuna.id_comuna,
+               core.comuna.nombre as comuna, core.region.nombre as region, rrhh_p.run, (select count(c.id_capacitacion) from rrhh.capacitacion as c
+                      where c.id_relator= rrhh_p.id_persona
+                      group by c.id_relator) as capacitaciones
+                from rrhh.persona  as rrhh_p
+                left join core.usuario on rrhh_p.id_usuario = core.usuario.id_usuario 
+                left join core.comuna on rrhh_p.id_comuna_postulacion = core.comuna.id_comuna 
                 left join core.region on core.comuna.id_region = core.region.id_region 
                 left join infraestructura.zona_region on core.region.id_region = infraestructura.zona_region.id_region 
                 left join infraestructura.zona on infraestructura.zona_region.id_zona = infraestructura.zona.id_zona 
                 where core.usuario.id_tipo_usuario = 1052
-                    and rrhh.persona.borrado = false 
+                    and rrhh_p.borrado = false 
                     and zona.id_zona in (".implode($zonas,",").")
                 order by core.comuna.nombre asc");
             /*
@@ -623,6 +669,51 @@ class CapacitacionController extends Controller
         $capacitacion->fecha_hora = $post['fecha'];
         $capacitacion->observacion = isset($post['observacion']) ? $post['observacion'] : null;
         $capacitacion->capacidad = $post['capacidad'];
+
+        if(isset($post['documento']) && $capacitacion->archivo_asistencia == null){
+            function diccionarioTipos($mimeType){
+                $salida = "";
+                switch ($mimeType) {
+                    case 'image/jpeg':
+                        $salida = "jpg";
+                        break;
+                    case 'image/png':
+                        $salida = "png";
+                        break;
+                    case 'application/pdf':
+                        $salida = "pdf";
+                        break;
+                    case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
+                        $salida = "docx";
+                        break;
+                    case 'application/msword':
+                        $salida = "doc";
+                        break;
+                }
+                return $salida;
+            }
+
+            $documento = $post['documento'];
+            $nombreArchivo = $post['nombre_archivo'];
+
+            $imgdata = base64_decode($documento);
+            $f = finfo_open();
+
+            $mime_type = finfo_buffer($f, $imgdata, FILEINFO_MIME_TYPE);
+
+            $capacitacion->archivo_asistencia = $documento;
+            $capacitacion->archivo_nombre = $nombreArchivo;
+            $capacitacion->archivo_mimetype = $mime_type;
+
+            $folderPath = realpath(__DIR__ . '/../../../../..') . "/uploads/";
+            if (!file_exists($folderPath)) {
+                mkdir($folderPath);
+            }
+            $pdf = fopen (realpath(__DIR__ . '/../../../../..') . "/uploads/" . $capacitacion->id_capacitacion . "-" .$nombreArchivo. "." . diccionarioTipos($mime_type),'w');
+            fwrite ($pdf, $post["documento"]);
+            fclose ($pdf);
+
+        }
         DB::beginTransaction();
         try{
            $capacitacion->save();
@@ -875,7 +966,7 @@ class CapacitacionController extends Controller
         }
  
  
-        $listaCapacitaciones = DB::table('rrhh.capacitacion')
+     /*   $listaCapacitaciones = DB::table('rrhh.capacitacion')
             ->leftJoin('rrhh.persona_cargo' , 'rrhh.capacitacion.id_relator','=','rrhh.persona_cargo.id_persona_cargo')
             ->leftJoin('rrhh.persona' , 'rrhh.persona_cargo.id_persona','=','rrhh.persona.id_persona')
             ->leftJoin('core.comuna' , 'rrhh.capacitacion.id_comuna','=','core.comuna.id_comuna')
@@ -884,7 +975,25 @@ class CapacitacionController extends Controller
             ->where('rrhh.capacitacion.id_relator','=', $post['id_persona'])
             ->orderBy('core.region.orden_geografico','asc')
             ->orderBy('core.comuna.nombre','asc')
-            ->get();
+            ->get();*/
+
+            $listaCapacitaciones = DB::select("select rrhh_c.*, rrhh_c.id_capacitacion ,core.comuna.nombre as comuna, core.region.nombre as region, core.region.id_region, rrhh.persona.nombres,
+                rrhh.persona.apellido_paterno, rrhh.persona.apellido_materno, 
+                    (select count(p.id_capacitacion) from rrhh.capacitacion_persona as p
+                        where p.id_capacitacion = rrhh_c.id_capacitacion
+                        group by p.id_capacitacion) as convocados, 
+                    (select count(p.id_persona) as confirmados from rrhh.capacitacion as c left join rrhh.capacitacion_persona as p
+                        on (c.id_capacitacion = p.id_capacitacion) where confirma_asistencia = 1
+                        and c.id_capacitacion = rrhh_c.id_capacitacion
+                        group by c.id_capacitacion) as confirmados
+            from rrhh.capacitacion as rrhh_c
+            left join rrhh.persona on rrhh_c.id_relator = rrhh.persona.id_persona
+            left join core.comuna on rrhh_c.id_comuna = core.comuna.id_comuna
+            left join core.region on core.comuna.id_region = core.region.id_region
+            left join infraestructura.zona_region on core.region.id_region = infraestructura.zona_region.id_region
+            left join infraestructura.zona on infraestructura.zona_region.id_zona = infraestructura.zona.id_zona
+            where rrhh_c.id_relator =  ".$post['id_persona']."
+            order by core.region.orden_geografico asc, core.comuna.nombre asc");
 
         $datos['personal_capacitacion'] = $personaP;
         $datos['lista_capacitados'] = $personaCapacitadas;
@@ -1163,7 +1272,7 @@ class CapacitacionController extends Controller
         }
         $path_files = realpath('') . '/archivos/';
 
-        $subject = "Postulación - Evaluación Conocimientos Específicos y Pedagógicos";
+        $subject = "Preselección - Evaluación Conocimientos Específicos y Pedagógicos";
         $html = "
         <p>Estimado/a " . $nombre . " </p>
         <p>Usted ha sido preseleccionado/a para participar en la Evaluación de Conocimientos Específicos y Pedagógicos, ECEP 2019.</p>
@@ -1183,16 +1292,16 @@ class CapacitacionController extends Controller
 		try {
 			$mail->isSMTP(); // tell to use smtp
 			$mail->CharSet = "utf-8"; // set charset to utf8
-			// $mail->SMTPDebug = 0;
-			// $mail->Debugoutput = 'html';
+			$mail->SMTPDebug = 3;
+			$mail->Debugoutput = 'html';
 
-			$mail->SMTPSecure = "ssl"; // tls or ssl
+			$mail->SMTPSecure = "tls"; // tls or ssl
 			$mail->SMTPAuth = true;  // use smpt auth
 			$mail->Host = "mail.smtp2go.com"; 
-			$mail->Port = 443;//2525; //443; 
-			$mail->Username = "postulaciones@ecep2019.iie.cl";
-			$mail->Password = "MXA5cXkzdzJwcWZp";
-			$mail->setFrom("postulaciones@ecep2019.iie.cl", "ECEP");
+			$mail->Port = 2525;//2525; //443; 
+			$mail->Username = "reclutamiento@ecep2019.iie.cl";
+			$mail->Password = "b2MxemNmczk2MzAw@@@#";
+			$mail->setFrom("reclutamiento@ecep2019.iie.cl", "ECEP");
 			$mail->Subject = $subject;
 			$mail->MsgHTML($html);
 			$mail->addAddress($correo, $nombre);

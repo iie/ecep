@@ -123,22 +123,6 @@
                                     <label class="_text-legend">Total</label>
                                     <p class="_text-dato" id="total"></label>
                                 </div>
-                                <!-- <div class="col-2 text-center">
-                                    <label class="_text-legend">Supervisor</label>
-                                    <p class="_text-dato" id="tatal_supervisor"></label>
-                                </div>
-                                <div class="col-2 text-center">
-                                    <label class="_text-legend">Examinador</label>
-                                    <p class="_text-dato" id="total_examinador"></label>
-                                </div>
-                                <div class="col-2 text-center">
-                                    <label class="_text-legend">Examinador de Apoyo</label>
-                                    <p class="_text-dato" id="total_examinador_apoyo"></label>
-                                </div>
-                                <div class="col-2 text-center">
-                                    <label class="_text-legend">Anfitrión</label>
-                                    <p class="_text-dato" id="total_anfitrion"></p>
-                                </div> -->
                                 <div class="offset-sm-7 col-3 text-right">                                      
                                     <button class="btn btn-primary datatable-excel" role="button" id="descargar-lista" type="button"><i class="fas fa-download"></i> Descargar Lista</button>       
                                 </div>       
@@ -172,6 +156,15 @@
                             </table>
                         </div>
                         <div class="tab-pane fade" id="tabCapacitacion" role="tabpanel" aria-labelledby="tab-capacitacion">
+                            <div class="row pt-3 pb-3 _info">
+                                <div class="col-2 text-center">
+                                    <label class="_text-legend">Total</label>
+                                    <p class="_text-dato" id="total_capacitaciones"></label>
+                                </div>
+                                <div class="offset-sm-7 col-3 text-right">                                      
+                                    <button class="btn btn-primary datatable-excel" role="button" id="descargar-lista-capacitaciones" type="button"><i class="fas fa-download"></i> Descargar Lista</button>       
+                                </div>       
+                            </div>
                             <div class="row pb-4" id="capacitacion-Table_filters">
                                 <div class="row col-8 m-0" id="filtros-capacitacion"></div>
                                 <div class="col-4 text-right" id="clear-filtros">
@@ -187,7 +180,10 @@
                                         <th width="8%">COMUNA</th> 
                                         <th>LUGAR</th>  
                                         <th>HORA Y FECHA</th>
-                                        <th>RELATOR</th> 
+                                        <th>RELATOR</th>
+                                        <th>CAPACIDAD</th>
+                                        <th>CONVOCADOS</th>
+                                        <th>CONFIRMADOS</th> 
                                         <th>OBSERVACION</th> 
                                         <th>ACCIONES</th>       
                                     </tr>
@@ -197,6 +193,15 @@
                             </table>
                         </div>
                         <div class="tab-pane fade" id="tabRelator" role="tabpanel" aria-labelledby="tab-relator">
+                            <div class="row pt-3 pb-3 _info">
+                                <div class="col-2 text-center">
+                                    <label class="_text-legend">Total</label>
+                                    <p class="_text-dato" id="total_relatores"></label>
+                                </div>
+                                <div class="offset-sm-7 col-3 text-right">                                      
+                                    <button class="btn btn-primary datatable-excel" role="button" id="descargar-lista-relatores" type="button"><i class="fas fa-download"></i> Descargar Lista</button>       
+                                </div>       
+                            </div>
                             <div class="row pb-4" id="relator-Table_filters">
                                 <div class="row col-8 m-0" id="filtros-relator"></div>
                                 <div class="col-4 text-right" id="clear-filtros">
@@ -213,7 +218,8 @@
                                         <th>RUN</th> 
                                         <th>NOMBRES</th> 
                                         <th>APELLIDO PATERNO</th>
-                                        <th>APELLIDO MATERNO</th>                                    
+                                        <th>APELLIDO MATERNO</th>  
+                                        <th>CAPACITACIONES</th>                                  
                                         <th>ACCIONES</th>       
                                     </tr>
                                 </thead>
@@ -222,6 +228,15 @@
                             </table>
                         </div>
                         <div class="tab-pane fade" id="tabCapacitados" role="tabpanel" aria-labelledby="tab-capacitados">
+                            <div class="row pt-3 pb-3 _info">
+                                <div class="col-2 text-center">
+                                    <label class="_text-legend">Total</label>
+                                    <p class="_text-dato" id="total_capacitados"></label>
+                                </div>
+                                <div class="offset-sm-7 col-3 text-right">                                      
+                                    <button class="btn btn-primary datatable-excel" role="button" id="descargar-lista-capacitados" type="button"><i class="fas fa-download"></i> Descargar Lista</button>       
+                                </div>       
+                            </div>
                             <div class="row pb-4" id="centro-Table_filters">
                                 <div class="row col-8 m-0" id="filtros-capacitados"></div>
                                 <div class="col-4 text-right" id="clear-filtros-capacitados">
@@ -433,7 +448,7 @@
             <div class="modal-dialog  modal-xl" role="document">
                 <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="titulo_modal">Nueva Capacitación</h5>
+                    <h5 class="modal-title" id="titulo_modal_capacitacion">Nueva Capacitación</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -473,17 +488,27 @@
                                     <div class="input-group-append" data-target="#divInputFecha" data-toggle="datetimepicker">
                                         <div class="input-group-text"><i class="far fa-calendar-alt"></i></div>
                                     </div>
-                                </div>
-                                
+                                </div>                                
                             </div>
-                            <div class="form-group col-8">
+                            <div class="form-group col-2">
+                                <label for="inputCapacidad">Capacidad:</label>
+                                <input type="text" id="inputCapacidad" class="form-control" oninput="this.value=Numeros(this.value)"/>                         
+                            </div>
+                            <div class="form-group col-6">
                                 <label for="inputLugar">Lugar:</label>
                                 <input type="text" class="form-control" id="inputLugar" oninput="this.value=NumText(this.value)">
                             </div>                            
                             <div class="form-group col-12">
                                 <label for="inputObservacion">Observación:</label>
                                 <textarea type="text" class="form-control" id="inputObservacion" oninput="this.value=NumText(this.value)"></textarea>
-                            </div>  
+                            </div> 
+
+
+                            <div class="form-group col-12">
+                                <label for="inputDocumento">Documento:</label>
+                                <label id="inputNombreArchivo"></label>
+                                <input type="file" class="documento" id="inputDocumento" accept=".doc, .docx, .pdf, .png, .jpg">
+                            </div> 
                         </div>
                     </div>
               </div>
@@ -517,7 +542,7 @@
                     </div> -->
 
         <div class="modal fade" id="asignarCapacitacion" tabindex="-1" role="dialog" aria-hidden="true">
-            <div class="modal-dialog  modal-lg modal-dialog-scrollable" role="document">
+            <div class="modal-dialog  modal-xl modal-dialog-scrollable" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="titulo_modal_capacitacion">Capacitación</h5>
@@ -550,6 +575,21 @@
                                     <label class="col-2 pl-0" for="inputRolAsignado">Personal:</label>
                                     <label class="col-6 ml-2 invalid-feedback" id="rol-no-select" style=""> Debe seleccionar al menos 1 persona.</label>
                                     <div class="pl-1" id="div_personas">
+                                        <table id="table-personasVarias" class="stripe table table-hover _table-link dataTable no-footer" style="width:100%;">
+                                            <thead>         
+                                                <tr>
+                                                    <th></th>
+                                                    <th>REGION</th>
+                                                    <th>COMUNA</th> 
+                                                    <th>RUN</th>    
+                                                    <th>NOMBRES</th>
+                                                    <th>APELLIDO PATERNO</th>
+                                                    <th>APELLIDO MATERNO</th>       
+                                                </tr>
+                                            </thead>
+                                            <tbody id="lista-personasVarias">
+                                            </tbody>
+                                        </table>
                                     </div>
                                 </div>                            
                             </div>
