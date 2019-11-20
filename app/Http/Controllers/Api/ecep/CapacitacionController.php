@@ -159,7 +159,9 @@ class CapacitacionController extends Controller
 			
 			
 	        $personaP = DB::select("select DISTINCT 
-	                rrhh.persona.*, core.comuna.nombre as comuna, core.region.nombre as region, 
+	                rrhh.persona.id_persona, rrhh.persona.run,rrhh.persona.nombres,rrhh.persona.apellido_paterno,rrhh.persona.apellido_materno,
+                    rrhh.persona.borrado, rrhh.persona.email, rrhh.persona.estado_proceso,rrhh.persona.id_usuario,rrhh.persona.telefono,
+                    core.comuna.nombre as comuna, core.region.nombre as region, 
 	                infraestructura.zona.nombre as nombre_zona, core.region.orden_geografico,
 	                rrhh.capacitacion_persona.id_capacitacion_persona,rrhh.capacitacion_persona.id_capacitacion, rrhh.capacitacion.lugar, core.region.id_region as id_region_postulacion,
 	                rrhh.capacitacion.fecha_hora, rrhh.capacitacion_persona.borrado as borrado_capacitacion 
@@ -191,10 +193,12 @@ class CapacitacionController extends Controller
                 rrhh.persona.apellido_paterno, rrhh.persona.apellido_materno, 
                     (select count(p.id_capacitacion) from rrhh.capacitacion_persona as p
                         where p.id_capacitacion = rrhh_c.id_capacitacion
+						and p.borrado = false
                         group by p.id_capacitacion) as convocados, 
                     (select count(p.id_persona) as confirmados from rrhh.capacitacion as c left join rrhh.capacitacion_persona as p
                         on (c.id_capacitacion = p.id_capacitacion) where confirma_asistencia = 1
                         and c.id_capacitacion = rrhh_c.id_capacitacion
+						and p.borrado = false
                         group by c.id_capacitacion) as confirmados
             from rrhh.capacitacion as rrhh_c
             left join rrhh.persona on rrhh_c.id_relator = rrhh.persona.id_persona
@@ -203,7 +207,7 @@ class CapacitacionController extends Controller
             left join infraestructura.zona_region on core.region.id_region = infraestructura.zona_region.id_region
             left join infraestructura.zona on infraestructura.zona_region.id_zona = infraestructura.zona.id_zona
             where infraestructura.zona.id_zona in (".implode($zonas,",").")
-            order by core.region.orden_geografico asc, core.comuna.nombre asc");
+            order by rrhh_c.borrado asc,core.region.orden_geografico asc, core.comuna.nombre asc");
 
 
             $pruebas = DB::select("SELECT rrhh.capacitacion_prueba.*,rrhh.capacitacion_persona.id_capacitacion_persona,rrhh.capacitacion.id_relator
@@ -490,10 +494,12 @@ class CapacitacionController extends Controller
                 rrhh.persona.apellido_paterno, rrhh.persona.apellido_materno, 
                     (select count(p.id_capacitacion) from rrhh.capacitacion_persona as p
                         where p.id_capacitacion = rrhh_c.id_capacitacion
+						and p.borrado = false
                         group by p.id_capacitacion) as convocados, 
                     (select count(p.id_persona) as confirmados from rrhh.capacitacion as c left join rrhh.capacitacion_persona as p
                         on (c.id_capacitacion = p.id_capacitacion) where confirma_asistencia = 1
                         and c.id_capacitacion = rrhh_c.id_capacitacion
+						and p.borrado = false
                         group by c.id_capacitacion) as confirmados
             from rrhh.capacitacion as rrhh_c
             left join rrhh.persona on rrhh_c.id_relator = rrhh.persona.id_persona
@@ -502,7 +508,7 @@ class CapacitacionController extends Controller
             left join infraestructura.zona_region on core.region.id_region = infraestructura.zona_region.id_region
             left join infraestructura.zona on infraestructura.zona_region.id_zona = infraestructura.zona.id_zona
             where infraestructura.zona.id_zona in (".implode($zonas,",").")
-            order by core.region.orden_geografico asc, core.comuna.nombre asc");
+            order by rrhh_c.borrado asc, core.region.orden_geografico asc, core.comuna.nombre asc");
 
 
 
@@ -663,12 +669,84 @@ class CapacitacionController extends Controller
             $capacitacion = Capacitacion::where("id_capacitacion", $post["id_capacitacion"])->first();
         }
 
-        $capacitacion->id_relator = $post['id_relator'];
-        $capacitacion->id_comuna = $post['id_comuna'];
-        $capacitacion->lugar = $post['lugar'];
-        $capacitacion->fecha_hora = $post['fecha'];
+        $capacitacion->id_relator = isset($post['id_relator']) ? $post['id_relator'] : $capacitacion->id_relator;
+        $capacitacion->id_comuna = isset($post['id_comuna']) ? $post['id_comuna'] : $capacitacion->id_comuna;
+        $capacitacion->lugar = isset($post['lugar']) ? $post['lugar'] : $capacitacion->lugar;
+        $capacitacion->fecha_hora = isset($post['fecha']) ? $post['fecha'] : $capacitacion->fecha_hora;
         $capacitacion->observacion = isset($post['observacion']) ? $post['observacion'] : null;
-        $capacitacion->capacidad = $post['capacidad'];
+        $capacitacion->capacidad = isset($post['capacidad']) ? $post['capacidad'] : $capacitacion->capacidad;
+
+        if(isset($post['documento']) && $capacitacion->archivo_asistencia == null){
+            function diccionarioTipos($mimeType){
+                $salida = "";
+                switch ($mimeType) {
+                    case 'image/jpeg':
+                        $salida = "jpg";
+                        break;
+                    case 'image/png':
+                        $salida = "png";
+                        break;
+                    case 'application/pdf':
+                        $salida = "pdf";
+                        break;
+                    case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
+                        $salida = "docx";
+                        break;
+                    case 'application/msword':
+                        $salida = "doc";
+                        break;
+                }
+                return $salida;
+            }
+
+            $documento = $post['documento'];
+            $nombreArchivo = $post['nombre_archivo'];
+
+            $imgdata = base64_decode($documento);
+            $f = finfo_open();
+
+            $mime_type = finfo_buffer($f, $imgdata, FILEINFO_MIME_TYPE);
+
+            $capacitacion->archivo_asistencia = $documento;
+            $capacitacion->archivo_nombre = $nombreArchivo;
+            $capacitacion->archivo_mimetype = $mime_type;
+
+            $folderPath = realpath(__DIR__ . '/../../../../..') . "/uploads/";
+            if (!file_exists($folderPath)) {
+                mkdir($folderPath);
+            }
+            $pdf = fopen (realpath(__DIR__ . '/../../../../..') . "/uploads/" . $capacitacion->id_capacitacion . "-" .$nombreArchivo. "." . diccionarioTipos($mime_type),'w');
+            fwrite ($pdf, $post["documento"]);
+            fclose ($pdf);
+
+        }
+        DB::beginTransaction();
+        try{
+           $capacitacion->save();
+        }catch (\Exception $e){
+            DB::rollback();
+            return response()->json(['resultado'=>'error','descripcion'=>'Error al guardar. ()'. $e->getMessage()]);
+        }
+
+        DB::commit();
+        return response()->json(["resultado"=>"ok","descripcion"=>"Se ha guardado con exito"]);
+    }
+
+
+    public function guardarDocumento(Request $request){
+
+        $post = $request->all();
+
+        $validacion = Validator::make($post, [
+            'id_usuario' => 'required|int', 
+            'id_capacitacion' => 'required|int',
+        ]); 
+
+        if ($validacion->fails()) {
+            return response()->json(array("resultado"=>"error","descripcion"=>$validacion->errors()), 422); 
+        }
+
+        $capacitacion = Capacitacion::where("id_capacitacion", $post["id_capacitacion"])->first();
 
         if(isset($post['documento']) && $capacitacion->archivo_asistencia == null){
             function diccionarioTipos($mimeType){
@@ -783,7 +861,7 @@ class CapacitacionController extends Controller
 
                     ->select('rrhh.persona.id_persona','rrhh.persona.nombres','rrhh.persona.apellido_paterno',
                         'rrhh.persona.apellido_materno','rrhh.capacitacion_persona.asistencia','rrhh.capacitacion_persona.estado',
-                        'rrhh.capacitacion_persona.id_capacitacion_persona')
+                        'rrhh.capacitacion_persona.id_capacitacion_persona','rrhh.capacitacion.id_capacitacion')
                     //->where('rrhh.persona_cargo.id_cargo','=',$post['id_cargo'])
                     ->where('rrhh.capacitacion_persona.id_capacitacion','=',$post['id_capacitacion'])
                     ->where('rrhh.persona.estado_proceso','=', 'preseleccionado')
@@ -981,10 +1059,12 @@ class CapacitacionController extends Controller
                 rrhh.persona.apellido_paterno, rrhh.persona.apellido_materno, 
                     (select count(p.id_capacitacion) from rrhh.capacitacion_persona as p
                         where p.id_capacitacion = rrhh_c.id_capacitacion
+						and p.borrado = false
                         group by p.id_capacitacion) as convocados, 
                     (select count(p.id_persona) as confirmados from rrhh.capacitacion as c left join rrhh.capacitacion_persona as p
                         on (c.id_capacitacion = p.id_capacitacion) where confirma_asistencia = 1
                         and c.id_capacitacion = rrhh_c.id_capacitacion
+						and p.borrado = false
                         group by c.id_capacitacion) as confirmados
             from rrhh.capacitacion as rrhh_c
             left join rrhh.persona on rrhh_c.id_relator = rrhh.persona.id_persona
@@ -993,7 +1073,7 @@ class CapacitacionController extends Controller
             left join infraestructura.zona_region on core.region.id_region = infraestructura.zona_region.id_region
             left join infraestructura.zona on infraestructura.zona_region.id_zona = infraestructura.zona.id_zona
             where rrhh_c.id_relator =  ".$post['id_persona']."
-            order by core.region.orden_geografico asc, core.comuna.nombre asc");
+            order by rrhh_c.borrado asc, core.region.orden_geografico asc, core.comuna.nombre asc");
 
         $datos['personal_capacitacion'] = $personaP;
         $datos['lista_capacitados'] = $personaCapacitadas;
@@ -1138,27 +1218,19 @@ class CapacitacionController extends Controller
 
         if(isset($post['evaluado'])){
             foreach ($post['evaluado'] as $evaluado) {
-                $capacitacionPersona = CapacitacionPersona::where('id_persona',$evaluado['id_persona'])->first();
+                $capacitacionPersona = CapacitacionPersona::where('id_persona',$evaluado['id_persona'])
+                ->where('id_capacitacion',$evaluado['id_capacitacion'])
+                ->first();
  
                 if(!isset( $capacitacionPersona)){
                     return response()->json(array("resultado"=>"error","descripcion"=>"La persona no existe", 422)); 
                 }
+                if($evaluado['puntaje_psicologica'] == 0 && $evaluado['estado'] == 'true'){
+                    return response()->json(array("resultado"=>"error","descripcion"=>"No puede Aprobar si la no es recomendado en la Prueba Psicologica", 422)); 
+                }
 
                 $capacitacionPersona->asistencia  = $evaluado['asistencia'] == -1 ? null : $evaluado['asistencia'];
                 $capacitacionPersona->estado  = $evaluado['estado'] == -1 ? null : $evaluado['estado'];
-
-                if($capacitacionPersona->estado == 'Aprobado'){
-                    $persona = Persona::where('id_persona',$evaluado['id_persona'])->first();
-                    $persona->estado_proceso = 'capacitado';
-                  
-                    try{
-                        $persona->save();
-
-                    }catch (\Exception $e){
-                        DB::rollback();
-                        return response()->json(['resultado'=>'error','descripcion'=>'Error al guardar Estado Proceso. ()'. $e->getMessage()]);
-                    }
-                }
 
                 $capacitacionPrueba = CapacitacionPrueba::where('id_capacitacion_persona',$evaluado['id_capacitacion_persona'])
                     ->get();
@@ -1171,8 +1243,11 @@ class CapacitacionController extends Controller
 					$_p = Persona::find($evaluado['id_persona']);
 					if($evaluado['estado']=='true'){
 						$_p->estado_proceso = 'capacitado';	
-					}
-					else{
+
+					}else if($evaluado['puntaje_psicologica'] == 0){
+                        $_p->estado_proceso = 'rechazado';
+
+                    }else{
 						$_p->estado_proceso = 'preseleccionado';	
 					}
 					$_p->save();
@@ -1237,6 +1312,43 @@ class CapacitacionController extends Controller
         }
     }
 
+    public function deshabilitarCapacitacion(Request $request)
+    {
+        $post = $request->all();    
+ 
+        $validacion = Validator::make($post, [
+            'id_usuario' => 'required|int',
+            'id_capacitacion' => 'required|int',
+        ]); 
+
+        if ($validacion->fails()) {
+            return response()->json(array("resultado"=>"error","descripcion"=>$validacion->errors()), 422); 
+        }
+
+        try{
+
+            $cap = Capacitacion::find($post['id_capacitacion']);
+
+            $capacitacionPersona = CapacitacionPersona::where('id_capacitacion',$post['id_capacitacion'])
+                                    ->count();
+
+            if($capacitacionPersona > 0){
+                return response()->json(['resultado'=>'error','descripcion'=>'No puede deshabilitar una capacitación que tiene personas asignadas.']);
+            }
+
+            $cap->borrado = true;
+            $cap->save();
+
+
+        }catch (\Exception $e){
+            DB::rollback();
+            return response()->json(['resultado'=>'error','descripcion'=>'Error al deshabilitar la capacitación. ()'. $e->getMessage()]);
+        }
+
+        DB::commit();
+        return response()->json(["resultado"=>"ok","descripcion"=>"Se ha deshabilitado con exito"]);
+    }
+
     public function infoConfirmacion($idCapPersona)
     {
         $cap = CapacitacionPersona::find($idCapPersona);
@@ -1292,16 +1404,16 @@ class CapacitacionController extends Controller
 		try {
 			$mail->isSMTP(); // tell to use smtp
 			$mail->CharSet = "utf-8"; // set charset to utf8
-			$mail->SMTPDebug = 3;
-			$mail->Debugoutput = 'html';
+			$mail->SMTPDebug = 0;
+			// $mail->Debugoutput = 'html';
 
 			$mail->SMTPSecure = "tls"; // tls or ssl
 			$mail->SMTPAuth = true;  // use smpt auth
 			$mail->Host = "mail.smtp2go.com"; 
 			$mail->Port = 2525;//2525; //443; 
-			$mail->Username = "reclutamiento@ecep2019.iie.cl";
-			$mail->Password = "b2MxemNmczk2MzAw@@@#";
-			$mail->setFrom("reclutamiento@ecep2019.iie.cl", "ECEP");
+			$mail->Username = "reclutamientos@ecep2019.iie.cl";
+			$mail->Password = 'K1ll@@ZnVmcG41YWtwa3Yw·$""@@@';
+			$mail->setFrom("reclutamientos@ecep2019.iie.cl", "ECEP");
 			$mail->Subject = $subject;
 			$mail->MsgHTML($html);
 			$mail->addAddress($correo, $nombre);

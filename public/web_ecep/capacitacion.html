@@ -176,8 +176,8 @@
                                 <thead>         
                                     <tr>
                                         <th>N°</th>
-                                        <th width="8%">REGION</th>
-                                        <th width="8%">COMUNA</th> 
+                                        <th>REGION</th>
+                                        <th>COMUNA</th> 
                                         <th>LUGAR</th>  
                                         <th>HORA Y FECHA</th>
                                         <th>RELATOR</th>
@@ -520,7 +520,63 @@
           </div>
         </div>
         
-  
+       <!-- Modal -->
+        <div class="modal fade" id="capacitacionModalRelator" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog  modal-xl" role="document">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Modificar Capacitación</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="container-fluid">
+                        <div class="form-row">
+                            <div class="form-group col-3">
+                                <label for="selectRegionR">Región:</label>
+                                <h4 id="selectRegionR"></h4>
+                            </div>
+                            <div class="form-group col-3">
+                                <label for="selectComunaR">Comuna:</label>
+                                <h4 id="selectComunaR"></h4>
+                            </div>
+                            <div class="form-group col-2">
+                                <label for="inputHoraR">Hora:</label>
+                                <h4 id="inputHoraR"></h4> 
+                            </div>
+                            <div class="form-group col-2">
+                                <label for="inputFechaR">Fecha:</label>
+                                <h4 id="inputFechaR"></h4>                                
+                            </div>
+                            <div class="form-group col-2">
+                                <label for="inputCapacidadR">Capacidad:</label>
+                                <h4 id="inputCapacidadR"></h4>                            
+                            </div>
+                            <div class="form-group col-12">
+                                <label for="inputLugarR">Lugar:</label>
+                                <h4 id="inputLugarR"></h4>  
+                            </div>                            
+                            <div class="form-group col-12">
+                                <label for="inputObservacionR">Observación:</label>
+                                <h5 id="inputObservacionR"></h5>  
+                            </div> 
+                            <div class="form-group col-12">
+                                <label for="inputDocumentoR">Documento:</label>
+                                <label id="inputNombreArchivoR"></label>
+                                <input type="file" class="documento" id="inputDocumentoR" accept=".doc, .docx, .pdf, .png, .jpg">
+                            </div> 
+                        </div>
+                    </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" id="guardar_capacitacionR">Guardar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        
 
     <!-- Modal -->
                     <!-- <div class="modal-body">

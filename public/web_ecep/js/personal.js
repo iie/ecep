@@ -276,18 +276,63 @@ function llenarVista(data){
             },
         ],
         "rowCallback": function( row, data ) {
-            select = '<select class="form-control selectEstado" name="selectEstado">'+
-                                '<option value="reclutado">Reclutado</option>'+
+            select = '<select class="form-control selectEstado" name="selectEstado">'
+                        if(data.estado == 'reclutado'){
+                            select +=   '<option value="reclutado">Reclutado</option>'+
+                                        '<option value="preseleccionado">Preseleccionado</option>'+
+                                        '<option value="rechazado">Rechazado</option>'
+                        }
+
+                        if(data.estado == 'preseleccionado'){
+                            select +=   '<option value="preseleccionado">Preseleccionado</option>'+
+                                        '<option value="rechazado">Rechazado</option>'
+                        }
+
+                        if(data.estado == 'capacitado'){
+                            select +=   '<option value="capacitado" disabled>Capacitado</option>'+
+                                        '<option value="seleccionado">Seleccionado</option>'
+                                        if(JSON.parse(localStorage.user).id_cargo != 1003 && JSON.parse(localStorage.user).id_cargo != 1004){
+                                           select += '<option value="contratado">Contratado</option>'
+                                        }else{
+                                            select += '<option value="contratado" disabled>Contratado</option>'
+                                        }
+                            select += '<option value="rechazado">Rechazado</option>'
+                        }
+
+                        if(data.estado == 'seleccionado'){
+                            select +=   '<option value="seleccionado">Seleccionado</option>'
+                                        if(JSON.parse(localStorage.user).id_cargo != 1003 && JSON.parse(localStorage.user).id_cargo != 1004){
+                                           select += '<option value="contratado">Contratado</option>'
+                                        }else{
+                                            select += '<option value="contratado" disabled>Contratado</option>'
+                                        }
+                            select +=   '<option value="rechazado">Rechazado</option>'
+                        }
+
+                        if(data.estado == 'contratado'){
+                            if(JSON.parse(localStorage.user).id_cargo != 1003 && JSON.parse(localStorage.user).id_cargo != 1004){
+                               select += '<option value="contratado">Contratado</option>'
+                            }else{
+                                select += '<option value="contratado" disabled>Contratado</option>'
+                            }
+                        }
+
+                        if(data.estado == 'rechazado'){
+                            select +=   '<option value="rechazado">Rechazado</option>'
+                        }
+
+
+/*                                '<option value="reclutado">Reclutado</option>'+
                                 '<option value="preseleccionado">Preseleccionado</option>'+
-                                '<option value="capacitado">Capacitado</option>'+
+                                '<option value="capacitado" disabled>Capacitado</option>'+
                                 '<option value="seleccionado">Seleccionado</option>'
                                 if(JSON.parse(localStorage.user).id_cargo != 1003 && JSON.parse(localStorage.user).id_cargo != 1004){
                                    select += '<option value="contratado">Contratado</option>'
                                 }else{
                                     select += '<option value="contratado" disabled>Contratado</option>'
                                 }
-                    select += '<option value="rechazado">Rechazado</option>'+
-                        '</select>'
+                    select += '<option value="rechazado">Rechazado</option>'+*/
+                    select += '</select>'
 
 
             acciones='<button type="button" id="persona_'+data.id_persona+'" onclick="modificar('+data.id_persona+',true)" class="btn btn-primary btn-sm _btn-item"><i class="fa fa-pencil-alt"></i></button>'+
@@ -867,8 +912,16 @@ function cambiarEstado(){
                     if(option == 'contratado' || option == 'rechazado'){
                         select.prop('disabled',true)
                     }
+
+                    if(JSON.parse(localStorage.user).id_cargo == 1004){
+                        getPersonalCoordinador();
+                    }else if(JSON.parse(localStorage.user).id_cargo == 1003){
+                        getPersonalCoordinadorZonal();
+                    }else{
+                        getPersonal();
+                    }
                 } else {
-                    showFeedback("error","Error al guardar","Error");
+                    showFeedback("error",data.descripcion,"Error");
                     console.log("invalidos");
                 }
             },
@@ -946,7 +999,7 @@ function btnClearFilters(){
     $('#select2').val("").niceSelect('update'); 
     $('#select3').val("").niceSelect('update'); 
     $('#select4').val("").niceSelect('update'); 
-    $('#select12').val("").niceSelect('update'); 
+    $('#select11').val("").niceSelect('update'); 
 
     $('#selectZ_1').val("").niceSelect('update');
     $('#selectZ_2').val("").niceSelect('update'); 

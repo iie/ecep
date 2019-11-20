@@ -211,7 +211,7 @@ h6, .h6 {
   padding-bottom: 15%;
   height: 70%;
   max-height: 70%;
-  max-width: 1366px;
+  max-width: 1800px;
 }
 
 /*ENCABEZADO*/
@@ -231,7 +231,7 @@ h6, .h6 {
 }
 
 .blockUI.blockMsg.blockPage {
-    z-index: 9999;
+    z-index: 99999 !important;
     border-radius: 15px;
     background-color: #262626 !important;
     color: #ffffffb3 !important;
@@ -317,7 +317,7 @@ h6, .h6 {
 
     ._filtros {
         padding-top: 0px !important;
-        max-width: 300px !important;
+        max-width: 700px !important;
         margin-right: 10px;
     }
     .limpiar-filtros{
@@ -411,7 +411,16 @@ table.dataTable.no-footer {
   text-decoration: n
   one;
 }
+.blockUI .blockMsg .blockPage{
+    z-index: 9999 !important;
+}
+.blockOverlay{
+    z-index: 9999 !important;
+}
 .blockUI.blockMsg.blockPage {
 
     background-color: transparent !important;
 }
+/*.modal {
+    z-index: 1000 !important;
+}*/
