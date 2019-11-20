@@ -64,6 +64,8 @@
 
     <script type="text/javascript" src="vendor/datatables/jquery.dataTables.min.js"></script>
 
+    <script type="text/javascript" src="vendor/highcharts/highcharts.js"></script>
+
     <script type="text/javascript" src="vendor/utils.js"></script>
 
     <script type="text/javascript" src="js/infraestructura.js"></script>
@@ -219,8 +221,8 @@
                     <div class="tab-pane fade show active" id="pills-aplicacion" role="tabpanel" aria-labelledby="pills-aplicacion-tab">
 
                         <div class="row pb-4">
-
-	                        <div class="row col-7 m-0" style="position: absolute;margin-left: 750px !important;">
+                            <div id="container" style=" height:150px; "></div>
+	                        <div class="row justify-content-end col-7 m-0" style="position: absolute;margin-left: 550px !important;">
                                 <div class="col-2 _info text-center">                            
                                     <p class="_text-dato" id="totalSedesreq">0</p>
                                     <label class="_text-legend">SEDES REQUERIDAS</label>
@@ -262,7 +264,7 @@
 
                                     <tr>
 
-                                        <!-- <th>Nro</th> -->
+                                        <th>Nro</th>
 
                                         <th>REGION</th>
 
@@ -306,35 +308,67 @@
 
                     	<div class="tab-pane fade show active" id="pills-operacion" role="tabpanel" aria-labelledby="pills-operacion-tab">
 
-                    		<div class="row pb-4">
+                    		<div class="row pb-4 pr-0">
+                                    <div class="row col-12 pr-0">
 
-		                        <div class="row col-6 m-0" style="position: absolute;margin-left: 900px  !important;">
+                                    <div id="container2" style=" height:150px; margin-right: -11%;"></div>
 
-		                            <div class="col-2 _info text-center">                                
+                                    <div class="col-1 _info text-center" style="margin-left: 7.8% !important;">                                
 
-		                                <p class="_text-dato" id="totalCentros">0</p>
+                                        <p class="_text-dato" id="totalCentros">0</p>
 
-		                                <label class="_text-legend">CONFIRMADOS</label>
+                                        <label class="_text-legend">REQUERIDOS</label>
 
-		                            </div>
+                                    </div>
 
-		                            <div class="col-2 _info text-center">                               
+                                    <div class="col-1 _info text-center">                               
 
-		                                <p class="_text-dato" id="operativosCentros">0</p>
+                                        <p class="_text-dato" id="operativosCentros">0</p>
 
-		                                <label class="_text-legend">OPERATIVOS</label>
+                                        <label class="_text-legend">CONFIRMADOS</label>
 
-		                            </div>
+                                    </div>
+                                    <div class="row col-sm-5 pr-0">
+                                    <div class="col-2 mr-0 _info text-center">                               
 
-		                            <div class="col-2 _info text-center">                               
+                                        <p class="_text-dato" id="servicios_basicos">0</p>
 
-		                                <p class="_text-dato" id="camaras">0</p>
+                                        <label class="_text-legend">SERVICIOS BASICOS</label>
 
-		                                <label class="_text-legend">CAMARAS</label>
+                                    </div>
+                                    <div class="col-2 ml-0 mr-0 _info text-center">                               
 
-		                            </div>
+                                        <p class="_text-dato" id="inmobiliario">0</p>
 
-		                        </div>
+                                        <label class="_text-legend">MOBILIARIO</label>
+
+                                    </div>
+                                    <div class="col-2 ml-0 mr-0 _info text-center">                               
+
+                                        <p class="_text-dato" id="extintor">0</p>
+
+                                        <label class="_text-legend">EXTINTOR</label>
+
+                                    </div>
+                                    <div class="col-2 ml-0 mr-0 _info text-center">                               
+
+                                        <p class="_text-dato" id="internet">0</p>
+
+                                        <label class="_text-legend">INTERNET</label>
+
+                                    </div>
+                                    <div class="col-2 ml-0 mr-0 _info text-center">                               
+
+                                        <p class="_text-dato" id="camaras">0</p>
+
+                                        <label class="_text-legend">CAMARAS</label>
+
+                                    </div>
+                                    <label class="_text-legend text-center _info" style="width: 438px;padding-top: 0% !important;font-size: 20px;margin-top: -56px !important;height: min-content;">HABILITACION</label>
+                                    </div>
+                                     
+                                </div>
+		                       
 
 		                    </div>
 
@@ -369,7 +403,11 @@
 	                                        <th>PROVINCIA</th>
 
 	                                        <th style="text-align: center;">C.O CONFIRMADO</th>
-
+                                            <th style="text-align: center;">SERVICIOS BASICOS</th>
+                                            <th style="text-align: center;">MOBILIARIO</th>
+                                            <th style="text-align: center;">EXTINTOR</th>
+                                            <th style="text-align: center;">INTERNET</th>
+                                           
 	                                        <th style="text-align: center;">CAMARAS</th>
 
 	                                        <th>ENCARGADO</th>

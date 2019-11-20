@@ -1,4 +1,5 @@
 $(document).ready(function(){
+    loginvalid(localStorage.getItem('user'))
     $('#nombre_usuario').html(JSON.parse(localStorage.user).nombres+' '+JSON.parse(localStorage.user).apellidos+' ')
     $('#redirect').css('display','');
     $('#redirect').on('click',redirectModulo);
@@ -35,7 +36,9 @@ function getCentro(){
 
 var encargadoZonal = ''
 function llenarVista(data){
+    
     data = JSON.parse(data)
+    //console.log(data)
     region = data.regiones;
     $('#filtros').empty();
     if($.fn.dataTable.isDataTable('#table-centro')){
@@ -91,9 +94,51 @@ function llenarVista(data){
             {data: "confirmado", className: "text-center",
                 render: function(data, type, row){
                     if(data == 2){
-                        return 'SI';
+                        return 'Si';
                     }else{
-                        return 'NO';
+                        return 'No';
+                    }
+
+                }
+            },
+            {data: "servicios_basicos", className: "text-center",
+                render: function(data, type, row){
+                    
+                    if(data == false){
+                        return 'No';
+                    }else{
+                        return 'Si';
+                    }
+
+                }
+            },
+            {data: "inmobiliario", className: "text-center",
+                render: function(data, type, row){
+                    console.log(data);
+                    if(data == false){
+                        return 'No';
+                    }else{
+                        return 'Si';
+                    }
+
+                }
+            },
+            {data: "extintor", className: "text-center",
+                render: function(data, type, row){
+                    if(data == false){
+                        return 'No';
+                    }else{
+                        return 'Si';
+                    }
+
+                }
+            },
+            {data: "internet", className: "text-center",
+                render: function(data, type, row){
+                    if(data == false){
+                        return 'No';
+                    }else{
+                        return 'Si';
                     }
 
                 }
@@ -101,9 +146,9 @@ function llenarVista(data){
             {data: "camara_operativa", className: "text-center",
                 render: function(data, type, row){
                     if(data == false){
-                        return 'NO';
+                        return 'No';
                     }else{
-                        return 'SI';
+                        return 'Si';
                     }
 
                 }
@@ -377,6 +422,10 @@ function guardarCentro(){
                     comentario: $('#inputComentarios').val(),
                     //nombre: $('#inputNombre').val(),
                     id_comuna: $("#inputComuna").val(),
+                    servicios_basicos: $('#inputSBasicos').val() == -1 ? false : $('#inputSBasicos').val(),
+                    inmobiliario: $('#inputInmobiliario').val() == -1 ? false : $('#inputInmobiliario').val(),
+                    extintor: $('#inputExtintor').val() == -1 ? false : $('#inputExtintor').val(),
+                    internet: $('#inputInternet').val() == -1 ? false : $('#inputInternet').val(),
                     camara_operativa: $('#inputCamara').val() == -1 ? false : $('#inputCamara').val()
 
                 },
@@ -455,6 +504,10 @@ function cargarDatos(data){
     $("#inputRegion").val(data.id_region);
     cargarComunas(data.id_region)
     $("#inputComuna").val(data.id_comuna);
+    $('#inputSBasicos').val(''+data.servicios_basicos+'')
+    $('#inputInmobiliario').val(''+data.inmobiliario+'')
+    $('#inputExtintor').val(''+data.extintor+'')
+    $('#inputInternet').val(''+data.internet+'')
     $('#inputCamara').val(''+data.camara_operativa+'')
 
     $('#nuevoCentroModal').modal({backdrop: 'static', keyboard: false},'show')

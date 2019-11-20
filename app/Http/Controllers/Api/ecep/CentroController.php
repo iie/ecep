@@ -98,6 +98,10 @@ class CentroController extends Controller
         foreach ($centrosC as $centro) {
         	$_centro['id_centro_operaciones'] = $centro->id_centro_operaciones; 
         	$_centro['camara_operativa'] = $centro->camara_operativa; 
+            $_centro['servicios_basicos'] = $centro->servicios_basicos; 
+            $_centro['inmobiliario'] = $centro->camara_operativa; 
+            $_centro['extintor'] = $centro->extintor; 
+            $_centro['internet'] = $centro->internet; 
         	$_centro['comentario'] = $centro->comentario; 
         	$_centro['comuna'] = $centro->comuna; 
         	$_centro['confirmado'] = $centro->confirmado; 
@@ -199,6 +203,10 @@ class CentroController extends Controller
 		$centro->comentario = $post['comentario'];
 		//$centro->nombre = $post['nombre'];
 		$centro->id_comuna = $post['id_comuna'];
+        $centro->servicios_basicos = $post['servicios_basicos'];
+        $centro->inmobiliario = $post['inmobiliario'];
+        $centro->extintor = $post['extintor'];
+        $centro->internet = $post['internet'];
 		$centro->camara_operativa = $post['camara_operativa'];
 
 		DB::beginTransaction();

@@ -132,8 +132,12 @@ class MonitoreoInfraestructuraController extends Controller
                         infraestructura.centro_operaciones.camara_operativa,
                         infraestructura.centro_operaciones.contacto_nombre,
                         infraestructura.centro_operaciones.contacto_email,
+                        infraestructura.centro_operaciones.inmobiliario,
+                        infraestructura.centro_operaciones.extintor,
+                        infraestructura.centro_operaciones.internet,
                         infraestructura.centro_operaciones.encargado_nombre,
-                        infraestructura.centro_operaciones.encargado_mail
+                        infraestructura.centro_operaciones.encargado_mail,
+                        infraestructura.centro_operaciones.servicios_basicos
                         FROM
                         infraestructura.centro_operaciones
                         INNER JOIN core.comuna ON infraestructura.centro_operaciones.id_comuna = core.comuna.id_comuna
@@ -145,6 +149,10 @@ class MonitoreoInfraestructuraController extends Controller
         
         foreach ($sql as $value) {
             $arr[$value->region][$value->provincia][$value->comuna]["confirmado"] = $value->confirmado;
+            $arr[$value->region][$value->provincia][$value->comuna]["inmobiliario"] = $value->inmobiliario;
+            $arr[$value->region][$value->provincia][$value->comuna]["extintor"] = $value->extintor;
+            $arr[$value->region][$value->provincia][$value->comuna]["internet"] = $value->internet;
+            $arr[$value->region][$value->provincia][$value->comuna]["servicios_basicos"] = $value->servicios_basicos;
             $arr[$value->region][$value->provincia][$value->comuna]["camara_operativa"] = $value->camara_operativa;
             $arr[$value->region][$value->provincia][$value->comuna]["encargado"] = $value->contacto_nombre;
             $arr[$value->region][$value->provincia][$value->comuna]["encargado_email"] = $value->contacto_email;
@@ -164,6 +172,10 @@ class MonitoreoInfraestructuraController extends Controller
                     }
                     $auxComuna["nombre_comuna"] = $comuna;
                     $auxComuna["confirmado"] = $data_comuna["confirmado"];
+                    $auxComuna["inmobiliario"] = $data_comuna["inmobiliario"];
+                    $auxComuna["extintor"] = $data_comuna["extintor"];
+                    $auxComuna["internet"] = $data_comuna["internet"];
+                    $auxComuna["servicios_basicos"] = $data_comuna["servicios_basicos"];
                     $auxComuna["camara_operativa"] = $data_comuna["camara_operativa"];
                     $auxComuna["encargado"] = $data_comuna["encargado"];
                     $auxComuna["encargado_email"] = $data_comuna["encargado_email"];

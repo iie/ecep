@@ -353,8 +353,13 @@ function llenarVista(data, data2, data3) {
     });
 
     if ($("#select-view").val() == 1) {
+        $('#graficofig1').addClass('highcharts-figure2')
+        $('#graficopar1').addClass('highcharts-description2')
+        $('#graficofig1').removeClass('highcharts-figure')
+        $('#graficopar1').removeClass('highcharts-description')
+        
         //grafico(requeridos_totalesPer,data2.reclutado + data2.seleccionado + data2.capacitado + data2.contratado)
-        grafico1Barras(requeridos_totalesPer,data2.postulante,data2.seleccionado,data2.contratado)
+        grafico1Barras(requeridos_totalesPer,data2.postulante,data2.capacitado,data2.seleccionado,data2.contratado)
         //$("#change_accion").hide();
         $("#clear-filtros1").hide();
         $("#change_post").hide();
@@ -369,6 +374,10 @@ function llenarVista(data, data2, data3) {
         $('#ttotal').html(data2.reclutado + data2.seleccionado + data2.capacitado + data2.contratado)
     }
     if ($("#select-view").val() == 2) {
+        $('#graficofig1').addClass('highcharts-figure')
+        $('#graficopar1').addClass('highcharts-description')
+        $('#graficofig1').removeClass('highcharts-figure2')
+        $('#graficopar1').removeClass('highcharts-description2')
         //grafico(requeridos_totales,data3)
         graficoBarras(requeridos_totales,data3)
         //$("#change_accion").hide();
@@ -868,7 +877,11 @@ function llenarVista2(data, data2, data3) {
     });
 
     if ($("#select-view").val() == 1) {
-        grafico2Barras2(requeridos_totalesPer,data2.postulante,data2.seleccionado,data2.contratado)
+        $('#graficofig2').addClass('highcharts-figure2')
+        $('#graficopar2').addClass('highcharts-description2')
+        $('#graficofig2').removeClass('highcharts-figure')
+        $('#graficopar2').removeClass('highcharts-description')
+        grafico2Barras2(requeridos_totalesPer,data2.postulante,data2.capacitado,data2.seleccionado,data2.contratado)
         //grafico2(requeridos_totalesPer,data2.reclutado + data2.seleccionado + data2.capacitado + data2.contratado)
         $("#change_accion2").hide();
         $("#clear-filtros2").hide();
@@ -885,6 +898,10 @@ function llenarVista2(data, data2, data3) {
         $('#ttotal2').html(data2.reclutado + data2.seleccionado + data2.capacitado + data2.contratado)
     }
     if ($("#select-view").val() == 2) {
+        $('#graficofig2').addClass('highcharts-figure')
+        $('#graficopar2').addClass('highcharts-description')
+        $('#graficofig2').removeClass('highcharts-figure2')
+        $('#graficopar2').removeClass('highcharts-description2')
         graficoBarras2(requeridos_totales,data3)
         //grafico2(requeridos_totales,data3)
         $("#change_accion2").show();
@@ -1220,7 +1237,11 @@ function llenarVista3(data, data2, data3) {
     });
 
     if ($("#select-view").val() == 1) {
-        grafico3Barras3(requeridos_totalesPer,data2.postulante,data2.seleccionado,data2.contratado)
+        $('#graficofig3').addClass('highcharts-figure2')
+        $('#graficopar3').addClass('highcharts-description2')
+        $('#graficofig3').removeClass('highcharts-figure')
+        $('#graficopar3').removeClass('highcharts-description')
+        grafico3Barras3(requeridos_totalesPer,data2.postulante,data2.capacitado,data2.seleccionado,data2.contratado)
         //grafico3(requeridos_totalesPer,data2.reclutado + data2.seleccionado + data2.capacitado + data2.contratado)
         $("#clear-filtros3").hide();
         $("#change_post3").hide();
@@ -1234,6 +1255,10 @@ function llenarVista3(data, data2, data3) {
         $('#ttotal3').html(data2.reclutado + data2.seleccionado + data2.capacitado + data2.contratado)
     }
     if ($("#select-view").val() == 2) {
+        $('#graficofig3').addClass('highcharts-figure')
+        $('#graficopar3').addClass('highcharts-description')
+        $('#graficofig3').removeClass('highcharts-figure2')
+        $('#graficopar3').removeClass('highcharts-description2')
         graficoBarras3(requeridos_totales,data3)
         //grafico3(requeridos_totales,data3)
         for (var w = 0; w < nro; w++) {
@@ -1565,7 +1590,11 @@ function llenarVista4(data, data2, data3) {
     });
 
     if ($("#select-view").val() == 1) {
-        grafico4Barras4(requeridos_totalesPer,data2.postulante,data2.seleccionado,data2.contratado)
+        $('#graficofig4').addClass('highcharts-figure2')
+        $('#graficopar4').addClass('highcharts-description2')
+        $('#graficofig4').removeClass('highcharts-figure')
+        $('#graficopar4').removeClass('highcharts-description')
+        grafico4Barras4(requeridos_totalesPer,data2.postulante,data2.capacitado,data2.seleccionado,data2.contratado)
         //graficoBarras4(requeridos_totalesPer,data2.postulante)
         //grafico4(requeridos_totalesPer,data2.reclutado + data2.seleccionado + data2.capacitado + data2.contratado)
         
@@ -1581,6 +1610,10 @@ function llenarVista4(data, data2, data3) {
         $('#ttotal4').html(data2.reclutado + data2.seleccionado + data2.capacitado + data2.contratado)
     }
     if ($("#select-view").val() == 2) {
+        $('#graficofig4').addClass('highcharts-figure')
+        $('#graficopar4').addClass('highcharts-description')
+        $('#graficofig4').removeClass('highcharts-figure2')
+        $('#graficopar4').removeClass('highcharts-description2')
         graficoBarras4(requeridos_totales,data3)
         //grafico4(requeridos_totales,data3)
        
