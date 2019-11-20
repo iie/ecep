@@ -53,6 +53,7 @@ Route::get('inscritos-dia' , 'Api\ecep\SedeController@inscritosDia');
 //CAPACITACION
 	Route::middleware('auth:api')->post('web/capacitacion/lista' , 'Api\ecep\CapacitacionController@lista');
 	Route::middleware('auth:api')->post('web/capacitacion/guardar' , 'Api\ecep\CapacitacionController@guardar');
+	Route::middleware('auth:api')->post('web/capacitacion/guardarDocumento' , 'Api\ecep\CapacitacionController@guardarDocumento');
 	Route::middleware('auth:api')->post('web/capacitacion/modificarCapacitacion' , 'Api\ecep\CapacitacionController@modificarCapacitacion');
 	Route::middleware('auth:api')->post('web/capacitacion/obtenerPersonal' , 'Api\ecep\CapacitacionController@obtenerPersonal');
 	Route::middleware('auth:api')->post('web/capacitacion/asignarCapacitacion' , 'Api\ecep\CapacitacionController@asignarCapacitacion');
@@ -60,6 +61,7 @@ Route::get('inscritos-dia' , 'Api\ecep\SedeController@inscritosDia');
 	Route::middleware('auth:api')->post('web/capacitacion/modificarPersona' , 'Api\ecep\CapacitacionController@modificarPersona');
 	Route::middleware('auth:api')->post('web/capacitacion/guardarPersona' ,'Api\ecep\CapacitacionController@guardarPersona');
 	Route::middleware('auth:api')->post('web/capacitacion/evaluacion' ,'Api\ecep\CapacitacionController@evaluacion');
+	Route::middleware('auth:api')->post('web/capacitacion/deshabilitarCapacitacion' ,'Api\ecep\CapacitacionController@deshabilitarCapacitacion');
 	//Route::middleware('auth:api')->post('web/capacitacion/evaluacion' ,'Api\ecep\CapacitacionController@evaluacion');
 	Route::middleware('auth:api')->post('web/capacitacion/lista-regional' ,'Api\ecep\CapacitacionController@listaRegional');
 	Route::get('web/capacitacion/confirma/{idCapPersona}' ,'Api\ecep\CapacitacionController@infoConfirmacion');
@@ -87,4 +89,7 @@ Route::get('inscritos-dia' , 'Api\ecep\SedeController@inscritosDia');
 
 //MONITOREO CALL CENTER
 	Route::get('web/monitoreo/call-center/lista' , 'Api\ecep\MonitoreoCallCenterController@lista');
+
+//MONITOREO ACTAS
+	Route::get('web/monitoreo/actas/lista' , 'Api\ecep\MonitoreoActasController@lista');
 ?>
