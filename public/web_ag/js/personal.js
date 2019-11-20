@@ -805,10 +805,13 @@ function llenarVista2(data, data2, data3) {
                 trData += '<td style="text-align:center">' + sum + '</td>'
                 trData += '<td style="text-align:center">' + data[j]["data_region"][k].data_comuna.examinador_de_apoyo + '</td>'
                 trData += '<td style="text-align:center">' + data[j]["data_region"][k].data_comuna.anfitrion + '</td>'
-                trData += "<td style='text-align:center' ><button type='button' id='comuna1_"+nro+"' onclick='verComuna("+ JSON.stringify(comunaP) +")' class='btn btn-volver' style='min-width: 89px;''><i class='fa fa-user'></i></button>" +
-                            "<button type='button' id = 'caps_comuna_"+nro+"' onclick=obtenerCapacitaciones(\'"+ nombre_comuna +"\') class='btn btn-volver' style='min-width: 89px;'><i class='fa fa-briefcase'></i></button></td>";
+                trData += sum==0?"<td style='text-align:center' ><button type='button' id='comuna1_"+nro+"' onclick='verComuna("+ JSON.stringify(comunaP) +")' class='btn btn-volver btn-volver1' style='min-width: 40px;max-height: 29px;border: none !important;' title='Capacitados' disabled><i class='fa fa-user'></i></button>" +
+                            "<button type='button'  id = 'caps_comuna_"+nro+"' onclick=obtenerCapacitaciones(\'"+ nombre_comuna +"\') class='btn btn-volver btn-volver1' style='min-width: 40px;max-height: 29px;border: none !important;' title='Capacitaciones' disabled><i class='fa fa-briefcase'></i></button></td>":"<td style='text-align:center' ><button type='button' id='comuna1_"+nro+"' onclick='verComuna("+ JSON.stringify(comunaP) +")' class='btn btn-volver' style='min-width: 40px;max-height: 29px;border: none !important;' title='Capacitados'><i class='fa fa-user'></i></button>" +
+                            "<button type='button' id = 'caps_comuna_"+nro+"' onclick=obtenerCapacitaciones(\'"+ nombre_comuna +"\') class='btn btn-volver' style='min-width: 40px;max-height: 29px;border: none !important;' title='Capacitaciones'><i class='fa fa-briefcase'></i></button></td>";
                 trData += '</tr>';
                 nro++;
+
+                
                 //data[j]["data_region"][k].data_comuna.Examinador
             }
         }
