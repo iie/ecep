@@ -61,15 +61,18 @@ class Authenticate
 
 			//CAPACITACION
 				$denegado['api/web/capacitacion/lista'] = array( 1040, 1042);
-				$denegado['api/web/capacitacion/obtenerPersonal'] = array(28, 1040, 1042);
-				$denegado['api/web/capacitacion/listaRelator'] = array(28, 1040, 1042);
+				$denegado['api/web/capacitacion/obtenerPersonal'] = array(1040, 1042);
+				$denegado['api/web/capacitacion/listaRelator'] = array( 1040, 1042);
 				$denegado['api/web/capacitacion/guardar'] = array(1040, 1042);
-				$denegado['api/web/capacitacion/modificarCapacitacion'] = array(1052);
+				$denegado['api/web/capacitacion/guardarDocumento'] = array(1040, 1042);
+				$denegado['api/web/capacitacion/modificarCapacitacion'] = array();
 				$denegado['api/web/capacitacion/asignarCapacitacion'] = array(1040, 1042);
-				$denegado['api/web/capacitacion/modificarPersona'] = array(28, 1040, 1042);
-				$denegado['api/web/capacitacion/guardarPersona'] = array(28, 1040, 1042);
-				$denegado['api/web/capacitacion/evaluacion'] = array(28, 1040, 1042);
-
+				$denegado['api/web/capacitacion/modificarPersona'] = array(1040, 1042);
+				$denegado['api/web/capacitacion/guardarPersona'] = array(1040, 1042);
+				$denegado['api/web/capacitacion/evaluacion'] = array(1040, 1042);
+				$denegado['api/web/capacitacion/lista-regional'] = array( 1040, 1042);
+				$denegado['api/web/capacitacion/deshabilitarCapacitacion'] = array( 1040, 1042);
+ 
 			//RRHH
 				//solo obtienen datos
 				$denegado['api/web/personal/lista'] = array(1040, 1042);
@@ -155,11 +158,18 @@ class Authenticate
 					}					
 			}*/
 
-			
-			
-			
 			$request->merge(array("id_usuario" => $usuario[0]->id_usuario));
-			return $next($request);
+			
+			$_response = $next($request);
+			
+			//esto es para evitar la caché
+			$_response->headers->set('Cache-Control: no-cache' , 'must-revalidate');
+			$_response->headers->set("Pragma", "no-cache");
+			$_response->headers->set("Expires", "Sat, 26 Jul 1997 05:00:00 GMT");
+			
+			return $_response;			
+			
+			
 		}
 
         echo $msgInvalido;
