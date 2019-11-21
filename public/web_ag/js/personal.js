@@ -698,8 +698,13 @@ function verCapComuna(data){
             {data: "run",className: "text-center"},
             {data: "archivo",
                 render: function(data, type, full, meta){
-                    var url = webservice + "/monitoreo/capacitaciones/descarga-archivo/" + data;
-                    return "<a href='" + url + "'>DESCARGAR</a>";
+                    if(data != null){
+                        var url = webservice + "/monitoreo/capacitaciones/descarga-archivo/" + data;
+                        return "<a href='" + url + "'>DESCARGAR</a>";
+                    }else{
+                        return "Sin archivo"
+                    }
+                    
                 }
             },
         ],
