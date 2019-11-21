@@ -47,7 +47,8 @@ $(document).ready(function(){
         $('#liCentro').remove();
         $('#tabZonal').remove();
         $('#tabCentro').remove();
-        
+        $('#btn-zonasRegion').remove();
+        $('#btn-region-nuevaPersona').remove();
         $('#btn-zonas').remove();
         $('#btn-zonas-nuevaPersona').remove();
         /*$('#btn-zonasRegion').remove();*/
@@ -183,7 +184,7 @@ function llenarVista(data){
     
             
     data = JSON.parse(data)
-
+    console.log(data.personal_postulacion)
     $('#filtros-postulacion').empty();
     if($.fn.dataTable.isDataTable('#table-postulacion')){
         $('#table-postulacion').DataTable().destroy();
@@ -242,6 +243,22 @@ function llenarVista(data){
             {data: "apellido_materno"},
             {data: "email"},
             {data: "telefono"},
+            {data: "titulo",className: "text-center",
+                render: function(data, type, row){  
+                    data
+                    if (data=='') {
+                        return '-'
+                    }else if(data==null){
+                        return '-'
+                    }else{
+                       return data 
+                    }
+                    
+                    
+                    
+                 
+                }
+            },
             {data: "nivel_estudios"},
             {data: "estado"},
             {data: "opciones",className: "text-center",
@@ -270,7 +287,7 @@ function llenarVista(data){
         ],
         "columnDefs": [
             {
-                "targets": [ 8,9,13,14,15,16,17,18,19,20,21,22,23,24,25,26],
+                "targets": [ 8,9,14,15,16,17,18,19,20,21,22,23,24,25,26,27],
                 "visible": false,
                 "searchable": false
             },
@@ -337,31 +354,31 @@ function llenarVista(data){
 
             acciones='<button type="button" id="persona_'+data.id_persona+'" onclick="modificar('+data.id_persona+',true)" class="btn btn-primary btn-sm _btn-item"><i class="fa fa-pencil-alt"></i></button>'+
                          '<button type="button" id="docPersona_'+data.id_persona+'"  class="ml-2 btn btn-primary btn-sm _btn-item"><i class="fas fa-file-alt"></i></button>'  
-                        $('td:eq(10)', row).html(acciones)
+                        $('td:eq(11)', row).html(acciones)
 
 
 
             if(JSON.parse(localStorage.user).id_cargo != 1004){
-                $('td:eq(9)', row).html(select)
-                $('td:eq(9)', row).find('select').val(data.estado)
+                $('td:eq(10)', row).html(select)
+                $('td:eq(10)', row).find('select').val(data.estado)
                 if(data.estado=='contratado' || data.estado=='rechazado'){
-                    $('td:eq(9)', row).find('select').prop('disabled',true)
+                    $('td:eq(10)', row).find('select').prop('disabled',true)
                 }
-                $('td:eq(9)', row).find('select').data('id_persona',data.id_persona);
+                $('td:eq(10)', row).find('select').data('id_persona',data.id_persona);
 
-                $('td:eq(9)', row).find('select').on('change',cambiarEstado);
+                $('td:eq(10)', row).find('select').on('change',cambiarEstado);
 
-                $('td:eq(10)', row).find('#docPersona_'+data.id_persona).data('run',data.run);
-                $('td:eq(10)', row).find('#docPersona_'+data.id_persona).data('id_persona',data.id_persona);
-                $('td:eq(10)', row).find('#docPersona_'+data.id_persona).on('click',verDocs);
+                $('td:eq(11)', row).find('#docPersona_'+data.id_persona).data('run',data.run);
+                $('td:eq(11)', row).find('#docPersona_'+data.id_persona).data('id_persona',data.id_persona);
+                $('td:eq(11)', row).find('#docPersona_'+data.id_persona).on('click',verDocs);
    
             }else{
                 if(validarTabla ==  0){
+                    col = 10
+                    col2 = 11
+                } else{
                     col = 9
                     col2 = 10
-                } else{
-                    col = 8
-                    col2 = 9
                 }
 
                 $('td:eq('+col+')', row).html(select)

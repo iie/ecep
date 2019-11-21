@@ -14,6 +14,7 @@ use App\Models\RRHH\Cargo;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Maatwebsite\Excel\Facades\Excel;
 
 class PersonalController extends Controller
 {
@@ -23,7 +24,12 @@ class PersonalController extends Controller
         $this->fields = array();    
     }   
 
-    public function listaPostulantes(Request $request)
+    public function descargaExcel()
+    {
+		//arreglo(self::	lista);
+	}
+    
+	public function listaPostulantes(Request $request)
     {
              $post = $request->all();    
 

@@ -515,6 +515,25 @@ h6, .h6 {
         border-radius: 10px;
     }
 
+    .grafico1{
+        margin-left: 7%;
+    }
+
+    .grafico2{
+        margin-left: 17%;
+    }
+
+    ._infototal{
+        background-color: #dedfe0 !important;
+        background-position: 100%;
+        margin-bottom: 15px !important;
+        margin-left: 10px !important;
+        margin-top: -10px !important;
+        padding: 0rem !important;
+        height: 70px;
+        border-radius: 10px;
+    }
+
     .info-titulos{
         background-color: #4d8be6;
         color: white;

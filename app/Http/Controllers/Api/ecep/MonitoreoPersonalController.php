@@ -203,6 +203,12 @@ class MonitoreoPersonalController extends Controller
             unset($regiones);
             $arrFinal[] = $auxRol;
         }
+		
+		// $arrCont["Examinador"]["capacitado"] = 102;
+		$arrCont["Supervisor"]["capacitado"] = 0;
+		$arrCont["anfitrion"]["capacitado"] = 0;
+		$arrCont["examinador_de_apoyo"]["capacitado"] = 0;		
+		
         $arrFinal["contador"] = $arrCont;
 		
         return response()->json(array("resultado"=>"ok","descripcion"=>$arrFinal)); 
@@ -232,7 +238,15 @@ class MonitoreoPersonalController extends Controller
 			$_region[$region->region][] = $region->comuna;
         }
         
-        //Capacitaciones
+        //Asistencia
+        $sql = DB::select("SELECT rrhh.capacitacion.id_capacitacion, rrhh.capacitacion.id_comuna, core.comuna.nombre, rrhh.capacitacion.asistentes FROM rrhh.capacitacion, core.comuna WHERE rrhh.capacitacion.id_comuna =  core.comuna.id_comuna");
+        foreach($sql as $_capAsistencia){
+			@$_tAsistencia[$_capAsistencia->nombre]+= $_capAsistencia->asistentes;
+			@$_tAsistenciaFinal+= $_capAsistencia->asistentes;
+		}
+		
+
+		//Capacitaciones
         $sql = DB::select("SELECT
                             rrhh.capacitacion.id_capacitacion,
                             rrhh.capacitacion_prueba.prueba,
@@ -333,9 +347,14 @@ class MonitoreoPersonalController extends Controller
 		
 		foreach($totalWns as $totalWnsAux){
 			
-			if(@!in_array($totalWnsAux->id_persona, $yaContada)){
+			//if(@!in_array($totalWnsAux->id_persona, $yaContada)){
 				$conTotal[$totalWnsAux->id_persona]	= true;
-				@$_arrComuna[$totalWnsAux->nombre]["reclutado"]++;
+				
+				if(@!in_array($totalWnsAux->id_persona, $yaContada)){
+					@$_arrComuna[$totalWnsAux->nombre]["reclutado"]++;
+				}
+
+
 				
 				if($totalWnsAux->estado_proceso == 'capacitado'){
 					if($totalWnsAux->nombre_rol=='Examinador'){
@@ -356,7 +375,9 @@ class MonitoreoPersonalController extends Controller
 				
 				if($totalWnsAux->estado_proceso == 'seleccionado'){
 					@$totalSeleccionado[$totalWnsAux->id_persona]	= true;	
-					@$_arrComuna[$totalWnsAux->nombre]["seleccionado"]++;
+					if(@!in_array($totalWnsAux->id_persona, $yaContada)){
+						@$_arrComuna[$totalWnsAux->nombre]["seleccionado"]++;
+					}
 
 					if($totalWnsAux->nombre_rol=='Examinador'){
 						@$_arrComuna[$totalWnsAux->nombre]["capacitado"]++;
@@ -378,8 +399,10 @@ class MonitoreoPersonalController extends Controller
 				
 				if($totalWnsAux->estado_proceso == 'contratado'){
 					@$totalContratado[$totalWnsAux->id_persona]	= true;	
-					@$_arrComuna[$totalWnsAux->nombre]["contratado"]++;
-                    @$_arrComuna[$totalWnsAux->nombre]["seleccionado"]++;
+					if(@!in_array($totalWnsAux->id_persona, $yaContada)){
+						@$_arrComuna[$totalWnsAux->nombre]["contratado"]++;
+						@$_arrComuna[$totalWnsAux->nombre]["seleccionado"]++;
+					}
 
 					if($totalWnsAux->nombre_rol=='Examinador'){
 						@$_arrComuna[$totalWnsAux->nombre]["capacitado"]++;
@@ -419,7 +442,7 @@ class MonitoreoPersonalController extends Controller
 						@$arrCont["contratado"][$traduccion[$totalWnsAux->nombre_rol]]++;				
 					}
 				}			
-			}
+			//}
 			
 			//para los ratios
 			if(array_key_exists($totalWnsAux->nombre_rol, $traduccion)){
@@ -457,8 +480,11 @@ class MonitoreoPersonalController extends Controller
                             core.comuna.nombre");
 
         foreach ($sql as $value) {
-            if(($value->estado == 'preseleccionado')||($value->estado == 'rechazado')){
-				$value->estado = 'reclutado';
+            // if(($value->estado == 'preseleccionado')||($value->estado == 'rechazado')){
+				// $value->estado = 'reclutado';
+			// }
+			if($value->estado!='reclutado'){
+				@$arr['reclutado'][$value->region][$value->comuna][$value->nombre_rol]+= $value->cuenta_rol;	
 			}
 			@$arr[$value->estado][$value->region][$value->comuna][$value->nombre_rol]+= $value->cuenta_rol;
         }
@@ -507,9 +533,11 @@ class MonitoreoPersonalController extends Controller
                     if(in_array($comuna, $arrComunas)){
                         $auxComuna["comuna"] = $comuna;
                         $auxComuna["data_comuna"] = $auxRol;
-                        $auxComuna["data_comuna"]["requeridos"] = isset($req_comuna[$comuna]) ? $req_comuna[$comuna] : null;
-						$auxComuna["data_comuna"]["wnsUnicos"] = isset($_arrComuna[$comuna][$estado]) ? $_arrComuna[$comuna][$estado] : 0;
+                        $auxComuna["data_comuna"]["requeridos"]  = isset($req_comuna[$comuna]) ? $req_comuna[$comuna] : null;
+						$auxComuna["data_comuna"]["wnsUnicos"]   = isset($_arrComuna[$comuna][$estado]) ? $_arrComuna[$comuna][$estado] : 0;
 						$auxComuna["data_comuna"]["capacitados"] = isset($arrLista[$comuna][$estado]) ? $arrLista[$comuna][$estado] : array();
+						$auxComuna["data_comuna"]["asistencia"]  = array_key_exists($comuna, $_tAsistencia)?$_tAsistencia[$comuna]:0; //isset($arrLista[$comuna][$estado]) ? $arrLista[$comuna][$estado] : array();
+						
 						
                         $comunas[] = $auxComuna;
                     }
@@ -531,6 +559,7 @@ class MonitoreoPersonalController extends Controller
         $arrFinal["contador"]["total_capacitado"] = count($totalCapacitados) + count($totalSeleccionado) + count($totalContratado);
         $arrFinal["contador"]["total_seleccionado"] = count($totalSeleccionado);
         $arrFinal["contador"]["total_contratado"] = count($totalContratado);
+		$arrFinal["contador"]["total_asistencia"] = ($_tAsistenciaFinal!=null)?$_tAsistenciaFinal:0;
 	
         return response()->json(array("resultado"=>"ok","descripcion"=>$arrFinal)); 
 	}
@@ -560,7 +589,9 @@ class MonitoreoPersonalController extends Controller
 							INNER JOIN rrhh.persona ON rrhh.capacitacion.id_relator = rrhh.persona.id_persona 
 							INNER JOIN core.comuna ON rrhh.capacitacion.id_comuna = core.comuna.id_comuna
 							WHERE
-							core.comuna.nombre ILIKE '". $post["nombre_comuna"] ."'");
+							core.comuna.nombre ILIKE '". $post["nombre_comuna"] ."'
+							AND rrhh.capacitacion.fecha_hora<NOW();
+							");
 		$arr = [];
 		if(sizeof($sql) > 0){
 			foreach ($sql as $value) {

@@ -429,7 +429,7 @@ function llenarVistaCapacitacion(data){
 	                    		'<button type="button" id="seleccionarPersonas_'+row.id_capacitacion+'" class="btn btn-primary btn-sm _btn-item ml-1"><i class="fas fa-users"></i></button>'
 	                    		
 	                	if(row.convocados == null){
-	                		btns += '<button type="button" id="deshabilitarCapacitacion_'+row.id_capacitacion+'" class="btn btn-primary btn-sm _btn-item ml-1"><i class="fas fa-users"></i></button>'   
+	                		btns += '<button type="button" id="deshabilitarCapacitacion_'+row.id_capacitacion+'" class="btn btn-primary btn-sm _btn-item ml-1"><i class="fas fa-times"></i></button>'   
 	                	}
                 	}else{
                 		btns = ''  
@@ -447,6 +447,7 @@ function llenarVistaCapacitacion(data){
             $('td:eq(10)', row).find('#seleccionarPersonas_'+data.id_capacitacion).data('id_comuna',data.id_comuna);
             $('td:eq(10)', row).find('#seleccionarPersonas_'+data.id_capacitacion).data('id_region',data.id_region);
             $('td:eq(10)', row).find('#seleccionarPersonas_'+data.id_capacitacion).data('id_capacitacion',data.id_capacitacion);
+            $('td:eq(10)', row).find('#seleccionarPersonas_'+data.id_capacitacion).data('fecha_hora',data.fecha_hora);
             $('td:eq(10)', row).find('#seleccionarPersonas_'+data.id_capacitacion).on('click',asignarVarios);
 
             $('td:eq(10)', row).find('#deshabilitarCapacitacion_'+data.id_capacitacion).data('id_capacitacion',data.id_capacitacion);
@@ -774,21 +775,30 @@ function llenarVistaRelator(data){
                 }
                     
             },
-            {data: "opciones",className: "text-center",
+            {data: null},
+            /*{data: "opciones",className: "text-center",
                 render: function(data, type, row){                
                     return '<button type="button" id="persona_'+row.id_persona+'"  class="btn btn-primary btn-sm _btn-item"><i class="fa fa-pencil-alt"></i></button>'
                         
                 }
-            },
+            },*/
         ],
-        "rowCallback": function( row, data ) {
+        "columnDefs": [
+            {
+                "targets": [10],
+                "visible": false,
+                "searchable": false
+            }
+        ],
+        /*"rowCallback": function( row, data ) {
 
             $('td:eq(10)', row).find('button').data('id_capacitacion',data.id_capacitacion);
             $('td:eq(10)', row).find('button').data('id_persona',data.id_persona);
   
             $('td:eq(10)', row).find('button').on('click',agregarNotas);
         
-        },
+        },*/
+
         "initComplete": function(settings, json) {
             $('#inputUsuario').prop('disabled',true)
             $('#inputContrasena').prop('disabled',true)
@@ -960,7 +970,8 @@ function llenarVistaCapacitacionRelator(data){
             {data: "observacion"},
             {data: "opciones",className: "text-center",
                 render: function(data, type, row){                
-                    return '<button type="button" id="modificarCapacitacion_'+row.id_capacitacion+'" class="btn btn-primary btn-sm _btn-item"><i class="fa fa-pencil-alt"></i></button>'
+                    return  '<button type="button" id="modificarCapacitacion_'+row.id_capacitacion+'" class="btn btn-primary btn-sm _btn-item"><i class="fa fa-pencil-alt"></i></button>'+
+                            '<button type="button" id="notas_'+row.id_capacitacion+'"  class="ml-1 btn btn-primary btn-sm _btn-item"><i class="fas fa-users"></i></button>'
                     		
                         
                 }
@@ -979,6 +990,9 @@ function llenarVistaCapacitacionRelator(data){
             $('td:eq(9)', row).find('#modificarCapacitacion_'+data.id_capacitacion).data('region',data.region);
             $('td:eq(9)', row).find('#modificarCapacitacion_'+data.id_capacitacion).data('comuna',data.comuna);
             $('td:eq(9)', row).find('#modificarCapacitacion_'+data.id_capacitacion).on('click',modificarCapacitacion);
+
+            $('td:eq(9)', row).find('#notas_'+data.id_capacitacion).data('id_capacitacion',data.id_capacitacion);
+            $('td:eq(9)', row).find('#notas_'+data.id_capacitacion).on('click',agregarNotas);
 
             if(data.borrado == true){
             	$(row).css('background-color', '#cacaca');
@@ -1328,10 +1342,11 @@ function cargarDatosCapacitacion(data){
     $("#inputFecha").val(moment(data.fecha_hora, "YYYY-MM-DD HH:mm:ss").format("DD-MM-YYYY") )
     $("#inputHora").val(moment(data.fecha_hora, "YYYY-MM-DD HH:mm:ss").format("HH:mm") )
     $('#inputCapacidad').val(data.capacidad)
+    $('#inputAsistentes').val(data.asistentes)
     $('#inputLugar').val(data.lugar)
     $('#inputObservacion').val(data.observacion)
  
-    if(data.archivo_asistencia != null){
+    if(data.archivo_nombre != null){
         ext = diccionarioTipos(data.archivo_mimetype)
         $('#inputDocumento').css('display','none')
         $('#inputNombreArchivo').html('<b>'+data.archivo_nombre+'.'+ext+'</b>')
@@ -1354,10 +1369,11 @@ function cargarDatosCapacitacionRelator(region,comuna,data){
     $("#inputFechaR").html(moment(data.fecha_hora, "YYYY-MM-DD HH:mm:ss").format("DD-MM-YYYY") )
     $("#inputHoraR").html(moment(data.fecha_hora, "YYYY-MM-DD HH:mm:ss").format("HH:mm") )
     $('#inputCapacidadR').html(data.capacidad)
+    $('#inputAsistentesR').html(data.asistentes)
     $('#inputLugarR').html(data.lugar)
     $('#inputObservacionR').html(data.observacion)
  
-    if(data.archivo_asistencia != null){
+    if(data.archivo_nombre != null){
         ext = diccionarioTipos(data.archivo_mimetype)
         $('#inputDocumentoR').css('display','none')
         $('#inputNombreArchivoR').html('<b>'+data.archivo_nombre+'.'+ext+'</b>')
@@ -1477,6 +1493,7 @@ function guardarCapacitacion(){
                     lugar: $('#inputLugar').val(),
                     fecha:moment($("#inputFecha").val(), "DD-MM-YYYY").format("YYYY-MM-DD") + ' ' + $("#inputHora").val(),
                     capacidad: $('#inputCapacidad').val(),
+                    asistentes: $('#inputAsistentes').val(),
                     observacion: $('#inputObservacion').val(),
                     documento: docO_b64,
                     nombre_archivo: doc0_name
@@ -1739,7 +1756,8 @@ function asignarVarios(){
     localStorage.borrado_capacitacion = $(this).data('borrado_capacitacion') 
     localStorage.comuna = $(this).data('id_comuna')     
     localStorage.region = $(this).data('id_region') 
- 
+    localStorage.fecha_hora = $(this).data('fecha_hora') 
+    console.log(localStorage.fecha_hora);
     //$('#div_personas').html('');
     $('#selectCapacitacionAll').html('')
 
@@ -1861,7 +1879,7 @@ function verPersonal(){
 function cargarPeronal(data){
    // $('#div_personas').html('');
 
-    if(data.length > 0){
+   /* if(data.length > 0){*/
   /*      for (i = 0;  i < data.length; i++) {
             check = data[i].id_capacitacion != null ?  (data[i].borrado_capacitacion == false ? "checked" : "") : "" 
             div = '<div class="form-check form-check-inline custom-checkbox col-3 mr-0 mb-3">'+
@@ -1927,8 +1945,15 @@ function cargarPeronal(data){
             {data: "apellido_materno"},
         ],
         "rowCallback": function( row, data ) {
+
+            if(moment(moment().format('YYYY-MM-DD, HH:mm:ss')).isAfter(localStorage.fecha_hora)){
+                disabled = "disabled"
+            }else{
+                disabled = data.id_capacitacion != null ?  (data.borrado_capacitacion == false ? "disabled" : "") : "" 
+            }
+
             check = data.id_capacitacion != null ?  (data.borrado_capacitacion == false ? "checked" : "") : "" 
-            disabled = data.id_capacitacion != null ?  (data.borrado_capacitacion == false ? "disabled" : "") : "" 
+            
             $('td:eq(0)', row).html('<input type="checkbox" id="check-persona-'+data.id_persona+'" name="checkPersonalCapacitacion" value="'+data.id_persona+'" '+
                                     ''+check+' '+disabled+'>');
 
@@ -1992,9 +2017,9 @@ function cargarPeronal(data){
  
  
     });
-    }else{
-        $('#div_personas').html('No existe personal para el tipo de Rol seleccionado en la Comuna en la que se impartira la Capacitación.')
-    }
+    /*}else{
+        $('#div_personas').html('No existe personal para la Región en la que se impartira la Capacitación.')
+    }*/
 
     $.unblockUI();                                 
     
@@ -2100,7 +2125,7 @@ function cargarNotas(data){
     for ( var i = 0; i < data.length; i++) {
   
         tr = '<tr id="tr-'+i+'">'+
-                '<td>'+data[i].nombres+' '+data[i].apellido_paterno+' '+data[i].apellido_paterno+'</td>'+
+                '<td>'+data[i].nombres+' '+data[i].apellido_paterno+' '+data[i].apellido_materno+'</td>'+
 
                 '<td><select id="asistencia_'+i+'" class="form-control">'+
                     '<option value="-1">Seleccione...</option>'+
@@ -2159,40 +2184,108 @@ function guardarEvaluacion(){
         var puntaje_psicologica = $(this).find('td:nth-child(4) select').val() == "" ? 0 : $(this).find('td:nth-child(4) select').val()
         var estado = $(this).find('td:nth-child(5) select').val() == "" ? 0 : $(this).find('td:nth-child(5) select').val()
 
-        if(puntaje_psicologica == 0 && estado == 'true'){
-        	$(this).find('td:nth-child(4) select').addClass('is-invalid')
-			$(this).find('td:nth-child(5) select').addClass('is-invalid')
-			cumple = false
-        }else{
-        	$(this).find('td:nth-child(4) select').removeClass('is-invalid')
-        	$(this).find('td:nth-child(5) select').removeClass('is-invalid')
-        }
+      
 
-        if(estado != -1 && (asistencia  == -1 || puntaje_contenido == 0  || puntaje_psicologica == -1)){
-  
-        	if(asistencia  == -1){
-	        	$(this).find('td:nth-child(2) select').addClass('is-invalid')
-				cumple = false
-	        }else{
-	        	$(this).find('td:nth-child(2) select').removeClass('is-invalid')
-	        }
+        //VALIDAR QUE NO APRUEBE O REPRUEBE SIN LLENAR TODA LA INFORMACION
+        /*  if(estado != -1 && (asistencia  == -1 || puntaje_contenido == 0  || puntaje_psicologica == -1)){
+                console.log('VALIDAR QUE NO APRUEBE O REPRUEBE SIN LLENAR TODA LA INFORMACION')
+            	if(asistencia  == -1){
+    	        	$(this).find('td:nth-child(2) select').addClass('is-invalid')
+    				cumple = false
+    	        }else{
+    	        	$(this).find('td:nth-child(2) select').removeClass('is-invalid')
+    	        }
 
-	        if(puntaje_contenido == 0){
-	        	$(this).find('td:nth-child(3) input').addClass('is-invalid')
-				cumple = false
-	        }else{
-	        	$(this).find('td:nth-child(3) input').removeClass('is-invalid')
-	        }
+    	        if(puntaje_contenido == 0){
+    	        	$(this).find('td:nth-child(3) input').addClass('is-invalid')
+    				cumple = false
+    	        }else{
+    	        	$(this).find('td:nth-child(3) input').removeClass('is-invalid')
+    	        }
 
-	        if(puntaje_psicologica == -1){
-	        	$(this).find('td:nth-child(4) select').addClass('is-invalid')
-				cumple = false
-	        }else{
-	        	$(this).find('td:nth-child(4) select').removeClass('is-invalid')
-	        }
+    	        if(puntaje_psicologica == -1){
+    	        	$(this).find('td:nth-child(4) select').addClass('is-invalid')
+    				cumple = false
+    	        }else{
+    	        	$(this).find('td:nth-child(4) select').removeClass('is-invalid')
+    	        }
 
-        }
+            }*/
 
+
+        //VALIDAR QUE SI NO ASISTE NO PUEDE LLENAR CON INFORMACION LOS DEMAS DATOS
+            if(asistencia  == 'false' && (puntaje_contenido > 0 || puntaje_psicologica != -1 || estado != -1)){
+                if(puntaje_contenido > 0){
+                    $(this).find('td:nth-child(3) input').addClass('is-invalid')
+                    cumple = false
+                }else{
+                    $(this).find('td:nth-child(3) input').removeClass('is-invalid')
+                }
+
+                if(puntaje_psicologica != -1){
+                    $(this).find('td:nth-child(4) select').addClass('is-invalid')
+                    cumple = false
+                }else{
+                    $(this).find('td:nth-child(4) select').removeClass('is-invalid')
+                }
+
+                if(estado != -1){
+                    $(this).find('td:nth-child(5) select').addClass('is-invalid')
+                    cumple = false
+                }else{
+                    $(this).find('td:nth-child(5) select').removeClass('is-invalid')
+                }
+            }
+
+        // VALIDAR QUE APRUEBE CUANDO NO CUMPLE CON LAS CONDICIONES
+            if(estado == 'true'){
+                if(asistencia  != 'true'){
+                    $(this).find('td:nth-child(2) select').addClass('is-invalid')
+                    cumple = false
+                }else{
+                    $(this).find('td:nth-child(2) select').removeClass('is-invalid')
+                }
+
+                if(puntaje_contenido < 90){
+                    $(this).find('td:nth-child(3) input').addClass('is-invalid')
+                    cumple = false
+                }else{
+                    $(this).find('td:nth-child(3) input').removeClass('is-invalid')
+                }
+                //VALIDAR QUE NO APRUEBE CUANDO NO CUMPLIO LA PRUEBA PSICOLOGICA
+                if(puntaje_psicologica == 0){
+                    $(this).find('td:nth-child(4) select').addClass('is-invalid')
+                    $(this).find('td:nth-child(5) select').addClass('is-invalid')
+                    cumple = false
+                }else{
+                    $(this).find('td:nth-child(4) select').removeClass('is-invalid')
+                    $(this).find('td:nth-child(5) select').removeClass('is-invalid')
+                }
+            }
+
+        // VALIDAR QUE RECHAZE CUANDO CUMPLE CON LAS CONDICIONES
+            if(estado == 'false'){
+                if(asistencia  != 'true'){
+                    $(this).find('td:nth-child(2) select').addClass('is-invalid')
+                    cumple = false
+                }else{
+                    $(this).find('td:nth-child(2) select').removeClass('is-invalid')
+                }
+
+                if(puntaje_contenido > 89){
+                    $(this).find('td:nth-child(3) input').addClass('is-invalid')
+                    cumple = false
+                }else{
+                    $(this).find('td:nth-child(3) input').removeClass('is-invalid')
+                }
+
+                if(puntaje_psicologica != 0){
+                    $(this).find('td:nth-child(4) select').addClass('is-invalid')
+                    cumple = false
+                }else{
+                    $(this).find('td:nth-child(4) select').removeClass('is-invalid')
+                }
+            }
 
         evaluaciones.push({
             id_capacitacion: id_capacitacion,

@@ -499,7 +499,11 @@
                                 <label for="inputCapacidad">Capacidad:</label>
                                 <input type="text" id="inputCapacidad" class="form-control" oninput="this.value=Numeros(this.value)"/>                         
                             </div>
-                            <div class="form-group col-6">
+                            <div class="form-group col-2">
+                                <label for="inputAsistentes">Asistentes:</label>
+                                <input type="text" id="inputAsistentes" class="form-control" oninput="this.value=Numeros(this.value)"/>                         
+                            </div>
+                            <div class="form-group col-12">
                                 <label for="inputLugar">Lugar:</label>
                                 <input type="text" class="form-control" id="inputLugar" oninput="this.value=NumText(this.value)">
                             </div>                            
@@ -510,7 +514,7 @@
 
 
                             <div class="form-group col-12">
-                                <label for="inputDocumento">Documento:</label>
+                                <label for="inputDocumento">Evidencia lista de asistencia:</label>
                                 <label id="inputNombreArchivo"></label>
                                 <input type="file" class="documento" id="inputDocumento" accept=".doc, .docx, .pdf, .png, .jpg">
                             </div> 
@@ -558,6 +562,10 @@
                                 <label for="inputCapacidadR">Capacidad:</label>
                                 <h4 id="inputCapacidadR"></h4>                            
                             </div>
+                            <div class="form-group col-2">
+                                <label for="inputAsistentesR">Asistentes:</label>
+                                <h4 id="inputAsistentesR"></h4>                            
+                            </div>                           
                             <div class="form-group col-12">
                                 <label for="inputLugarR">Lugar:</label>
                                 <h4 id="inputLugarR"></h4>  
@@ -567,7 +575,7 @@
                                 <h5 id="inputObservacionR"></h5>  
                             </div> 
                             <div class="form-group col-12">
-                                <label for="inputDocumentoR">Documento:</label>
+                                <label for="inputDocumentoR">Evidencia lista de asistencia:</label>
                                 <label id="inputNombreArchivoR"></label>
                                 <input type="file" class="documento" id="inputDocumentoR" accept=".doc, .docx, .pdf, .png, .jpg">
                             </div> 
@@ -635,7 +643,8 @@
                                 <div class="form-group col-12">
                                     <label class="col-2 pl-0" for="inputRolAsignado">Personal:</label>
                                     <label class="col-6 ml-2 invalid-feedback" id="rol-no-select" style=""> Debe seleccionar al menos 1 persona.</label>
-                                    <div class="pl-1" id="div_personas">
+                                    <div class="pl-1">
+                                        <div class="col-12" id="div_personas"></div>
                                         <table id="table-personasVarias" class="stripe table table-hover _table-link dataTable no-footer" style="width:100%;">
                                             <thead>         
                                                 <tr>
