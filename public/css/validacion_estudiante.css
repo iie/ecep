@@ -758,6 +758,7 @@ textarea:-ms-input-placeholder {
     border-radius: 10px;
     font-size: 16px;
     text-align: center;
+	max-height: calc(85vh - 3.5rem)!important;
 }
 .modal .modal-header {
     border: none;
