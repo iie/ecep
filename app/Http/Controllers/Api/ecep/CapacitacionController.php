@@ -1097,27 +1097,52 @@ class CapacitacionController extends Controller
             return response()->json(array("resultado"=>"error","descripcion"=>$validacion->errors()), 422); 
         }
 
-        // rrhh.persona.id_comuna_postulacion = ".$post['id_comuna']."
-        $personaP = DB::select("select DISTINCT rrhh.persona.run, rrhh.persona.nombres, rrhh.persona.apellido_paterno, rrhh.persona.apellido_materno, 
-            rrhh.persona.id_persona, core.comuna.nombre as comuna, core.region.id_region,core.region.nombre as region, core.region.orden_geografico,
-            rrhh.capacitacion_persona.id_capacitacion, rrhh.capacitacion_persona.borrado as borrado_capacitacion, rrhh.persona.estado_proceso
-        from rrhh.persona 
-        left join rrhh.persona_cargo on rrhh.persona.id_persona = rrhh.persona_cargo.id_persona 
-        left join rrhh.cargo on rrhh.persona_cargo.id_cargo = rrhh.cargo.id_cargo 
-        left join core.comuna on rrhh.persona.id_comuna_postulacion = core.comuna.id_comuna 
-        left join core.region on core.comuna.id_region = core.region.id_region 
-        left join rrhh.capacitacion_persona on rrhh.persona.id_persona = rrhh.capacitacion_persona.id_persona 
-        left join rrhh.capacitacion on rrhh.capacitacion_persona.id_capacitacion = rrhh.capacitacion.id_capacitacion 
-        where core.region.id_region = ".$post['id_region']."
-            and rrhh.persona.borrado = false
-            and rrhh.persona.modificado = true
-            and rrhh.persona.estado_proceso = 'preseleccionado'
-            and rrhh.persona_cargo.borrado = false
-            and (rrhh.capacitacion_persona.borrado is null or rrhh.capacitacion_persona.borrado = false)
-            and (rrhh.capacitacion_persona.id_capacitacion is null 
-            or rrhh.capacitacion_persona.id_capacitacion = ".$post['id_capacitacion'].")
-        GROUP BY rrhh.persona.id_persona, rrhh.capacitacion_persona.id_capacitacion, comuna, borrado_capacitacion ,core.region.id_region 
-        order by core.region.orden_geografico asc,core.comuna.nombre asc, rrhh.persona.nombres asc,rrhh.persona.apellido_paterno asc");
+        $cap = Capacitacion::where('id_capacitacion',$post['id_capacitacion'])->first();
+ 
+        if(date('Y-m-d h:i:s') > $cap->fecha_hora)
+        {
+            $personaP = DB::select("select DISTINCT rrhh.persona.run, rrhh.persona.nombres, rrhh.persona.apellido_paterno, rrhh.persona.apellido_materno, 
+                rrhh.persona.id_persona, core.comuna.nombre as comuna, core.region.id_region,core.region.nombre as region, core.region.orden_geografico,
+                rrhh.capacitacion_persona.id_capacitacion, rrhh.capacitacion_persona.borrado as borrado_capacitacion, rrhh.persona.estado_proceso
+            from rrhh.persona 
+            left join rrhh.persona_cargo on rrhh.persona.id_persona = rrhh.persona_cargo.id_persona 
+            left join rrhh.cargo on rrhh.persona_cargo.id_cargo = rrhh.cargo.id_cargo 
+            left join core.comuna on rrhh.persona.id_comuna_postulacion = core.comuna.id_comuna 
+            left join core.region on core.comuna.id_region = core.region.id_region 
+            left join rrhh.capacitacion_persona on rrhh.persona.id_persona = rrhh.capacitacion_persona.id_persona 
+            left join rrhh.capacitacion on rrhh.capacitacion_persona.id_capacitacion = rrhh.capacitacion.id_capacitacion 
+            where core.region.id_region = ".$post['id_region']."
+                and rrhh.persona.borrado = false
+                and rrhh.persona.modificado = true
+                and rrhh.persona.estado_proceso = 'preseleccionado'
+                and rrhh.persona_cargo.borrado = false
+                and (rrhh.capacitacion_persona.borrado is null or rrhh.capacitacion_persona.borrado = false)
+                and rrhh.capacitacion_persona.id_capacitacion = ".$post['id_capacitacion']."
+            GROUP BY rrhh.persona.id_persona, rrhh.capacitacion_persona.id_capacitacion, comuna, borrado_capacitacion ,core.region.id_region 
+            order by core.region.orden_geografico asc,core.comuna.nombre asc, rrhh.persona.nombres asc,rrhh.persona.apellido_paterno asc");
+        }else{
+            $personaP = DB::select("select DISTINCT rrhh.persona.run, rrhh.persona.nombres, rrhh.persona.apellido_paterno, rrhh.persona.apellido_materno, 
+                rrhh.persona.id_persona, core.comuna.nombre as comuna, core.region.id_region,core.region.nombre as region, core.region.orden_geografico,
+                rrhh.capacitacion_persona.id_capacitacion, rrhh.capacitacion_persona.borrado as borrado_capacitacion, rrhh.persona.estado_proceso
+            from rrhh.persona 
+            left join rrhh.persona_cargo on rrhh.persona.id_persona = rrhh.persona_cargo.id_persona 
+            left join rrhh.cargo on rrhh.persona_cargo.id_cargo = rrhh.cargo.id_cargo 
+            left join core.comuna on rrhh.persona.id_comuna_postulacion = core.comuna.id_comuna 
+            left join core.region on core.comuna.id_region = core.region.id_region 
+            left join rrhh.capacitacion_persona on rrhh.persona.id_persona = rrhh.capacitacion_persona.id_persona 
+            left join rrhh.capacitacion on rrhh.capacitacion_persona.id_capacitacion = rrhh.capacitacion.id_capacitacion 
+            where core.region.id_region = ".$post['id_region']."
+                and rrhh.persona.borrado = false
+                and rrhh.persona.modificado = true
+                and rrhh.persona.estado_proceso = 'preseleccionado'
+                and rrhh.persona_cargo.borrado = false
+                and (rrhh.capacitacion_persona.borrado is null or rrhh.capacitacion_persona.borrado = false)
+                and (rrhh.capacitacion_persona.id_capacitacion is null 
+                or rrhh.capacitacion_persona.id_capacitacion = ".$post['id_capacitacion'].")
+            GROUP BY rrhh.persona.id_persona, rrhh.capacitacion_persona.id_capacitacion, comuna, borrado_capacitacion ,core.region.id_region 
+            order by core.region.orden_geografico asc,core.comuna.nombre asc, rrhh.persona.nombres asc,rrhh.persona.apellido_paterno asc");
+        }
+            
 
         $datos['personal_capacitacion'] = $personaP;
         return response()->json($datos);    
@@ -1403,7 +1428,7 @@ class CapacitacionController extends Controller
         <p>Esta tiene una duración aproximada de 4 horas y finaliza con 2 evaluaciones complementarias al proceso de selección.
         <p>Es importante que lea el manual de aplicación adjunto por si surge alguna duda respecto al proceso y pueda resolverla en la capacitación, cabe mencionar que este es de conocimiento general independiente al Rol al cual esté postulando. Adjuntamos también un acuerdo de confidencialidad a modo informativo y de lectura previa, el cual debe firmar el día de la capacitación.</p>
         <p>Le sugerimos que lleve lápiz y papel para que pueda tomar notas.</p>
-        <p>Por favor, confirme su asistencia en el siguiente enlace: https://".$ruta.".iie.cl/public/web_ecep/confirma_capacitacion.html?idCapPersona=".$idCapPersona."</p>
+        <p>Por favor, <b>confirme o rechace</b> su asistencia en el siguiente enlace: https://".$ruta.".iie.cl/public/web_ecep/confirma_capacitacion.html?idCapPersona=".$idCapPersona."</p>
 		<br>
 		<p><b>Atentamente</b></p>
         <p><b>Equipo de Aplicación ECEP 2019</b></p>";
