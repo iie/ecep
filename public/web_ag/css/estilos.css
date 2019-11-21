@@ -515,13 +515,7 @@ h6, .h6 {
         border-radius: 10px;
     }
 
-    .grafico1{
-        margin-left: 7%;
-    }
-
-    .grafico2{
-        margin-left: 17%;
-    }
+    
 
     ._infototal{
         background-color: #dedfe0 !important;
@@ -702,13 +696,13 @@ h6, .h6 {
     min-width: 400px; 
 
     max-width: 350px;
-    
+     margin-left: 7%;
 }
 .highcharts-figure2 {
     min-width: 400px; 
 
     max-width: 520px;
-    
+    margin-left: 17%;
 }
 
 .highcharts-description{
