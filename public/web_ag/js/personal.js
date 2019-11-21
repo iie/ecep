@@ -407,6 +407,7 @@ function llenarVista(data, data2, data3) {
 
 function grafico1Barras(data,data1,data2,data3,data4){
     //$("highcharts-credits").removeClass('highcharts-credits')
+    console.log(data3)
     Highcharts.chart('containerTest', {
     chart: {
         type: 'bar',
@@ -697,7 +698,7 @@ function verCapComuna(data){
             {data: "run",className: "text-center"},
             {data: "archivo",
                 render: function(data, type, full, meta){
-                    var url = "https://pruebadeconocimientos.iie.cl/api/web/monitoreo/capacitaciones/descarga-archivo/" + data;
+                    var url = webservice + "/monitoreo/capacitaciones/descarga-archivo/" + data;
                     return "<a href='" + url + "'>DESCARGAR</a>";
                 }
             },
