@@ -305,12 +305,38 @@ class PersonalController extends Controller
             ->orderBy('core.comuna.nombre','asc')
             ->get();
 
+
+		// $personaPTotal = DB::select("SELECT created_at, id_persona FROM rrhh.persona WHERE id_persona in (
+											// SELECT rrhh.persona.id_persona
+											// FROM rrhh.persona
+											// INNER JOIN rrhh.persona_cargo ON rrhh.persona_cargo.id_persona = rrhh.persona.id_persona
+											// INNER JOIN rrhh.cargo ON rrhh.persona_cargo.id_cargo = rrhh.cargo.id_cargo
+											// INNER JOIN core.comuna ON rrhh.persona.id_comuna_postulacion = core.comuna.id_comuna
+											// INNER JOIN core.region ON core.comuna.id_region = core.region.id_region 
+											// WHERE rrhh.persona.modificado = TRUE 
+											// AND rrhh.persona.borrado = FALSE)
+											// AND rrhh.persona.id_comuna_postulacion in (SELECT
+											// comuna.id_comuna
+											// FROM core.region as region, core.comuna as comuna, infraestructura.estimacion as sede
+											// WHERE region.id_region =  comuna.id_region AND sede.id_comuna = comuna.id_comuna)
+											// ORDER BY created_at desc");
+											
+		// foreach($personaPTotal as $personaPTotalAux){
+			 // $rrhh_Final[] = $personaPTotalAux->id_persona;
+		// }		
+		
+		
         foreach ($personaP as $index => $per) {
-            $personaP[$index]->id_institucion = $personaP[$index]->id_institucion == null ? null : $inst[$personaP[$index]->id_institucion];
-            $personaP[$index]->id_estado_civil = $personaP[$index]->id_estado_civil == null ? null : $civil[$personaP[$index]->id_estado_civil];
-            $personaP[$index]->id_sexo = $personaP[$index]->id_sexo == null ? null : $sexos[$personaP[$index]->id_sexo];
-            $personaP[$index]->id_comuna_nacimiento =  $personaP[$index]->id_comuna_nacimiento == null ? null : $comuna[$personaP[$index]->id_comuna_nacimiento];
-            $personaP[$index]->id_comuna_residencia =  $personaP[$index]->id_comuna_residencia == null ? null : $comuna[$personaP[$index]->id_comuna_residencia];
+			//if(in_array($personaP[$index]->id_persona, $rrhh_Final)){
+				$personaP[$index]->id_institucion = $personaP[$index]->id_institucion == null ? null : $inst[$personaP[$index]->id_institucion];
+				$personaP[$index]->id_estado_civil = $personaP[$index]->id_estado_civil == null ? null : $civil[$personaP[$index]->id_estado_civil];
+				$personaP[$index]->id_sexo = $personaP[$index]->id_sexo == null ? null : $sexos[$personaP[$index]->id_sexo];
+				$personaP[$index]->id_comuna_nacimiento =  $personaP[$index]->id_comuna_nacimiento == null ? null : $comuna[$personaP[$index]->id_comuna_nacimiento];
+				$personaP[$index]->id_comuna_residencia =  $personaP[$index]->id_comuna_residencia == null ? null : $comuna[$personaP[$index]->id_comuna_residencia];
+			//}
+			//else{
+			//	unset($personaP[$index]);
+			//}
         }
 
         $cZonal = DB::table('rrhh.persona')
@@ -633,6 +659,10 @@ class PersonalController extends Controller
 
         if($post['id_cargo'] != -1 && $post['estado'] == 'contratado'){
             return response()->json(['resultado'=>'error','descripcion'=>'No tiene autorización para Contratar.']);
+        }
+
+        if($post['estado'] == 'capacitado'){
+            return response()->json(['resultado'=>'error','descripcion'=>'No tiene autorización para Capacitar.']);
         }
         
         $persona = Persona::where('id_persona',$post['id_persona'])->first();

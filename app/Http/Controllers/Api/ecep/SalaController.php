@@ -24,11 +24,11 @@ class SalaController extends Controller
 		$this->fields = array();	
     }	
 
-     public function sincronizaEstimacion(Request $request){
+    public function sincronizaEstimacion(Request $request){
 		
 		
-		$evaluadosSede = DB::select("select p.id_persona, pc.id_cargo, pc.estado from rrhh.persona as p, rrhh.persona_cargo as pc 
-				where p.id_persona = pc.id_persona and p.borrado = false and pc.borrado = false");
+		$evaluadosSede = DB::select("select p.run, p.id_persona, pc.id_cargo, pc.estado from rrhh.persona as p, rrhh.persona_cargo as pc 
+				where p.id_persona = pc.id_persona and p.borrado = false and pc.borrado = false order by pc.estado desc");
 		
 		// contratado						
 		// capacitado
@@ -38,45 +38,71 @@ class SalaController extends Controller
 		// rechazado
 
 		foreach($evaluadosSede as $evaluadosSedeAux){
-			$cargoFinal[$evaluadosSedeAux->id_persona][$evaluadosSedeAux->id_cargo] = $evaluadosSedeAux->estado;
+			if($evaluadosSedeAux->estado == 'contratado'){
+				$c = 1;
+			}
+			elseif($evaluadosSedeAux->estado == 'capacitado'){
+				$c = 2;
+			}	
+			elseif($evaluadosSedeAux->estado == 'seleccionado'){
+				$c = 3;
+			}	
+			elseif($evaluadosSedeAux->estado == 'preseleccionado'){
+				$c = 4;
+			}	
+			elseif($evaluadosSedeAux->estado == 'rechazado'){
+				$c = 5;
+			}				
+			elseif($evaluadosSedeAux->estado == 'reclutado'){
+				$c = 6;
+			}	
+			
+			$cargoFinal[$evaluadosSedeAux->run][] = $c."_".$evaluadosSedeAux->estado;
 		}		
 		
 		foreach($cargoFinal as $idPersona=>$cargos){
+			
+			sort($cargos);
+			
 			foreach($cargos as $id_cargo=>$estado){
-				if($estado == 'contratado'){
+				
+				if($estado == '1_contratado'){
 					$estadoFinal[$idPersona] = $estado;
-					//break;
+					$estadoFinal2[$idPersona] = "contratado";
 				}
-				elseif($estado == 'capacitado'){
+				elseif($estado == '2_capacitado'){
 					$estadoFinal[$idPersona] = $estado;
-					//break;
+					$estadoFinal2[$idPersona] = "capacitado";
 				}	
-				elseif($estado == 'seleccionado'){
+				elseif($estado == '3_seleccionado'){
 					$estadoFinal[$idPersona] = $estado;
-					//break;
+					$estadoFinal2[$idPersona] = "seleccionado";
 				}	
-				elseif($estado == 'preseleccionado'){
+				elseif($estado == '4_preseleccionado'){
 					$estadoFinal[$idPersona] = $estado;
-					//break;
+					$estadoFinal2[$idPersona] = "preseleccionado";
 				}	
-				elseif($estado == 'reclutado'){
+				elseif($estado == '5_rechazado'){
 					$estadoFinal[$idPersona] = $estado;
-					//break;
+					$estadoFinal2[$idPersona] = "rechazado";
 				}	
-				elseif($estado == 'rechazado'){
+				elseif($estado == '6_reclutado'){
 					$estadoFinal[$idPersona] = $estado;
-					
+					$estadoFinal2[$idPersona] = "reclutado";
 				}	
+				
+				break;
 			}
 		}
 		
-		foreach($estadoFinal as $id_persona => $estado){
+		
+		foreach($estadoFinal2 as $id_persona => $estado){
 			$p = Persona::find($id_persona);
-			$p->estado = $estado;
+			$p->_estado = $estado;
 			//$p->save();
 		}
-		//arreglo($estadoFinal); 
-		//arreglo($cargoFinal);
+		//arreglo($estadoFinal2); 
+		arreglo($cargoFinal);
 		
 		
 		
@@ -130,7 +156,7 @@ class SalaController extends Controller
 			else{
 				$sede = Sede::find($idSede);
 				$sede->id_estimacion = null;
-				//$sede->save();	
+				$sede->save();	
 			}
 			
 		}
@@ -139,7 +165,6 @@ class SalaController extends Controller
 		//foreach()
 		
 	}	
-	
 	public function sqlToTable(Request $request){
 
 		$sql = "

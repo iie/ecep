@@ -1455,7 +1455,8 @@ function encodeDocumentoOtro() {
 function guardarCapacitacion(){
  
     if(validar() == true){
-        if(($('#inputDocumento').val() != '' || $('#inputDocumento').val() != null) && (docO_b64 == '' || docO_b64 == null)){
+
+        if($('#inputDocumento').val() != '' && (docO_b64 == '' || docO_b64 == null) && ($('#inputDocumento').is(":visible"))){
             guardarConfirmOtro()
         }else{
             console.log(docO_b64)
@@ -1512,7 +1513,7 @@ function guardarCapacitacion(){
 }
 function guardarCapacitacionR(){
 
-    if(($('#inputDocumentoR').val() != '' || $('#inputDocumentoR').val() != null) && (docO_b64 == '' || docO_b64 == null)){
+    if($('#inputDocumentoR').val() != '' && (docO_b64 == '' || docO_b64 == null) && ($('#inputDocumentoR').is(":visible"))){
         guardarConfirmOtro()
     }else{
         $.ajax({
