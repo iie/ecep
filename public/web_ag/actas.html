@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <!-- Required meta tags-->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="">
+    <!-- Title Page-->
+    <title>ECEP</title>
+    <!-- Main CSS-->
+    <link href="css/estilos.css" rel="stylesheet" media="all">
+    <link rel="stylesheet" media="all" href="vendor/bootstrap_v4.3.1/css/bootstrap.css">
+    <link
+        href='https://fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,400italic,500,500italic,700,700italic,900italic,900'
+        rel='stylesheet' type='text/css'>
+    <link href="vendor/jquery-nice-select-1.1.0/css/nice-select.css" rel='stylesheet' type='text/css'>
+    <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
+
+    <script src="vendor/jquery-3.2.1/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript" src="vendor/popper/popper.min.js"></script>
+    <script type="text/javascript" src="vendor/jquery.blockUI.js"></script>
+    <script type="text/javascript" src="vendor/bootstrap_v4.3.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="vendor/datatables/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="vendor/highcharts/highcharts.js"></script>
+    <script type="text/javascript" src="vendor/utils.js"></script>
+    <script type="text/javascript" src="js/actas.js"></script>
+    <script type="text/javascript" src="vendor/jquery-nice-select-1.1.0/js/jquery.nice-select.js"></script>
+    <script type="text/javascript" src="vendor/toastr/toastr.js"></script>
+
+    <link href="vendor/toastr/toastr.css" rel='stylesheet' type='text/css'>
+    <link href="vendor/datatables/jquery.dataTables.min.css" rel='stylesheet' type='text/css'>
+</head>
+
+<body>
+    <div class="row encabezado">
+        <div class="col-sm-1">
+            <a id="redirect" href="#" class="text-white" style="font-size: 27px; display: none;">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+            <div style="border:1px solid; width:40px; height:40px; border-radius:50px; float:right">&nbsp;</div>
+        </div>
+        <div class="col-sm-6" style="padding-top:8px; text-align: left;white-space: nowrap;">
+            ECEP: Evaluación de Conocimientos Específicos y Pedagógicos Docentes 2019
+        </div>
+
+        <div class="col-sm-5 pr-4" style="padding-top:8px; ">
+            <div class="dropdown show text-left" style="float:right; font-size: 15px;">
+                Bienvenido, <strong><span id="nombre_usuario"></span></strong>
+                <a class="dropdown-toggle _hide-arrow text-white" href="#" role="button" id="dropdownMenuLink2"
+                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="fas fa-user-circle"></i>
+                </a>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuLink2" style="font-size: 15px;">
+                    <a class="dropdown-item" href="#" onclick="redirectLogin()">Cerrar sesión</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="_principal" style="max-width: 1366px !important; margin:auto;">
+        <div class="page-content _padding-pages">
+            <div class="row m-0">
+                <div class="col-6 form-row align-items-center">
+                    <h2><i class="far fa-file-alt"></i></h2>
+                    <h4 class="nombre_modulo">Actas</h4>
+                </div>
+                <div class="col-6 pr-0 text-right">
+                    <button class="btn btn-volver" onclick="redirectModulo()">Volver</button>
+                </div>
+            </div>
+            <div class="container-fluid _card-rounded mt-3 pt-3">
+                <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active pr-5" id="pills-coordinacion-tab" data-toggle="pill"
+                            href="#pills-coordinacion" role="tab" aria-controls="pills-coordinacion"
+                            aria-selected="true">Coordinación</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link pl-5" id="pills-impresion-tab" data-toggle="pill" href="#pills-impresion"
+                            role="tab" aria-controls="pills-impresion" aria-selected="false">Impresión</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link pl-5" id="pills-callcenter-tab" data-toggle="pill" href="#pills-callcenter"
+                            role="tab" aria-controls="pills-callcenter" aria-selected="false">Call Center</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link pl-5" id="pills-sistema-monitoreo-tab" data-toggle="pill" href="#pills-sistema-monitoreo"
+                            role="tab" aria-controls="pills-sistema-monitoreo" aria-selected="false">Sistema Monitoreo</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link pl-5" id="pills-aplicacion-tab" data-toggle="pill" href="#pills-aplicacion"
+                            role="tab" aria-controls="pills-aplicacion" aria-selected="false">Aplicación</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link pl-5" id="pills-captura-tab" data-toggle="pill" href="#pills-captura"
+                            role="tab" aria-controls="pills-captura" aria-selected="false">Captura</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link pl-5" id="pills-pregunta-abierta-tab" data-toggle="pill" href="#pills-pregunta-abierta"
+                            role="tab" aria-controls="pills-pregunta-abierta" aria-selected="false">Pregunta Abierta</a>
+                    </li>
+                </ul>
+
+                <div class="tab-content" id="pills-tabContent">
+                    <!-- Contenido Tab Coordinación -->
+                    <div class="tab-pane fade show active" id="pills-coordinacion" role="tabpanel"
+                        aria-labelledby="pills-coordinacion-tab">
+                        <div class="col-sm-12 pt-5 pl-5 pr-5 mb-5"
+                            style="padding-top: 1.5rem!important; padding-left: 0px !important; padding-right: 0px !important;">
+                            <table id="table-coordinacion"
+                                class="stripe table table-hover _table-link dataTable no-footer" style="width:100%;">
+                                <thead>
+                                    <tr>
+                                        <th>NRO</th>
+                                        <th>NOMBRE</th>
+                                        <th>FECHA MODIFICACIÓN</th>
+                                        <th>TAMAÑO DEL ARCHIVO</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="lista-coordinacion">
+                                    <td colspan="4" style="text-align:center">SIN ARCHIVOS</td>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Contenido Tab Impresión -->
+                    <div class="tab-pane fade" id="pills-impresion" role="tabpanel"
+                        aria-labelledby="pills-impresion-tab">
+                        <div class="tab-pane fade show active" id="pills-impresion" role="tabpanel"
+                            aria-labelledby="pills-impresion-tab">
+                            <div class="col-sm-12 pt-5 pl-5 pr-5 mb-5"
+                                style="padding-top: 1.5rem!important; padding-left: 0px !important; padding-right: 0px !important;">
+
+                                <table id="table-impresion"
+                                    class="stripe table table-hover _table-link dataTable no-footer"
+                                    style="width:100%;">
+                                    <thead>
+                                        <tr>
+                                            <th>NRO</th>
+                                            <th>NOMBRE</th>
+                                            <th>FECHA MODIFICACIÓN</th>
+                                            <th>TAMAÑO DEL ARCHIVO</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="lista-impresion">
+                                        <td colspan="4" style="text-align:center">SIN ARCHIVOS</td>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Contenido Tab Call Center -->
+                    <div class="tab-pane fade" id="pills-callcenter" role="tabpanel"
+                        aria-labelledby="pills-callcenter-tab">
+                        <div class="tab-pane fade show active" id="pills-callcenter" role="tabpanel"
+                            aria-labelledby="pills-callcenter-tab">
+                            <div class="col-sm-12 pt-5 pl-5 pr-5 mb-5"
+                                style="padding-top: 1.5rem!important; padding-left: 0px !important; padding-right: 0px !important;">
+
+                                <table id="table-callcenter"
+                                    class="stripe table table-hover _table-link dataTable no-footer"
+                                    style="width:100%;">
+                                    <thead>
+                                        <tr>
+                                            <th>NRO</th>
+                                            <th>NOMBRE</th>
+                                            <th>FECHA MODIFICACIÓN</th>
+                                            <th>TAMAÑO DEL ARCHIVO</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="lista-callcenter">
+                                        <td colspan="4" style="text-align:center">SIN ARCHIVOS</td>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Contenido Tab Sistema Monitoreo -->
+                    <div class="tab-pane fade" id="pills-sistema-monitoreo" role="tabpanel"
+                        aria-labelledby="pills-sistema-monitoreo-tab">
+                        <div class="tab-pane fade show active" id="pills-sistema-monitoreo" role="tabpanel"
+                            aria-labelledby="pills-sistema-monitoreo-tab">
+                            <div class="col-sm-12 pt-5 pl-5 pr-5 mb-5"
+                                style="padding-top: 1.5rem!important; padding-left: 0px !important; padding-right: 0px !important;">
+
+                                <table id="table-sistema-monitoreo"
+                                    class="stripe table table-hover _table-link dataTable no-footer"
+                                    style="width:100%;">
+                                    <thead>
+                                        <tr>
+                                            <th>NRO</th>
+                                            <th>NOMBRE</th>
+                                            <th>FECHA MODIFICACIÓN</th>
+                                            <th>TAMAÑO DEL ARCHIVO</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="lista-sistema-monitoreo">
+                                        <td colspan="4" style="text-align:center">SIN ARCHIVOS</td>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Contenido Tab Sistema Aplicación -->
+                    <div class="tab-pane fade" id="pills-aplicacion" role="tabpanel"
+                        aria-labelledby="pills-aplicacion-tab">
+                        <div class="tab-pane fade show active" id="pills-aplicacion" role="tabpanel"
+                            aria-labelledby="pills-aplicacion-tab">
+                            <div class="col-sm-12 pt-5 pl-5 pr-5 mb-5"
+                                style="padding-top: 1.5rem!important; padding-left: 0px !important; padding-right: 0px !important;">
+
+                                <table id="table-aplicacion"
+                                    class="stripe table table-hover _table-link dataTable no-footer"
+                                    style="width:100%;">
+                                    <thead>
+                                        <tr>
+                                            <th>NRO</th>
+                                            <th>NOMBRE</th>
+                                            <th>FECHA MODIFICACIÓN</th>
+                                            <th>TAMAÑO DEL ARCHIVO</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="lista-aplicacion">
+                                        <td colspan="4" style="text-align:center">SIN ARCHIVOS</td>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Contenido Tab Captura -->
+                    <div class="tab-pane fade" id="pills-captura" role="tabpanel"
+                        aria-labelledby="pills-captura-tab">
+                        <div class="tab-pane fade show active" id="pills-captura" role="tabpanel"
+                            aria-labelledby="pills-captura-tab">
+                            <div class="col-sm-12 pt-5 pl-5 pr-5 mb-5"
+                                style="padding-top: 1.5rem!important; padding-left: 0px !important; padding-right: 0px !important;">
+
+                                <table id="table-captura"
+                                    class="stripe table table-hover _table-link dataTable no-footer"
+                                    style="width:100%;">
+                                    <thead>
+                                        <tr>
+                                            <th>NRO</th>
+                                            <th>NOMBRE</th>
+                                            <th>FECHA MODIFICACIÓN</th>
+                                            <th>TAMAÑO DEL ARCHIVO</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="lista-captura">
+                                        <td colspan="4" style="text-align:center">SIN ARCHIVOS</td>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Contenido Tab Pregunta Abierta -->
+                    <div class="tab-pane fade" id="pills-pregunta-abierta" role="tabpanel"
+                        aria-labelledby="pills-pregunta-abierta-tab">
+                        <div class="tab-pane fade show active" id="pills-pregunta-abierta" role="tabpanel"
+                            aria-labelledby="pills-pregunta-abierta-tab">
+                            <div class="col-sm-12 pt-5 pl-5 pr-5 mb-5"
+                                style="padding-top: 1.5rem!important; padding-left: 0px !important; padding-right: 0px !important;">
+
+                                <table id="table-pregunta-abierta"
+                                    class="stripe table table-hover _table-link dataTable no-footer"
+                                    style="width:100%;">
+                                    <thead>
+                                        <tr>
+                                            <th>NRO</th>
+                                            <th>NOMBRE</th>
+                                            <th>FECHA MODIFICACIÓN</th>
+                                            <th>TAMAÑO DEL ARCHIVO</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="lista-pregunta-abierta">
+                                        <td colspan="4" style="text-align:center">SIN ARCHIVOS</td>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+</body>
+
+</html>
