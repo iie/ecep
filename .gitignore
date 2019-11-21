@@ -16,3 +16,11 @@ npm-debug.log
 yarn-error.log
 .env
 .phpunit.result.cache
+composer.json
+composer.lock
+/app/Http/Controllers/Api/ecep/conexion_drive/*
+.htaccess
+error_log
+public/app_postulacion/js/utils.js
+public/web_ecep/vendor/utils.js
+public/web_ecep/error_log
