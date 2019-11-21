@@ -1411,9 +1411,9 @@ class CapacitacionController extends Controller
 			$mail->SMTPAuth = true;  // use smpt auth
 			$mail->Host = "mail.smtp2go.com"; 
 			$mail->Port = 2525;//2525; //443; 
-			$mail->Username = "reclutamientos@ecep2019.iie.cl";
-			$mail->Password = 'K1ll@@ZnVmcG41YWtwa3Yw·$""@@@';
-			$mail->setFrom("reclutamientos@ecep2019.iie.cl", "ECEP");
+			$mail->Username = "reclutamientoecep@ecep2019.iie.cl";
+			$mail->Password = 'K1ll@@ZnVmcG4###~"·""·#####1YWtwa3Yw·$""@@@';
+			$mail->setFrom("reclutamientoecep@ecep2019.iie.cl", "ECEP");
 			$mail->Subject = $subject;
 			$mail->MsgHTML($html);
 			$mail->addAddress($correo, $nombre);
