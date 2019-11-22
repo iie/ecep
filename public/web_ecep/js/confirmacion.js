@@ -65,7 +65,7 @@ function guardarConfirmacion(idPers, confirmacion) {
             confirma: confirmacion,
         },
         success: function(data, textStatus, jqXHR) {
-            alert("Asistencia confirmada")
+            alert("Respuesta enviada correctamente.")
         },
         error: function(jqXHR, textStatus, errorThrown) {
             console.log("error del servidor, datos incorrectos");

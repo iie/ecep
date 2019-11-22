@@ -674,7 +674,7 @@ class CapacitacionController extends Controller
         $capacitacion->lugar = isset($post['lugar']) ? $post['lugar'] : $capacitacion->lugar;
         $capacitacion->fecha_hora = isset($post['fecha']) ? $post['fecha'] : $capacitacion->fecha_hora;
         $capacitacion->observacion = isset($post['observacion']) ? $post['observacion'] : null;
-        $capacitacion->asistentes = isset($post['asistentes']) ? $post['asistentes'] : null;
+        $capacitacion->asistentes = isset($post['asistentes']) ? $post['asistentes'] : 0;
         $capacitacion->capacidad = isset($post['capacidad']) ? $post['capacidad'] : $capacitacion->capacidad;
 
         if(isset($post['documento']) && $capacitacion->archivo_asistencia == null){
@@ -1166,11 +1166,32 @@ class CapacitacionController extends Controller
         if(isset($post['personal_capacitacion'])){
             foreach ($post['personal_capacitacion'] as $personal) {
                 if($post['id_capacitacion'] != -1){
-                    $capacitacionPersona = CapacitacionPersona::where('id_capacitacion',$post['id_capacitacion'])
-                                    ->where('id_persona',$personal['id_persona'])
-                                    ->first();
+                    /*$capacitacionPersona = CapacitacionPersona::where('id_capacitacion',$post['id_capacitacion'])
+                        ->where('id_persona',$personal['id_persona'])
+                        ->first();*/
              
+                    $capacitacionPersona = CapacitacionPersona::where('id_persona',$personal['id_persona'])
+                                    ->first();
+
+                    /*if(isset($capacitacionPersona)){
+                        if($capacitacionPersona->id_capacitacion != $post['id_capacitacion']){
+                            $pruebas = CapacitacionPrueba::where('id_capacitacion_persona',$capacitacionPersona->id_capacitacion_persona)->get();
+                            arreglo(count($capacitacion_prueba));
+                        }
+                    }*/
+
+
+                       
                     if(isset($capacitacionPersona)){
+                        if($capacitacionPersona->id_capacitacion != $post['id_capacitacion']){
+                            $pruebas = CapacitacionPrueba::where('id_capacitacion_persona',$capacitacionPersona->id_capacitacion_persona)->get();
+                            if(count($pruebas) > 0){
+                                return response()->json(['resultado'=>'error','descripcion'=>'No puede cambiar de capacitación cuando ya ha sido evaluado.']);
+                            }else{
+                                $capacitacionPersona->id_capacitacion = $post['id_capacitacion'];
+                            }
+                        }
+
                         $cap = Capacitacion::find($post['id_capacitacion']);
                         $persona = Persona::find($capacitacionPersona->id_persona);
                         $nombre_completo = $persona->nombres . " " . $persona->apellido_paterno;
@@ -1182,10 +1203,19 @@ class CapacitacionController extends Controller
                         }else{
                             $capacitacionPersona->borrado = true;
                         }
-
+                        
                         try{
                             $capacitacionPersona->save();
-                            $this->enviarCorreoConfirmacion($correo, $nombre_completo, $fecha_hora, $lugar, $capacitacionPersona->id_capacitacion_persona);
+                            $log = DB::select("SELECT * FROM rrhh.log_correo_capacitacion 
+                            WHERE id_capacitacion = " . $capacitacionPersona->id_capacitacion . "
+                            AND id_persona = " . $persona->id_persona ."
+                            AND correo = '" . $correo . "'");
+                            if(sizeof($log) == 0){
+                                if($this->enviarCorreoConfirmacion($correo, $nombre_completo, $fecha_hora, $lugar, $capacitacionPersona->id_capacitacion_persona)){
+                                    DB::insert('insert into rrhh.log_correo_capacitacion (id_capacitacion, id_persona, correo) values (?, ?, ?)', 
+                                                [$capacitacionPersona->id_capacitacion, $persona->id_persona, $correo]);
+                                }
+                            }
                         }catch (\Exception $e){
                             DB::rollback();
                             return response()->json(['resultado'=>'error','descripcion'=>'Error al modificar la asignación. ()'. $e->getMessage()]);
@@ -1204,7 +1234,17 @@ class CapacitacionController extends Controller
                         $fecha_hora = $cap->fecha_hora;
                         try{
                             $newCapacitacionPersona->save();
-                            $this->enviarCorreoConfirmacion($correo, $nombre_completo, $fecha_hora, $lugar, $newCapacitacionPersona->id_capacitacion_persona);
+                            $log = DB::select("SELECT * FROM rrhh.log_correo_capacitacion 
+                            WHERE id_capacitacion = " . $capacitacionPersona->id_capacitacion . "
+                            AND id_persona = " . $persona->id_persona ."
+                            AND correo = '" . $correo . "'");
+                            if(sizeof($log) == 0){
+                                if($this->enviarCorreoConfirmacion($correo, $nombre_completo, $fecha_hora, $lugar, $capacitacionPersona->id_capacitacion_persona)){
+                                    DB::insert('insert into rrhh.log_correo_capacitacion (id_capacitacion, id_persona, correo) values (?, ?, ?)', 
+                                                [$capacitacionPersona->id_capacitacion, $persona->id_persona, $correo]);
+                                }
+                            }
+                            // $this->enviarCorreoConfirmacion($correo, $nombre_completo, $fecha_hora, $lugar, $newCapacitacionPersona->id_capacitacion_persona);
                         }catch (\Exception $e){
                             DB::rollback();
                             return response()->json(['resultado'=>'error','descripcion'=>'Error al guardar asignación. ()'. $e->getMessage()]);
@@ -1212,6 +1252,7 @@ class CapacitacionController extends Controller
                     }
                 }else{
                     $capacitacionPersona = CapacitacionPersona::where('id_persona',$personal['id_persona'])
+                                    ->where('id_capacitacion',$post['id_capacitacion'])
                                     ->first();
                     try{
                         $capacitacionPersona->borrado = true;
@@ -1279,7 +1320,7 @@ class CapacitacionController extends Controller
 					if($evaluado['estado']=='true'){
 						$_p->estado_proceso = 'capacitado';	
 
-					}else if($evaluado['puntaje_psicologica'] == 0){
+					}else if($evaluado['puntaje_psicologica'] == 0 && $evaluado['estado'] != -1){
                         $_p->estado_proceso = 'rechazado';
 
                     }else{
@@ -1429,7 +1470,8 @@ class CapacitacionController extends Controller
         <p>Esta tiene una duración aproximada de 4 horas y finaliza con 2 evaluaciones complementarias al proceso de selección.
         <p>Es importante que lea el manual de aplicación adjunto por si surge alguna duda respecto al proceso y pueda resolverla en la capacitación, cabe mencionar que este es de conocimiento general independiente al Rol al cual esté postulando. Adjuntamos también un acuerdo de confidencialidad a modo informativo y de lectura previa, el cual debe firmar el día de la capacitación.</p>
         <p>Le sugerimos que lleve lápiz y papel para que pueda tomar notas.</p>
-        <p>Por favor, <b>confirme o rechace</b> su asistencia en el siguiente enlace: https://".$ruta.".iie.cl/public/web_ecep/confirma_capacitacion.html?idCapPersona=".$idCapPersona."</p>
+        <p>Por favor, <b>confirme si puede asistir a la capacitación.</b> En el caso de no poder asistir, podrá ser convocado a una próxima instancia de capacitación.</p>
+        <p>Confirme en el siguiente enlace: https://".$ruta.".iie.cl/public/web_ecep/confirma_capacitacion.html?idCapPersona=".$idCapPersona."</p>
 		<br>
 		<p><b>Atentamente</b></p>
         <p><b>Equipo de Aplicación ECEP 2019</b></p>";

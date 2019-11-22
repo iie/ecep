@@ -5,6 +5,8 @@ $(document).ready(function(){
  	$('#ingresMP3').on('click', ingresMP3)
  	$('#ingresaTracking').on('click', ingresaTracking) 
  	$('#ingresaCallCenter').on('click', ingresaCallCenter)  
+ 	$('#ingresaActas').on('click', redirectactactas) 
+ 	
  	/*
  	
  		 

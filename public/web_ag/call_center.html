@@ -84,20 +84,72 @@
 
             </div>
             <div class="container-fluid _card-rounded mt-3 pt-3">
-                <table id="table-call-center" class=" table table-hover _table-link dataTable " style="width:100%;">
-                    <thead>
-                        <tr>
-                            <th style="text-align:center">NRO</th>
-                            <th>NOMBRE</th>
-                            <th>FECHA MODIFICACIÓN</th>
-                            <th>TAMAÑO DEL ARCHIVO</th>
-                        </tr>
-                    </thead>
-                    <tbody id="lista-call-center">
-                    </tbody>
-                </table>
+                <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active pr-5" id="pills-call-center-tab" data-toggle="pill"
+                            href="#pills-call-center" role="tab" aria-controls="pills-call-center"
+                            aria-selected="true">CallCenter</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link pl-5" id="pills-casos-especiales-tab" data-toggle="pill"
+                            href="#pills-casos-especiales" role="tab" aria-controls="pills-casos-especiales"
+                            aria-selected="false">Casos especiales</a>
+                    </li>
+                </ul>
+
+                <div class="tab-content" id="pills-tabContent">
+                    <!-- Contenido Tab Call Center -->
+                    <div class="tab-pane fade show active" id="pills-call-center" role="tabpanel"
+                        aria-labelledby="pills-call-center-tab">
+                        <div class="col-sm-12 pt-5 pl-5 pr-5 mb-5"
+                            style="padding-top: 1.5rem!important; padding-left: 0px !important; padding-right: 0px !important;">
+                            <table id="table-call-center" class=" table table-hover _table-link dataTable "
+                                style="width:100%;">
+                                <thead>
+                                    <tr>
+                                        <th style="text-align:center">NRO</th>
+                                        <th>NOMBRE</th>
+                                        <th>FECHA MODIFICACIÓN</th>
+                                        <th>TAMAÑO DEL ARCHIVO</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="lista-call-center">
+                                    <td colspan="4" style="text-align:center">SIN ARCHIVOS</td>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Contenido Tab Casos especiales -->
+                    <div class="tab-pane fade" id="pills-casos-especiales" role="tabpanel"
+                        aria-labelledby="pills-casos-especiales-tab">
+                        <div class="tab-pane fade show active" id="pills-casos-especiales" role="tabpanel"
+                            aria-labelledby="pills-casos-especiales-tab">
+                            <div class="col-sm-12 pt-5 pl-5 pr-5 mb-5"
+                                style="padding-top: 1.5rem!important; padding-left: 0px !important; padding-right: 0px !important;">
+
+                                <table id="table-casos-especiales"
+                                    class="stripe table table-hover _table-link dataTable no-footer"
+                                    style="width:100%;">
+                                    <thead>
+                                        <tr>
+                                            <th>NRO</th>
+                                            <th>NOMBRE</th>
+                                            <th>FECHA MODIFICACIÓN</th>
+                                            <th>TAMAÑO DEL ARCHIVO</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="lista-casos-especiales">
+                                        <td colspan="4" style="text-align:center">SIN ARCHIVOS</td>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
+    </div>
 </body>
 
 </html>

@@ -26,7 +26,6 @@ function getCarpetas() {
         },
         error: function (jqXHR, textStatus, errorThrown) {
             showFeedback("error", "Error en el servidor", "Datos incorrectos");
-            console.log("error del servidor, datos incorrectos");
         }
     })
 }
@@ -37,7 +36,6 @@ function llenarVista(data) {
             $('#table-coordinacion').DataTable().destroy();
             $('#lista-coordinacion').empty();
         }
-        console.log(data.coordinacion)
 
         trData = '';
         nro = 1;

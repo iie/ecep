@@ -39,44 +39,81 @@ function cargaLista() {
 }
 
 function llenarTabla(data) {
+    if(data.call_center){
+        if ($.fn.dataTable.isDataTable('#table-call-center')) {
+            $('#table-call-center').DataTable().destroy();
+            $('#lista-call-center').empty();
+        }
     
-    if ($.fn.dataTable.isDataTable('#table-postulacion')) {
-        $('#table-call-center').DataTable().destroy();
-        $('#lista-call-center').empty();
+        trData = '';
+        nro = 1;
+        for (var j = 0; j < data.call_center.length; j++) {
+            var fecha = new Date(data.call_center[j]["modifiedTime"]);
+    
+            trData += '<tr>';
+            trData += '<td style="text-align:center">' + nro + '</td>'
+            trData += '<td> <a href="' + data.call_center[j]["webViewLink"] + '" target="_blank">' + data.call_center[j]["name"] + '</a></td>'
+            trData += '<td>' + formatDate(fecha) + '</td>'
+            trData += '<td>' + formatBytes(data.call_center[j]["size"]) + '</td>'
+            trData += '</tr>';
+            nro++;
+        }
+        $('#lista-call-center').html(trData);
+    
+        $("#table-call-center").DataTable({
+            dom: "",
+            lengthMenu: [[10, 15, 20, -1], [10, 15, 20, "Todos"]],
+            language: spanishTranslation,
+            lengthChange: true,
+            info: false,
+            paging: false,
+            displayLength: -1,
+            ordering: true,
+            order: [],
+            search: true,
+            data: data.personal_postulacion,
+            responsive: true,
+        });
+        $("#table-call-center").show();
     }
 
-    trData = '';
-    nro = 1;
-    for (var j = 0; j < data_cc.length; j++) {
-        var fecha = new Date(data[j]["modifiedTime"]);
-
-        trData += '<tr>';
-        trData += '<td style="text-align:center">' + nro + '</td>'
-        trData += '<td> <a href="' + data[j]["webViewLink"] + '" target="_blank">' + data[j]["name"] + '</a></td>'
-        trData += '<td>' + formatDate(fecha) + '</td>'
-        trData += '<td>' + formatBytes(data[j]["size"]) + '</td>'
-        trData += '</tr>';
-        nro++;
+    if(data.casos_especiales){
+        if ($.fn.dataTable.isDataTable('#table-casos-especiales')) {
+            $('#table-casos-especiales').DataTable().destroy();
+            $('#lista-casos-especiales').empty();
+        }
+    
+        trData = '';
+        nro = 1;
+        for (var j = 0; j < data.casos_especiales.length; j++) {
+            var fecha = new Date(data.casos_especiales[j]["modifiedTime"]);
+    
+            trData += '<tr>';
+            trData += '<td style="text-align:center">' + nro + '</td>'
+            trData += '<td> <a href="' + data.casos_especiales[j]["webViewLink"] + '" target="_blank">' + data.casos_especiales[j]["name"] + '</a></td>'
+            trData += '<td>' + formatDate(fecha) + '</td>'
+            trData += '<td>' + formatBytes(data.casos_especiales[j]["size"]) + '</td>'
+            trData += '</tr>';
+            nro++;
+        }
+        $('#lista-casos-especiales').html(trData);
+    
+        $("#table-casos-especiales").DataTable({
+            dom: "",
+            lengthMenu: [[10, 15, 20, -1], [10, 15, 20, "Todos"]],
+            language: spanishTranslation,
+            lengthChange: true,
+            info: false,
+            paging: false,
+            displayLength: -1,
+            ordering: true,
+            order: [],
+            search: true,
+            data: data.personal_postulacion,
+            responsive: true,
+        });
+        $("#table-casos-especiales").show();
     }
-
-    $('#lista-call-center').append(trData);
-
-    var tablaD = $("#table-call-center").DataTable({
-        dom: "",
-        lengthMenu: [[10, 15, 20, -1], [10, 15, 20, "Todos"]],
-        language: spanishTranslation,
-        lengthChange: true,
-        info: false,
-        paging: false,
-        displayLength: -1,
-        ordering: true,
-        order: [],
-        search: true,
-        data: data.personal_postulacion,
-        responsive: true,
-    });
-
-    $("#table-call-center").show();
 }
 
 function formatBytes(bytes,decimals) {
