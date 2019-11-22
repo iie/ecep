@@ -434,6 +434,11 @@ function llenarVista2(data){
 
     //console.log(dataarr)
     var contarTue=0;
+    var conta1=0;
+    var conta2=0;
+    var conta3=0;
+    var conta4=0;
+    var conta5=0;
     for (var j = 0; j < data1.length-1; j++){
         for (var k = 0; k < data1[j].data_region.length; k++){    
             //console.log(data[j]["data_region"][0].comuna);
@@ -486,6 +491,11 @@ function llenarVista2(data){
                if (data2=='Si' && data3=='Si'&&data4=='Si'&&data5=='Si'&&data6=='Si'&&data7=='Si') {
                 contarTue+=1
                }
+                if (data3=='Si') {conta1+=1}    
+                if (data4=='Si') {conta2+=1}
+                if (data5=='Si') {conta3+=1}
+                if (data6=='Si') {conta4+=1} 
+                if (data7=='Si') {conta5+=1}
             } 
         }
     }   
@@ -647,11 +657,11 @@ function llenarVista2(data){
 
     $('#totalCentros').html(data1[16].total)
     $('#operativosCentros').html(data1[16].habilitados)
-    $('#servicios_basicos').html(data1[16].servicios_basicos)
-    $('#inmobiliario').html(data1[16].inmobiliario)
-    $('#extintor').html(data1[16].extintor)
-    $('#internet').html(data1[16].internet)
-    $('#camaras').html(data1[16].camaras)
+    $('#servicios_basicos').html(conta1)
+    $('#inmobiliario').html(conta2)
+    $('#extintor').html(conta3)
+    $('#internet').html(conta4)
+    $('#camaras').html(conta5)
 
     $('#limpiar-filtros-centros-operacion').click(btnClearFilters);
     //$('#lista_items').on('click','._btn-item',redireccionarSede);

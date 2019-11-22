@@ -184,7 +184,8 @@
                                         <th>REGION</th>
                                         <th>COMUNA</th> 
                                         <th>LUGAR</th>  
-                                        <th>HORA Y FECHA</th>
+                                        <th>FECHA</th>
+                                        <th>HORA</th>
                                         <th>RELATOR</th>
                                         <th>CAPACIDAD</th>
                                         <th>CONVOCADOS</th>
@@ -635,13 +636,13 @@
 	                        </div>
 
                             <div class="form-row" id="div-varios">
-                                <div class="form-group col-12">
+                                <div class="form-group col-12" id="div-selectCapacitacion">
                                     <label for="selectCapacitacionAll">Capacitación:</label>
                                     <select class="form-control" id="selectCapacitacionAll">
                                     </select>
                                 </div>  
                                 <div class="form-group col-12">
-                                    <label class="col-2 pl-0" for="inputRolAsignado">Personal:</label>
+                                    <!-- <label class="col-2 pl-0" for="inputRolAsignado">Personal:</label> -->
                                     <label class="col-6 ml-2 invalid-feedback" id="rol-no-select" style=""> Debe seleccionar al menos 1 persona.</label>
                                     <div class="pl-1">
                                         <div class="col-12" id="div_personas"></div>
@@ -654,7 +655,8 @@
                                                     <th>RUN</th>    
                                                     <th>NOMBRES</th>
                                                     <th>APELLIDO PATERNO</th>
-                                                    <th>APELLIDO MATERNO</th>       
+                                                    <th>APELLIDO MATERNO</th> 
+                                                    <th>CONFIRMA ASISTENCIA</th>      
                                                 </tr>
                                             </thead>
                                             <tbody id="lista-personasVarias">
@@ -669,6 +671,7 @@
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
                         <button type="button" class="btn btn-primary" id="guardar_asignacion">Guardar</button>
+                        <button type="button" class="btn btn-danger" id="eliminar_asignacion">Eliminar convocación</button>
                     </div>
                 </div>
             </div>

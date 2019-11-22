@@ -14,7 +14,9 @@ use App\Models\RRHH\Cargo;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
-use Maatwebsite\Excel\Facades\Excel;
+
+// use Maatwebsite\Excel\Facades\Excel;
+
 
 class PersonalController extends Controller
 {
@@ -24,9 +26,77 @@ class PersonalController extends Controller
         $this->fields = array();    
     }   
 
-    public function descargaExcel()
+
+    public function descargaExcel(Request $request)
     {
-		//arreglo(self::	lista);
+        
+		$post = $request->all();    
+
+        $sexo = TablaMaestra::select('id_tabla_maestra','descripcion_larga')->where('discriminador','=','28')->get();
+        foreach ($sexo as $s) {          
+            $sexos[$s->id_tabla_maestra] = $s->descripcion_larga;
+        }
+
+        $estadoCivil =TablaMaestra::select('id_tabla_maestra','descripcion_larga')->where('discriminador','=','29')->get();
+        foreach ($estadoCivil as $estado) {          
+            $civil[$estado->id_tabla_maestra] = $estado->descripcion_larga;
+        }
+
+        $institucion = Institucion::select('institucion','id_institucion')->orderBy('institucion')->get();
+        foreach ($institucion as $ins) {             
+            $inst[$ins->id_institucion] = $ins->institucion;
+        }
+
+        $comunas = Comuna::get();
+        foreach ($comunas as $com) {             
+            $comuna[$com->id_comuna] = $com->nombre;
+        }
+
+        $personaP = DB::table('rrhh.persona')
+            ->leftJoin('core.comuna' , 'rrhh.persona.id_comuna_postulacion','=','core.comuna.id_comuna')
+            ->leftJoin('core.region' , 'core.comuna.id_region','=','core.region.id_region')
+            ->leftJoin('infraestructura.zona_region' , 'core.region.id_region','=','infraestructura.zona_region.id_region')
+            ->leftJoin('infraestructura.zona' , 'infraestructura.zona_region.id_zona','=','infraestructura.zona.id_zona')
+            ->select('rrhh.persona.*','core.comuna.nombre as comuna','core.region.nombre as region','rrhh.persona.estado_proceso as estado', 'infraestructura.zona.nombre as nombre_zona')
+            ->where('rrhh.persona.borrado','=', false)
+            ->where('rrhh.persona.modificado','=',true)
+            ->orderBy('infraestructura.zona.nombre','asc')
+            ->orderBy('core.region.orden_geografico','asc')
+            ->orderBy('core.comuna.nombre','asc')
+			//->limit('100')
+            ->get();
+
+        foreach ($personaP as $index => $per) {
+			$personaP[$index]->id_institucion = $personaP[$index]->id_institucion == null ? null : $inst[$personaP[$index]->id_institucion];
+			$personaP[$index]->id_estado_civil = $personaP[$index]->id_estado_civil == null ? null : $civil[$personaP[$index]->id_estado_civil];
+			$personaP[$index]->id_sexo = $personaP[$index]->id_sexo == null ? null : $sexos[$personaP[$index]->id_sexo];
+			$personaP[$index]->id_comuna_nacimiento =  $personaP[$index]->id_comuna_nacimiento == null ? null : $comuna[$personaP[$index]->id_comuna_nacimiento];
+			$personaP[$index]->id_comuna_residencia =  $personaP[$index]->id_comuna_residencia == null ? null : $comuna[$personaP[$index]->id_comuna_residencia];
+        }
+        
+		$personaP = json_decode(json_encode($personaP),1);
+		
+		$export = new ExcelExport([$personaP]);
+
+		return Excel::download($export, 'listadoFull ('.date('Y-m-d h:i:s').').xlsx');		
+		// $t= "<table border='1'>";
+		// $t.= "<tr>";
+		// foreach($personaP[0] as $index=>$colsAux){
+			// $t.= "<td>".trim($index)."</td>";
+			// $colsArr[] = trim($index);
+		// }
+		// $t.= "</tr>";
+
+		// foreach($personaP as $listadoCompletoAux){
+			// $t.= "<tr>";
+			// foreach($listadoCompletoAux as $valor){
+				// $t.= "<td>".trim(str_replace(".",",",$valor))."</td>";
+			// }	
+			// $t.= "</tr>";
+		// }
+		// $t.= "</table>";
+		
+		//echo $t;
 	}
     
 	public function listaPostulantes(Request $request)
@@ -1018,6 +1088,53 @@ class PersonalController extends Controller
         $datos['regiones_postulante'] = $listaFinalPostulante;
         $datos['institucion'] = $institucion ;
         return response()->json($datos);    
+    }
+
+    function enviarCorreoConfirmacion($correo, $nombre, $fecha, $direccion, $idCapPersona){
+        $url = url()->current();
+        $aux_ruta = explode("//", $url);
+        $aux2_ruta = explode(".iie.cl", $aux_ruta[1]);
+        $ruta = $aux2_ruta[0];
+
+        $path_files = realpath('') . '/archivos/';
+
+        $subject = "Preselección - Evaluación Conocimientos Específicos y Pedagógicos";
+        $html = "
+        <p>Estimado/a " . $nombre . " </p>
+        <p>Felicitaciones, Usted ha sido pre-seleccionado/a para participar en la Evaluación de Conocimientos Específicos y Pedagógicos, ECEP 2019.</p>
+        <p>Para seguir en el proceso, será convocado en los próximos días a una sesión de Capacitación de carácter obligatorio. En esta jornada se abordará el proceso de aplicación, el cual se detalla en el Manual adjunto. Reviselo, ya que al finalizar la capacitación se evalúan los contenidos allí expuestos. </p>
+		<p><b>Atentamente</b></p>
+        <p><b>Equipo de Aplicación ECEP 2019</b></p>";
+        
+        $mail = new PHPMailer(true); 
+
+		try {
+			$mail->isSMTP(); // tell to use smtp
+			$mail->CharSet = "utf-8"; // set charset to utf8
+			$mail->SMTPDebug = 0;
+			// $mail->Debugoutput = 'html';
+
+			$mail->SMTPSecure = "tls"; // tls or ssl
+			$mail->SMTPAuth = true;  // use smpt auth
+			$mail->Host = "mail.smtp2go.com"; 
+			$mail->Port = 2525;//2525; //443; 
+			$mail->Username = "no-reply@ecep2019.iie.cl";
+			$mail->Password = 'Zzhm###bk1llTFmdjg2019@@@@wcnYw';
+			$mail->setFrom("no-reply@ecep2019.iie.cl", "ECEP");
+			$mail->Subject = $subject;
+			$mail->MsgHTML($html);
+			$mail->addAddress($correo, $nombre);
+            $mail->addBCC("alberto.paillao@iie.cl", "Alberto Paillao");
+            $mail->addAttachment($path_files."Manual aplicación 2019_2410.pdf");
+            if (strpos($ruta, 'ecep2019') !== false) {
+                $mail->send();
+            }
+		} catch (phpmailerException $e) {
+			return;
+		} catch (Exception $e) {
+			return;			
+		}
+		return true;
     }
 
 }

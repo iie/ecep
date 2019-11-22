@@ -72,6 +72,8 @@ class Authenticate
 				$denegado['api/web/capacitacion/evaluacion'] = array(1040, 1042);
 				$denegado['api/web/capacitacion/lista-regional'] = array( 1040, 1042);
 				$denegado['api/web/capacitacion/deshabilitarCapacitacion'] = array( 1040, 1042);
+				$denegado['api/web/capacitacion/desconvocar'] = array( 1040, 1042);
+				
  
 			//RRHH
 				//solo obtienen datos

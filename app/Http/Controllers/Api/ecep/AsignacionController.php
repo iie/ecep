@@ -59,36 +59,29 @@ class AsignacionController extends Controller
             $region["comunas"]  = $_comunas;
             $listaFinal[] = $region;
         }
-
+        $estado = 'seleccionado';
         $comunas = Comuna::get();
         foreach ($comunas as $com) {             
             $comuna[$com->id_comuna] = $com->nombre;
         }
         $personaP = DB::table('rrhh.persona')
-            ->join('rrhh.persona_cargo' , 'rrhh.persona.id_persona','=','rrhh.persona_cargo.id_persona')
-            ->leftJoin('rrhh.cargo' , 'rrhh.persona_cargo.id_cargo','=','rrhh.cargo.id_cargo')
+            ->select('rrhh.persona.*','core.comuna.nombre as comuna','core.region.nombre as region',
+            'infraestructura.zona.nombre as nombre_zona')
             ->leftJoin('core.comuna' , 'rrhh.persona.id_comuna_postulacion','=','core.comuna.id_comuna')
             ->leftJoin('core.region' , 'core.comuna.id_region','=','core.region.id_region')
             ->leftJoin('infraestructura.zona_region' , 'core.region.id_region','=','infraestructura.zona_region.id_region')
             ->leftJoin('infraestructura.zona' , 'infraestructura.zona_region.id_zona','=','infraestructura.zona.id_zona')
-            ->select('rrhh.persona.*','core.comuna.nombre as comuna','core.region.nombre as region','rrhh.persona_cargo.id_persona_cargo','rrhh.persona_cargo.estado','rrhh.cargo.nombre_rol','rrhh.cargo.id_cargo',
-                    'infraestructura.zona.nombre as nombre_zona')
-            ->where('rrhh.cargo.id_cargo','!=',1003)
-            ->where('rrhh.cargo.id_cargo','!=',1004)
-            ->where('rrhh.cargo.id_cargo','!=',13)
             ->where('rrhh.persona.borrado','=', false)
-            ->where('rrhh.persona.modificado','=',true)
-            ->where('rrhh.persona_cargo.borrado','=', false)
-            ->where('rrhh.persona_cargo.estado','=', 'contratado')
+            ->where('rrhh.persona.estado_proceso', '=', ''$estado'') 
             ->orderBy('infraestructura.zona.nombre','asc')
             ->orderBy('core.region.orden_geografico','asc')
             ->orderBy('core.comuna.nombre','asc')
             ->get();
 
-
         $datos['personal_postulacion'] = $personaP;
 
         $datos['regiones'] = $listaFinal;
+        
         return response()->json($datos);    
     }
 
@@ -206,8 +199,7 @@ class AsignacionController extends Controller
     }
 
      */
-    public function listaCoordinador(Request $request)
-    {
+/*     public function listaCoordinador(Request $request){
         
         $post = $request->all();    
 
@@ -281,7 +273,7 @@ class AsignacionController extends Controller
 	         		$listaSede[$value->id_sede][] = $value;
 	         	}else{
 	         		$listaSede[$value->id_sede][$value->id_sala] = $value;
-	         	}*/
+	         	}*/ /*
 	           
 	        }
         }
@@ -338,7 +330,7 @@ class AsignacionController extends Controller
         $datos['sedes'] = $listaFinal;
         $datos['salas'] = $listaSede;
         return response()->json($datos);    
-    }
+    } */
 
      public function guardar(Request $request){
 

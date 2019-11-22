@@ -157,7 +157,7 @@ function llenarVista(data){
             {data: "nombres"},
             {data: "apellido_paterno"},
             {data: "apellido_materno"},
-            {data: "nombre_rol"},
+            {data: "estado_proceso"},
             {data: "comuna"},
             {data: "opciones",className: "text-center",
                 render: function(data, type, row){                

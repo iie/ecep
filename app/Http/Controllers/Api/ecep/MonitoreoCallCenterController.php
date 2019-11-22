@@ -35,24 +35,31 @@ class MonitoreoCallCenterController extends Controller
                 file_put_contents($credentialsPath, json_encode($client->getAccessToken()));
             }
             $drive_service = new \Google_Service_Drive($client);
-            $id_folder = "1ntKq11mGkFda4xCK3BqgUhz_ryTPwaWr"; //Reportes Call Center - Luis Medina
-            $optParams = array(
-                'q' => "'$id_folder' in parents",
-                'pageSize' => 1000 ,
-                'fields' => 'nextPageToken, files(id, name, webViewLink, mimeType, size, modifiedTime)'
-            );
-            $results = $drive_service->files->listFiles($optParams)->getFiles();
+            $folders_ID = [
+                "call_center" => "1ntKq11mGkFda4xCK3BqgUhz_ryTPwaWr", // Call Center
+                "casos_especiales" => "1gk_G4AqsjUHpzuQdYeiX8-3WWaH5a4i1", // Casos Especiales
+            ]; 
             $final = [];
-            foreach ($results as $result) {
-                $aux["id"] = $result["id"];
-                $aux["name"] = $result["name"];
-                $aux["size"] = $result["size"];
-                $aux["webViewLink"] = $result["webViewLink"];
-                $aux["mimeType"] = $result["mimeType"];
-                $aux["modifiedTime"] = $result["modifiedTime"];
-                $final[] = $aux;
+            foreach ($folders_ID as $key => $id) {
+                $arr = [];
+                $optParams = array(
+                    'q' => "'$id' in parents",
+                    'pageSize' => 1000 ,
+                    'fields' => 'nextPageToken, files(id, name, webViewLink, mimeType, size, modifiedTime)'
+                );
+                $results = $drive_service->files->listFiles($optParams)->getFiles();
+                foreach ($results as $result) {
+                    $aux["id"] = $result["id"];
+                    $aux["name"] = $result["name"];
+                    $aux["size"] = $result["size"];
+                    $aux["webViewLink"] = $result["webViewLink"];
+                    $aux["mimeType"] = $result["mimeType"];
+                    $aux["modifiedTime"] = $result["modifiedTime"];
+                    $arr[] = $aux;
+                }
+                $final[$key] = $arr;
+                unset($arr);
             }
-            
             return response()->json(array("respuesta"=>"OK", "descripcion" => $final));
         } else {
             $redirect_uri = 'http://' . $_SERVER['HTTP_HOST'] . '/oauth2callback.php';

@@ -194,21 +194,15 @@ function llenarVista(data){
     var tablaD = $("#table-postulacion").DataTable({
         dom: "<'search'f>",
          
-        buttons: [
+        /*buttons: [
             {
                 extend: 'excel',
                 title: 'Postulantes',
-                /*exportOptions: {
-                    modifier: {
-                        page: 'current'
-                    },
-                    columns: [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-                }*/
                 exportOptions: {
                     columns: [ 0,1, 2, 3, 4, 5, 6, 7, 8, 9, 10,12,14,15,16,17,18,19,20,21,22,11,23,24,25,26],
                 }
             }
-        ],
+        ],*/
         lengthMenu: [[10, 15, 20, -1], [10, 15, 20, "Todos"]],
         language:spanishTranslation,
         lengthChange: true,
@@ -423,8 +417,8 @@ function llenarVista(data){
             $('#divRol').css('display','none')
             $('#divUsuario').css('display','none')
              
-            var placeholder = ["","Zona","Región","Comuna","","","","","","","","Estado"]
-            this.api().columns([1,2,3,11]).every( function (index) {
+            var placeholder = ["","Zona","Región","Comuna","","","","","","","","","Estado"]
+            this.api().columns([1,2,3,12]).every( function (index) {
                 if(JSON.parse(localStorage.user).id_cargo == 1004 && index == 1){
                     return;
                 }else{
@@ -459,8 +453,8 @@ function llenarVista(data){
                 var api = new $.fn.dataTable.Api(settings);
                 api.columns([1]).visible(false);
             }
-            var placeholder = ["","Zona","Región","Comuna","","","","","","","","Estado"]
-            this.api().columns([1,2,3,11]).every( function (index) {
+            var placeholder = ["","Zona","Región","Comuna","","","","","","","","","Estado"]
+            this.api().columns([1,2,3,12]).every( function (index) {
                 if(JSON.parse(localStorage.user).id_cargo == 1004 && index == 1){
                     return;
                 }else{
@@ -483,14 +477,15 @@ function llenarVista(data){
     });
  //tablaD.columns( [10] ).visible( false );
     $('#limpiar-filtros-postulacion').click(btnClearFilters);
-    $("#descargar-lista").on("click", function() {
-        tablaD.button( '.buttons-excel' ).trigger();
+    
+    $("#descargar-listado").on("click", function() {
+         window.location='https://ecep2019.iie.cl/public/api/web/personal/descarga-listado';
     });
 /*    $('#total_anfitrion').html(anfitrion+'/-')
     $('#total_examinador').html(examinador+'/-')
     $('#total_examinador_apoyo').html(eApoyo+'/-')
     $('#tatal_supervisor').html(supervisor+'/-')*/
-        	
+            
     $('#total_personal').html(data.personal_postulacion.length)
     $("#table-postulacion").show();  
 
@@ -1016,7 +1011,7 @@ function btnClearFilters(){
     $('#select2').val("").niceSelect('update'); 
     $('#select3').val("").niceSelect('update'); 
     $('#select4').val("").niceSelect('update'); 
-    $('#select11').val("").niceSelect('update'); 
+    $('#select12').val("").niceSelect('update'); 
 
     $('#selectZ_1').val("").niceSelect('update');
     $('#selectZ_2').val("").niceSelect('update'); 
@@ -1770,13 +1765,13 @@ function guardarPersonal(){
     var checkbox = $('input:checkbox[name=inputRolAsignado]')
     cargos = [];
     if($('#divRol').is(":visible")){
-	    for (var i = 0; i < checkbox.length; i++) {
-	        if(checkbox[i].checked == true){
-	            cargos.push(checkbox[i].value)
-	        }
-	         
-	    }
-	}
+        for (var i = 0; i < checkbox.length; i++) {
+            if(checkbox[i].checked == true){
+                cargos.push(checkbox[i].value)
+            }
+             
+        }
+    }
 
     cargosPostulante = [];
     if($('#divRolPostulante').is(":visible")){
@@ -1842,12 +1837,12 @@ function guardarPersonal(){
                     showFeedback("success", data.descripcion, "Guardado");
                     $('#personalModal').modal('hide');
                         if(JSON.parse(localStorage.user).id_cargo == 1004){
-					        getPersonalCoordinador();
-					    }else if(JSON.parse(localStorage.user).id_cargo == 1003){
-					        getPersonalCoordinadorZonal();
-					    }else{
-					        getPersonal();
-					    }
+                            getPersonalCoordinador();
+                        }else if(JSON.parse(localStorage.user).id_cargo == 1003){
+                            getPersonalCoordinadorZonal();
+                        }else{
+                            getPersonal();
+                        }
 
                 }else {
                     showFeedback("error","Error al guardar","Error");
@@ -2296,7 +2291,7 @@ function verCentros(){
 }
 
 function mostrarCentros(data){
-	$('#filtros-modalCentro').empty();
+    $('#filtros-modalCentro').empty();
     if($.fn.dataTable.isDataTable('#table-centros')){
         $('#table-centros').DataTable().destroy();
         $('#lista-centros').empty();

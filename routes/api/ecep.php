@@ -49,6 +49,7 @@ Route::get('inscritos-dia' , 'Api\ecep\SedeController@inscritosDia');
 
 	Route::middleware('auth:api')->post('web/personal/listaCoordinadorZonal' , 'Api\ecep\PersonalController@listaCoordinadorZonal');
 	Route::middleware('auth:api')->post('web/personal/listaCoordinador' , 'Api\ecep\PersonalController@listaCoordinador');
+	Route::get('web/personal/descarga-listado/' , 'Api\ecep\PersonalController@descargaExcel');
 
 //CAPACITACION
 	Route::middleware('auth:api')->post('web/capacitacion/lista' , 'Api\ecep\CapacitacionController@lista');
@@ -62,14 +63,21 @@ Route::get('inscritos-dia' , 'Api\ecep\SedeController@inscritosDia');
 	Route::middleware('auth:api')->post('web/capacitacion/guardarPersona' ,'Api\ecep\CapacitacionController@guardarPersona');
 	Route::middleware('auth:api')->post('web/capacitacion/evaluacion' ,'Api\ecep\CapacitacionController@evaluacion');
 	Route::middleware('auth:api')->post('web/capacitacion/deshabilitarCapacitacion' ,'Api\ecep\CapacitacionController@deshabilitarCapacitacion');
+	Route::middleware('auth:api')->post('web/capacitacion/desconvocar' ,'Api\ecep\CapacitacionController@desconvocar');
 	//Route::middleware('auth:api')->post('web/capacitacion/evaluacion' ,'Api\ecep\CapacitacionController@evaluacion');
 	Route::middleware('auth:api')->post('web/capacitacion/lista-regional' ,'Api\ecep\CapacitacionController@listaRegional');
 	Route::get('web/capacitacion/confirma/{idCapPersona}' ,'Api\ecep\CapacitacionController@infoConfirmacion');
 	Route::post('web/capacitacion/guarda-confirmacion' ,'Api\ecep\CapacitacionController@guardarConfirmacion');
+	Route::get('web/capacitacion/test-mailing' ,'Api\ecep\CapacitacionController@testCorreo');
 	
 //ASIGNACION
-	Route::middleware('auth:api')->post('web/asignacion/lista' , 'Api\ecep\AsignacionController@lista');
+/* 	Route::middleware('auth:api')->post('web/asignacion/lista' , 'Api\ecep\AsignacionController@lista');
 	Route::middleware('auth:api')->post('web/asignacion/listaCoordinador' , 'Api\ecep\AsignacionController@listaCoordinador');
+	Route::middleware('auth:api')->post('web/asignacion/guardar' , 'Api\ecep\AsignacionController@guardar'); */
+
+//ASIGNACION 2 (PROVISIONAL)
+	Route::middleware('auth:api')->post('web/asignacion/lista' , 'Api\ecep\AsignacionController@lista');
+	/* Route::middleware('auth:api')->post('web/asignacion/listaCoordinador' , 'Api\ecep\Asignacion2Controller@listaCoordinador'); */
 	Route::middleware('auth:api')->post('web/asignacion/guardar' , 'Api\ecep\AsignacionController@guardar');
 	 
 //MONITOREO RRHH 
