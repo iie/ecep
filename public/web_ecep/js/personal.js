@@ -896,6 +896,21 @@ function cambiarEstado(){
             cambiar($(this).data('id_persona'), $(this).val())
           }
         })
+    }else if($(this).val() == 'preseleccionado'){
+        Swal.fire({
+          title: '¿Está seguro que desea preseleccionar?',
+          text: "Esta acción enviará una notificación por correo a la persona.",
+          type: 'warning',
+          reverseButtons: true,
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Confirmar'
+        }).then((result) => {
+          if (result.value) {
+            cambiar($(this).data('id_persona'), $(this).val())
+          }
+        })
     }else{
         cambiar($(this).data('id_persona'), $(this).val())
     }

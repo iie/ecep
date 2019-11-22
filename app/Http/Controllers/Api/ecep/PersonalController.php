@@ -17,6 +17,13 @@ use Illuminate\Support\Facades\Validator;
 
 // use Maatwebsite\Excel\Facades\Excel;
 
+require realpath(__DIR__ . '/../../../../..').'/vendor/phpmailer/phpmailer/src/Exception.php';
+require realpath(__DIR__ . '/../../../../..').'/vendor/phpmailer/phpmailer/src/PHPMailer.php';
+require realpath(__DIR__ . '/../../../../..').'/vendor/phpmailer/phpmailer/src/SMTP.php';
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
 
 class PersonalController extends Controller
 {
@@ -76,9 +83,11 @@ class PersonalController extends Controller
         
 		$personaP = json_decode(json_encode($personaP),1);
 		
-		$export = new ExcelExport([$personaP]);
+		$cols = array_keys($personaP[0]);
+		
+		$export = new ExcelExport([$cols, $personaP]);
 
-		return Excel::download($export, 'listadoFull ('.date('Y-m-d h:i:s').').xlsx');		
+		return Excel::download($export, 'listadoFull ('.date('Y-m-d h:i:s').').xlsx');			
 		// $t= "<table border='1'>";
 		// $t.= "<tr>";
 		// foreach($personaP[0] as $index=>$colsAux){
@@ -678,6 +687,7 @@ class PersonalController extends Controller
             return response()->json($persona);  
         }
     }
+    
     public function obtenerPersona(Request $request){
 
         $post = $request->all();    
@@ -747,7 +757,11 @@ class PersonalController extends Controller
 
         DB::beginTransaction();
         try{
-            $persona->save(); 
+            $persona->save();
+            if($post['estado'] == 'preseleccionado'){
+                $nombre_completo = $persona->nombres . " " . $persona->apellido_paterno;
+                $this->enviarCorreoPreseleccion($persona->email, $nombre_completo);
+            } 
         }catch (\Exception $e){
             DB::rollback();
             return response()->json(['resultado'=>'error','descripcion'=>'Error al guardar. ()'. $e->getMessage()]);
@@ -1090,7 +1104,7 @@ class PersonalController extends Controller
         return response()->json($datos);    
     }
 
-    function enviarCorreoConfirmacion($correo, $nombre, $fecha, $direccion, $idCapPersona){
+    function enviarCorreoPreseleccion($correo, $nombre){
         $url = url()->current();
         $aux_ruta = explode("//", $url);
         $aux2_ruta = explode(".iie.cl", $aux_ruta[1]);
@@ -1126,7 +1140,7 @@ class PersonalController extends Controller
 			$mail->addAddress($correo, $nombre);
             $mail->addBCC("alberto.paillao@iie.cl", "Alberto Paillao");
             $mail->addAttachment($path_files."Manual aplicación 2019_2410.pdf");
-            if (strpos($ruta, 'ecep2019') !== false) {
+            if (strpos($ruta, 'ecep2019') !== false) { // Solo envía en producción
                 $mail->send();
             }
 		} catch (phpmailerException $e) {
