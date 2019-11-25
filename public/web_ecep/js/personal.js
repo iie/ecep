@@ -184,7 +184,6 @@ function llenarVista(data){
     
             
     data = JSON.parse(data)
-    console.log(data.personal_postulacion)
     $('#filtros-postulacion').empty();
     if($.fn.dataTable.isDataTable('#table-postulacion')){
         $('#table-postulacion').DataTable().destroy();
@@ -237,22 +236,6 @@ function llenarVista(data){
             {data: "apellido_materno"},
             {data: "email"},
             {data: "telefono"},
-            {data: "titulo",className: "text-center",
-                render: function(data, type, row){  
-                    data
-                    if (data=='') {
-                        return '-'
-                    }else if(data==null){
-                        return '-'
-                    }else{
-                       return data 
-                    }
-                    
-                    
-                    
-                 
-                }
-            },
             {data: "nivel_estudios"},
             {data: "estado"},
             {data: "opciones",className: "text-center",
@@ -281,7 +264,7 @@ function llenarVista(data){
         ],
         "columnDefs": [
             {
-                "targets": [ 8,9,14,15,16,17,18,19,20,21,22,23,24,25,26,27],
+                "targets": [ 8,9,13,14,15,16,17,18,19,20,21,22,23,24,25,26],
                 "visible": false,
                 "searchable": false
             },
@@ -348,33 +331,34 @@ function llenarVista(data){
 
             acciones='<button type="button" id="persona_'+data.id_persona+'" onclick="modificar('+data.id_persona+',true)" class="btn btn-primary btn-sm _btn-item"><i class="fa fa-pencil-alt"></i></button>'+
                          '<button type="button" id="docPersona_'+data.id_persona+'"  class="ml-2 btn btn-primary btn-sm _btn-item"><i class="fas fa-file-alt"></i></button>'  
-                        $('td:eq(11)', row).html(acciones)
+                        $('td:eq(10)', row).html(acciones)
 
 
 
             if(JSON.parse(localStorage.user).id_cargo != 1004){
-                $('td:eq(10)', row).html(select)
-                $('td:eq(10)', row).find('select').val(data.estado)
+                $('td:eq(9)', row).html(select)
+                $('td:eq(9)', row).find('select').val(data.estado)
                 if(data.estado=='contratado' || data.estado=='rechazado'){
-                    $('td:eq(10)', row).find('select').prop('disabled',true)
+                    $('td:eq(9)', row).find('select').prop('disabled',true)
                 }
-                $('td:eq(10)', row).find('select').data('id_persona',data.id_persona);
+                $('td:eq(9)', row).find('select').data('id_persona',data.id_persona);
 
-                $('td:eq(10)', row).find('select').on('change',cambiarEstado);
+                $('td:eq(9)', row).find('select').on('change',cambiarEstado);
 
-                $('td:eq(11)', row).find('#docPersona_'+data.id_persona).data('run',data.run);
-                $('td:eq(11)', row).find('#docPersona_'+data.id_persona).data('id_persona',data.id_persona);
-                $('td:eq(11)', row).find('#docPersona_'+data.id_persona).on('click',verDocs);
+                $('td:eq(10)', row).find('#docPersona_'+data.id_persona).data('run',data.run);
+                $('td:eq(10)', row).find('#docPersona_'+data.id_persona).data('id_persona',data.id_persona);
+                $('td:eq(10)', row).find('#docPersona_'+data.id_persona).on('click',verDocs);
    
             }else{
                 if(validarTabla ==  0){
-                    col = 10
-                    col2 = 11
-                } else{
                     col = 9
                     col2 = 10
+                } else{
+                    col = 8
+                    col2 = 9
                 }
-
+                console.log("ño")
+                console.log(col)
                 $('td:eq('+col+')', row).html(select)
                 $('td:eq('+col+')', row).find('select').val(data.estado)
                 if(data.estado=='contratado' || data.estado=='rechazado'){
@@ -417,8 +401,8 @@ function llenarVista(data){
             $('#divRol').css('display','none')
             $('#divUsuario').css('display','none')
              
-            var placeholder = ["","Zona","Región","Comuna","","","","","","","","","Estado"]
-            this.api().columns([1,2,3,12]).every( function (index) {
+            var placeholder = ["","Zona","Región","Comuna","","","","","","","","Estado"]
+            this.api().columns([1,2,3,11]).every( function (index) {
                 if(JSON.parse(localStorage.user).id_cargo == 1004 && index == 1){
                     return;
                 }else{
@@ -453,8 +437,8 @@ function llenarVista(data){
                 var api = new $.fn.dataTable.Api(settings);
                 api.columns([1]).visible(false);
             }
-            var placeholder = ["","Zona","Región","Comuna","","","","","","","","","Estado"]
-            this.api().columns([1,2,3,12]).every( function (index) {
+            var placeholder = ["","Zona","Región","Comuna","","","","","","","","Estado"]
+            this.api().columns([1,2,3,11]).every( function (index) {
                 if(JSON.parse(localStorage.user).id_cargo == 1004 && index == 1){
                     return;
                 }else{
@@ -908,6 +892,7 @@ function cambiarEstado(){
           confirmButtonText: 'Confirmar'
         }).then((result) => {
           if (result.value) {
+            console.log('id_persona: '+$(this).data('id_persona'))
             cambiar($(this).data('id_persona'), $(this).val())
           }
         })
@@ -1026,7 +1011,7 @@ function btnClearFilters(){
     $('#select2').val("").niceSelect('update'); 
     $('#select3').val("").niceSelect('update'); 
     $('#select4').val("").niceSelect('update'); 
-    $('#select12').val("").niceSelect('update'); 
+    $('#select11').val("").niceSelect('update'); 
 
     $('#selectZ_1').val("").niceSelect('update');
     $('#selectZ_2').val("").niceSelect('update'); 
