@@ -261,7 +261,7 @@ class CapacitacionController extends Controller
                         INNER JOIN infraestructura.zona_region zr ON (r.id_region = zr.id_region)
                         INNER JOIN infraestructura.zona z ON (zr.id_zona = z.id_zona)
                         where r.numero != '-1' 
-                        	and z.id_zona in (".implode($zonas,",").")
+                            and z.id_zona in (".implode($zonas,",").")
                        	order by r.orden_geografico, co.nombre");
 
 	        foreach ($regCapacitaciones as $key => $value) {
@@ -306,8 +306,7 @@ class CapacitacionController extends Controller
                left join infraestructura.zona on infraestructura.zona_region.id_zona = infraestructura.zona.id_zona
                where core.usuario.id_tipo_usuario = 1052
                    and rrhh_p.borrado = false
-                   and zona.id_zona in (".implode($zonas,",").")
-               order by core.region.orden_geografico asc, core.comuna.nombre asc");
+               order by core.region.orden_geografico asc, core.comuna.nombre asc, rrhh_p.nombres asc, rrhh_p.apellido_paterno asc");
 
 	        /*
 	        foreach ($relatores as $key => $value) {
@@ -735,7 +734,6 @@ class CapacitacionController extends Controller
         return response()->json(["resultado"=>"ok","descripcion"=>"Se ha guardado con exito"]);
     }
 
-
     public function guardarDocumento(Request $request){
 
         $post = $request->all();
@@ -1102,13 +1100,13 @@ class CapacitacionController extends Controller
 
         $cap = Capacitacion::where('id_capacitacion',$post['id_capacitacion'])->first();
  
-        if(date('Y-m-d h:i:s') > $cap->fecha_hora) //capacitacion pasada. no hay nada que hacer
+        if(date('Y-m-d H:i:s') > $cap->fecha_hora) //capacitacion pasada. no hay nada que hacer
         {
 			//consultamos la tabla capacitación persona incluyendo a todos los convocados
 
 			$personaP = DB::select("select rrhh.persona.run, rrhh.persona.nombres, rrhh.persona.apellido_paterno, rrhh.persona.apellido_materno, 
 										rrhh.persona.id_persona, core.comuna.nombre as comuna, core.region.id_region,core.region.nombre as region, core.region.orden_geografico,
-										rrhh.capacitacion_persona.id_capacitacion, rrhh.persona.estado_proceso, rrhh.capacitacion_persona.asistencia, rrhh.capacitacion_persona.estado
+										rrhh.capacitacion_persona.id_capacitacion, rrhh.persona.estado_proceso, rrhh.capacitacion_persona.confirma_asistencia, rrhh.capacitacion_persona.estado
 									from rrhh.persona 
 										left join core.comuna on rrhh.persona.id_comuna_postulacion = core.comuna.id_comuna 
 										left join core.region on core.comuna.id_region = core.region.id_region 
@@ -1126,7 +1124,7 @@ class CapacitacionController extends Controller
 			//primero los ya convocados.... luego union con los convocables
 			$personaP = DB::select("(select rrhh.persona.run, rrhh.persona.nombres, rrhh.persona.apellido_paterno, rrhh.persona.apellido_materno, 
 										rrhh.persona.id_persona, core.comuna.nombre as comuna, core.region.id_region,core.region.nombre as region, core.region.orden_geografico,
-										rrhh.capacitacion_persona.id_capacitacion, rrhh.persona.estado_proceso, rrhh.capacitacion_persona.asistencia	, rrhh.capacitacion_persona.estado
+										rrhh.capacitacion_persona.id_capacitacion, rrhh.persona.estado_proceso, rrhh.capacitacion_persona.confirma_asistencia	, rrhh.capacitacion_persona.estado
 									from rrhh.persona 
 									left join core.comuna on rrhh.persona.id_comuna_postulacion = core.comuna.id_comuna 
 									left join core.region on core.comuna.id_region = core.region.id_region 
@@ -1144,7 +1142,7 @@ class CapacitacionController extends Controller
 									(
 									select rrhh.persona.run, rrhh.persona.nombres, rrhh.persona.apellido_paterno, rrhh.persona.apellido_materno, 
 										rrhh.persona.id_persona, core.comuna.nombre as comuna, core.region.id_region,core.region.nombre as region, core.region.orden_geografico,
-										null as id_capacitacion, rrhh.persona.estado_proceso, null as asistencia, null as estado
+										null as id_capacitacion, rrhh.persona.estado_proceso, null as confirma_asistencia, null as estado
 									from rrhh.persona 
 									left join core.comuna on rrhh.persona.id_comuna_postulacion = core.comuna.id_comuna 
 									left join core.region on core.comuna.id_region = core.region.id_region 
@@ -1152,6 +1150,7 @@ class CapacitacionController extends Controller
 										and rrhh.persona.borrado = false
 										and estado_proceso = 'preseleccionado'
 										and rrhh.persona.modificado = true
+										and rrhh.persona.id_persona not in (select id_persona from rrhh.capacitacion_persona where id_capacitacion_persona not in (select id_capacitacion_persona from rrhh.capacitacion_prueba) and id_capacitacion in (select id_capacitacion from rrhh.capacitacion where fecha_hora < now()))  										
 										and rrhh.persona.id_persona not in (select id_persona from rrhh.capacitacion_persona where estado = true)
 										and rrhh.persona.id_persona not in (select id_persona from rrhh.capacitacion_persona where capacitacion_persona.id_capacitacion != ".$post['id_capacitacion']."
 										AND capacitacion_persona.id_capacitacion not in (select rrhh.capacitacion.id_capacitacion from rrhh.capacitacion where fecha_hora < now()	))										
@@ -1322,7 +1321,7 @@ class CapacitacionController extends Controller
                 return response()->json(array("resultado"=>"error","descripcion"=>"No puede desconvocar si ya fue evaluado en la capacitación.", 422));   
             }
 
-            if(date('Y-m-d h:i:s') > $capacitacionPersona->fecha_hora) {
+            if(date('Y-m-d H:i:s') > $capacitacionPersona->fecha_hora) {
                 return response()->json(array("resultado"=>"error","descripcion"=>"No puede desconvocar de una capacitación que ya se realizó.", 422));   
             }
 
@@ -1498,10 +1497,22 @@ class CapacitacionController extends Controller
         return response()->json(["resultado"=>"ok","descripcion"=>"Se ha deshabilitado con exito"]);
     }
 
-    public function infoConfirmacion($idCapPersona)
+    public function infoConfirmacion($encrypt)
     {
+        if(is_numeric($encrypt)){
+            $idCapPersona = $encrypt;
+        }else{
+            $idCapPersona = $this->desencriptar($encrypt);
+        }
+        
         $cap = CapacitacionPersona::find($idCapPersona);
+        if(!isset($cap->id_capacitacion_persona)){
+            return response()->json(["resultado"=>"error","descripcion"=>"Capacitación no encontrada."]);    
+        }
         $pers = Persona::find($cap->id_persona);
+        if(!isset($pers->id_persona)){
+            return response()->json(["resultado"=>"error","descripcion"=>"Persona no encontrada."]);    
+        }
         $nombre = $pers->nombres . " " . $pers->apellido_paterno;
         return response()->json(["resultado"=>"ok","descripcion"=>$nombre]);
     }
@@ -1511,11 +1522,18 @@ class CapacitacionController extends Controller
         // web/capacitacion/guarda-confirmacion
         $post = $request->all();    
         $validacion = Validator::make($post, [
-            'id_capacitacion_persona' => 'required|int',
+            'id_capacitacion_persona' => 'required',
             'confirma' => 'required|int',
         ]); 
-
-        $cap = CapacitacionPersona::find($post["id_capacitacion_persona"]);
+        if(is_numeric($post["id_capacitacion_persona"])){
+            $idCapPers = $post["id_capacitacion_persona"];
+        }else{
+            $idCapPers = $this->desencriptar($post["id_capacitacion_persona"]);
+        }
+        $cap = CapacitacionPersona::find($idCapPers);
+        if(!isset($cap->id_capacitacion_persona)){
+            return response()->json(["resultado"=>"error","descripcion"=>"Capacitación no encontrada."]);    
+        }
         $cap->confirma_asistencia = $post["confirma"];
         $cap->save();
         return response()->json(["resultado"=>"ok","descripcion"=>"Respuesta guardada"]);
@@ -1527,8 +1545,8 @@ class CapacitacionController extends Controller
         $aux2_ruta = explode(".iie.cl", $aux_ruta[1]);
         $ruta = $aux2_ruta[0];
 
-        $hoy = getdate();
-
+        $encriptado = $this->encriptar($idCapPersona);
+        
         $path_files = realpath('') . '/archivos/';
 
         $subject = "Capacitación - Evaluación Conocimientos Específicos y Pedagógicos";
@@ -1542,7 +1560,7 @@ class CapacitacionController extends Controller
         <p>Es importante que lea el manual de aplicación adjunto por si surge alguna duda respecto al proceso y pueda resolverla en la capacitación, cabe mencionar que este es de conocimiento general independiente al Rol al cual esté postulando. Adjuntamos también un acuerdo de confidencialidad a modo informativo y de lectura previa, el cual debe firmar el día de la capacitación.</p>
         <p>Le sugerimos que lleve lápiz y papel para que pueda tomar notas.</p>
         <p>Por favor, <b>confirme si puede asistir a la capacitación.</b> En el caso de no poder asistir, podrá ser convocado a una próxima instancia de capacitación.</p>
-        <p>Confirme en el siguiente enlace: https://".$ruta.".iie.cl/public/web_ecep/confirma_capacitacion.html?idCapPersona=".$idCapPersona."</p>
+        <p>Confirme en el siguiente enlace: https://".$ruta.".iie.cl/public/web_ecep/confirma_capacitacion.html?idCapPersona=".$encriptado."</p>
 		<br>
 		<p><b>Atentamente</b></p>
         <p><b>Equipo de Aplicación ECEP 2019</b></p>";
@@ -1560,7 +1578,7 @@ class CapacitacionController extends Controller
 			$mail->Host = "mail.smtp2go.com"; 
 			$mail->Port = 2525;//2525; //443; 
 			$mail->Username = "no-reply@ecep2019.iie.cl";
-			$mail->Password = 'Zzhm###bk1llTFmdjg2019@@@@wcnYw';
+			$mail->Password = 'Zzhm#k1ll@@@@@Hola##bk1llTFmdjg2019@@@@wcnYw';
 			$mail->setFrom("no-reply@ecep2019.iie.cl", "ECEP");
 			$mail->Subject = $subject;
 			$mail->MsgHTML($html);
@@ -1571,6 +1589,10 @@ class CapacitacionController extends Controller
             if (strpos($ruta, 'ecep2019') !== false) {
                 $mail->send();
             }
+            //PARA DEBUG
+            // if ($correo == 'albertopaillao@gmail.com') {
+            //     $mail->send();
+            // }
 		} catch (phpmailerException $e) {
 			return;
 		} catch (Exception $e) {
@@ -1579,9 +1601,35 @@ class CapacitacionController extends Controller
 		return true;
     }
 
+    function encriptar($dato){
+        $clave  = 'Anita lava la tina';
+        //Metodo de encriptación
+        $method = 'aes-256-cbc';
+        // Puedes generar una diferente usando la funcion $getIV()
+        $iv = base64_decode("C9fBxl1EWtYTL12M8jfstw==");
+        
+        /*
+        Encripta el contenido de la variable, enviada como parametro.
+        */
+        $encrypt = openssl_encrypt ($dato, $method, $clave, false, $iv);
+        $url_safe_base64 = strtr($encrypt, "+/", "-_" );
+        return $url_safe_base64;
+    }
+
+    function desencriptar($dato){
+        $clave  = 'Anita lava la tina';
+        //Metodo de encriptación
+        $method = 'aes-256-cbc';
+        // Puedes generar una diferente usando la funcion $getIV()
+        $iv = base64_decode("C9fBxl1EWtYTL12M8jfstw==");
+        //Desencripta
+        $base64_string = strtr( $dato, "-_", "+/" );
+        return openssl_decrypt($base64_string, $method, $clave, false, $iv);
+    }
+
     public function testCorreo(Request $request)
     {
-        if($this->enviarCorreoConfirmacion("alberto.paillao@gmail.com", "BetoTest", "2019-22-11", "DireccionTest", 00)){
+        if($this->enviarCorreoConfirmacion("albertopaillao@gmail.com", "BetoTest", "2019-22-11", "DireccionTest", 14)){
             echo "Correo Enviado";
         }else{
             echo "[ERROR] Correo no Enviado";

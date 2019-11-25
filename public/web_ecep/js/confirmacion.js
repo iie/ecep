@@ -42,6 +42,9 @@ function obtenerDataPersona(idPersona) {
         crossDomain: true,
         dataType:'text',
         success: function(data, textStatus, jqXHR) {
+            if(JSON.parse(data).resultado == 'error'){
+                $('#main-div').html("<h1>" + JSON.parse(data).descripcion + "</h1>");
+            }
             nombrePersona = JSON.parse(data).descripcion
             $('#nombre_persona').html(nombrePersona);
         },
