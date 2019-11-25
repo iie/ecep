@@ -150,9 +150,10 @@
                                         <th>NOMBRES</th>
                                         <th>APELLIDO PATERNO</th>
                                         <th>APELLIDO MATERNO</th>
-                                        <th>MAIL</th> 
+                                        <!-- <th>MAIL</th>  -->
                                         <th>TELEFONO</th>             
-                                        <th>CAPACITACION</th>                                          
+                                        <th>CAPACITACION</th>   
+                                        <th>ESTADO CAPACITACION</th>                                       
                                         <th>ACCIONES</th>         
                                     </tr>
                                 </thead>
@@ -180,7 +181,7 @@
                             <table id="table-capacitacion" class="stripe table table-hover _table-link dataTable no-footer" style="width:100%;">
                                 <thead>         
                                     <tr>
-                                        <th>N°</th>
+                                        <th>ID</th>
                                         <th>REGION</th>
                                         <th>COMUNA</th> 
                                         <th>LUGAR</th>  
@@ -622,7 +623,38 @@
                     </div>
                     <div class="modal-body">
                     	<div class="container-fluid">
-	                        <div class="form-row" id="div-individual">
+                            <div class="form-row" id="info_cap">
+                                <div class="form-group col-3 mb-1">
+                                    <label for="labelRegionCapacitacion" class="mb-0">Región:</label>
+                                    <h4 id="labelRegionCapacitacion"></h4>
+                                </div>
+                                 <div class="form-group col-3 mb-1">
+                                    <label for="labelComunaCapacitacion" class="mb-0">Comuna:</label>
+                                    <h4 id="labelComunaCapacitacion"></h4>
+                                </div>
+                                <div class="form-group col-3 mb-1">
+                                    <label for="labelRelator" class="mb-0">Relator:</label>
+                                    <h4 id="labelRelator"></h4>
+                                </div>
+                                <div class="form-group col-3 mb-1">
+                                    <label for="labelCapacidad" class="mb-0">Capacidad:</label>
+                                    <h4 id="labelCapacidad"></h4>                                
+                                </div>
+                                <div class="form-group col-3 mb-1">
+                                    <label for="labelHora" class="mb-0">Hora:</label>
+                                    <h4 id="labelHora"></h4>
+                                </div>
+                                <div class="form-group col-3 mb-1">
+                                    <label for="labelFecha" class="mb-0">Fecha:</label>
+                                    <h4 id="labelFecha"></h4> 
+                                </div>
+                                <div class="form-group col-6 mb-1">
+                                    <label for="labelLugar" class="mb-0">Lugar:</label>
+                                    <h4 id="labelLugar"></h4>                                
+                                </div>
+                            </div>
+
+	                        <div class="form-row mt-3" id="div-individual">
 	                            <div class="form-group col-12">
                                     <h4 id="nombrePersona"></h4>
                                     <h5 id="mailPersona"></h5>
@@ -635,7 +667,7 @@
 	                            </div>	                           
 	                        </div>
 
-                            <div class="form-row" id="div-varios">
+                            <div class="form-row mt-3" id="div-varios">
                                 <div class="form-group col-12" id="div-selectCapacitacion">
                                     <label for="selectCapacitacionAll">Capacitación:</label>
                                     <select class="form-control" id="selectCapacitacionAll">
@@ -646,6 +678,12 @@
                                     <label class="col-6 ml-2 invalid-feedback" id="rol-no-select" style=""> Debe seleccionar al menos 1 persona.</label>
                                     <div class="pl-1">
                                         <div class="col-12" id="div_personas"></div>
+                                        <div class="row pb-4" id="personasVarias-Table_filters">
+                                            <div class="row col-8 m-0" id="filtros-personasVarias"></div>
+                                            <div class="col-4 text-right" id="clear-filtros-personasVarias">
+                                                <button class="btn limpiar-filtros" role="button" id="limpiar-filtros-personasVarias" type="button">Limpiar Filtros</button>
+                                            </div>
+                                        </div>
                                         <table id="table-personasVarias" class="stripe table table-hover _table-link dataTable no-footer" style="width:100%;">
                                             <thead>         
                                                 <tr>
