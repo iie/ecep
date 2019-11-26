@@ -699,7 +699,8 @@
                                                     <th>APELLIDO PATERNO</th>
                                                     <th>APELLIDO MATERNO</th> 
                                                     <th>CONFIRMA ASISTENCIA</th>  
-                                                    <th>VECES REPROBADO</th>     
+                                                    <th>VECES REPROBADO</th>    
+                                                    <th>CONFIRMACIÓN MANUAL</th>     
                                                 </tr>
                                             </thead>
                                             <tbody id="lista-personasVarias">
@@ -719,6 +720,110 @@
                 </div>
             </div>
         </div>
+
+        <div class="modal fade" id="notificarCapacitacion" tabindex="-1" role="dialog" aria-hidden="true">
+                <div class="modal-dialog  modal-xl modal-dialog-scrollable" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="titulo_modal_capacitacion">Capacitación: Reenviar correos</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="container-fluid">
+                                <div class="form-row" id="info_cap">
+                                    <div class="form-group col-3 mb-1">
+                                        <label for="labelRegionCapacitacionCorreo" class="mb-0">Región:</label>
+                                        <h4 id="labelRegionCapacitacionCorreo"></h4>
+                                    </div>
+                                     <div class="form-group col-3 mb-1">
+                                        <label for="labelComunaCapacitacionCorreo" class="mb-0">Comuna:</label>
+                                        <h4 id="labelComunaCapacitacionCorreo"></h4>
+                                    </div>
+                                    <div class="form-group col-3 mb-1">
+                                        <label for="labelRelatorCorreo" class="mb-0">Relator:</label>
+                                        <h4 id="labelRelatorCorreo"></h4>
+                                    </div>
+                                    <div class="form-group col-3 mb-1">
+                                        <label for="labelCapacidadCorreo" class="mb-0">Capacidad:</label>
+                                        <h4 id="labelCapacidadCorreo"></h4>                                
+                                    </div>
+                                    <div class="form-group col-3 mb-1">
+                                        <label for="labelHoraCorreo" class="mb-0">Hora:</label>
+                                        <h4 id="labelHoraCorreo"></h4>
+                                    </div>
+                                    <div class="form-group col-3 mb-1">
+                                        <label for="labelFechaCorreo" class="mb-0">Fecha:</label>
+                                        <h4 id="labelFechaCorreo"></h4> 
+                                    </div>
+                                    <div class="form-group col-6 mb-1">
+                                        <label for="labelLugarCorreo" class="mb-0">Lugar:</label>
+                                        <h4 id="labelLugarCorreo"></h4>                                
+                                    </div>
+                                </div>
+    
+                                <div class="form-row mt-3" id="div-individual">
+                                    <div class="form-group col-12">
+                                        <h4 id="nombrePersona"></h4>
+                                        <h5 id="mailPersona"></h5>
+                                        <h5 id="telefonoPersona"></h5>
+                                    </div>  
+                                    <!-- <div class="form-group col-12">
+                                        <label for="selectCapacitacion">Capacitación:</label>
+                                        <select class="form-control" id="selectCapacitacion">
+                                        </select>
+                                    </div>	                            -->
+                                </div>
+    
+                                <div class="form-row mt-3" id="div-varios">
+                                    <div class="form-group col-4" id="div-btn-correo-copia">
+                                        <label for="inputCorreoCopia">Enviar Copia a:</label>
+                                        <input class="form-control" id="inputCorreoCopia">
+                                        </input>
+                                    </div>  
+                                    <div class="form-group col-12">
+                                        <!-- <label class="col-2 pl-0" for="inputRolAsignado">Personal:</label> -->
+                                        <label class="col-6 ml-2 invalid-feedback" id="rol-no-select" style=""> Debe seleccionar al menos 1 persona.</label>
+                                        <div class="pl-1">
+                                            <div class="col-12" id="div_personas"></div>
+                                            <div class="row pb-4" id="personasVarias-Table_filters">
+                                                <div class="row col-8 m-0" id="filtros-personasVarias-correo"></div>
+                                                <!-- <div class="col-4 text-right" id="clear-filtros-personasVarias-correo">
+                                                    <button class="btn limpiar-filtros" role="button" id="limpiar-filtros-personasVarias" type="button">Limpiar Filtros</button>
+                                                </div> -->
+                                            </div>
+                                            <table id="table-personasVarias-correo" class="stripe table table-hover _table-link dataTable no-footer" style="width:100%;">
+                                                <thead>         
+                                                    <tr>
+                                                        <th></th>
+                                                        <th>REGION</th>
+                                                        <th>COMUNA</th> 
+                                                        <th>RUN</th>    
+                                                        <th>NOMBRES</th>
+                                                        <th>APELLIDO PATERNO</th>
+                                                        <th>APELLIDO MATERNO</th> 
+                                                        <th>CONFIRMA ASISTENCIA</th>  
+                                                        <th>VECES REPROBADO</th>     
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="lista-personasVarias-correo">
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>                            
+                                </div>
+    
+                            </div>                         
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                            <button type="button" class="btn btn-primary" id="guardar_asignacion_correo">Enviar Correos</button>
+                            <!-- <button type="button" class="btn btn-danger" id="eliminar_asignacion">Eliminar convocación</button> -->
+                        </div>
+                    </div>
+                </div>
+            </div>
 
     <!-- Modal -->
         <div class="modal fade" id="evaluarPostulante" tabindex="-1" role="dialog" aria-hidden="true">

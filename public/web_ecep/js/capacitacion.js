@@ -31,7 +31,7 @@ $(document).ready(function(){
     }
         
     $('#guardar_asignacion').on('click',asignarCapacitacion);
-     
+    $('#guardar_asignacion_correo').on('click',notificarCapacitacion);
     $('#guardar_evaluacion').click(guardarEvaluacion);
     $('#guardar_persona').click(guardarPersonal);
          
@@ -61,6 +61,9 @@ $(document).ready(function(){
     localStorage.p_comuna = ""
     localStorage.p_capacitacion = ""
     localStorage.p_estado = ""
+
+    localStorage.r_region = ""
+    localStorage.r_comuna = ""
 
 });
 
@@ -172,7 +175,7 @@ arrayCapacitacionD = []
 arrayRelator = []
 arrayRelatorD = []
 arrayEstado = []
-
+arrayFechas = []
 function llenarVista(data){
     //data = JSON.parse(data)
     $('#filtros-postulacion').empty();
@@ -242,8 +245,10 @@ function llenarVista(data){
                 render: function(data, type,row){
                     if(row.estado == null && row.id_capacitacion != null && row.borrado_capacitacion == false){
                         return 'Pendiente'
-                    }else if(row.estado == false){
+                    }else if(row.asistencia == true && row.estado == false){
                         return 'Reprobado';
+                    }else if(row.asistencia == false && row.estado == false){
+                        return 'No Asistió';
                     }else{
                         return ''
                     }
@@ -312,8 +317,10 @@ function llenarVista(data){
                                  
                                 if(d.estado == null && d.id_capacitacion != null && d.borrado_capacitacion == false){
                                     valor = 'Pendiente'
-                                }else if(d.estado == false){
+                                }else if(d.asistencia == true && d.estado == false){
                                     valor = 'Reprobado';
+                                }else if(d.asistencia == false && d.estado == false){
+                                    valor = 'No Asistió';
                                 }else{
                                     valor = ''
                                 }
@@ -389,8 +396,10 @@ function llenarVista(data){
                                 if(index == 9){
                                     if(d.estado == null && d.id_capacitacion != null && d.borrado_capacitacion == false){
                                         valor = 'Pendiente'
-                                    }else if(d.estado == false){
+                                    }else if(d.asistencia == true && d.estado == false){
                                         valor = 'Reprobado';
+                                    }else if(d.asistencia == false && d.estado == false){
+                                        valor = 'No Asistió';
                                     }else{
                                         valor = ''
                                     }
@@ -409,7 +418,7 @@ function llenarVista(data){
                                     }else{
                                         $('#selectC'+index).append( '<option value="'+d.charAt(0).toUpperCase() + d.slice(1)+'">'+d.charAt(0).toUpperCase() + d.slice(1)+'</option>' )         
                                     }
-*/
+                */
 
 
                                     
@@ -526,15 +535,23 @@ function llenarVistaCapacitacion(data){
             {data: "region"},
             {data: "comuna"},
             {data: "lugar"},
-            {data: "fecha",className: "text-center",
-                render:function(data,type,row){
-                    return moment(row.fecha_hora).format('DD-MM-YYYY')
-                }
+            {data: "fecha_hora",
+                render: function(data, type,row){
+                    if(row.borrado == false ){
+                        return  moment(data).format('DD-MM-YYYY');
+                    }else{
+                        return '';
+                    }
+                }       
             },
-            {data: "fecha",className: "text-center",
-                render:function(data,type,row){
-                    return moment(row.fecha_hora).format('HH:mm')
-                }
+            {data: "fecha_hora",
+                render: function(data, type,row){
+                    if(row.borrado == false ){
+                        return  moment(data).format('HH:mm')
+                    }else{
+                        return '';
+                    }
+                }       
             },
             {data: null,
                 render: function(data, type, row){  
@@ -549,14 +566,17 @@ function llenarVistaCapacitacion(data){
             {data: "observacion"},
             {data: "opciones",className: "text-center",
                 render: function(data, type, row){ 
-                  
+                    var hoy = moment(Date.now()).format('DD-MM-YYYY');
+
                 	if(row.borrado == false){
                 		btns =  '<button type="button" id="modificarCapacitacion_'+row.id_capacitacion+'" class="btn btn-primary btn-sm _btn-item"><i class="fa fa-pencil-alt"></i></button>'+
 	                    		'<button type="button" id="seleccionarPersonas_'+row.id_capacitacion+'" class="btn btn-primary btn-sm _btn-item ml-1"><i class="fas fa-users"></i></button>'
-	                    		// '<button type="button" id="notificarPersonas_'+row.id_capacitacion+'" class="btn btn-primary btn-sm _btn-item ml-1"><i class="far fa-envelope"></i></button>'
-	                	if(row.convocados == null){
-	                		btns += '<button type="button" id="deshabilitarCapacitacion_'+row.id_capacitacion+'" class="btn btn-primary btn-sm _btn-item ml-1"><i class="fas fa-times"></i></button>'   
-	                	}
+                        if(moment(row.fecha_hora).format('DD-MM-YYYY') > hoy){
+                            btns += '<button type="button" id="notificarPersonas_'+row.id_capacitacion+'" class="btn btn-primary btn-sm _btn-item ml-1"><i class="far fa-envelope"></i></button>'
+                        }
+                        if(row.convocados == null){
+                            btns += '<button type="button" id="deshabilitarCapacitacion_'+row.id_capacitacion+'" class="btn btn-primary btn-sm _btn-item ml-1"><i class="fas fa-times"></i></button>'   
+                        }
                 	}else{
                 		btns = ''  
                 	}          
@@ -619,8 +639,8 @@ function llenarVistaCapacitacion(data){
             $('#inputContrasena').prop('disabled',true)
             $('#divUsuario').css('display','none')
              
-            var placeholder = ["","Región","Comuna","Lugar","","","Relator"]
-            this.api().columns([1,2,3,6]).every( function (index) {
+            var placeholder = ["","Región","Comuna","Lugar","Fecha","","Relator"]
+            this.api().columns([1,2,3,4,6]).every( function (index) {
                 if(JSON.parse(localStorage.user).id_cargo == 1004 && index == 1){
                     return;
                 }else{
@@ -638,10 +658,11 @@ function llenarVistaCapacitacion(data){
                                 .draw();
                         } );
                     column.data().unique().each( function ( d, j ) {
-
                         if(d != null){
 
-                            if(index != 6){
+                            if(index == 4){
+                                arrayFechas.push(moment(d).format('DD-MM-YYYY'));
+                            }else if(index != 6){
                                 //CARGAR PAGINA MANTENIENDO LOS FILTROS
                                 if(index == 1 && localStorage.c_region === d) {
                                     $('#selectC'+index).append( '<option SELECTED value="'+d.charAt(0).toUpperCase() + d.slice(1)+'">'+d.charAt(0).toUpperCase() + d.slice(1)+'</option>' )         
@@ -652,9 +673,7 @@ function llenarVistaCapacitacion(data){
                                 }else{
                                     $('#selectC'+index).append( '<option value="'+d.charAt(0).toUpperCase() + d.slice(1)+'">'+d.charAt(0).toUpperCase() + d.slice(1)+'</option>' )         
                                 }
- 
                             }else{
-     
                                 arrayCapacitacion.push(d.nombres+' '+d.apellido_paterno+' '+d.apellido_materno);
                             }
                             
@@ -666,6 +685,18 @@ function llenarVistaCapacitacion(data){
                         return self.indexOf(value) === index
                     }
 
+                    if(index == 4){
+                        fechaUnica = arrayFechas.filter(unique)
+                         
+                        fechaUnica.forEach(function(item){
+                            if(localStorage.c_fecha === item) {
+                                $('#selectC'+index).append( '<option SELECTED value="'+item+'">'+item+'</option>' )         
+                            }else{
+                                $('#selectC'+index).append( '<option value="'+item+'">'+item+'</option>' ) 
+                            }  
+                        });
+                    }
+
                     if(index == 6){
                         relatorUnico = arrayCapacitacion.filter(unique)
                          
@@ -674,8 +705,7 @@ function llenarVistaCapacitacion(data){
                                 $('#selectC'+index).append( '<option SELECTED value="'+item+'">'+item+'</option>' )         
                             }else{
                                 $('#selectC'+index).append( '<option value="'+item+'">'+item+'</option>' ) 
-                            }
-       
+                            }       
                         });
                     }
 
@@ -686,6 +716,7 @@ function llenarVistaCapacitacion(data){
                             tablaD.column(1).search( localStorage.c_region ? '^'+localStorage.c_region+'$' : '', true, false ).draw(); 
                             tablaD.column(2).search( localStorage.c_comuna ? '^'+localStorage.c_comuna+'$' : '', true, false ).draw();
                             tablaD.column(3).search( localStorage.c_lugar ? '^'+localStorage.c_lugar+'$' : '', true, false ).draw();
+                            tablaD.column(4).search( localStorage.c_fecha ? '^'+localStorage.c_fecha+'$' : '', true, false ).draw();
                             tablaD.column(6).search( localStorage.c_relator ? '^'+localStorage.c_relator+'$' : '', true, false ).draw();            
                     });   
                 }
@@ -695,8 +726,9 @@ function llenarVistaCapacitacion(data){
         },
         "drawCallback": function(settings){
             arrayCapacitacionD = []
-            var placeholder = ["","Región","Comuna","Lugar","","","Relator"]
-            this.api().columns([1,2,3,6]).every( function (index) {
+            arrayFechasD = []
+            var placeholder = ["","Región","Comuna","Lugar","Fecha","","Relator"]
+            this.api().columns([1,2,3,4,6]).every( function (index) {
                 if(JSON.parse(localStorage.user).id_cargo == 1004 && index == 1){
                     return;
                 }else{
@@ -707,7 +739,9 @@ function llenarVistaCapacitacion(data){
                         selectFiltered.append('<option value="">'+placeholder[index]+'</option>')
                         columnFiltered.column(index,{search:'applied'}).data().unique().each( function ( d, j ) {
                             if(d != null){
-                                if(index != 6){
+                                if(index == 4){                                   
+                                    arrayFechasD.push(moment(d).format('DD-MM-YYYY'));        
+                                }else if(index != 6){
                                     selectFiltered.append( '<option value="'+d.charAt(0).toUpperCase() + d.slice(1)+'">'+d.charAt(0).toUpperCase() + d.slice(1)+'</option>' )    
                                 }else{
                                      arrayCapacitacionD.push(d.nombres+' '+d.apellido_paterno+' '+d.apellido_materno);        
@@ -718,6 +752,15 @@ function llenarVistaCapacitacion(data){
                     }
                     
                   
+                }
+                if(index == 4){
+                    const unique = (value, index, self) => {
+                        return self.indexOf(value) === index
+                    }
+                    capacitacionUnica = arrayFechasD.filter(unique)
+                    capacitacionUnica.forEach(function(item){                      
+                        $('#selectC'+index).append( '<option value="'+item+'">'+item+'</option>' )     
+                    });
                 }
 
                 if(index == 6){
@@ -836,13 +879,25 @@ function llenarListaRelatores(data){
                     column.data().unique().each( function ( d, j ) {
 
                         if(d != null){
-            
+ 
+                            if(index == 1 && localStorage.r_region === d) {
+                                $('#selectRE'+index).append( '<option SELECTED value="'+d.charAt(0).toUpperCase() + d.slice(1)+'">'+d.charAt(0).toUpperCase() + d.slice(1)+'</option>' )         
+                            }else if(index == 2 && localStorage.r_comuna === d) {
+                                $('#selectRE'+index).append( '<option SELECTED value="'+d.charAt(0).toUpperCase() + d.slice(1)+'">'+d.charAt(0).toUpperCase() + d.slice(1)+'</option>' )         
+                            }else{
                                 $('#selectRE'+index).append( '<option value="'+d.charAt(0).toUpperCase() + d.slice(1)+'">'+d.charAt(0).toUpperCase() + d.slice(1)+'</option>' )         
+                            }  
                         }
                         
                     } );
 
-                    $('#selectRE'+index).niceSelect();    
+                    $('#selectRE'+index).niceSelect();   
+
+                    $(tablaD).ready(function() {    
+                        //CARGAR PAGINA MANTENIENDO LOS FILTROS        
+                            tablaD.column(1).search( localStorage.r_region ? '^'+localStorage.r_region+'$' : '', true, false ).draw(); 
+                            tablaD.column(2).search( localStorage.r_comuna ? '^'+localStorage.r_comuna+'$' : '', true, false ).draw();    
+                    });  
                 }
             })   
 
@@ -949,8 +1004,10 @@ function llenarVistaRelator(data){
                 render: function(data, type,row){
                     if(row.estado == null && row.id_capacitacion != null && row.borrado_capacitacion == false){
                         return 'Pendiente'
-                    }else if(row.estado == false){
+                    }else if(row.asistencia == true && row.estado == false){
                         return 'Reprobado';
+                    }else if(row.asistencia == false && row.estado == false){
+                        return 'No Asistió';
                     }else{
                         return ''
                     }
@@ -1010,8 +1067,10 @@ function llenarVistaRelator(data){
                                  
                                 if(d.estado == null && d.id_capacitacion != null && d.borrado_capacitacion == false){
                                     valor = 'Pendiente'
-                                }else if(d.estado == false){
+                                }else if(d.asistencia == true && d.estado == false){
                                     valor = 'Reprobado';
+                                }else if(d.asistencia == false && d.estado == false){
+                                    valor = 'No Asistió';
                                 }else{
                                     valor = ''
                                 }
@@ -1078,8 +1137,10 @@ function llenarVistaRelator(data){
                                 if(index == 9){
                                     if(d.estado == null && d.id_capacitacion != null && d.borrado_capacitacion == false){
                                         valor = 'Pendiente'
-                                    }else if(d.estado == false){
+                                    }else if(d.asistencia == true && d.estado == false){
                                         valor = 'Reprobado';
+                                    }else if(d.asistencia == false && d.estado == false){
+                                        valor = 'No Asistió';
                                     }else{
                                         valor = ''
                                     }
@@ -1474,7 +1535,7 @@ function llenarVistaCapacitados(data){
                     capacitadosUnica.forEach(function(item){
                         $('#selectCA'+index).append( '<option value="'+item+'">'+item+'</option>' )     
                     });
-*/
+        */
                     $('#selectCA'+index).niceSelect();    
                 }
             })   
@@ -1909,6 +1970,7 @@ function modificarCapacitacion(){
                     localStorage.c_region = $('#selectC1').val()
                     localStorage.c_comuna = $('#selectC2').val()
                     localStorage.c_lugar = $('#selectC3').val()
+                    localStorage.c_fecha = $('#selectC4').val()                     
                     localStorage.c_relator = $('#selectC6').val()
 
                     if(JSON.parse(localStorage.user).id_tipo_usuario == 1052){
@@ -2119,8 +2181,8 @@ function asignarVarios(){
 }
 
 function notificarVarios(){
-    $('#eliminar_asignacion').css('display','none')
-    $('#guardar_asignacion').css('display','').prop('disabled',false)
+    // $('#eliminar_asignacion').css('display','none')
+    $('#guardar_asignacion_correo').css('display','').prop('disabled',false)
     localStorage.capacitacion_tipo = 2;
 
     $('#div-individual').css('display','none')
@@ -2133,15 +2195,13 @@ function notificarVarios(){
     localStorage.region = $(this).data('id_region') 
     localStorage.fecha_hora = $(this).data('fecha_hora') 
 
-    $('#labelRegionCapacitacion').html($(this).data('region'))
-    $('#labelComunaCapacitacion').html($(this).data('comuna'))
-    $('#labelRelator').html($(this).data('relator'))
-    $('#labelCapacidad').html($(this).data('capacidad'))
-    $('#labelLugar').html($(this).data('lugar'))    
-    $('#labelHora').html(moment($(this).data('fecha_hora')).format('HH:mm'))
-    $('#labelFecha').html(moment($(this).data('fecha_hora')).format('DD-MM-YYYY'))
-
-    $('#selectCapacitacionAll').html('')
+    $('#labelRegionCapacitacionCorreo').html($(this).data('region'))
+    $('#labelComunaCapacitacionCorreo').html($(this).data('comuna'))
+    $('#labelRelatorCorreo').html($(this).data('relator'))
+    $('#labelCapacidadCorreo').html($(this).data('capacidad'))
+    $('#labelLugarCorreo').html($(this).data('lugar'))    
+    $('#labelHoraCorreo').html(moment($(this).data('fecha_hora')).format('HH:mm'))
+    $('#labelFechaCorreo').html(moment($(this).data('fecha_hora')).format('DD-MM-YYYY'))
 
     id =  $(this).data('id_region') 
 
@@ -2164,7 +2224,7 @@ function notificarVarios(){
 
     $('#div-selectCapacitacion').css('display','none')
 
-    $('#asignarCapacitacion').modal({backdrop: 'static', keyboard: false},'show')   
+    // $('#asignarCapacitacion').modal({backdrop: 'static', keyboard: false},'show')   
         
 }
 
@@ -2249,7 +2309,7 @@ function verPersonal(){
                 data = JSON.parse(data) 
                 entro = 0
                 if (data.resultado == undefined) {
-                    cargarPeronal((data.personal_capacitacion))
+                    cargarPersonal((data.personal_capacitacion))
                 }else {
                     showFeedback("error",data.resultado,"Error");
                     console.log("invalidos");
@@ -2296,12 +2356,13 @@ function verPersonalConvocado(){
             },
             success: function(data, textStatus, jqXHR) {
                 data = JSON.parse(data) 
-                console.log(data);
                 entro = 0
-                if (data.resultado == undefined) {
-                    cargarPeronal((data.personal_capacitacion))
+                if (data.resultado != 'error') {
+                    console.log("No error");
+                    cargarPersonalCorreo((data.personal_capacitacion))
+                    $('#notificarCapacitacion').modal({backdrop: 'static', keyboard: false},'show')   
                 }else {
-                    showFeedback("error",data.resultado,"Error");
+                    showFeedback("error",data.descripcion,"Error");
                     console.log("invalidos");
                     $.unblockUI();
                 }
@@ -2310,7 +2371,6 @@ function verPersonalConvocado(){
             error: function(jqXHR, textStatus, errorThrown) {
             	entro = 0
                 showFeedback("error","Error en el servidor","Datos incorrectos");
-                console.log("error del servidor, datos incorrectos");
                 $.unblockUI();
             }
         })
@@ -2318,7 +2378,7 @@ function verPersonalConvocado(){
         
 }
 
-function cargarPeronal(data){
+function cargarPersonal(data){
    // $('#div_personas').html('');
     console.log(data)
 		$('#filtros-personasVarias').empty();
@@ -2380,6 +2440,16 @@ function cargarPeronal(data){
                     
                     }else{
                         return data
+                    }
+                }
+            },
+            {data: "link_confirmacion",
+                render: function(data, type,row){
+                    if(data == null){
+                        return ''
+                    
+                    }else{
+                        return '<a href="'+data+'" target="_blank">Confirmación</a>'
                     }
                 }
             },
@@ -2477,6 +2547,162 @@ function cargarPeronal(data){
     
 }
 
+function cargarPersonalCorreo(data){
+    // $('#div_personas').html('');
+     console.log(data)
+         $('#filtros-personasVarias-correo').empty();
+ 
+     if($.fn.dataTable.isDataTable('#table-personasVarias-correo')){
+         $('#table-personasVarias-correo').DataTable().destroy();
+         $('#lista-personasVarias-correo').empty();
+     }
+ 
+     var tablaD = $("#table-personasVarias-correo").DataTable({
+         dom: "",
+ 
+         lengthMenu: [[10, 15, 20, -1], [10, 15, 20, "Todos"]],
+         language:spanishTranslation,
+         lengthChange: true,
+         info: false,
+         paging: false,
+         displayLength: -1,
+         ordering: true, 
+         order: [],
+         search: true,
+         data: data,
+         responsive: true, 
+         columns:[
+             {data: null,
+                 render: function(data, type,row){
+                     /*check = data.id_capacitacion != null ?  (data.borrado_capacitacion == false ? "checked" : "") : "" 
+                     disabled = data.id_capacitacion != null ?  (data.borrado_capacitacion == false ? "disabled" : "") : "" 
+                     return  '<input type="checkbox" id="check-persona-'+data.id_persona+'" name="checkPersonalCapacitacion" value="'+data.id_persona+'" '+
+                                     ''+check+' '+disabled+'>';*/
+                     if( data.id_capacitacion != null){
+                         return 1;
+                     }else{
+                         return 0;
+                     }
+                 }
+             },
+             {data: "region"},
+             {data: "comuna"},
+             {data: "run"},
+             {data: "nombres"},
+             {data: "apellido_paterno"},
+             {data: "apellido_materno"},
+             {data: "confirma_asistencia", className: 'text-center',
+                 render: function(data, type,row){
+                     if(data == 0){
+                         return 'Sin Información'
+                     }else if(data == 1){
+                         return 'SI'
+                     }else{
+                         return 'NO'
+                     }
+                 }
+             },
+             {data: "veces_reprobada", className: 'text-center',
+                 render: function(data, type,row){
+                     if(data == null){
+                         return 0
+                     
+                     }else{
+                         return data
+                     }
+                 }
+             },
+         ],
+         "rowCallback": function( row, data ) {
+ 
+             if(moment(moment().format('YYYY-MM-DD, HH:mm:ss')).isAfter(localStorage.fecha_hora)){
+                 disabled = "disabled"
+             }else{
+                 disabled = data.id_capacitacion != null ?  "disabled" : ""
+             }
+ 
+            //  check = data.id_capacitacion != null ?  "checked" : "" 
+             
+             $('td:eq(0)', row).html('<input type="checkbox" id="check-persona-'+data.id_persona+'" name="checkPersonalCorreoCapacitacion" value="'+data.id_persona+'">');
+         },
+         "initComplete": function(settings, json) {
+              
+             var placeholder = ["","Región","Comuna","","","","","Confirma Asistencia"]
+             this.api().columns([1,2,7]).every( function (index) {
+                 if(JSON.parse(localStorage.user).id_cargo == 1004 && index == 1){
+                     return;
+                 }else{
+                     var column = this;
+                     var select = $('<select class="form-control col-sm-2 small _filtros"  id="selectPV'+index+'" >'+
+                         '<option value="" selected="selected">'+placeholder[index]+'</option></select>')
+                         .appendTo( $('#filtros-personasVarias'))
+                         .on( 'change', function () {
+                             var val = $.fn.dataTable.util.escapeRegex(
+                                 $(this).val()
+                             );
+      
+                             column
+                                 .search( val ? '^'+val+'$' : '', true, false )
+                                 .draw();
+                         } );
+                     column.data().unique().each( function ( d, j ) {
+                         if(index == 7){
+                             confirma = (d == 0 ? 'Sin Información' : d == 1 ? 'Si' : 'No')
+                             $('#selectPV'+index).append( '<option value="'+confirma+'">'+confirma+'</option>' )     
+                         }else if(d != null){
+                             $('#selectPV'+index).append( '<option value="'+d.charAt(0).toUpperCase() + d.slice(1)+'">'+d.charAt(0).toUpperCase() + d.slice(1)+'</option>' )     
+                         }
+                         
+                     } );
+                     $('#selectPV'+index).niceSelect();    
+                 }
+             })   
+ 
+             $('.dataTables_length select').addClass('nice-select small');         
+         },
+         "drawCallback": function(settings){
+  
+             var placeholder = ["","Región","Comuna","","","","","Confirma Asistencia"]
+             this.api().columns([1,2,7]).every( function (index) {
+                 if(JSON.parse(localStorage.user).id_cargo == 1004 && index == 1){
+                     return;
+                 }else{
+                     var columnFiltered = this;
+                     var selectFiltered = $("#selectPV"+index)
+                     if(selectFiltered.val()===''){
+                         selectFiltered.empty()
+                         selectFiltered.append('<option value="">'+placeholder[index]+'</option>')
+                         columnFiltered.column(index,{search:'applied'}).data().unique().each( function ( d, j ) {
+                             /*if(d != null){
+                                 selectFiltered.append( '<option value="'+d.charAt(0).toUpperCase() + d.slice(1)+'">'+d.charAt(0).toUpperCase() + d.slice(1)+'</option>' )    
+                             } */
+                             if(index == 7){
+                                 console.log(d)
+                                 confirma = (d == 0 ? 'Sin Información' : d == 1 ? 'Si' : 'No')
+                                 selectFiltered.append( '<option value="'+confirma+'">'+confirma+'</option>' )            
+                             }else if(d != null){
+                                 console.log(d)
+                                 console.log(index)
+                                 selectFiltered.append( '<option value="'+d.charAt(0).toUpperCase() + d.slice(1)+'">'+d.charAt(0).toUpperCase() + d.slice(1)+'</option>' )         
+                             }                
+ 
+                         } );
+                     }
+                     $('select').niceSelect('update');
+                 }
+             })
+         }
+  
+  
+     });
+     /*}else{
+         $('#div_personas').html('No existe personal para la Región en la que se impartira la Capacitación.')
+     }*/
+     $('#limpiar-filtros-personasVarias').click(btnClearFiltersModal);
+     $.unblockUI();                                 
+     
+ }
+
 function asignarCapacitacion(){
 	$('#guardar_asignacion').prop('disabled',true)
     capacitacionesAsignadas = [];
@@ -2552,6 +2778,94 @@ function asignarCapacitacion(){
  
 }
 
+function notificarCapacitacion(){
+    capacitacionesAsignadas = [];
+    selectIdCapacitacion = 0;
+    if(localStorage.capacitacion_tipo == 1){
+        check = $('#selectCapacitacion').val() == -1 ? 0 : 1
+        capacitacionesAsignadas.push({id_persona:localStorage.id_persona, asignar: check})
+        selectIdCapacitacion = $('#selectCapacitacion').val();
+
+    }else if(localStorage.capacitacion_tipo == 2){
+        var checkbox = $('input:checkbox[name=checkPersonalCorreoCapacitacion]')
+        for (var i = 0; i < checkbox.length; i++) {
+            check = checkbox[i].checked == true ? 1 : 0
+            capacitacionesAsignadas.push({id_persona: checkbox[i].value, asignar: check})  
+        }
+
+        selectIdCapacitacion = $('#selectCapacitacionAll').val();
+    }
+    if(capacitacionesAsignadas.length > 1){
+        $.blockUI({
+            message: '<h1>Espere por favor mientras se envian los correos.</h1>',
+            baseZ: 2000
+        });    
+    }else if(capacitacionesAsignadas.length == 1){
+        $.blockUI({
+            message: '<h1>Espere por favor mientras se envia el correo.</h1>',
+            baseZ: 2000
+        });
+    }
+
+    var correoCopia = $('#inputCorreoCopia').val() != '' ? $('#inputCorreoCopia').val() : null;
+    if(correoCopia != null && correoCopia != ''){
+        var correo_bool = ValidateEmail(correoCopia)
+        if(correo_bool == false){
+            showFeedback("warning","","Correo inválido");
+            $('#inputCorreoCopia').addClass('div_is-invalid')
+            $('#guardar_asignacion_correo').prop('disabled',false)
+            $.unblockUI();
+            return
+        }else{
+            $('#inputCorreoCopia').removeClass('div_is-invalid')
+            $('#guardar_asignacion_correo').prop('disabled',true)
+        }
+    }
+
+    $.ajax({
+        method:'POST',
+        url: webservice+'/capacitacion/notificarCapacitacionPorCorreo',
+        headers:{
+           't': JSON.parse(localStorage.user).token
+        },
+        crossDomain: true,
+        dataType:'text',
+        data :{ 
+                id_usuario: JSON.parse(localStorage.user).id_usuario,
+                id_capacitacion: selectIdCapacitacion,
+                personal_capacitacion: capacitacionesAsignadas,
+                correo_copia: correoCopia,
+            },
+        success: function(data, textStatus, jqXHR) {
+            data = JSON.parse(data) 
+            console.log(data)
+            if (data.resultado != "error") {
+                showFeedback("success", data.descripcion, "Guardado");
+                $('#asignarCapacitacion').modal('hide');
+                localStorage.id_capacitacion = 'null'
+                $.unblockUI();
+                // if(JSON.parse(localStorage.user).id_cargo == 1004){
+                //     getPersonalRegional();
+                // }else{
+                //     getPersonal();
+                // } 
+            } else {
+                showFeedback("error",data.descripcion,"Error");
+                console.log("invalidos");
+                $.unblockUI();
+            }
+            $('#guardar_asignacion').prop('disabled',false)
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+        	$('#guardar_asignacion').prop('disabled',false)
+            showFeedback("error","Error en el servidor","Datos incorrectos");
+            console.log("error del servidor, datos incorrectos");
+            $.unblockUI();
+ 
+        }
+    })
+ 
+}
  
 function desconvocar(){
     $('#eliminar_asignacion').prop('disabled',true)
@@ -2737,7 +3051,7 @@ function guardarEvaluacion(){
 
 
         //VALIDAR QUE SI NO ASISTE NO PUEDE LLENAR CON INFORMACION LOS DEMAS DATOS
-            if(asistencia  == 'false' && (puntaje_contenido > 0 || puntaje_psicologica != -1 || estado != -1)){
+            if(asistencia  == 'false' && (puntaje_contenido > 0 || puntaje_psicologica != -1 || estado != 'false')){
                 if(puntaje_contenido > 0){
                     $(this).find('td:nth-child(3) input').addClass('is-invalid')
                     cumple = false
@@ -2752,7 +3066,7 @@ function guardarEvaluacion(){
                     $(this).find('td:nth-child(4) select').removeClass('is-invalid')
                 }
 
-                if(estado != -1){
+                if(estado != 'false'){
                     $(this).find('td:nth-child(5) select').addClass('is-invalid')
                     cumple = false
                 }else{
@@ -2788,7 +3102,7 @@ function guardarEvaluacion(){
 
         // VALIDAR QUE RECHAZE CUANDO CUMPLE CON LAS CONDICIONES
             if(estado == 'false'){
-                if(asistencia  != 'true'){
+                if(asistencia  == '-1'){
                     $(this).find('td:nth-child(2) select').addClass('is-invalid')
                     cumple = false
                 }else{
@@ -3102,7 +3416,14 @@ function cargarComunasPersona(input,id){
 function guardarPersonal(){
     //var checkbox = $('input:checkbox[name=inputRolAsignado]')
     cargos = [];
-    console.log('guardar')
+    $.blockUI({  
+        baseZ: 3000,
+        message: '<img style="width: 10%;" src="images/loading.gif" />',
+        css: {
+            border:     'none',
+            backgroundColor:'transparent',        
+        } 
+    });
     cargos.push(1008)
 
 
@@ -3153,6 +3474,8 @@ function guardarPersonal(){
             success: function(data, textStatus, jqXHR) {
                 data = JSON.parse(data) 
                 console.log(data)
+                localStorage.r_region = $('#selectRE1').val()
+                localStorage.r_comuna = $('#selectRE2').val()
 
                 if (data.resultado != "error") {
                     showFeedback("success", data.descripcion, "Guardado");
@@ -3331,4 +3654,14 @@ function modificar(id,idPersonaCargo){
  
         }
     }) 
+}
+
+function ValidateEmail(mail) {
+    var mailState=true
+    var email = mail;
+    var expr = /^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
+    if (!expr.test(email)) {
+        return mailState=false
+    }else{
+        return mailState=true}
 }

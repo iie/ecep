@@ -421,6 +421,9 @@ table.dataTable.no-footer {
 
     background-color: transparent !important;
 }
+.div_is-invalid{
+    border: 1px solid #dc3545 !important;
+}
 /*.modal {
     z-index: 1000 !important;
 }*/
