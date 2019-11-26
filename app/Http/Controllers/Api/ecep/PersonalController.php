@@ -1133,7 +1133,7 @@ class PersonalController extends Controller
 			$mail->Host = "mail.smtp2go.com"; 
 			$mail->Port = 2525;//2525; //443; 
 			$mail->Username = "no-reply@ecep2019.iie.cl";
-			$mail->Password = 'Zzhm###bk1llTFmdjg2019@@@@wcnYw';
+			$mail->Password = 'Zzh@@@m#k1ll@@ola##bk1;;;####llTFmdjg2019@@@@wcnYw';
 			$mail->setFrom("no-reply@ecep2019.iie.cl", "ECEP");
 			$mail->Subject = $subject;
 			$mail->MsgHTML($html);
@@ -1152,5 +1152,3 @@ class PersonalController extends Controller
     }
 
 }
-
-
