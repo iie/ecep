@@ -1,4 +1,5 @@
 $(document).ready(function () {
+	loginvalid(localStorage.getItem('user'))
     localStorage.setItem('firsload', false);
     $('#nombre_usuario').html(JSON.parse(localStorage.user).nombres + ' ' + JSON.parse(localStorage.user).apellidos + ' ')
 
@@ -6,7 +7,7 @@ $(document).ready(function () {
 
     $('#redirect').on('click', redirectModulo);
     $('#inscritosDia').on('click', verInscritos);
-    loginvalid(localStorage.getItem('user'))
+    
     autoload1()
     autoload2()
 

@@ -1,4 +1,5 @@
 $(document).ready(function(){
+	loginvalid(localStorage.getItem('user'))
 	$('#ingresaPersonal').on('click', ingresaPersonal) 
  	$('#ingresaInfraestructura').on('click', ingresaInfraestructura)
  	$('#ingresaMateriales').on('click', ingresaMateriales) 

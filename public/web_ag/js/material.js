@@ -1,4 +1,5 @@
 $(document).ready(function(){
+	loginvalid(localStorage.getItem('user'))
 	$(function(){
 		$('#imprenta').on('load', function(){
 			//$('#imprenta2').attr('src','https://edocente.amf.cl/'); //add iframe src	
