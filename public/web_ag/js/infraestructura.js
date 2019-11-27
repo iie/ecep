@@ -126,6 +126,8 @@ function llenarVista(data){
     trData = '';
     nro = 1;
     //console.log(dataarr)
+    var contadordia1=0;
+    var contadordia2=0;
     for (var j = 0; j < data1.length-1; j++){
        
         for (var k = 0; k < data1[j].data_region.length; k++){    
@@ -183,8 +185,16 @@ function llenarVista(data){
                 //trData+= '<td style="text-align:center">' + sum + '</td>'
                 trData+= '</tr>';   
                 nro++; 
-                
-            } 
+
+                if (data1[j].data_region[k].data_provincia[l].data_comuna.dia==1) {
+                    contadordia1+=1
+                }else if(data1[j].data_region[k].data_provincia[l].data_comuna.dia==2) {
+                    contadordia2+=1
+                }
+                else{
+
+                }
+            }
         }
     }  
     
@@ -344,7 +354,9 @@ function llenarVista(data){
 
 
     
-    $('#totalSedesreq').html(data.contadores.total_sedes_requeridas)
+    $('#totalSedesreq1').html(contadordia1)
+    $('#totalSedesreq2').html(contadordia2)
+    //$('#totalSedesreq').html(data.contadores.total_sedes_requeridas)
     $('#totalSedesconf').html(data.contadores.total_sedes_confirmadas)
     $('#salasRequeridas').html(data.contadores.total_salas_requeridas)
     $('#salasConseguidas').html(data.contadores.total_salas_disponibles)
