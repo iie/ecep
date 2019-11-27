@@ -187,7 +187,7 @@ function llenarVista(data){
     var tablaD = $("#table-postulacion").DataTable({
         dom: "<'search'f>",
          
-        buttons: [
+        /*buttons: [
             {
                 extend: 'excel',
                 title: 'Postulantes',
@@ -206,7 +206,7 @@ function llenarVista(data){
                 },
 
             }
-        ],
+        ],*/
         lengthMenu: [[10, 15, 20, -1], [10, 15, 20, "Todos"]],
         language:spanishTranslation,
         lengthChange: true,
@@ -458,21 +458,13 @@ function llenarVista(data){
             
     $('#limpiar-filtros-postulacion').click(btnClearFilters);
     $("#descargar-lista").on("click", function() {
-    	/*$.blockUI({  
-	        baseZ: 3000,
-	        message: '<img style="width: 10%;" src="images/loading.gif" />',
-	        css: {
-	            border:     'none',
-	            backgroundColor:'transparent',        
-	        } 
-	    }); */
-
-        console.log('arri')
-        tablaD.button( '.buttons-excel' ).trigger();
-        
-        console.log('aqui')
-        //$.unblockUI()
+    	window.location='https://ecep2019.iie.cl/public/api/web/capacitacion/descarga-listado';
+  
+        //tablaD.button( '.buttons-excel' ).trigger();
+ 
+ 
     });
+
      
     $('#total').html(data.personal_postulacion.length)
 
