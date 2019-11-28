@@ -152,7 +152,7 @@ class CapacitacionController extends Controller
 			//ahora de todas las personas que confirmacion asistencia los que pueden volver a ser convocados son los rechazados
 			
 	        $personaP = DB::select("select DISTINCT 
-	                rrhh.persona.id_persona, rrhh.persona.run,rrhh.persona.nombres,rrhh.persona.apellido_paterno,rrhh.persona.apellido_materno,
+	                rrhh.persona.id_persona, rrhh.persona.run,rrhh.persona.nombres,rrhh.persona.apellido_paterno,rrhh.persona.apellido_materno,rrhh.persona.deserta,
                     rrhh.persona.borrado, rrhh.persona.email, rrhh.persona.estado_proceso,rrhh.persona.id_usuario,rrhh.persona.telefono,
                     core.comuna.nombre as comuna, core.region.nombre as region, 
 	                infraestructura.zona.nombre as nombre_zona, core.region.orden_geografico,
@@ -313,6 +313,8 @@ class CapacitacionController extends Controller
 	        }*/
 
 	    }
+        $totalCapacitado = Persona::where('estado_proceso','capacitado')->count(); 
+
  
         $datos['personal_postulacion'] = $personaP;
         $datos['lista_capacitados'] = $personaCapacitadas;
@@ -326,6 +328,7 @@ class CapacitacionController extends Controller
         $datos['sexo'] = $sexo;
         $datos['estadoCivil'] = $estadoCivil;
         $datos['institucion'] = $institucion ;
+        $datos['total_capacitados'] = $totalCapacitado;
         return response()->json($datos);    
     }
 
@@ -848,12 +851,13 @@ class CapacitacionController extends Controller
                     ->leftJoin('rrhh.capacitacion_persona', 'rrhh.persona.id_persona','=','rrhh.capacitacion_persona.id_persona')
                     ->leftJoin('rrhh.capacitacion', 'rrhh.capacitacion_persona.id_capacitacion','=','rrhh.capacitacion.id_capacitacion')
 
-                    ->select('rrhh.persona.id_persona','rrhh.persona.nombres','rrhh.persona.apellido_paterno',
+                    ->select('rrhh.persona.id_persona','rrhh.persona.run','rrhh.persona.nombres','rrhh.persona.apellido_paterno',
                         'rrhh.persona.apellido_materno','rrhh.capacitacion_persona.asistencia','rrhh.capacitacion_persona.estado',
                         'rrhh.capacitacion_persona.id_capacitacion_persona','rrhh.capacitacion.id_capacitacion')
                     //->where('rrhh.persona_cargo.id_cargo','=',$post['id_cargo'])
                     ->where('rrhh.capacitacion_persona.id_capacitacion','=',$post['id_capacitacion'])
                     ->where('rrhh.persona.estado_proceso','=', 'preseleccionado')
+                     ->where('rrhh.persona.deserta','=', false)
                     ->where('rrhh.capacitacion_persona.borrado','=',false)
                     ->orderBy('rrhh.persona.nombres','asc')
                     ->orderBy('rrhh.persona.apellido_paterno','asc')
@@ -1114,6 +1118,7 @@ class CapacitacionController extends Controller
 										
 										where core.region.id_region = ".$post['id_region']."
 										and rrhh.persona.borrado = false
+                                        and rrhh.persona.borrado = false
 										and rrhh.persona.modificado = true
 										and rrhh_cp.borrado = false
 										and rrhh_cp.id_capacitacion = ".$post['id_capacitacion']."
@@ -1210,6 +1215,7 @@ class CapacitacionController extends Controller
                 $aux["link_confirmacion"] = null;
             }
             $final[] = $aux;
+            unset($idCapPersona);
         }
         $datos['personal_capacitacion'] = $final;
         return response()->json($datos);    
@@ -1391,6 +1397,35 @@ class CapacitacionController extends Controller
             }
             DB::commit();
         	return response()->json(["resultado"=>"ok","descripcion"=>"correos enviados con éxito."]);
+        }
+    }
+ 
+    public function desertar(Request $request)
+    {
+        $post = $request->all();    
+        //capacitaciones por cargo?
+        $validacion = Validator::make($post, [
+            'id_usuario' => 'required|int',
+            'id_persona' => 'required|int',
+        ]); 
+
+        if ($validacion->fails()) {
+            return response()->json(array("resultado"=>"error","descripcion"=>$validacion->errors()), 422); 
+        }
+
+        $persona = Persona::where('id_persona',$post['id_persona'])->first();
+
+        if(isset($persona)){
+            try{
+                $persona->deserta = true;
+                $persona->save();
+            }catch (\Exception $e){
+                DB::rollback();
+                return response()->json(['resultado'=>'error','descripcion'=>'Error al guardar. ()'. $e->getMessage()]);
+            }
+
+            DB::commit();
+            return response()->json(["resultado"=>"ok","descripcion"=>"Se ha guardado con exito"]);
         }
     }
 

@@ -16,6 +16,7 @@ Route::get('inscritos-dia' , 'Api\ecep\SedeController@inscritosDia');
 	Route::middleware('auth:api')->post('web/sede/guarda-liceo-cupo' , 'Api\ecep\SedeController@guardaLiceoCupo');		
 	Route::middleware('auth:api')->post('web/sede/lista-estimacion' , 'Api\ecep\SedeController@listaEstimacion');	
 	Route::middleware('auth:api')->post('web/sede/obtenerDataLiceo' , 'Api\ecep\SedeController@obtenerDataLiceo');
+	Route::post('web/sede/obtenerDatosSede' , 'Api\ecep\SedeController@obtenerDatosSede');
 	Route::middleware('auth:api')->post('web/sede/modificar' , 'Api\ecep\SedeController@modificar');
 	Route::middleware('auth:api')->post('web/sede/guardar' , 'Api\ecep\SedeController@guardar');
 //SALA
@@ -64,6 +65,7 @@ Route::get('inscritos-dia' , 'Api\ecep\SedeController@inscritosDia');
 	Route::middleware('auth:api')->post('web/capacitacion/evaluacion' ,'Api\ecep\CapacitacionController@evaluacion');
 	Route::middleware('auth:api')->post('web/capacitacion/deshabilitarCapacitacion' ,'Api\ecep\CapacitacionController@deshabilitarCapacitacion');
 	Route::middleware('auth:api')->post('web/capacitacion/desconvocar' ,'Api\ecep\CapacitacionController@desconvocar');
+	Route::middleware('auth:api')->post('web/capacitacion/desertar' ,'Api\ecep\CapacitacionController@desertar');
 	Route::post('web/capacitacion/obtenerPersonalConvocado' , 'Api\ecep\CapacitacionController@obtenerPersonalConvocado');
 	Route::post('web/capacitacion/notificarCapacitacionPorCorreo' , 'Api\ecep\CapacitacionController@notificarCapacitacionPorCorreo');
 	
@@ -72,17 +74,16 @@ Route::get('inscritos-dia' , 'Api\ecep\SedeController@inscritosDia');
 	Route::get('web/capacitacion/confirma/{idCapPersona}' ,'Api\ecep\CapacitacionController@infoConfirmacion');
 	Route::post('web/capacitacion/guarda-confirmacion' ,'Api\ecep\CapacitacionController@guardarConfirmacion');
 	Route::get('web/capacitacion/test-mailing' ,'Api\ecep\CapacitacionController@testCorreo');
+	Route::get('web/capacitacion/descarga-listado/' , 'Api\ecep\CapacitacionExcelController@descargaExcelCapacitacion');
 	
 //ASIGNACION
-/* 	Route::middleware('auth:api')->post('web/asignacion/lista' , 'Api\ecep\AsignacionController@lista');
-	Route::middleware('auth:api')->post('web/asignacion/listaCoordinador' , 'Api\ecep\AsignacionController@listaCoordinador');
-	Route::middleware('auth:api')->post('web/asignacion/guardar' , 'Api\ecep\AsignacionController@guardar'); */
-
-//ASIGNACION 2 (PROVISIONAL)
 	Route::middleware('auth:api')->post('web/asignacion/lista' , 'Api\ecep\AsignacionController@lista');
-	/* Route::middleware('auth:api')->post('web/asignacion/listaCoordinador' , 'Api\ecep\Asignacion2Controller@listaCoordinador'); */
+	Route::middleware('auth:api')->post('web/asignacion/listaCoordinador' , 'Api\ecep\AsignacionController@listaCoordinador');
 	Route::middleware('auth:api')->post('web/asignacion/guardar' , 'Api\ecep\AsignacionController@guardar');
-	 
+
+	Route::post('web/asignacion/obtenerCapacitados' , 'Api\ecep\AsignacionController@obtenerCapacitados');
+	Route::post('web/asignacion/asignarCargoSede' , 'Api\ecep\AsignacionController@asignarCargoSede');
+
 //MONITOREO RRHH 
 	Route::get('web/monitoreo/personal/lista' , 'Api\ecep\MonitoreoPersonalController@listaPersonal');
 	Route::get('web/monitoreo/personal-por-estado/lista' , 'Api\ecep\MonitoreoPersonalController@listaPersonalPorEstado');

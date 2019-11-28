@@ -150,8 +150,8 @@
                                         <th>NOMBRES</th>
                                         <th>APELLIDO PATERNO</th>
                                         <th>APELLIDO MATERNO</th>
-                                        <!-- <th>MAIL</th>  -->
-                                        <th>TELEFONO</th>             
+                                        <th>TELEFONO</th>  
+                                        <th>ID</th>            
                                         <th>CAPACITACION</th>   
                                         <th>ESTADO CAPACITACION</th>                                       
                                         <th>ACCIONES</th>         
@@ -239,10 +239,14 @@
                         <div class="tab-pane fade" id="tabCapacitados" role="tabpanel" aria-labelledby="tab-capacitados">
                             <div class="row pt-3 pb-3 _info">
                                 <div class="col-2 text-center">
-                                    <label class="_text-legend">Total</label>
+                                    <label class="_text-legend" id="label_total">Total Capacitados</label>
                                     <p class="_text-dato" id="total_capacitados"></label>
                                 </div>
-                                <div class="offset-sm-7 col-3 text-right">                                      
+                                <div class="col-2 text-center">
+                                    <label class="_text-legend">Total Registros</label>
+                                    <p class="_text-dato" id="total_registrosCapacitados"></label>
+                                </div>                                
+                                <div class="offset-sm-5 col-3 text-right">                                      
                                     <button class="btn btn-primary datatable-excel" role="button" id="descargar-lista-capacitados" type="button"><i class="fas fa-download"></i> Descargar Lista</button>       
                                 </div>       
                             </div>
@@ -262,7 +266,8 @@
                                         <th width="8%">RUN</th>    
                                         <th>NOMBRES</th>
                                         <th>APELLIDO PATERNO</th>
-                                        <th>APELLIDO MATERNO</th>           
+                                        <th>APELLIDO MATERNO</th>
+                                        <th>ID</th>               
                                         <th>LUGAR</th> 
                                         <th>FECHA</th> 
                                         <th>HORA</th> 
@@ -699,7 +704,7 @@
                                                     <th>APELLIDO PATERNO</th>
                                                     <th>APELLIDO MATERNO</th> 
                                                     <th>CONFIRMA ASISTENCIA</th>  
-                                                    <th>VECES REPROBADO</th>    
+                                                    <th>VECES RECHAZADO</th>    
                                                     <th>CONFIRMACIÓN MANUAL</th>     
                                                 </tr>
                                             </thead>
@@ -843,15 +848,16 @@
                                 </div>  
                                 <div class="form-group col-12">        
                                     <div class="pl-1">
-                                        <table class="stripe table table-hover _table-link dataTable no-footer" style="width:100%;">
+                                        <!-- <div class="row pb-4" id="evaluarPersonas-Table_filters">
+                                            <div class="row col-8 m-0" id="filtros-evaluarPersonas"></div>
+                                            <div class="col-4 text-right" id="clear-filtros-evaluarPersonas">
+                                                <button class="btn limpiar-filtros" role="button" id="limpiar-filtros-evaluarPersonas" type="button">Limpiar Filtros</button>
+                                            </div>
+                                        </div> -->
+                                        <table id="table-evaluarPersonas" class="stripe table table-hover _table-link dataTable no-footer" style="width:100%;">
                                             <thead class="text-center"> 
-                                                <!-- <tr> -->
-                                                    <!-- <td rowspan="2"></td> -->
-                                                    <!-- <td rowspan="2">ASISTENCIA</td> -->
-                                                    <!-- <td colspan="2">PRUEBA TECNICA</td> -->
-                                                    <!-- <td colspan="2">PRUEBA PSICOLOGICA</td> -->
-                                                <!-- </tr> -->
                                                 <tr> 
+                                                    <th>RUN</th>    
 													<td>NOMBRE</td>
 												    <td>ASISTENCIA</td>
                                                     <td>PUNTAJE PRUEBA TECNICA</td>

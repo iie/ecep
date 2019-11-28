@@ -31,36 +31,36 @@ class Authenticate
 		if(count($usuario)>0){
 			
 			//SEDE
-				$denegado['api/web/sede/lista'] = array(28, 1040);
-				$denegado['api/web/sede/lista-sedes-comuna'] = array(28, 1040);
-				$denegado['api/web/sede/guarda-liceo-cupo'] = array(28, 1040);
-				$denegado['api/web/sede/lista-estimacion'] = array(28, 1040);
-				$denegado['api/web/sede/obtenerDataLiceo'] = array(28, 1040);
-				$denegado['api/web/sede/modificar'] = array(28, 1040);
-				$denegado['api/web/sede/guardar'] = array(28, 1040);
+				$denegado['api/web/sede/lista'] = array(28, 1040, 1052);
+				$denegado['api/web/sede/lista-sedes-comuna'] = array(28, 1040, 1052);
+				$denegado['api/web/sede/guarda-liceo-cupo'] = array(28, 1040, 1052);
+				$denegado['api/web/sede/lista-estimacion'] = array(28, 1040, 1052);
+				$denegado['api/web/sede/obtenerDataLiceo'] = array(28, 1040, 1052);
+				$denegado['api/web/sede/modificar'] = array(28, 1040, 1052);
+				$denegado['api/web/sede/guardar'] = array(28, 1040, 1052);
 			
 			//SALA
-				$denegado['api/web/sala/lista'] = array(28, 1040);
-				$denegado['api/web/sala/guardar'] = array(28, 1040);
-				$denegado['api/web/sala/modificar'] = array(28, 1040);
+				$denegado['api/web/sala/lista'] = array(28, 1040, 1052);
+				$denegado['api/web/sala/guardar'] = array(28, 1040, 1052);
+				$denegado['api/web/sala/modificar'] = array(28, 1040, 1052);
 
 			//EVALUADO
-				$denegado['api/web/evaluado/lista'] = array(28, 1040, 1042);
+				$denegado['api/web/evaluado/lista'] = array(28, 1040, 1042, 1052);
 
 			//CENTRO OPERACIONES
-				$denegado['api/web/centro/lista'] = array(28, 1040, 1042);
-				$denegado['api/web/centro/guardar'] = array(28, 1040, 1042);
-				$denegado['api/web/centro/modificar'] = array(28, 1040, 1042);
-				$denegado['api/web/centro/zonas'] = array(28, 1040, 1042);
-				$denegado['api/web/centro/modificarZona'] = array(28, 1040, 1042);
-				$denegado['api/web/centro/zonasRegion'] = array(1040, 1042);
-				$denegado['api/web/centro/modificarZonaRegion'] = array( 1040, 1042);
-				$denegado['api/web/centro/centros'] = array(28, 1040, 1042);
-				$denegado['api/web/centro/modificarEncargadoCentro'] = array(28, 1040, 1042);
-				$denegado['api/web/centro/listaMonitoreo'] = array(28, 1040, 1042);
+				$denegado['api/web/centro/lista'] = array(28, 1040, 1042, 1052);
+				$denegado['api/web/centro/guardar'] = array(28, 1040, 1042, 1052);
+				$denegado['api/web/centro/modificar'] = array(28, 1040, 1042, 1052);
+				$denegado['api/web/centro/zonas'] = array(28, 1040, 1042, 1052);
+				$denegado['api/web/centro/modificarZona'] = array(28, 1040, 1042, 1052);
+				$denegado['api/web/centro/zonasRegion'] = array(1040, 1042, 1052);
+				$denegado['api/web/centro/modificarZonaRegion'] = array( 1040, 1042, 1052);
+				$denegado['api/web/centro/centros'] = array(28, 1040, 1042, 1052);
+				$denegado['api/web/centro/modificarEncargadoCentro'] = array(28, 1040, 1042, 1052);
+				$denegado['api/web/centro/listaMonitoreo'] = array(28, 1040, 1042, 1052);
 
 			//CAPACITACION
-				$denegado['api/web/capacitacion/lista'] = array( 1040, 1042);
+				$denegado['api/web/capacitacion/lista'] = array( 1040, 1042, 1052);
 				$denegado['api/web/capacitacion/obtenerPersonal'] = array(1040, 1042);
 				$denegado['api/web/capacitacion/listaRelator'] = array( 1040, 1042);
 				$denegado['api/web/capacitacion/guardar'] = array(1040, 1042);
@@ -68,33 +68,33 @@ class Authenticate
 				$denegado['api/web/capacitacion/modificarCapacitacion'] = array();
 				$denegado['api/web/capacitacion/asignarCapacitacion'] = array(1040, 1042);
 				$denegado['api/web/capacitacion/modificarPersona'] = array(1040, 1042);
-				$denegado['api/web/capacitacion/guardarPersona'] = array(1040, 1042);
+				$denegado['api/web/capacitacion/guardarPersona'] = array(1040, 1042, 1052);
 				$denegado['api/web/capacitacion/evaluacion'] = array(1040, 1042);
 				$denegado['api/web/capacitacion/lista-regional'] = array( 1040, 1042);
 				$denegado['api/web/capacitacion/deshabilitarCapacitacion'] = array( 1040, 1042);
 				$denegado['api/web/capacitacion/desconvocar'] = array( 1040, 1042);
-				
+				$denegado['api/web/capacitacion/desertar'] = array( 1040, 1042);
  
 			//RRHH
 				//solo obtienen datos
-				$denegado['api/web/personal/lista'] = array(1040, 1042);
-				$denegado['api/web/personal/listaCoordinadorZonal'] = array(1040, 1042);
-				$denegado['api/web/personal/listaCoordinador'] = array(1040, 1042);
-				$denegado['api/web/personal/documentos'] = array(1040, 1042);
-				$denegado['api/web/personal/obtenerPersona'] = array(1040, 1042);
-				$denegado['api/web/personal/listaPostulantes'] = array(1040, 1042);
+				$denegado['api/web/personal/lista'] = array(1040, 1042, 1052);
+				$denegado['api/web/personal/listaCoordinadorZonal'] = array(1040, 1042, 1052);
+				$denegado['api/web/personal/listaCoordinador'] = array(1040, 1042, 1052);
+				$denegado['api/web/personal/documentos'] = array(1040, 1042, 1052);
+				$denegado['api/web/personal/obtenerPersona'] = array(1040, 1042, 1052);
+				$denegado['api/web/personal/listaPostulantes'] = array(1040, 1042, 1052);
 				//cambian valores es BD
-				$denegado['api/web/personal/modificar'] = array(1040, 1042);
-				$denegado['api/web/personal/guardar'] = array(1040, 1042);
-				$denegado['api/web/personal/cambiarEstado'] = array(1040, 1042);
+				$denegado['api/web/personal/modificar'] = array(1040, 1042, 1052);
+				$denegado['api/web/personal/guardar'] = array(1040, 1042, 1052);
+				$denegado['api/web/personal/cambiarEstado'] = array(1040, 1042, 1052);
 
 			//ASIGNACION
 				//solo obtienen datos
-				$denegado['api/web/asignacion/lista'] = array(1040, 1042);
-				$denegado['api/web/asignacion/listaCoordinador'] = array(1040, 1042);
+				$denegado['api/web/asignacion/lista'] = array(1040, 1042, 1052);
+				$denegado['api/web/asignacion/listaCoordinador'] = array(1040, 1042, 1052);
 				
 				//cambian valores es BD
-				$denegado['api/web/asignacion/guardar'] = array(1040, 1042);
+				$denegado['api/web/asignacion/guardar'] = array(1040, 1042, 1052);
 	
 			
 			//validacion para cada tipo de usuario.
