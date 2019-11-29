@@ -2,7 +2,7 @@ $(document).ready(function(){
     $('#nombre_usuario').html(JSON.parse(localStorage.user).nombres+' '+JSON.parse(localStorage.user).apellidos+' ')
     if(JSON.parse(localStorage.user).id_tipo_usuario != 1042){
         $('#redirect').css('display','');
-        $('#redirect').on('click',redirectModulo);
+        $('#redirect').on('click',redirectAsignacion);
     }
     
     getDatosSede()
