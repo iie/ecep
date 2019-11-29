@@ -58,7 +58,9 @@ class Authenticate
 				$denegado['api/web/centro/centros'] = array(28, 1040, 1042, 1052);
 				$denegado['api/web/centro/modificarEncargadoCentro'] = array(28, 1040, 1042, 1052);
 				$denegado['api/web/centro/listaMonitoreo'] = array(28, 1040, 1042, 1052);
-
+				$denegado['api/web/centro/sedes'] = array(28, 1040, 1042, 1052);
+				$denegado['api/web/centro/modificarJefeSede'] = array(28, 1040, 1042, 1052);
+ 
 			//CAPACITACION
 				$denegado['api/web/capacitacion/lista'] = array( 1040, 1042, 1052);
 				$denegado['api/web/capacitacion/obtenerPersonal'] = array(1040, 1042);
@@ -90,8 +92,10 @@ class Authenticate
 
 			//ASIGNACION
 				//solo obtienen datos
+				$denegado['api/web/sede/lista-estimacion'] = array(1040, 1042, 1052);
 				$denegado['api/web/asignacion/lista'] = array(1040, 1042, 1052);
 				$denegado['api/web/asignacion/listaCoordinador'] = array(1040, 1042, 1052);
+				$denegado['api/web/asignacion/listaCoordinadorZonal'] = array(1040, 1042, 1052);
 				
 				//cambian valores es BD
 				$denegado['api/web/asignacion/guardar'] = array(1040, 1042, 1052);

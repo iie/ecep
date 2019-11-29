@@ -25,3 +25,4 @@ public/app_postulacion/js/utils.js
 public/web_ecep/vendor/utils.js
 public/web_ag/vendor/utils.js
 public/web_ecep/error_log
+/public/web_ecep/vendor/*
