@@ -4,6 +4,11 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Infraestructura\Sede;
 use App\Models\Infraestructura\Estimacion;
+use App\Models\Infraestructura\Zona;
+use App\Models\Infraestructura\ZonaRegion;
+use App\Models\RRHH\Persona;
+use App\Models\RRHH\PersonaAsignacion;
+use App\Models\RRHH\PersonaCargo;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -67,7 +72,7 @@ class SedeController extends Controller
     {
 		
 		$post = $request->all();	
- 
+
 		$validacion = Validator::make($post, [
 			'id_usuario' => 'int|required',
 			'id_estimacion' => 'int|required',
@@ -77,28 +82,62 @@ class SedeController extends Controller
 		if ($validacion->fails()) {
 			return response()->json(array("respuesta"=>"error","descripcion"=>$validacion->errors()), 422); 
 		}
- 
+
 		//$estimacion = Estimacion::where('id_sede',$post["id_sede"])->first();
 		$estimacion = Estimacion::find($post["id_estimacion"]);
+
 		if(isset($estimacion->id_estimacion)){
 
 			if($estimacion->id_sede == $post["id_sede"]){
-				return response()->json(["respuesta"=>"error","descripcion"=>"Esta sede sede ya fue asignada a este cupo"]);
+				return response()->json(["respuesta"=>"error","descripcion"=>"Esta sede ya fue asignada a este cupo"]);
 			} 
 			//$estimacion->id_estimacion = $post["id_estimacion"];
-			$estimacion->id_sede = $post["id_sede"];
+			$estimacion->id_sede = $post["id_sede"] == -1 ? null : $post["id_sede"];
 			DB::beginTransaction();
 			try{
 				$estimacion->save(); 
 			}catch (\Exception $e){
 				DB::rollback();
-				return response()->json(['resultado'=>'error','descripcion'=>'Error al guardar. ()'. $e->getMessage()]);
+				return response()->json(['respuesta'=>'error','descripcion'=>'Error al guardar. ()'. $e->getMessage()]);
 			}
 			DB::commit();
 			return response()->json(["respuesta"=>"ok","descripcion"=>"Se ha guardado con exito"]);
 			
 		}
 	}		
+
+	public function quitarLiceoCupo(Request $request)
+    {
+		
+		$post = $request->all();	
+
+		$validacion = Validator::make($post, [
+			'id_usuario' => 'int|required',
+			'id_estimacion' => 'int|required',
+		]);
+
+		if ($validacion->fails()) {
+			return response()->json(array("respuesta"=>"error","descripcion"=>$validacion->errors()), 422); 
+		}
+
+		//$estimacion = Estimacion::where('id_sede',$post["id_sede"])->first();
+		$estimacion = Estimacion::find($post["id_estimacion"]);
+
+		if(isset($estimacion->id_estimacion)){
+
+			$estimacion->id_sede = null;
+			DB::beginTransaction();
+			try{
+				$estimacion->save(); 
+			}catch (\Exception $e){
+				DB::rollback();
+				return response()->json(['respuesta'=>'error','descripcion'=>'Error al guardar. ()'. $e->getMessage()]);
+			}
+			DB::commit();
+			return response()->json(["respuesta"=>"ok","descripcion"=>"Se ha guardado con exito"]);
+			
+		}
+	}	
 
 	public function listaSedeComuna(Request $request)
 	{
@@ -190,7 +229,6 @@ class SedeController extends Controller
 
 	public function listaEstimacion(Request $request)
     {
-		
 		$post = $request->all();	
 
 		$validacion = Validator::make($post, [
@@ -202,17 +240,133 @@ class SedeController extends Controller
 			return response()->json(array("respuesta"=>"error","descripcion"=>$validacion->errors()), 422); 
 		}
 
-		$sede = DB::select('SELECT comuna.id_comuna,  estimacion.id_estimacion, estimacion.docentes, estimacion.dia , region.nombre as region, comuna.nombre as comuna, salas, docentes, sede.rbd, sede.nombre	, sede.direccion, estimacion.id_sede_ecep
-				FROM infraestructura.estimacion as estimacion left join infraestructura.sede on (estimacion.id_sede = sede.id_sede), core.comuna as comuna , core.region as region
-				where estimacion.id_comuna = comuna.id_comuna 
-				and comuna.id_region = region.id_region
-				and estimacion.dia = '.$post['dia'].'
-				order by  region, comuna');
+		$pers = Persona::where("id_usuario", $post["id_usuario"])->first();
+		$pers_cargo = PersonaCargo::where("id_persona", $pers->id_persona)->where("borrado", false)->get();
 
+		$cargos["zonal"] = false;
+		$cargos["regional"] = false;
+		$cargos["admin"] = false;
+		if(sizeof($pers_cargo) == 0){
+			$cargos["admin"] = true;
+		}else{
+			foreach ($pers_cargo as $_cargo) {
+				if($_cargo["id_cargo"] == 1003){
+					$cargos["zonal"] = true;
+					$id_persona_cargo = $_cargo["id_persona_cargo"];
+				}elseif($_cargo["id_cargo"] == 1004){
+					$id_persona_cargo = $_cargo["id_persona_cargo"];
+					$cargos["regional"] = true;
+				}else{
+					$cargos["admin"] = true;
+				}
+			}
+		}
+		
+		
+		if($cargos["admin"] == true){
+			$sede = DB::select('SELECT comuna.id_comuna,  
+								estimacion.id_estimacion, 
+								estimacion.docentes, 
+								estimacion.dia, 
+								region.nombre as region, 
+								comuna.nombre as comuna, 
+								salas, 
+								docentes, 
+								sede.rbd, 
+								sede.nombre, 
+								sede.direccion, 
+								estimacion.id_sede_ecep, 
+								estimacion.id_sede,
+								examinadores,
+								anfitriones,
+								supervisores,
+								examinador_apoyo
+								FROM infraestructura.estimacion as estimacion 
+								left join infraestructura.sede on (estimacion.id_sede = sede.id_sede), core.comuna as comuna , core.region as region
+								where estimacion.id_comuna = comuna.id_comuna 
+								and comuna.id_region = region.id_region
+								and estimacion.dia = '.$post['dia'].'
+								order by  region, comuna');
+		}elseif($cargos["zonal"] == true){
+			$zona = Zona::where("id_coordinador", $id_persona_cargo)->first();
+			$zona_region = ZonaRegion::where("id_zona", $zona->id_zona)->get();
+			$str_sql = "";
+			foreach ($zona_region as $z_regs) {
+				$str_sql .= " region.id_region = " . $z_regs["id_region"] . " OR";
+			}
+			$str_sql = substr($str_sql,0,-2);
+
+			$sede = DB::select('SELECT comuna.id_comuna,  
+								estimacion.id_estimacion, 
+								estimacion.docentes, 
+								estimacion.dia, 
+								region.nombre as region, 
+								comuna.nombre as comuna, 
+								salas, 
+								docentes, 
+								sede.rbd, 
+								sede.nombre, 
+								sede.direccion, 
+								estimacion.id_sede_ecep, 
+								estimacion.id_sede,
+								examinadores,
+								anfitriones,
+								supervisores,
+								examinador_apoyo
+								FROM infraestructura.estimacion as estimacion 
+								left join infraestructura.sede on (estimacion.id_sede = sede.id_sede), core.comuna as comuna , core.region as region
+								where estimacion.id_comuna = comuna.id_comuna 
+								and comuna.id_region = region.id_region 
+								AND (' . $str_sql . ')
+								and estimacion.dia = '.$post['dia'].'
+								order by  region, comuna');
+		}elseif($cargos["regional"] == true){
+			$zona_region = ZonaRegion::where("id_coordinador", $id_persona_cargo)->get();
+			$str_sql = "";
+			foreach ($zona_region as $z_regs) {
+				$str_sql .= " region.id_region = " . $z_regs["id_region"] . " OR";
+			}
+			$str_sql = substr($str_sql,0,-2);
+
+			$sede = DB::select('SELECT comuna.id_comuna,  
+								estimacion.id_estimacion, 
+								estimacion.docentes, 
+								estimacion.dia, 
+								region.nombre as region, 
+								comuna.nombre as comuna, 
+								salas, 
+								docentes, 
+								sede.rbd, 
+								sede.nombre, 
+								sede.direccion, 
+								estimacion.id_sede_ecep, 
+								estimacion.id_sede,
+								examinadores,
+								anfitriones,
+								supervisores,
+								examinador_apoyo
+								FROM infraestructura.estimacion as estimacion 
+								left join infraestructura.sede on (estimacion.id_sede = sede.id_sede), core.comuna as comuna , core.region as region
+								where estimacion.id_comuna = comuna.id_comuna 
+								and comuna.id_region = region.id_region 
+								AND (' . $str_sql . ')
+								and estimacion.dia = '.$post['dia'].'
+								order by  region, comuna');
+		}
+
+		foreach ($sede as $value) {
+			$count_examinadores = PersonaAsignacion::where("id_estimacion", $value->id_estimacion)->where("id_cargo", 8)->count();
+			$count_supervisores = PersonaAsignacion::where("id_estimacion", $value->id_estimacion)->where("id_cargo", 9)->count();
+			$count_anfitriones = PersonaAsignacion::where("id_estimacion", $value->id_estimacion)->where("id_cargo", 1006)->count();
+			$count_ex_apoyo = PersonaAsignacion::where("id_estimacion", $value->id_estimacion)->where("id_cargo", 1007)->count();
+			$value->examinadores_asignados = $count_examinadores;
+			$value->supervisores_asignados = $count_supervisores;
+			$value->anfitriones_asignados = $count_anfitriones;
+			$value->ex_apoyo_asignados = $count_ex_apoyo;
+		}
 		
 		return response()->json($sede);	
 	}		
-	
 	
     public function obtenerDataLiceo(Request $request){
 		$post = $request->all();		
@@ -255,6 +409,69 @@ class SedeController extends Controller
 			return response()->json(array("respuesta"=>"error","descripcion"=>"No se encontraron datos para el RBD ingresado"));
 		}
 		return response()->json($arr);
+	}
+
+	public function obtenerDatosSede(Request $request){
+		$post = $request->all();		
+
+		$validator = Validator::make($request->all(), [
+            'id_usuario' => 'required|int',
+            'id_sede' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(array("respuesta"=>"error","descripcion"=>$validator->errors()), 422);
+        }
+
+		$sede = Sede::find($post["id_sede"]);
+		$est = Estimacion::where('id_sede', $sede->id_sede)->first();
+		if($est->id_jefe_sede != null){
+			$pers_cargo = PersonaCargo::find($est->id_jefe_sede);
+			$pers = Persona::find($pers_cargo->id_persona);
+			if(isset($pers)){
+				$nombre_jefe = $pers->nombres . " " . $pers->apellido_paterno;
+			}else{
+				
+			}
+		}else{
+			$nombre_jefe = null;
+		}
+		
+		$sede["examinadores_requeridos"] = isset($est->examinadores) ? $est->examinadores : null;
+		$sede["anfitriones_requeridos"] = isset($est->anfitriones) ? $est->anfitriones : null;
+		$sede["examinadores_apoyo_requeridos"] = isset($est->examinador_apoyo) ? $est->examinador_apoyo : null;
+		$sede["supervisores_requeridos"] = isset($est->supervisores) ? $est->supervisores : null;
+
+		$sql = DB::select("SELECT 
+							rrhh.persona_asignacion.id_cargo,
+							Count(rrhh.persona.id_persona)
+							FROM
+							rrhh.persona
+							INNER JOIN rrhh.persona_asignacion ON (rrhh.persona_asignacion.id_persona = rrhh.persona.id_persona)
+							INNER JOIN infraestructura.estimacion ON (infraestructura.estimacion.id_estimacion = rrhh.persona_asignacion.id_estimacion)
+							WHERE
+							rrhh.persona_asignacion.id_estimacion = " . $est->id_estimacion . "
+							GROUP BY rrhh.persona_asignacion.id_cargo");
+		$sede["examinadores_asignados"] = 0;
+		$sede["anfitriones_asignados"] = 0;
+		$sede["examinadores_apoyo_asignados"] = 0;
+		$sede["supervisores_asignados"] = 0;
+		$sede["jefe_sede"] = $nombre_jefe;
+		foreach ($sql as $value) {
+			if($value->id_cargo == 8){
+				$sede["examinadores_asignados"] = $value->count;
+			}
+			if($value->id_cargo == 9){
+				$sede["supervisores_asignados"] = $value->count;
+			}
+			if($value->id_cargo == 1006){
+				$sede["anfitriones_asignados"] = $value->count;
+			}
+			if($value->id_cargo == 1007){
+				$sede["examinadores_apoyo_asignados"] = $value->count;
+			}
+		}
+		return response()->json($sede);
 	}
 
     public function guardar(Request $request){

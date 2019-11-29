@@ -78,11 +78,13 @@ Route::get('inscritos-dia' , 'Api\ecep\SedeController@inscritosDia');
 	
 //ASIGNACION
 	Route::middleware('auth:api')->post('web/asignacion/lista' , 'Api\ecep\AsignacionController@lista');
+	Route::middleware('auth:api')->post('web/asignacion/listaCoordinadorZonal' , 'Api\ecep\AsignacionController@listaCoordinadorZonal');
 	Route::middleware('auth:api')->post('web/asignacion/listaCoordinador' , 'Api\ecep\AsignacionController@listaCoordinador');
 	Route::middleware('auth:api')->post('web/asignacion/guardar' , 'Api\ecep\AsignacionController@guardar');
 
 	Route::post('web/asignacion/obtenerCapacitados' , 'Api\ecep\AsignacionController@obtenerCapacitados');
 	Route::post('web/asignacion/asignarCargoSede' , 'Api\ecep\AsignacionController@asignarCargoSede');
+	Route::post('web/asignacion/desasignar' , 'Api\ecep\AsignacionController@desasignar');
 
 //MONITOREO RRHH 
 	Route::get('web/monitoreo/personal/lista' , 'Api\ecep\MonitoreoPersonalController@listaPersonal');
