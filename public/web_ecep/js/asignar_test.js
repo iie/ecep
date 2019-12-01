@@ -7,15 +7,7 @@ $(document).ready(function(){
     
     getDatosSede()
     $('#guardar_sede').click(validarCantidad); 
-    //$('#guardar_asignacion').click(guardarAsignacion);
-
-   /* $('#tab-supervisor').click(loadPostulantes); 
-    $('#tab-examinador').click(loadPostulantes);
-    $('#tab-ExaminadorAP').click(loadPostulantes);
-    $('#tab-anfitrion').click(loadPostulantes);*/
-     
-    
-    
+    loadPostulantes();
 });
 
 var region = '';
@@ -38,7 +30,13 @@ function getDatosSede(){
         data = JSON.parse(data)
         localStorage.setItem("id_comuna", data.id_comuna);
         console.log(data)
+        if(data.jefe_sede != null){
+            $('#nombre_jefe_sede').html(data.jefe_sede)
+        }
         $('#nombre_lab').html(data.nombre)
+        $('#rbd_sede').html(data.rbd)
+        $('#region_sede').html(data.region)
+        $('#comuna_sede').html(data.comuna)
         sup_req=data.supervisores_requeridos==null?0:data.supervisores_requeridos
         exa_req=data.examinadores_requeridos==null?0:data.examinadores_requeridos
         exap_req=data.examinadores_apoyo_requeridos==null?0:data.examinadores_apoyo_requeridos
@@ -64,20 +62,12 @@ function getDatosSede(){
 
 }
 
-
-
-
-
-
-
 function llenarVista(data){
-
     data = JSON.parse(data)
-    
     array1=[]
     for(h = 0; h < data.length; h++){
     	
-		if(data[h].nombre_rol == localStorage.getItem("nom_cargo")){
+		if(data[h].nombre_rol == "Supervisor"){
 			
         	if (data[h].id_estimacion == localStorage.getItem("id_estimacion")) {
         		array1.push(data[h])	
@@ -86,12 +76,11 @@ function llenarVista(data){
     }
    
     $('#filtros-dia1').empty();
-    //if(array1.length != 0){
-        if($.fn.dataTable.isDataTable('#table-supervisor')){
-            $('#table-supervisor').DataTable().destroy();
-            $('#lista_supervisor').empty();
-        }
-    //}
+
+    if($.fn.dataTable.isDataTable('#table-supervisor')){
+        $('#table-supervisor').DataTable().destroy();
+        $('#lista_supervisor').empty();
+    }
 
     var tablaD = $("#table-supervisor").DataTable({
         dom: "<'search'f>",
@@ -111,9 +100,6 @@ function llenarVista(data){
         language:spanishTranslation,
         lengthChange: true,
         info: false,
-        /*columnDefs: [
-            { targets: [0,1,2,3,5,6,7], searchable: false }
-        ],*/
         paging: false,
         displayLength: -1,
         ordering: true, 
@@ -145,75 +131,28 @@ function llenarVista(data){
             },
             {data: "asignar",
                 render: function(data, type, row){
-                    //console.log(row.id_persona_asignacion);
-                    return  '<button type="button" id="quitar_'+row.id_persona+'" onclick="quitarAsignacion('+row.id_persona_asignacion+')" class="btn btn-primary btn-sm _btn-item"><i class="fas fa-minus"></i></button>'
-                            //'<button type="button" id="ver_'+row.id_sede+'" onclick="redireccionarSede('+row.id_sede+')" class="btn btn-primary btn-sm _btn-item"><i class="fas fa-search"></i></button>'        
+                    return  '<button type="button" id="quitar_'+row.id_persona+'" onclick="quitarAsignacion('+row.id_persona_asignacion+')" class="btn btn-primary btn-sm _btn-item"><i class="fas fa-minus"></i></button>'     
                 },
                 className: "text-center"
             } 
         ],
         "rowCallback": function( row, data ) {
-
         
         },
-        "initComplete": function(settings, json) {
-           /* var placeholder = ["","","Región","Comuna"]
-            this.api().columns([2,3]).every( function (index) {
-                var column = this;
-                var select = $('<select class="form-control col-sm-2 small _filtros"  id="selectD1'+index+'" >'+
-                    '<option value="" selected="selected">'+placeholder[index]+'</option></select>')
-                    .appendTo( $('#filtros-dia1'))
-                    .on( 'change', function () {
-                        var val = $.fn.dataTable.util.escapeRegex(
-                            $(this).val()
-                        );
- 
-                        column
-                            .search( val ? '^'+val+'$' : '', true, false )
-                            .draw();
-                    } );
-                column.data().unique().each( function ( d, j ) {
-
-                    $('#selectD1'+index).append( '<option value="'+d+'">'+d+'</option>' )
-                    
-                } );
-                 $('#selectD1'+index).niceSelect();        
-            })   
-
-            $('.dataTables_length select').addClass('nice-select small'); */        
+        "initComplete": function(settings, json) {     
         },
         "drawCallback": function(){
-            /*var placeholder = ["","","Región","Comuna"]
-            this.api().columns([2,3]).every( function (index) {
-                var columnFiltered = this;
-                var selectFiltered = $("#selectD1"+index)
-                if(selectFiltered.val()===''){
-                    selectFiltered.empty()
-                    selectFiltered.append('<option value="">'+placeholder[index]+'</option>')
-                    columnFiltered.column(index,{search:'applied'}).data().unique().each( function ( d, j ) {
-
-                        selectFiltered.append( '<option value="'+d+'">'+d+'</option>' )
-                        
-
-                    } );
-                }
-                $('select').niceSelect('update');
-            })*/
         }
     });
-
-    
     $("#table-supervisor").show(); 
-
 }
 function llenarVista2(data){
 
     data = JSON.parse(data)
     
-    
     array1=[]
     for(h = 0; h < data.length; h++){
-		if(data[h].nombre_rol == localStorage.getItem("nom_cargo")){
+		if(/*data[h].nombre_rol == localStorage.getItem("nom_cargo") || */data[h].nombre_rol == "Examinador"){
         	if (data[h].id_estimacion == localStorage.getItem("id_estimacion")) {
         		array1.push(data[h])	
         	}
@@ -291,49 +230,9 @@ function llenarVista2(data){
 
         
         },
-        "initComplete": function(settings, json) {
-           /* var placeholder = ["","","Región","Comuna"]
-            this.api().columns([2,3]).every( function (index) {
-                var column = this;
-                var select = $('<select class="form-control col-sm-2 small _filtros"  id="selectD1'+index+'" >'+
-                    '<option value="" selected="selected">'+placeholder[index]+'</option></select>')
-                    .appendTo( $('#filtros-dia1'))
-                    .on( 'change', function () {
-                        var val = $.fn.dataTable.util.escapeRegex(
-                            $(this).val()
-                        );
- 
-                        column
-                            .search( val ? '^'+val+'$' : '', true, false )
-                            .draw();
-                    } );
-                column.data().unique().each( function ( d, j ) {
-
-                    $('#selectD1'+index).append( '<option value="'+d+'">'+d+'</option>' )
-                    
-                } );
-                 $('#selectD1'+index).niceSelect();        
-            })   
-
-            $('.dataTables_length select').addClass('nice-select small'); */        
+        "initComplete": function(settings, json) {   
         },
         "drawCallback": function(){
-            /*var placeholder = ["","","Región","Comuna"]
-            this.api().columns([2,3]).every( function (index) {
-                var columnFiltered = this;
-                var selectFiltered = $("#selectD1"+index)
-                if(selectFiltered.val()===''){
-                    selectFiltered.empty()
-                    selectFiltered.append('<option value="">'+placeholder[index]+'</option>')
-                    columnFiltered.column(index,{search:'applied'}).data().unique().each( function ( d, j ) {
-
-                        selectFiltered.append( '<option value="'+d+'">'+d+'</option>' )
-                        
-
-                    } );
-                }
-                $('select').niceSelect('update');
-            })*/
         }
     });
 
@@ -347,7 +246,7 @@ function llenarVista3(data){
     
    array1=[]
     for(h = 0; h < data.length; h++){
-		if(data[h].nombre_rol == localStorage.getItem("nom_cargo")){
+		if(data[h].nombre_rol == "Examinador de Apoyo"){
         	if (data[h].id_estimacion == localStorage.getItem("id_estimacion")) {
         		array1.push(data[h])	
         	}
@@ -355,12 +254,11 @@ function llenarVista3(data){
     }
     
     $('#filtros-dia1').empty();
-    //if(array1.length != 0){
-        if($.fn.dataTable.isDataTable('#table-examap')){
-            $('#table-examap').DataTable().destroy();
-            $('#lista_examap').empty();
-        }
-    //}
+
+    if($.fn.dataTable.isDataTable('#table-examap')){
+        $('#table-examap').DataTable().destroy();
+        $('#lista_examap').empty();
+    }
 
     var tablaD = $("#table-examap").DataTable({
         dom: "<'search'f>",
@@ -380,9 +278,6 @@ function llenarVista3(data){
         language:spanishTranslation,
         lengthChange: true,
         info: false,
-        /*columnDefs: [
-            { targets: [0,1,2,3,5,6,7], searchable: false }
-        ],*/
         paging: false,
         displayLength: -1,
         ordering: true, 
@@ -415,8 +310,7 @@ function llenarVista3(data){
             {data: "asignar",
                 render: function(data, type, row){
                     
-                    return  '<button type="button" id="quitar_'+row.id_persona+'" onclick="quitarAsignacion('+row.id_persona_asignacion+')" class="btn btn-primary btn-sm _btn-item"><i class="fas fa-minus"></i></button>'
-                            //'<button type="button" id="ver_'+row.id_sede+'" onclick="redireccionarSede('+row.id_sede+')" class="btn btn-primary btn-sm _btn-item"><i class="fas fa-search"></i></button>'        
+                    return  '<button type="button" id="quitar_'+row.id_persona+'" onclick="quitarAsignacion('+row.id_persona_asignacion+')" class="btn btn-primary btn-sm _btn-item"><i class="fas fa-minus"></i></button>'      
                 },
                 className: "text-center"
             } 
@@ -426,48 +320,8 @@ function llenarVista3(data){
         
         },
         "initComplete": function(settings, json) {
-           /* var placeholder = ["","","Región","Comuna"]
-            this.api().columns([2,3]).every( function (index) {
-                var column = this;
-                var select = $('<select class="form-control col-sm-2 small _filtros"  id="selectD1'+index+'" >'+
-                    '<option value="" selected="selected">'+placeholder[index]+'</option></select>')
-                    .appendTo( $('#filtros-dia1'))
-                    .on( 'change', function () {
-                        var val = $.fn.dataTable.util.escapeRegex(
-                            $(this).val()
-                        );
- 
-                        column
-                            .search( val ? '^'+val+'$' : '', true, false )
-                            .draw();
-                    } );
-                column.data().unique().each( function ( d, j ) {
-
-                    $('#selectD1'+index).append( '<option value="'+d+'">'+d+'</option>' )
-                    
-                } );
-                 $('#selectD1'+index).niceSelect();        
-            })   
-
-            $('.dataTables_length select').addClass('nice-select small'); */        
         },
         "drawCallback": function(){
-            /*var placeholder = ["","","Región","Comuna"]
-            this.api().columns([2,3]).every( function (index) {
-                var columnFiltered = this;
-                var selectFiltered = $("#selectD1"+index)
-                if(selectFiltered.val()===''){
-                    selectFiltered.empty()
-                    selectFiltered.append('<option value="">'+placeholder[index]+'</option>')
-                    columnFiltered.column(index,{search:'applied'}).data().unique().each( function ( d, j ) {
-
-                        selectFiltered.append( '<option value="'+d+'">'+d+'</option>' )
-                        
-
-                    } );
-                }
-                $('select').niceSelect('update');
-            })*/
         }
     });
 
@@ -481,7 +335,7 @@ function llenarVista4(data){
     
    	array1=[]
     for(h = 0; h < data.length; h++){
-		if(data[h].nombre_rol == localStorage.getItem("nom_cargo")){
+		if(data[h].nombre_rol == "Anfitrión"){
         	if (data[h].id_estimacion == localStorage.getItem("id_estimacion")) {
         		array1.push(data[h])	
         	}
@@ -489,12 +343,10 @@ function llenarVista4(data){
     }
     
     $('#filtros-dia1').empty();
-    //if(array1.length != 0){
-        if($.fn.dataTable.isDataTable('#table-anfitrion')){
-            $('#table-anfitrion').DataTable().destroy();
-            $('#lista_anfitrion').empty();
-        }
-    //}
+    if($.fn.dataTable.isDataTable('#table-anfitrion')){
+        $('#table-anfitrion').DataTable().destroy();
+        $('#lista_anfitrion').empty();
+    }
 
     var tablaD = $("#table-anfitrion").DataTable({
         dom: "<'search'f>",
@@ -514,9 +366,6 @@ function llenarVista4(data){
         language:spanishTranslation,
         lengthChange: true,
         info: false,
-        /*columnDefs: [
-            { targets: [0,1,2,3,5,6,7], searchable: false }
-        ],*/
         paging: false,
         displayLength: -1,
         ordering: true, 
@@ -549,8 +398,7 @@ function llenarVista4(data){
             {data: "asignar",
                 render: function(data, type, row){
                     
-                    return  '<button type="button" id="quitar_'+row.id_persona+'" onclick="quitarAsignacion('+row.id_persona_asignacion+')" class="btn btn-primary btn-sm _btn-item"><i class="fas fa-minus"></i></button>'
-                            //'<button type="button" id="ver_'+row.id_sede+'" onclick="redireccionarSede('+row.id_sede+')" class="btn btn-primary btn-sm _btn-item"><i class="fas fa-search"></i></button>'        
+                    return  '<button type="button" id="quitar_'+row.id_persona+'" onclick="quitarAsignacion('+row.id_persona_asignacion+')" class="btn btn-primary btn-sm _btn-item"><i class="fas fa-minus"></i></button>'    
                 },
                 className: "text-center"
             } 
@@ -560,48 +408,8 @@ function llenarVista4(data){
         
         },
         "initComplete": function(settings, json) {
-           /* var placeholder = ["","","Región","Comuna"]
-            this.api().columns([2,3]).every( function (index) {
-                var column = this;
-                var select = $('<select class="form-control col-sm-2 small _filtros"  id="selectD1'+index+'" >'+
-                    '<option value="" selected="selected">'+placeholder[index]+'</option></select>')
-                    .appendTo( $('#filtros-dia1'))
-                    .on( 'change', function () {
-                        var val = $.fn.dataTable.util.escapeRegex(
-                            $(this).val()
-                        );
- 
-                        column
-                            .search( val ? '^'+val+'$' : '', true, false )
-                            .draw();
-                    } );
-                column.data().unique().each( function ( d, j ) {
-
-                    $('#selectD1'+index).append( '<option value="'+d+'">'+d+'</option>' )
-                    
-                } );
-                 $('#selectD1'+index).niceSelect();        
-            })   
-
-            $('.dataTables_length select').addClass('nice-select small'); */        
         },
         "drawCallback": function(){
-            /*var placeholder = ["","","Región","Comuna"]
-            this.api().columns([2,3]).every( function (index) {
-                var columnFiltered = this;
-                var selectFiltered = $("#selectD1"+index)
-                if(selectFiltered.val()===''){
-                    selectFiltered.empty()
-                    selectFiltered.append('<option value="">'+placeholder[index]+'</option>')
-                    columnFiltered.column(index,{search:'applied'}).data().unique().each( function ( d, j ) {
-
-                        selectFiltered.append( '<option value="'+d+'">'+d+'</option>' )
-                        
-
-                    } );
-                }
-                $('select').niceSelect('update');
-            })*/
         }
     });
 
@@ -613,12 +421,10 @@ function llenarVistaPostulantes(data){
     data = JSON.parse(data)
 
     $('#filtros-dia1').empty();
-    //if(data.length != 0){
-        if($.fn.dataTable.isDataTable('#table-dia1')){
-            $('#table-dia1').DataTable().destroy();
-            $('#lista_dia1').empty();
-        }
-    //}
+    if($.fn.dataTable.isDataTable('#table-dia1')){
+        $('#table-dia1').DataTable().destroy();
+        $('#lista_dia1').empty();
+    }
 
     var tablaD = $("#table-dia1").DataTable({
         dom: "<'search'f>",
@@ -638,9 +444,6 @@ function llenarVistaPostulantes(data){
         language:spanishTranslation,
         lengthChange: true,
         info: false,
-        /*columnDefs: [
-            { targets: [0,1,2,3,5,6,7], searchable: false }
-        ],*/
         paging: false,
         displayLength: -1,
         ordering: true, 
@@ -663,7 +466,6 @@ function llenarVistaPostulantes(data){
             {data: "opciones",
                 render: function(data, type, row){
                     return  '<button type="button" id="modificar_'+row.id_sede+'" class="btn btn-primary btn-sm _btn-item mr-1"><i class="fa fa-pencil-alt"></i></button>'
-                            //'<button type="button" id="ver_'+row.id_sede+'" onclick="redireccionarSede('+row.id_sede+')" class="btn btn-primary btn-sm _btn-item"><i class="fas fa-search"></i></button>'        
                 },
                 className: "text-center"
             } 
@@ -740,7 +542,6 @@ function asignarDesplegar(){
     limpiarNueva()
    
     loadPostulantes()
-    //$('#divInputCupo').css('display','none')
     $('#nuevaSedeModal').modal({backdrop: 'static', keyboard: false},'show')
 }
 
@@ -764,11 +565,9 @@ function btnClearFilters(){
     
     $('#selectD12').val("").niceSelect('update');
     $('#selectD13').val("").niceSelect('update');
-   // $('#selectD13').val("").niceSelect('update');
 
     $('#selectD22').val("").niceSelect('update');
     $('#selectD23').val("").niceSelect('update');
-    //$('#selectD23').val("").niceSelect('update');
 
     var table = $('#table-sede').DataTable();
         table
@@ -803,17 +602,11 @@ function reloadPostulantes() {
             id_comuna: localStorage.getItem("id_comuna")
         },
         success: function(data, textStatus, jqXHR) {
-           // $('#guardar_sede').prop('disabled',false)
-            
-            
-            
-            
             if ($(".active").attr('id')=='tab-supervisor') {
                 $('#titulo_modal').html('Asignar Supervisor');
                 localStorage.setItem("nom_cargo", "Supervisor");
                 localStorage.setItem("id_cargo", "9");
                 llenarVista(data)
-                
             }else if ($(".active").attr('id')=='tab-examinador') {
                 $('#titulo_modal').html('Asignar Examinador');
                 localStorage.setItem("nom_cargo", "Examinador");
@@ -829,16 +622,11 @@ function reloadPostulantes() {
                 localStorage.setItem("nom_cargo", "Anfitrión");
                 localStorage.setItem("id_cargo", "1006");
                 llenarVista4(data)
-            }else {
-                
             }
-            
-            
         },
         error: function(jqXHR, textStatus, errorThrown) {
             showFeedback("error","Error en el servidor","Datos incorrectos");
             console.log("error del servidor, datos incorrectos");
- 
         }
     })
 }
@@ -858,31 +646,30 @@ function loadPostulantes() {
             id_comuna: localStorage.getItem("id_comuna")
         },
         success: function(data, textStatus, jqXHR) {
-           // $('#guardar_sede').prop('disabled',false)
-
+           llenarVista(data)
+           llenarVista2(data)
+           llenarVista3(data)
+           llenarVista4(data)
             if ($(".active").attr('id')=='tab-supervisor') {
             	$('#titulo_modal').html('Asignar Supervisor');
                 localStorage.setItem("nom_cargo", "Supervisor");
                 localStorage.setItem("id_cargo", "9");
-                llenarVista(data)
-                
+                // llenarVista(data)
             }else if ($(".active").attr('id')=='tab-examinador') {
             	$('#titulo_modal').html('Asignar Examinador');
                 localStorage.setItem("nom_cargo", "Examinador");
                 localStorage.setItem("id_cargo", "8");
-                llenarVista2(data)
+                // llenarVista2(data)
             }else if ($(".active").attr('id')=='tab-ExaminadorAP') {
             	$('#titulo_modal').html('Asignar Examinador Apoyo');
                localStorage.setItem("nom_cargo", "Examinador de Apoyo");
                localStorage.setItem("id_cargo", "1007");
-               llenarVista3(data)
+               // llenarVista3(data)
             }else if ($(".active").attr('id')=='tab-anfitrion') {
             	$('#titulo_modal').html('Asignar Anfitrión');
                 localStorage.setItem("nom_cargo", "Anfitrión");
                 localStorage.setItem("id_cargo", "1006");
-                llenarVista4(data)
-            }else {
-                
+                // llenarVista4(data)
             }
             
             llenarTablaAsignacion(data)
@@ -890,31 +677,25 @@ function loadPostulantes() {
         error: function(jqXHR, textStatus, errorThrown) {
             showFeedback("error","Error en el servidor","Datos incorrectos");
             console.log("error del servidor, datos incorrectos");
- 
         }
     })
 }
 
 function llenarTablaAsignacion(data){
-        
-    
     data = JSON.parse(data)
     array1=[]
     for(h = 0; h < data.length; h++){
 
         if(data[h].id_persona_asignacion == null){
             array1.push(data[h])
-           
         }
     }
     console.log(array1)
     $('#filtros-dia1').empty();
-    //if(array1.length != 0){
-        if($.fn.dataTable.isDataTable('#table-postulados')){
-            $('#table-postulados').DataTable().destroy();
-            $('#lista_postulados').empty();
-        }
-    //}
+    if($.fn.dataTable.isDataTable('#table-postulados')){
+        $('#table-postulados').DataTable().destroy();
+        $('#lista_postulados').empty();
+    }
 
     var tablaD = $("#table-postulados").DataTable({
         dom: "<'search'f>",
@@ -934,9 +715,6 @@ function llenarTablaAsignacion(data){
         language:spanishTranslation,
         lengthChange: true,
         info: false,
-        /*columnDefs: [
-            { targets: [0,1,2,3,5,6,7], searchable: false }
-        ],*/
         paging: false,
         displayLength: -1,
         ordering: true, 
@@ -968,9 +746,7 @@ function llenarTablaAsignacion(data){
             },
             {data: "asignar",
                 render: function(data, type, row){
-                    
-                    return  '<input id="modificar_'+row.id_persona+'" name="'+row.nombres+'" value="'+row.id_persona+'"  type="checkbox">'
-                            //'<button type="button" id="ver_'+row.id_sede+'" onclick="redireccionarSede('+row.id_sede+')" class="btn btn-primary btn-sm _btn-item"><i class="fas fa-search"></i></button>'        
+                    return  '<input id="modificar_'+row.id_persona+'" name="'+row.nombres+'" value="'+row.id_persona+'"  type="checkbox">'     
                 },
                 className: "text-center"
             } 
@@ -980,60 +756,17 @@ function llenarTablaAsignacion(data){
         
         },
         "initComplete": function(settings, json) {
-           /* var placeholder = ["","","Región","Comuna"]
-            this.api().columns([2,3]).every( function (index) {
-                var column = this;
-                var select = $('<select class="form-control col-sm-2 small _filtros"  id="selectD1'+index+'" >'+
-                    '<option value="" selected="selected">'+placeholder[index]+'</option></select>')
-                    .appendTo( $('#filtros-dia1'))
-                    .on( 'change', function () {
-                        var val = $.fn.dataTable.util.escapeRegex(
-                            $(this).val()
-                        );
- 
-                        column
-                            .search( val ? '^'+val+'$' : '', true, false )
-                            .draw();
-                    } );
-                column.data().unique().each( function ( d, j ) {
-
-                    $('#selectD1'+index).append( '<option value="'+d+'">'+d+'</option>' )
-                    
-                } );
-                 $('#selectD1'+index).niceSelect();        
-            })   
-
-            $('.dataTables_length select').addClass('nice-select small'); */        
         },
         "drawCallback": function(){
-            /*var placeholder = ["","","Región","Comuna"]
-            this.api().columns([2,3]).every( function (index) {
-                var columnFiltered = this;
-                var selectFiltered = $("#selectD1"+index)
-                if(selectFiltered.val()===''){
-                    selectFiltered.empty()
-                    selectFiltered.append('<option value="">'+placeholder[index]+'</option>')
-                    columnFiltered.column(index,{search:'applied'}).data().unique().each( function ( d, j ) {
-
-                        selectFiltered.append( '<option value="'+d+'">'+d+'</option>' )
-                        
-
-                    } );
-                }
-                $('select').niceSelect('update');
-            })*/
         }
     });
 
-    
     $("#table-postulados").show(); 
- 
 }
 
 function llenarTablaAsignacion1(data){
-
- 
 }
+
 function quitarAsignacion(data){
 	$.ajax({
             method:'POST',
@@ -1044,18 +777,14 @@ function quitarAsignacion(data){
             crossDomain: true,
             dataType:'text',
             data :{ 
-
                     id_usuario: JSON.parse(localStorage.user).id_usuario,
-                    
                     id_persona_asignacion: data,
-                    
                 },
             success: function(data, textStatus, jqXHR) {
                 console.log(data)
                 data = JSON.parse(data)
                 if (data.resultado == "ok") {
                     showFeedback("success", data.descripcion, "OK");
-                    
                     getDatosSede()
                 } else {
                     showFeedback("error","Error al eliminar","Error");
@@ -1065,7 +794,6 @@ function quitarAsignacion(data){
             error: function(jqXHR, textStatus, errorThrown) {
                 showFeedback("error","Error en el servidor","Datos incorrectos");
                 console.log("error del servidor, datos incorrectos");
-     
             }
         })
 }
@@ -1117,9 +845,7 @@ function searchRBD() {
     });
 }
 
-
 function completarDatos(datos) {
-
     disabledData()
 
     $("#inputNombreEstablecimiento").val(datos.nombre);
@@ -1127,51 +853,94 @@ function completarDatos(datos) {
     cargarComunas(datos.id_region)
     $("#inputComuna").val(datos.id_comuna);
    
-    
-    //$('#guardar_sede').prop('disabled',false)
     $.unblockUI();
 }
 
-/*function estadoSede(){
-    if($(this).val() == 2){
-        $('#inputCupo').prop('disabled',false)
-    }else{
-        $('#inputCupo').val(-1)
-        $('#inputCupo').prop('disabled',true)
-    }
-}*/
 function validarCantidad(){
-       array =[]
-      $("input[type=checkbox]:checked").each(function(){
-        //cada elemento seleccionado
-        
-        array.push({id_persona:$(this).val()})
-        });
-        var cantidad_requeridos=parseInt($('#total_reqSupervisor').text());
-        var cantidad_asignados=parseInt($('#total_cantSupervisor').text());
-        
-        var cupo=cantidad_requeridos-cantidad_asignados
-        console.log(cupo)
-        /*$('#total_reqExaminador').html(data.examinadores_requeridos)
-        $('#total_reqExaAP').html(data.examinadores_apoyo_requeridos)
-        $('#total_reqAnfitrion').html(data.anfitriones_requeridos)*/
+    array =[]
+    $("input[type=checkbox]:checked").each(function(){
+     //cada elemento seleccionado
+     
+    array.push({id_persona:$(this).val()})
+    });
+    var cantidad_requeridos=parseInt($('#total_reqSupervisor').text());
+    var cantidad_asignados=parseInt($('#total_cantSupervisor').text());
+     
+    var cupo=cantidad_requeridos-cantidad_asignados
+     
     if (localStorage.nom_cargo=="Supervisor") {
         if (cantidad_asignados<=cantidad_requeridos) {
 
             if (array.length<=cantidad_requeridos) {
-            	if (array.length<=cupo) {
-            		guardarSede(array)
-            	}else{
-            		showFeedback("error","la cantidad selecionada exede a los necesitados", "No es posible asignar")
-            	}
-            	
+                if (array.length<=cupo) {
+                    guardarSede(array)
+                }else{
+                    showFeedback("error","La cantidad selecionada excede a los requeridos", "No es posible asignar")
+                }
             } else {
-            	showFeedback("error","la cantidad selecionada exede a los necesitados", "No es posible asignar")	
+                showFeedback("error","La cantidad selecionada excede a los requeridos", "No es posible asignar")	
             }
                 //console.log($('#total_reqSupervisor').text())
-                
-            
+        } else {
+            showFeedback("error","la cantidad de supervisores actuales ya se encuentra con todas las asignaciones necesarias", "No es posible asignar")
+        }
+     }
+     var cantidad_requeridos_ex=parseInt($('#total_reqExaminador').text());
+     var cantidad_asignados_ex=parseInt($('#total_cantExaminador').text());
+     
+     var cupo_ex=cantidad_requeridos_ex-cantidad_asignados_ex
+    if (localStorage.nom_cargo=="Examinador") {
+        if (cantidad_asignados_ex<=cantidad_requeridos_ex) {
+            if (array.length<=cantidad_requeridos_ex) {
+                if (array.length<=cupo_ex) {
+                    guardarSede(array)
+                }else{
+                    showFeedback("error","la cantidad selecionada exede a los necesitados", "No es posible asignar")
+                }
+            } else {
+                showFeedback("error","la cantidad selecionada exede a los necesitados", "No es posible asignar")	
+            }
+        } else {
+            showFeedback("error","la cantidad de supervisores actuales ya se encuentra con todas las asignaciones necesarias", "No es posible asignar")
+        }
+    }
 
+    var cantidad_requeridos_exap=parseInt($('#total_reqExaAP').text());
+    var cantidad_asignados_exap=parseInt($('#total_cantExaAP').text());
+     
+    var cupo_exap=cantidad_requeridos_exap-cantidad_asignados_exap
+    if (localStorage.nom_cargo=="Examinador de Apoyo") {
+        if (cantidad_asignados_exap<=cantidad_requeridos_exap) {
+
+            if (array.length<=cantidad_requeridos_exap) {
+                if (array.length<=cupo_exap) {
+                    guardarSede(array)
+                }else{
+                    showFeedback("error","la cantidad selecionada exede a los necesitados", "No es posible asignar")
+                }
+            } else {
+            showFeedback("error","la cantidad selecionada exede a los necesitados", "No es posible asignar")	
+            }
+        } else {
+            showFeedback("error","la cantidad de supervisores actuales ya se encuentra con todas las asignaciones necesarias", "No es posible asignar")
+        }
+    }
+    var cantidad_requeridos_anfi=parseInt($('#total_reqAnfitrion').text());
+    var cantidad_asignados_anfi=parseInt($('#total_cantAnfitrion').text());
+     
+    var cupo_anfi=cantidad_requeridos_anfi-cantidad_asignados_anfi
+    if (localStorage.nom_cargo=="Anfitrión") {
+        if (cantidad_asignados_anfi<=cantidad_requeridos_anfi) {
+
+            if (array.length<=cantidad_requeridos_anfi) {
+                if (array.length<=cupo_anfi) {
+                    guardarSede(array)
+                }else{
+                    showFeedback("error","la cantidad selecionada exede a los necesitados", "No es posible asignar")
+                }
+            } else {
+                showFeedback("error","la cantidad selecionada exede a los necesitados", "No es posible asignar")	
+            }
         } else {
             showFeedback("error","la cantidad de supervisores actuales ya se encuentra con todas las asignaciones necesarias", "No es posible asignar")
         }
@@ -1179,11 +948,7 @@ function validarCantidad(){
 }
 
 function guardarSede(data){
-    
   array =data
-     
-  
-    
         $.ajax({
             method:'POST',
             url: webservice+'/asignacion/asignarCargoSede',
@@ -1193,13 +958,10 @@ function guardarSede(data){
             crossDomain: true,
             dataType:'text',
             data :{ 
-
                     id_usuario: JSON.parse(localStorage.user).id_usuario,
-                    
                     id_estimacion: localStorage.id_estimacion,
                     id_cargo:localStorage.id_cargo,
                     personal: array,
-                    
                 },
             success: function(data, textStatus, jqXHR) {
                 console.log(data)
@@ -1219,10 +981,6 @@ function guardarSede(data){
      
             }
         })
-   
-    
-    
-
 } 
 
 function modificar(id){
@@ -1252,10 +1010,8 @@ function modificar(id){
         error: function(jqXHR, textStatus, errorThrown) {
             showFeedback("error","Error en el servidor","Datos incorrectos");
             console.log("error del servidor, datos incorrectos");
- 
         }
     })
- 
 }
 
 function cargarDatos(data){
@@ -1288,22 +1044,8 @@ function cargarDatos(data){
     //cargarCentros(data.centros);
     $('#inputCentro').val(data.sede.id_centro_operaciones == null ? -1 : data.sede.id_centro_operaciones).prop('disabled',false);
 
-    //$('#divInputCupo').css('display','') 
-    //$('#inputCupo').html('')
-    //$('#inputCupo').append('<option value="-1" selected="">Elegir...</option>') 
-
-    // for(i = 0; i < data.estimacion.length; i++){
-    //     $('#inputCupo').append('<option value="'+data.estimacion[i].id_estimacion+'">Docentes: '+data.estimacion[i].docentes+', Salas: '+data.estimacion[i].salas+'</option>') 
-    // }
-    // if(data.sede.estado == 2){
-    //     $('#inputCupo').prop('disabled',false)
-    // }else{
-    //     $('#inputCupo').prop('disabled',true)
-    // }
-    // $('#inputCupo').val(data.sede.id_estimacion == null ? -1 : data.sede.id_estimacion)
     $('#btn-search-rbd').prop('disabled',true)
     $('#nuevaSedeModal').modal({backdrop: 'static', keyboard: false},'show')
-    //$('#guardar_sede').prop('disabled',false)
 }
 
 function cargarCentros(data){
@@ -1361,8 +1103,6 @@ function validar(){
     }else{
         $('#inputComuna').removeClass('is-invalid')
     }
-
-
     return valida;
 }
 
@@ -1377,12 +1117,9 @@ function disabledData(){
     $('#inputRegion').prop('disabled',false)
     $('#inputComuna').prop('disabled',false)
     $('#inputCentro').prop('disabled',false)
-    //$('#inputCupo').prop('disabled',false)
 }
 
 function limpiar(){
-
-   // $('#guardar_sede').prop('disabled',true)
     var input = document.getElementsByTagName("input");
     
     for (var i = 0; i < input.length; i++) {
@@ -1393,11 +1130,9 @@ function limpiar(){
     }
 
     $('#inputOtros').val('')
-
 }
 
 function limpiarNueva(){
-    //$('#guardar_sede').prop('disabled',true)
     $('#div-search').css('display','')
     var input = document.getElementsByTagName("input");
     
@@ -1414,18 +1149,14 @@ function limpiarNueva(){
     $('#inputRegion').val('-1').prop('disabled',true)
     $('#inputComuna').val('-1').prop('disabled',true)
     $('#inputCentro').val('-1').prop('disabled',true)
-    //$('#inputCupo').val('-1').prop('disabled',true)
 
     $('#inputOtros').val('').prop('disabled',true)
-
-
 }
 
 function redireccionarSede(id){
     localStorage.id_sede = id;
     redirectInfraestructuraSala()
 }
-
 
 function asignar(){
 	localStorage.id_estimacion = $(this).data('id_estimacion')
@@ -1482,13 +1213,7 @@ function cargarCupo(data){
 	    	$('#inputSede').css('display','none')
 	    	$('#mensajeSede').css('display','')
 	    	$('#footer-asignar').css('display','none')
-	    	 
-	    	
 	    }
-
-	     
-
     $('#asignarModal').modal({backdrop: 'static', keyboard: false},'show')
-    
 }
 

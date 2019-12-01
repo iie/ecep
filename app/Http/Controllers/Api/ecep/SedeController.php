@@ -9,6 +9,8 @@ use App\Models\Infraestructura\ZonaRegion;
 use App\Models\RRHH\Persona;
 use App\Models\RRHH\PersonaAsignacion;
 use App\Models\RRHH\PersonaCargo;
+use App\Models\Core\Comuna;
+use App\Models\Core\Region;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -354,17 +356,43 @@ class SedeController extends Controller
 								order by  region, comuna');
 		}
 
+		$cont_total_exa = 0;
+		$cont_total_anf = 0;
+		$cont_total_exa_ap = 0;
+		$cont_total_sup = 0;
+		$cont_total_exa_req = 0;
+		$cont_total_anf_req = 0;
+		$cont_total_exa_ap_req = 0;
+		$cont_total_sup_req = 0;
 		foreach ($sede as $value) {
 			$count_examinadores = PersonaAsignacion::where("id_estimacion", $value->id_estimacion)->where("id_cargo", 8)->count();
+			$cont_total_exa += $count_examinadores;
 			$count_supervisores = PersonaAsignacion::where("id_estimacion", $value->id_estimacion)->where("id_cargo", 9)->count();
+			$cont_total_sup += $count_supervisores;
 			$count_anfitriones = PersonaAsignacion::where("id_estimacion", $value->id_estimacion)->where("id_cargo", 1006)->count();
+			$cont_total_anf += $count_anfitriones;
 			$count_ex_apoyo = PersonaAsignacion::where("id_estimacion", $value->id_estimacion)->where("id_cargo", 1007)->count();
+			$cont_total_exa_ap += $count_ex_apoyo;
+
 			$value->examinadores_asignados = $count_examinadores;
 			$value->supervisores_asignados = $count_supervisores;
 			$value->anfitriones_asignados = $count_anfitriones;
 			$value->ex_apoyo_asignados = $count_ex_apoyo;
+
+			$cont_total_exa_req += $value->examinadores;
+			$cont_total_anf_req += $value->anfitriones;
+			$cont_total_exa_ap_req += $value->examinador_apoyo != null ? $value->examinador_apoyo : 0;
+			$cont_total_sup_req += $value->supervisores;
 		}
-		
+		$contadores["exa_asignados"] = $cont_total_exa;
+		$contadores["sup_asignados"] = $cont_total_sup;
+		$contadores["anf_asignados"] = $cont_total_anf;
+		$contadores["exa_ap_asignados"] = $cont_total_exa_ap;
+		$contadores["exa_requeridos"] = $cont_total_exa_req;
+		$contadores["sup_requeridos"] = $cont_total_sup_req;
+		$contadores["anf_requeridos"] = $cont_total_anf_req;
+		$contadores["exa_ap_requeridos"] = $cont_total_exa_ap_req;
+		$sede["contadores"] = $contadores;
 		return response()->json($sede);	
 	}		
 	
@@ -437,6 +465,9 @@ class SedeController extends Controller
 			$nombre_jefe = null;
 		}
 		
+		$comuna = Comuna::find($sede->id_comuna);
+		$region = Region::find($comuna->id_region);
+
 		$sede["examinadores_requeridos"] = isset($est->examinadores) ? $est->examinadores : null;
 		$sede["anfitriones_requeridos"] = isset($est->anfitriones) ? $est->anfitriones : null;
 		$sede["examinadores_apoyo_requeridos"] = isset($est->examinador_apoyo) ? $est->examinador_apoyo : null;
@@ -457,6 +488,8 @@ class SedeController extends Controller
 		$sede["examinadores_apoyo_asignados"] = 0;
 		$sede["supervisores_asignados"] = 0;
 		$sede["jefe_sede"] = $nombre_jefe;
+		$sede["region"] = $region->nombre;
+		$sede["comuna"] = $comuna->nombre;
 		foreach ($sql as $value) {
 			if($value->id_cargo == 8){
 				$sede["examinadores_asignados"] = $value->count;

@@ -95,7 +95,10 @@ function getListaEstimacion2(){
 
 function llenarVistaEstamacion1(data){
     data = JSON.parse(data)
-
+    var contadores = data.contadores;
+    delete data.contadores;
+    var data_table;
+    data_table = Object.values(data);
     $('#filtros-dia1').empty();
     if(data.length != 0){
         if($.fn.dataTable.isDataTable('#table-dia1')){
@@ -130,7 +133,7 @@ function llenarVistaEstamacion1(data){
         ordering: true, 
         order: [],
         search: true,
-        data: data,
+        data: data_table,
         responsive: true, 
         columns:[
             {data: "nro",
@@ -144,6 +147,24 @@ function llenarVistaEstamacion1(data){
             {data: "nombre"},
             {data: "rbd"},
             {data: "salas", className: "text-center"},
+            {data: "examinadores",
+                render: function(data, type, row){
+                    return  row.examinadores_asignados + " / " + row.examinadores;
+                }, 
+                className: "text-center"
+            },
+            {data: "supervisores",
+                render: function(data, type, row){
+                    return  row.supervisores_asignados + " / " + row.supervisores;
+                }, 
+                className: "text-center"
+            },
+            {data: "anfitriones",
+                render: function(data, type, row){
+                    return  row.anfitriones_asignados + " / " + row.anfitriones;
+                }, 
+                className: "text-center"
+            },
             {data: "opciones",
                 render: function(data, type, row){
                     
@@ -216,6 +237,13 @@ function llenarVistaEstamacion1(data){
     $("#descargar-lista-dia1").on("click", function() {
         tablaD.button( '.buttons-excel' ).trigger();
     });
+
+    $('#total_cantSupervisor_d1').html(contadores.sup_asignados)
+    $('#total_reqSupervisor_d1').html(contadores.sup_requeridos)
+    $('#total_cantExaminador_d1').html(contadores.exa_asignados)
+    $('#total_reqExaminador_d1').html(contadores.exa_requeridos)
+    $('#total_cantAnfitrion_d1').html(contadores.anf_asignados)
+    $('#total_reqAnfitrion_d1').html(contadores.anf_requeridos)
 
     $('#limpiar-filtros-dia1').click(btnClearFilters);
     $('#lista_items-dia1').on('click','._btn-item',redireccionarSede);
@@ -361,6 +389,10 @@ function llenarVistaAsignar(data){
 
 function llenarVistaEstamacion2(data){
     data = JSON.parse(data)
+    var contadores = data.contadores;
+    delete data.contadores;
+    var data_table;
+    data_table = Object.values(data);
     $('#filtros').empty();
     if(data.length != 0){
         if($.fn.dataTable.isDataTable('#table-dia2')){
@@ -395,7 +427,7 @@ function llenarVistaEstamacion2(data){
         ordering: true, 
         order: [],
         search: true,
-        data: data,
+        data: data_table,
         responsive: true, 
         columns:[
             {data: "nro",
@@ -409,6 +441,24 @@ function llenarVistaEstamacion2(data){
             {data: "nombre"},
             {data: "rbd"},
             {data: "salas", className: "text-center"},
+            {data: "examinadores",
+                render: function(data, type, row){
+                    return  row.examinadores_asignados + " / " + (row.examinadores != null ? row.examinadores : 0);
+                }, 
+                className: "text-center"
+            },
+            {data: "supervisores",
+                render: function(data, type, row){
+                    return  row.supervisores_asignados + " / " + (row.supervisores != null ? row.supervisores : 0);
+                }, 
+                className: "text-center"
+            },
+            {data: "anfitriones",
+                render: function(data, type, row){
+                    return  row.anfitriones_asignados + " / " + (row.anfitriones != null ? row.anfitriones : 0);
+                }, 
+                className: "text-center"
+            },
             {data: "opciones",
                 render: function(data, type, row){
                     
@@ -481,6 +531,13 @@ function llenarVistaEstamacion2(data){
     $("#descargar-lista-dia2").on("click", function() {
         tablaD.button( '.buttons-excel' ).trigger();
     });
+
+    $('#total_cantSupervisor_d2').html(contadores.sup_asignados)
+    $('#total_reqSupervisor_d2').html(contadores.sup_requeridos)
+    $('#total_cantExaminador_d2').html(contadores.exa_asignados)
+    $('#total_reqExaminador_d2').html(contadores.exa_requeridos)
+    $('#total_cantAnfitrion_d2').html(contadores.anf_asignados)
+    $('#total_reqAnfitrion_d2').html(contadores.anf_requeridos)
 
     $('#limpiar-filtros-dia2').click(btnClearFilters);
     $('#lista_items-dia2').on('click','._btn-item',redireccionarSede);
