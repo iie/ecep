@@ -35,6 +35,7 @@ function getDatosSede(){
         }
         $('#nombre_lab').html(data.nombre)
         $('#rbd_sede').html(data.rbd)
+        $('#dia_sede').html(localStorage.getItem("dia"))
         $('#region_sede').html(data.region)
         $('#comuna_sede').html(data.comuna)
         sup_req=data.supervisores_requeridos==null?0:data.supervisores_requeridos
