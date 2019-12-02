@@ -34,6 +34,8 @@ Route::get('inscritos-dia' , 'Api\ecep\SedeController@inscritosDia');
 	Route::middleware('auth:api')->post('web/centro/modificarZonaRegion' , 'Api\ecep\CentroController@modificarZonaRegion');
 	Route::middleware('auth:api')->post('web/centro/centros' , 'Api\ecep\CentroController@centros');
 	Route::middleware('auth:api')->post('web/centro/modificarEncargadoCentro' , 'Api\ecep\CentroController@modificarEncargadoCentro');
+	Route::middleware('auth:api')->post('web/centro/sedes' , 'Api\ecep\CentroController@sedes');
+	Route::middleware('auth:api')->post('web/centro/modificarJefeSede' , 'Api\ecep\CentroController@modificarJefeSede');
 	Route::middleware('auth:api')->post('web/centro/listaMonitoreo' , 'Api\ecep\CentroController@listaMonitoreo');
 
 //EVALUADO
@@ -42,11 +44,14 @@ Route::get('inscritos-dia' , 'Api\ecep\SedeController@inscritosDia');
 //RRHH
 	Route::middleware('auth:api')->post('web/personal/lista' , 'Api\ecep\PersonalController@lista');
 	Route::middleware('auth:api')->post('web/personal/listaPostulantes' , 'Api\ecep\PersonalController@listaPostulantes'); 
+	Route::middleware('auth:api')->post('web/personal/listaPostulantes' , 'Api\ecep\PersonalController@listaPostulantes'); 
 	Route::middleware('auth:api')->post('web/personal/modificar' , 'Api\ecep\PersonalController@modificar');
 	Route::middleware('auth:api')->post('web/personal/guardar' , 'Api\ecep\PersonalController@guardar');
 	Route::middleware('auth:api')->post('web/personal/documentos' , 'Api\ecep\PersonalController@documentos');
 	Route::middleware('auth:api')->post('web/personal/cambiarEstado' , 'Api\ecep\PersonalController@cambiarEstado');
 	Route::middleware('auth:api')->post('web/personal/obtenerPersona' , 'Api\ecep\PersonalController@obtenerPersona');
+	Route::middleware('auth:api')->post('web/personal/obtenerJefeSede' , 'Api\ecep\PersonalController@obtenerJefeSede');
+	Route::middleware('auth:api')->post('web/personal/filtros' , 'Api\ecep\PersonalController@filtros');
 
 	Route::middleware('auth:api')->post('web/personal/listaCoordinadorZonal' , 'Api\ecep\PersonalController@listaCoordinadorZonal');
 	Route::middleware('auth:api')->post('web/personal/listaCoordinador' , 'Api\ecep\PersonalController@listaCoordinador');
@@ -66,6 +71,8 @@ Route::get('inscritos-dia' , 'Api\ecep\SedeController@inscritosDia');
 	Route::middleware('auth:api')->post('web/capacitacion/deshabilitarCapacitacion' ,'Api\ecep\CapacitacionController@deshabilitarCapacitacion');
 	Route::middleware('auth:api')->post('web/capacitacion/desconvocar' ,'Api\ecep\CapacitacionController@desconvocar');
 	Route::middleware('auth:api')->post('web/capacitacion/desertar' ,'Api\ecep\CapacitacionController@desertar');
+	Route::middleware('auth:api')->post('web/capacitacion/listaPostulantes' ,'Api\ecep\CapacitacionController@listaPostulantes');
+	
 	Route::post('web/capacitacion/obtenerPersonalConvocado' , 'Api\ecep\CapacitacionController@obtenerPersonalConvocado');
 	Route::post('web/capacitacion/notificarCapacitacionPorCorreo' , 'Api\ecep\CapacitacionController@notificarCapacitacionPorCorreo');
 	

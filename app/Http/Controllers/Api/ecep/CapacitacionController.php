@@ -31,7 +31,274 @@ class CapacitacionController extends Controller
     public function __construct()
     {
         $this->fields = array();    
-    }   
+    }  
+
+
+    public function listaPostulantes(Request $request)
+    {
+        $post = $request->all();    
+
+        $validacion = Validator::make($post, [
+            'id_usuario' => 'required|int', 
+        ]); 
+
+        if($post['id_tipo_usuario'] == 1051){
+            $listaZona = DB::table('infraestructura.zona')
+                    ->get();
+            $zonas = array();
+            foreach($listaZona as $listaZonaAux){
+                $zonas[] = $listaZonaAux->id_zona;
+            }
+        }else{
+            $cargo = DB::table('rrhh.persona_cargo')
+                    ->leftJoin('infraestructura.zona','rrhh.persona_cargo.id_persona_cargo','=','infraestructura.zona.id_coordinador')
+                    ->where('rrhh.persona_cargo.id_persona',$post['id_persona'])
+                    ->where('rrhh.persona_cargo.id_cargo',$post['id_cargo'])
+                    ->get();
+
+            $zonas = array();
+            foreach($cargo as $cargoAux){
+                $zonas[] = $cargoAux->id_zona;
+            }
+        }       
+
+        $personaP = array(); 
+        /*$relatores = array(); */
+        $listaCapacitaciones = array(); 
+        $listaAnidadaR = []; 
+        $finalRegCapacitaciones = [];
+        if(count($zonas) > 0){
+            
+            //todas las personas que ya están en una capacitación no se pueden meter a otra capacitación a menos que hayan estado en una capacitación pero hayan reprobado
+            
+            //ahora de todas las personas que confirmacion asistencia los que pueden volver a ser convocados son los rechazados
+            
+            $personaP = DB::select("select DISTINCT 
+                    rrhh.persona.id_persona, rrhh.persona.run,rrhh.persona.nombres,rrhh.persona.apellido_paterno,rrhh.persona.apellido_materno,rrhh.persona.deserta,
+                    rrhh.persona.borrado, rrhh.persona.email, rrhh.persona.estado_proceso,rrhh.persona.id_usuario,rrhh.persona.telefono,
+                    core.comuna.nombre as comuna, core.region.nombre as region, 
+                    infraestructura.zona.nombre as nombre_zona, core.region.orden_geografico,
+                    rrhh.capacitacion_persona.id_capacitacion_persona, rrhh.capacitacion_persona.estado,  rrhh.capacitacion_persona.asistencia, rrhh.capacitacion_persona.id_capacitacion, rrhh.capacitacion.lugar, core.region.id_region as id_region_postulacion,
+                    rrhh.capacitacion.fecha_hora, rrhh.capacitacion_persona.borrado as borrado_capacitacion, rrhh.persona.id_comuna_postulacion 
+                    from rrhh.persona 
+                    inner join rrhh.persona_cargo on rrhh.persona.id_persona = rrhh.persona_cargo.id_persona 
+                    left join rrhh.cargo on rrhh.persona_cargo.id_cargo = rrhh.cargo.id_cargo 
+                    left join core.comuna on rrhh.persona.id_comuna_postulacion = core.comuna.id_comuna 
+                    left join core.region on core.comuna.id_region = core.region.id_region 
+                    left join infraestructura.zona_region on core.region.id_region = infraestructura.zona_region.id_region 
+                    left join infraestructura.zona on infraestructura.zona_region.id_zona = infraestructura.zona.id_zona 
+                    left join rrhh.capacitacion_persona on rrhh.persona.id_persona = rrhh.capacitacion_persona.id_persona 
+                    left join rrhh.capacitacion on rrhh.capacitacion_persona.id_capacitacion = rrhh.capacitacion.id_capacitacion 
+                    where  rrhh.cargo.id_cargo != 1003
+                        and rrhh.cargo.id_cargo != 1004 
+                        and rrhh.cargo.id_cargo != 13 
+                        and rrhh.persona.borrado = false
+                        and rrhh.persona.modificado = true 
+                        and rrhh.persona.estado_proceso = 'preseleccionado'
+                        and rrhh.persona.id_persona not in (select id_persona from rrhh.capacitacion_persona where estado != false)
+                        and rrhh.persona_cargo.borrado = false
+                    and zona.id_zona in (".implode($zonas,",").")
+                    GROUP BY rrhh.persona.id_persona,core.comuna.nombre,core.region.nombre, infraestructura.zona.nombre, rrhh.capacitacion_persona.id_capacitacion_persona, rrhh.capacitacion.lugar,core.region.id_region,
+                    rrhh.capacitacion.fecha_hora,core.region.orden_geografico
+                    ORDER BY infraestructura.zona.nombre asc, 
+                        core.region.orden_geografico asc, 
+                        core.comuna.nombre asc");
+
+
+        }
+
+
+
+
+        $columns=array(
+            0=> "id_persona",
+            1=> "region",
+            2=> "comuna",
+            3=> "run",
+            4=> "nombres",
+            5=> "apellido_paterno",
+            6=> "apellido_materno",
+            7=> "telefono",
+            8=> "id_capacitacion",
+            9=> "lugar",
+            10=> "fecha_hora",
+            11=> "borrado_capacitacion",
+            12=> "asistencia",
+            13=> "estado",
+            14=> "id_capacitacion_persona",
+            15=> "deserta",
+            16=> "id_comuna_postulacion",
+            17=> "id_region_postulacion",
+            18=> "email",
+        );
+
+
+        $totalData = count($personaP);
+        $limit = $request->input('length');
+        $start = $request->input('start');
+        $order = $columns[$request->input('order.0.column')];
+        $dir = $request->input('order.0.dir');
+        
+        $searchCol1 =$request->input("columns.1.search.value");
+        $searchCol2 =$request->input("columns.2.search.value");
+        $searchCol9 =$request->input("columns.9.search.value");
+        $searchCol10 =$request->input("columns.10.search.value");
+        $quitar = array("$", "^");
+        $searchCol1 = str_replace($quitar, "", $searchCol1);
+        $searchCol2 = str_replace($quitar, "", $searchCol2);
+        $searchCol9 = str_replace($quitar, "", $searchCol9);
+        $searchCol10 = str_replace($quitar, "", $searchCol10);
+        if(empty($request->input('search.value')) && $searchCol1 == '' && $searchCol2 == ''&& $searchCol9 == '' && $searchCol10 == ''){
+
+            $post = DB::select("select DISTINCT 
+                    rrhh.persona.id_persona, rrhh.persona.run,rrhh.persona.nombres,rrhh.persona.apellido_paterno,rrhh.persona.apellido_materno,rrhh.persona.deserta,
+                    rrhh.persona.borrado, rrhh.persona.email, rrhh.persona.estado_proceso,rrhh.persona.id_usuario,rrhh.persona.telefono,
+                    core.comuna.nombre as comuna, core.region.nombre as region, 
+                    infraestructura.zona.nombre as nombre_zona, core.region.orden_geografico,
+                    rrhh.capacitacion_persona.id_capacitacion_persona, rrhh.capacitacion_persona.estado,  rrhh.capacitacion_persona.asistencia, rrhh.capacitacion_persona.id_capacitacion, rrhh.capacitacion.lugar, core.region.id_region as id_region_postulacion,rrhh.persona.id_comuna_postulacion ,
+                    rrhh.capacitacion.fecha_hora, rrhh.capacitacion_persona.borrado as borrado_capacitacion 
+                    from rrhh.persona 
+                    inner join rrhh.persona_cargo on rrhh.persona.id_persona = rrhh.persona_cargo.id_persona 
+                    left join rrhh.cargo on rrhh.persona_cargo.id_cargo = rrhh.cargo.id_cargo 
+                    left join core.comuna on rrhh.persona.id_comuna_postulacion = core.comuna.id_comuna 
+                    left join core.region on core.comuna.id_region = core.region.id_region 
+                    left join infraestructura.zona_region on core.region.id_region = infraestructura.zona_region.id_region 
+                    left join infraestructura.zona on infraestructura.zona_region.id_zona = infraestructura.zona.id_zona 
+                    left join rrhh.capacitacion_persona on rrhh.persona.id_persona = rrhh.capacitacion_persona.id_persona 
+                    left join rrhh.capacitacion on rrhh.capacitacion_persona.id_capacitacion = rrhh.capacitacion.id_capacitacion 
+                    where  rrhh.cargo.id_cargo != 1003
+                        and rrhh.cargo.id_cargo != 1004 
+                        and rrhh.cargo.id_cargo != 13 
+                        and rrhh.persona.borrado = false
+                        and rrhh.persona.modificado = true 
+                        and rrhh.persona.estado_proceso = 'preseleccionado'
+                        and rrhh.persona.id_persona not in (select id_persona from rrhh.capacitacion_persona where estado != false)
+                        and rrhh.persona_cargo.borrado = false
+                    and zona.id_zona in (".implode($zonas,",").")
+                    GROUP BY rrhh.persona.id_persona,core.comuna.nombre,core.region.nombre, infraestructura.zona.nombre, rrhh.capacitacion_persona.id_capacitacion_persona, rrhh.capacitacion.lugar,core.region.id_region,
+                    rrhh.capacitacion.fecha_hora,core.region.orden_geografico
+                    ORDER BY infraestructura.zona.nombre asc, 
+                        core.region.orden_geografico asc, 
+                        core.comuna.nombre asc");
+
+            $totalFiltered =  count($personaP);
+        }else{
+            $sql = "select DISTINCT 
+                    rrhh.persona.id_persona, rrhh.persona.run,rrhh.persona.nombres,rrhh.persona.apellido_paterno,rrhh.persona.apellido_materno,rrhh.persona.deserta,
+                    rrhh.persona.borrado, rrhh.persona.email, rrhh.persona.estado_proceso,rrhh.persona.id_usuario,rrhh.persona.telefono,
+                    core.comuna.nombre as comuna, core.region.nombre as region, 
+                    infraestructura.zona.nombre as nombre_zona, core.region.orden_geografico,
+                    rrhh.capacitacion_persona.id_capacitacion_persona, rrhh.capacitacion_persona.estado,  rrhh.capacitacion_persona.asistencia, rrhh.capacitacion_persona.id_capacitacion, rrhh.capacitacion.lugar, core.region.id_region as id_region_postulacion,
+                    rrhh.capacitacion.fecha_hora, rrhh.capacitacion_persona.borrado as borrado_capacitacion 
+                    from rrhh.persona 
+                    inner join rrhh.persona_cargo on rrhh.persona.id_persona = rrhh.persona_cargo.id_persona 
+                    left join rrhh.cargo on rrhh.persona_cargo.id_cargo = rrhh.cargo.id_cargo 
+                    left join core.comuna on rrhh.persona.id_comuna_postulacion = core.comuna.id_comuna 
+                    left join core.region on core.comuna.id_region = core.region.id_region 
+                    left join infraestructura.zona_region on core.region.id_region = infraestructura.zona_region.id_region 
+                    left join infraestructura.zona on infraestructura.zona_region.id_zona = infraestructura.zona.id_zona 
+                    left join rrhh.capacitacion_persona on rrhh.persona.id_persona = rrhh.capacitacion_persona.id_persona 
+                    left join rrhh.capacitacion on rrhh.capacitacion_persona.id_capacitacion = rrhh.capacitacion.id_capacitacion 
+                    where  rrhh.cargo.id_cargo != 1003
+                        and rrhh.cargo.id_cargo != 1004 
+                        and rrhh.cargo.id_cargo != 13 
+                        and rrhh.persona.borrado = false
+                        and rrhh.persona.modificado = true 
+                        and rrhh.persona.estado_proceso = 'preseleccionado'
+                        and rrhh.persona.id_persona not in (select id_persona from rrhh.capacitacion_persona where estado != false)
+                        and rrhh.persona_cargo.borrado = false
+                    and zona.id_zona in (".implode($zonas,",").")
+                   
+            ";
+
+            if($searchCol1 !=  ''){
+
+                     $sql .= " and core.region.nombre = '".$searchCol1."'" ;
+
+            }
+            if($searchCol2 !=  ''){
+             
+                 $sql .= " and core.comuna.nombre = '".$searchCol2."'";
+                 
+            }
+
+            if($searchCol9 !=  ''){
+
+                $sql .= " and rrhh.capacitacion.lugar = '".strtolower($searchCol9)."'";
+   
+
+            }
+            if($searchCol10 !=  ''){
+           
+                 $sql .= " and rrhh.capacitacion.fecha_hora = '".$searchCol10."'";
+
+            }
+           
+            if(!empty($request->input('search.value'))){
+      
+                $search = $request->input('search.value');
+
+
+                $sql .= " and rrhh.persona.nombres ilike '%{$search}%'";
+                $sql .= " or rrhh.persona.apellido_paterno ilike '%{$search}%'";
+                $sql .= " or rrhh.persona.apellido_materno ilike '%{$search}%'";
+                $sql .= " or rrhh.persona.run ilike  '%{$search}%'";
+
+            }
+ 
+              $sql .= " GROUP BY rrhh.persona.id_persona,core.comuna.nombre,core.region.nombre, infraestructura.zona.nombre, rrhh.capacitacion_persona.id_capacitacion_persona, rrhh.capacitacion.lugar,core.region.id_region,
+                    rrhh.capacitacion.fecha_hora,core.region.orden_geografico order by infraestructura.zona.nombre asc, 
+                        core.region.orden_geografico asc, 
+                        core.comuna.nombre asc, ".$order." ". $dir." limit ".$limit." offset ".$start;
+              
+              $post = DB::select($sql);
+ 
+              $totalFiltered = count($post);
+
+        }
+
+
+        $data = array();
+
+            if($post ){
+                foreach ($post as $r) {
+                    $nestedData['id_capacitacion'] = $r->id_capacitacion;
+ 
+                    $nestedData['region'] = $r->region;
+                    $nestedData['comuna'] = $r->comuna;
+
+                    $nestedData['run'] = $r->run;
+                    $nestedData['nombres'] = $r->nombres;
+                    $nestedData['apellido_paterno'] = $r->apellido_paterno;
+                    $nestedData['apellido_materno'] = $r->apellido_materno;
+                    $nestedData['telefono'] = $r->telefono;
+                    $nestedData['id_persona'] = $r->id_persona;
+                    $nestedData['fecha_hora'] = $r->fecha_hora;
+                    $nestedData['lugar'] = $r->lugar;
+                    $nestedData['borrado_capacitacion'] = $r->borrado_capacitacion;
+                    $nestedData['asistencia'] = $r->asistencia;
+                    $nestedData['estado'] = $r->estado;
+                    $nestedData['id_capacitacion_persona'] = $r->id_capacitacion_persona;
+                    $nestedData['deserta'] = $r->deserta;
+                    $nestedData['id_comuna_postulacion'] = $r->id_comuna_postulacion;
+                    $nestedData['id_region_postulacion'] = $r->id_region_postulacion;
+                    $nestedData['email'] = $r->email;
+
+                    $data [] =$nestedData;
+                }
+
+            }
+
+        $json_data = array(
+            "draw" => intval($request->input('draw')),
+            "recordsTotal" => intval($totalData),
+            "recordsFiltered"=> intval($totalFiltered),
+            "data"=> $data
+        );
+        return json_encode($json_data);
+
+        arreglo($personaP );
+    } 
 
     public function lista(Request $request)
     {
@@ -223,10 +490,11 @@ class CapacitacionController extends Controller
             }
 
             $personaCapacitadas = DB::select("select DISTINCT 
-                    rrhh.persona.*, core.comuna.nombre as comuna, core.region.nombre as region, 
+                    rrhh.persona.id_persona, rrhh.persona.apellido_materno, rrhh.persona.apellido_paterno, rrhh.persona.deserta, rrhh.persona.estado_proceso, rrhh.persona.id_usuario, rrhh.persona.nombres, rrhh.persona.run, rrhh.capacitacion_persona.estado,
+                    core.comuna.nombre as comuna, core.region.nombre as region, 
                     infraestructura.zona.nombre as nombre_zona, core.region.orden_geografico,
-                    rrhh.capacitacion_persona.id_capacitacion_persona,rrhh.capacitacion_persona.id_capacitacion, rrhh.capacitacion.lugar, 
-                    rrhh.capacitacion.fecha_hora, rrhh.capacitacion_persona.borrado as borrado_capacitacion 
+                    rrhh.capacitacion_persona.id_capacitacion_persona, rrhh.capacitacion_persona.id_capacitacion, rrhh.capacitacion.lugar, 
+                    rrhh.capacitacion.fecha_hora, rrhh.capacitacion_persona.borrado as borrado_capacitacion, rrhh.capacitacion_persona.asistencia
                     from rrhh.persona 
                     inner join rrhh.persona_cargo on rrhh.persona.id_persona = rrhh.persona_cargo.id_persona 
                     left join rrhh.cargo on rrhh.persona_cargo.id_cargo = rrhh.cargo.id_cargo 
@@ -516,7 +784,8 @@ class CapacitacionController extends Controller
             }
 
             $personaCapacitadas = DB::select("select DISTINCT 
-                    rrhh.persona.*, core.comuna.nombre as comuna, core.region.nombre as region, 
+                    rrhh.persona.id_persona, rrhh.persona.apellido_materno, rrhh.persona.apellido_paterno, rrhh.persona.deserta, rrhh.persona.estado_proceso, rrhh.persona.id_usuario, rrhh.persona.nombres, rrhh.persona.run, rrhh.capacitacion_persona.estado,
+                    rrhh.capacitacion_persona.asistencia, core.comuna.nombre as comuna, core.region.nombre as region, 
                     infraestructura.zona.nombre as nombre_zona, core.region.orden_geografico,
                     rrhh.capacitacion_persona.id_capacitacion_persona,rrhh.capacitacion_persona.id_capacitacion, rrhh.capacitacion.lugar, 
                     rrhh.capacitacion.fecha_hora, rrhh.capacitacion_persona.borrado as borrado_capacitacion 
@@ -1002,11 +1271,11 @@ class CapacitacionController extends Controller
         foreach ($pruebas as $key => $value) {
                 $listaAnidadaPruebas[$value->id_capacitacion_persona][] = $value;
         }
-
+ 
         $personaCapacitadas = DB::select("select DISTINCT 
                     rrhh.persona.id_persona,rrhh.persona.run,rrhh.persona.nombres,rrhh.persona.apellido_paterno,rrhh.persona.apellido_materno, core.comuna.nombre as comuna, core.region.nombre as region, infraestructura.zona.nombre as nombre_zona, core.region.orden_geografico,
                     rrhh.capacitacion_persona.id_capacitacion_persona,rrhh.capacitacion_persona.id_capacitacion, rrhh.capacitacion.lugar, 
-                    rrhh.capacitacion.fecha_hora, rrhh.capacitacion_persona.borrado as borrado_capacitacion
+                    rrhh.capacitacion.fecha_hora, rrhh.capacitacion_persona.borrado as borrado_capacitacion,rrhh.capacitacion_persona.estado, rrhh.capacitacion_persona.asistencia  
                     from rrhh.persona 
                     inner join rrhh.persona_cargo on rrhh.persona.id_persona = rrhh.persona_cargo.id_persona 
                     left join rrhh.cargo on rrhh.persona_cargo.id_cargo = rrhh.cargo.id_cargo 
@@ -1103,85 +1372,85 @@ class CapacitacionController extends Controller
         {
 			//consultamos la tabla capacitación persona incluyendo a todos los convocados
 
-					$personaP = DB::select("select rrhh.persona.run, rrhh.persona.nombres, rrhh.persona.apellido_paterno, rrhh.persona.apellido_materno, 
-										rrhh.persona.id_persona, core.comuna.nombre as comuna, core.region.id_region,core.region.nombre as region, core.region.orden_geografico,
-										rrhh_cp.id_capacitacion, rrhh.persona.estado_proceso, rrhh_cp.confirma_asistencia, rrhh_cp.estado,
-										
-										(select count(id_persona) from rrhh.capacitacion_persona where estado = false AND rrhh.capacitacion_persona.id_persona = rrhh_cp.id_persona 
-										group by rrhh.capacitacion_persona.id_persona )	as veces_reprobada									
-										
-										from rrhh.persona 
-										left join core.comuna on rrhh.persona.id_comuna_postulacion = core.comuna.id_comuna 
-										left join core.region on core.comuna.id_region = core.region.id_region 
-										left join rrhh.capacitacion_persona as rrhh_cp on rrhh.persona.id_persona = rrhh_cp.id_persona 
-										left join rrhh.capacitacion on rrhh_cp.id_capacitacion = rrhh.capacitacion.id_capacitacion 
-										
-										where core.region.id_region = ".$post['id_region']."
-										and rrhh.persona.borrado = false
-                                        and rrhh.persona.borrado = false
-										and rrhh.persona.modificado = true
-										and rrhh_cp.borrado = false
-										and rrhh_cp.id_capacitacion = ".$post['id_capacitacion']."
-										order by core.region.orden_geografico asc,core.comuna.nombre asc, rrhh.persona.nombres asc,rrhh.persona.apellido_paterno asc");
+					$personaP = DB::select("select rrhh.persona.run, rrhh.persona.nombres, rrhh.persona.apellido_paterno, rrhh.persona.apellido_materno, rrhh.persona.telefono,
+						rrhh.persona.id_persona, core.comuna.nombre as comuna, core.region.id_region,core.region.nombre as region, core.region.orden_geografico,
+						rrhh_cp.id_capacitacion, rrhh.persona.estado_proceso, rrhh_cp.confirma_asistencia, rrhh_cp.estado,
+						
+						(select count(id_persona) from rrhh.capacitacion_persona where estado = false AND rrhh.capacitacion_persona.id_persona = rrhh_cp.id_persona 
+						group by rrhh.capacitacion_persona.id_persona )	as veces_reprobada									
+						
+						from rrhh.persona 
+						left join core.comuna on rrhh.persona.id_comuna_postulacion = core.comuna.id_comuna 
+						left join core.region on core.comuna.id_region = core.region.id_region 
+						left join rrhh.capacitacion_persona as rrhh_cp on rrhh.persona.id_persona = rrhh_cp.id_persona 
+						left join rrhh.capacitacion on rrhh_cp.id_capacitacion = rrhh.capacitacion.id_capacitacion 
+						
+						where core.region.id_region = ".$post['id_region']."
+						and rrhh.persona.borrado = false
+                        and rrhh.persona.borrado = false
+						and rrhh.persona.modificado = true
+						and rrhh_cp.borrado = false
+						and rrhh_cp.id_capacitacion = ".$post['id_capacitacion']."
+						order by core.region.orden_geografico asc,core.comuna.nombre asc, rrhh.persona.nombres asc,rrhh.persona.apellido_paterno asc");
         }
 		else{ //capacitación futura. Se divide en 2. Los que ya se convocaron y los que son convocables.
 		
 			//primero los ya convocados.... luego union con los convocables
-			$personaP = DB::select("(select rrhh.persona.run, rrhh.persona.nombres, rrhh.persona.apellido_paterno, rrhh.persona.apellido_materno, 
-										rrhh.persona.id_persona, core.comuna.nombre as comuna, core.region.id_region,core.region.nombre as region, core.region.orden_geografico,
-										rrhh_cp.id_capacitacion, rrhh.persona.estado_proceso, rrhh_cp.confirma_asistencia	, rrhh_cp.estado,
-										
-										(select count(id_persona) from rrhh.capacitacion_persona where estado = false AND rrhh.capacitacion_persona.id_persona = rrhh_cp.id_persona 
-										group by rrhh.capacitacion_persona.id_persona )	as veces_reprobada									
-										
-									from rrhh.persona 
-									left join core.comuna on rrhh.persona.id_comuna_postulacion = core.comuna.id_comuna 
-									left join core.region on core.comuna.id_region = core.region.id_region 
-									left join rrhh.capacitacion_persona as rrhh_cp on rrhh.persona.id_persona = rrhh_cp.id_persona 
-									left join rrhh.capacitacion on rrhh_cp.id_capacitacion = rrhh.capacitacion.id_capacitacion 
-									where core.region.id_region = ".$post['id_region']."
-										and rrhh.persona.borrado = false
-										and estado_proceso = 'preseleccionado'
-										and rrhh.persona.modificado = true
-										and rrhh_cp.borrado = false
-										and rrhh_cp.id_capacitacion = ".$post['id_capacitacion']."
-									order by core.region.orden_geografico asc,core.comuna.nombre asc, rrhh.persona.nombres asc,rrhh.persona.apellido_paterno asc)
-									
-									union 
-									(
-									select rrhh_p.run, rrhh_p.nombres, rrhh_p.apellido_paterno, rrhh_p.apellido_materno, 
-										rrhh_p.id_persona, core.comuna.nombre as comuna, core.region.id_region,core.region.nombre as region, core.region.orden_geografico,
-										null as id_capacitacion, rrhh_p.estado_proceso, null as confirma_asistencia, null as estado,
-										(select count(id_persona) from rrhh.capacitacion_persona where estado = false AND rrhh.capacitacion_persona.id_persona = rrhh_p.id_persona 
-										group by rrhh.capacitacion_persona.id_persona )	as veces_reprobada		
-										
-									from rrhh.persona as rrhh_p 
-									left join core.comuna on rrhh_p.id_comuna_postulacion = core.comuna.id_comuna 
-									left join core.region on core.comuna.id_region = core.region.id_region 
-									where core.region.id_region = ".$post['id_region']."
-										and rrhh_p.borrado = false
-										and estado_proceso = 'preseleccionado'
-										and rrhh_p.modificado = true
-										and rrhh_p.id_persona not in (select id_persona from rrhh.capacitacion_persona where id_capacitacion_persona not in (select id_capacitacion_persona from rrhh.capacitacion_prueba) and id_capacitacion in (select id_capacitacion from rrhh.capacitacion where fecha_hora < now()))  										
-										and rrhh_p.id_persona not in (select id_persona from rrhh.capacitacion_persona where estado = true)
-										and rrhh_p.id_persona not in (select id_persona from rrhh.capacitacion_persona where capacitacion_persona.id_capacitacion != ".$post['id_capacitacion']."
-										AND capacitacion_persona.id_capacitacion not in (select rrhh.capacitacion.id_capacitacion from rrhh.capacitacion where fecha_hora < now()	))										
-										
-										and rrhh_p.id_persona not in (
-										
-									select rrhh.persona.id_persona from rrhh.persona 
-									left join core.comuna on rrhh.persona.id_comuna_postulacion = core.comuna.id_comuna 
-									left join core.region on core.comuna.id_region = core.region.id_region 
-									left join rrhh.capacitacion_persona on rrhh.persona.id_persona = rrhh.capacitacion_persona.id_persona 
-									left join rrhh.capacitacion on rrhh.capacitacion_persona.id_capacitacion = rrhh.capacitacion.id_capacitacion 
-									where core.region.id_region = ".$post['id_region']."
-										and rrhh.persona.borrado = false
-										and estado_proceso = 'preseleccionado'
-										and rrhh.persona.modificado = true
-										and rrhh.capacitacion_persona.borrado = false
-										and rrhh.capacitacion_persona.id_capacitacion = ".$post['id_capacitacion']." )
-										
-									order by core.region.orden_geografico asc,core.comuna.nombre asc, rrhh_p.nombres asc,rrhh_p.apellido_paterno asc)");
+			$personaP = DB::select("(select rrhh.persona.run, rrhh.persona.nombres, rrhh.persona.apellido_paterno, rrhh.persona.apellido_materno, rrhh.persona.telefono,
+					rrhh.persona.id_persona, core.comuna.nombre as comuna, core.region.id_region,core.region.nombre as region, core.region.orden_geografico,
+					rrhh_cp.id_capacitacion, rrhh.persona.estado_proceso, rrhh_cp.confirma_asistencia	, rrhh_cp.estado,
+					
+					(select count(id_persona) from rrhh.capacitacion_persona where estado = false AND rrhh.capacitacion_persona.id_persona = rrhh_cp.id_persona 
+					group by rrhh.capacitacion_persona.id_persona )	as veces_reprobada									
+					
+				from rrhh.persona 
+				left join core.comuna on rrhh.persona.id_comuna_postulacion = core.comuna.id_comuna 
+				left join core.region on core.comuna.id_region = core.region.id_region 
+				left join rrhh.capacitacion_persona as rrhh_cp on rrhh.persona.id_persona = rrhh_cp.id_persona 
+				left join rrhh.capacitacion on rrhh_cp.id_capacitacion = rrhh.capacitacion.id_capacitacion 
+				where core.region.id_region = ".$post['id_region']."
+					and rrhh.persona.borrado = false
+					and estado_proceso = 'preseleccionado'
+					and rrhh.persona.modificado = true
+					and rrhh_cp.borrado = false
+					and rrhh_cp.id_capacitacion = ".$post['id_capacitacion']."
+				order by core.region.orden_geografico asc,core.comuna.nombre asc, rrhh.persona.nombres asc,rrhh.persona.apellido_paterno asc)
+				
+				union 
+				(
+				select rrhh_p.run, rrhh_p.nombres, rrhh_p.apellido_paterno, rrhh_p.apellido_materno, 
+					rrhh_p.id_persona, core.comuna.nombre as comuna, core.region.id_region,core.region.nombre as region, core.region.orden_geografico,
+					null as id_capacitacion, rrhh_p.estado_proceso, null as confirma_asistencia, null as estado,
+					(select count(id_persona) from rrhh.capacitacion_persona where estado = false AND rrhh.capacitacion_persona.id_persona = rrhh_p.id_persona 
+					group by rrhh.capacitacion_persona.id_persona )	as veces_reprobada		
+					
+				from rrhh.persona as rrhh_p 
+				left join core.comuna on rrhh_p.id_comuna_postulacion = core.comuna.id_comuna 
+				left join core.region on core.comuna.id_region = core.region.id_region 
+				where core.region.id_region = ".$post['id_region']."
+					and rrhh_p.borrado = false
+					and estado_proceso = 'preseleccionado'
+					and rrhh_p.modificado = true
+					and rrhh_p.id_persona not in (select id_persona from rrhh.capacitacion_persona where id_capacitacion_persona not in (select id_capacitacion_persona from rrhh.capacitacion_prueba) and id_capacitacion in (select id_capacitacion from rrhh.capacitacion where fecha_hora < now()))  										
+					and rrhh_p.id_persona not in (select id_persona from rrhh.capacitacion_persona where estado = true)
+					and rrhh_p.id_persona not in (select id_persona from rrhh.capacitacion_persona where capacitacion_persona.id_capacitacion != ".$post['id_capacitacion']."
+					AND capacitacion_persona.id_capacitacion not in (select rrhh.capacitacion.id_capacitacion from rrhh.capacitacion where fecha_hora < now()	))										
+					
+					and rrhh_p.id_persona not in (
+					
+				select rrhh.persona.id_persona from rrhh.persona 
+				left join core.comuna on rrhh.persona.id_comuna_postulacion = core.comuna.id_comuna 
+				left join core.region on core.comuna.id_region = core.region.id_region 
+				left join rrhh.capacitacion_persona on rrhh.persona.id_persona = rrhh.capacitacion_persona.id_persona 
+				left join rrhh.capacitacion on rrhh.capacitacion_persona.id_capacitacion = rrhh.capacitacion.id_capacitacion 
+				where core.region.id_region = ".$post['id_region']."
+					and rrhh.persona.borrado = false
+					and estado_proceso = 'preseleccionado'
+					and rrhh.persona.modificado = true
+					and rrhh.capacitacion_persona.borrado = false
+					and rrhh.capacitacion_persona.id_capacitacion = ".$post['id_capacitacion']." )
+					
+				order by core.region.orden_geografico asc,core.comuna.nombre asc, rrhh_p.nombres asc,rrhh_p.apellido_paterno asc)");
         }
            
         $url = url()->current();
@@ -1206,6 +1475,7 @@ class CapacitacionController extends Controller
             $aux["estado_proceso"] = $value->estado_proceso;
             $aux["confirma_asistencia"] = $value->confirma_asistencia;
             $aux["estado"] = $value->estado;
+            $aux["telefono"] = $value->telefono;
             $aux["veces_reprobada"] = $value->veces_reprobada;
 
             if(isset($idCapPersona)){

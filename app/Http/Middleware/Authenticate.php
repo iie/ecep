@@ -76,6 +76,8 @@ class Authenticate
 				$denegado['api/web/capacitacion/deshabilitarCapacitacion'] = array( 1040, 1042);
 				$denegado['api/web/capacitacion/desconvocar'] = array( 1040, 1042);
 				$denegado['api/web/capacitacion/desertar'] = array( 1040, 1042);
+				$denegado['api/web/capacitacion/listaPostulantes'] = array( 1040, 1042);
+				 
  
 			//RRHH
 				//solo obtienen datos
@@ -85,10 +87,15 @@ class Authenticate
 				$denegado['api/web/personal/documentos'] = array(1040, 1042, 1052);
 				$denegado['api/web/personal/obtenerPersona'] = array(1040, 1042, 1052);
 				$denegado['api/web/personal/listaPostulantes'] = array(1040, 1042, 1052);
+				$denegado['api/web/personal/filtros'] = array(1040, 1042, 1052);
+				 
 				//cambian valores es BD
 				$denegado['api/web/personal/modificar'] = array(1040, 1042, 1052);
 				$denegado['api/web/personal/guardar'] = array(1040, 1042, 1052);
 				$denegado['api/web/personal/cambiarEstado'] = array(1040, 1042, 1052);
+
+				$denegado['api/web/personal/obtenerJefeSede'] = array(1040, 1042, 1052);
+				$denegado['api/web/personal/guardarJefeSede'] = array(1040, 1042, 1052);
 
 			//ASIGNACION
 				//solo obtienen datos

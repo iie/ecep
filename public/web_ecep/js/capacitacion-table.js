@@ -87,7 +87,31 @@ function getPersonal(){
             console.log(data)
 
             if (data.resultado == undefined) {
-                llenarVista(data)
+                regiones = data.regiones;
+                regiones_postulante = data.regiones_postulante;
+                regiones_capacitacion = data.regiones_capacitacion;
+                relatores = data.lista_reladores;
+                capacitaciones = data.capacitaciones;
+
+                $('#total').html(data.personal_postulacion.length)
+                $('#selectRegion').html('').append('<option value="-1" selected="">Elegir...</option>') 
+                for(i = 0; i < data.regiones_capacitacion.length; i++){
+                    $('#selectRegion').append('<option value="'+data.regiones_capacitacion[i].id_region+'">'+data.regiones_capacitacion[i].nombre+'</option>') 
+                }
+
+                if(JSON.parse(localStorage.user).id_tipo_usuario != 1052 && JSON.parse(localStorage.user).id_cargo != 1004){
+                    $('#label_total').css('display','')
+                    $('#total_capacitados').html(data.total_capacitados)
+                }else{
+                    $('#label_total').css('display','none')
+                }
+
+                llenarVistaCapacitacion(data.lista_capacitacion)
+                llenarListaRelatores(data.lista_reladores)
+                llenarSelects(data)
+                llenarVistaCapacitados(data.lista_capacitados)
+
+                //llenarVista(data)
             }else {
                 if (data.resultado == "error") {
                    showFeedback("error",data.descripcion,"Error");
@@ -123,7 +147,7 @@ function getPersonalRegional(){
             console.log(data)
 
             if (data.resultado == undefined) {
-                llenarVista(data)
+                //llenarVista(data)
             }else {
                 if (data.resultado == "error") {
                    showFeedback("error",data.descripcion,"Error");
@@ -176,7 +200,7 @@ arrayRelator = []
 arrayRelatorD = []
 arrayEstado = []
 arrayFechas = []
-function llenarVista(data){
+function llenarVista( ){
     //data = JSON.parse(data)
     $('#filtros-postulacion').empty();
     if($.fn.dataTable.isDataTable('#table-postulacion')){
@@ -185,39 +209,25 @@ function llenarVista(data){
     }
 
     var tablaD = $("#table-postulacion").DataTable({
-        dom: "<'search'f>",
-         
-        /*buttons: [
-            {
-                extend: 'excel',
-                title: 'Postulantes',
-                exportOptions: {
-                    columns: [ 0,1, 2, 3, 4, 5, 6, 7, 8, 9],
-                },
-                action  : function ( e, dt, node, config ){
-                        console.log('arruba')
- 
-
-                    $.fn.dataTable.ext.buttons.excelHtml5.action.call(this, e, dt, node, config);    
-                    
-                    console.log('abajo')
-
-                   
-                },
-
-            }
-        ],*/
+        dom: "<'search'f><'top'i><'bottom'p>",
+        processing:true,
+        serverSide:true,
+        ajax:{
+            headers:{
+               't': JSON.parse(localStorage.user).token
+            },
+            data:{
+                id_tipo_usuario: JSON.parse(localStorage.user).id_tipo_usuario,
+                id_persona: JSON.parse(localStorage.user).id_persona,
+                id_cargo: JSON.parse(localStorage.user).id_cargo
+            },
+            type:'POST',
+            url: webservice+'/capacitacion/listaPostulantes',
+            
+        },
+        pageLength: 1000,
         lengthMenu: [[10, 15, 20, -1], [10, 15, 20, "Todos"]],
-        language:spanishTranslation,
-        lengthChange: true,
-        info: false,
-        paging: false,
-        displayLength: -1,
-        ordering: true, 
-        order: [],
-        search: true,
-        data: data.personal_postulacion,
-        responsive: true, 
+        language:spanishTranslation, 
         columns:[
             {data: "nro",
                 render: function(data, type, full, meta){
@@ -230,7 +240,6 @@ function llenarVista(data){
             {data: "nombres"},
             {data: "apellido_paterno"},
             {data: "apellido_materno"},
-            /*{data: "email"},*/
             {data: "telefono"},
             {data: "id_capacitacion",
                 render: function(data, type,row){
@@ -514,31 +523,11 @@ function llenarVista(data){
     });
 
      
-    $('#total').html(data.personal_postulacion.length)
+    
 
     $("#table-postulacion").show();  
 
-    $('#selectRegion').html('').append('<option value="-1" selected="">Elegir...</option>') 
-    for(i = 0; i < data.regiones_capacitacion.length; i++){
-        $('#selectRegion').append('<option value="'+data.regiones_capacitacion[i].id_region+'">'+data.regiones_capacitacion[i].nombre+'</option>') 
-    }
-    regiones = data.regiones;
-    regiones_postulante = data.regiones_postulante;
-    regiones_capacitacion = data.regiones_capacitacion;
-    relatores = data.lista_reladores;
-    capacitaciones = data.capacitaciones;
 
-    llenarVistaCapacitacion(data.lista_capacitacion)
-    llenarListaRelatores(data.lista_reladores)
-    llenarSelects(data)
-    llenarVistaCapacitados(data.lista_capacitados)
-
-    if(JSON.parse(localStorage.user).id_tipo_usuario != 1052 && JSON.parse(localStorage.user).id_cargo != 1004){
-        $('#label_total').css('display','')
-        $('#total_capacitados').html(data.total_capacitados)
-    }else{
-        $('#label_total').css('display','none')
-    }
     $.unblockUI();
    /* if(JSON.parse(localStorage.user).id_cargo != 1003 && JSON.parse(localStorage.user).id_cargo != 1004){
         llenarVista2(data)

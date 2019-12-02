@@ -26,6 +26,8 @@ $(document).ready(function(){
         validateOn: 'change'
     });
 
+    getFiltros()
+
     if(JSON.parse(localStorage.user).id_cargo == 1004){
         getPersonalCoordinador();
 
@@ -46,6 +48,7 @@ $(document).ready(function(){
         $('#asignar-jefeSede').remove();
 
     }else if(JSON.parse(localStorage.user).id_cargo == 1003){
+
         getPersonalCoordinadorZonal();
         $('#liZonal').remove();
         $('#liCentro').remove();
@@ -61,10 +64,44 @@ $(document).ready(function(){
         $('#asignar-jefeSede').remove();
 
     }else{
+       
         getPersonal();
     }
 
 });
+
+function getFiltros(){
+     $.ajax({
+        method:'POST',
+        url: webservice+'/personal/filtros',
+        headers:{
+           't': JSON.parse(localStorage.user).token
+        },
+        crossDomain: true,
+        dataType:'text',
+ 
+        success: function(data, textStatus, jqXHR) {
+ 
+            if(JSON.parse(data).resultado != undefined) {
+    
+                if(JSON.parse(data).resultado == "error"){            
+                    showFeedback("error",JSON.parse(data).descripcion,"Datos incorrectos");
+                }
+                   llenarVista(JSON.parse(data))
+                $.unblockUI();
+            }else{
+                llenarVista(data)
+            } 
+             
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            showFeedback("error","Error en el servidor","Datos incorrectos");
+            console.log("error del servidor, datos incorrectos");
+            $.unblockUI();
+ 
+        }
+    })
+}
 
 function getPersonal(){
      $.ajax({
@@ -86,8 +123,13 @@ function getPersonal(){
                 }
                 $.unblockUI();
             }else{
-                llenarVista(data)
+                llenarSelects(JSON.parse(data))
+                if(JSON.parse(localStorage.user).id_cargo != 1003 && JSON.parse(localStorage.user).id_cargo != 1004){
+                    llenarVista2(JSON.parse(data))
+                }
+                strg=JSON.parse(data).personal_postulacion
                 llenarVista5(JSON.parse(data).jefe_sede)
+                $('#total_personal').html(JSON.parse(data).personal_postulacion.length)
             } 
              
         },
@@ -125,8 +167,11 @@ function getPersonalCoordinadorZonal(){
                 }
                 $.unblockUI();
             }else{
-                llenarVista(data)
+                //llenarVista(data)
+                strg=JSON.parse(data).personal_postulacion
+                llenarSelects(JSON.parse(data))
                 llenarVista3(JSON.parse(data))
+                $('#total_personal').html(JSON.parse(data).personal_postulacion.length)
             }  
 
         },
@@ -162,7 +207,10 @@ function getPersonalCoordinador(){
                 }
                 $.unblockUI();
             }else{
-                llenarVista(data)
+                //llenarVista(data)
+                strg=JSON.parse(data).personal_postulacion
+                llenarSelects(JSON.parse(data))
+                $('#total_personal').html(JSON.parse(data).personal_postulacion.length)
             } 
         },
         error: function(jqXHR, textStatus, errorThrown) {
@@ -183,10 +231,11 @@ var strg;
 validarTabla = 0;
 var rutss = new Object();
 arrayEstado = []
-function llenarVista(data){
-    strg=JSON.parse(data).personal_postulacion
-            
-    data = JSON.parse(data)
+filtroPersonal = false;
+function llenarVista(filtros){
+
+    filtros = JSON.parse(filtros)
+
     $('#filtros-postulacion').empty();
     if($.fn.dataTable.isDataTable('#table-postulacion')){
         $('#table-postulacion').DataTable().destroy();
@@ -194,35 +243,25 @@ function llenarVista(data){
     }
 
     var tablaD = $("#table-postulacion").DataTable({
-        dom: "<'search'f>",
-         
-        /*buttons: [
-            {
-                extend: 'excel',
-                title: 'Postulantes',
-                exportOptions: {
-                    columns: [ 0,1, 2, 3, 4, 5, 6, 7, 8, 9, 10,12,14,15,16,17,18,19,20,21,22,11,23,24,25,26],
-                }
-            }
-        ],*/
+        dom: "<'search'f><'top'i><'bottom'p>",
+        processing:true,
+        serverSide:true,
+        ajax:{
+            headers:{
+               't': JSON.parse(localStorage.user).token
+            },
+            data:{
+                id_tipo_usuario: JSON.parse(localStorage.user).id_tipo_usuario,
+                id_persona: JSON.parse(localStorage.user).id_persona,
+                id_cargo: JSON.parse(localStorage.user).id_cargo
+            },
+            type:'POST',
+            url: webservice+'/personal/listaPostulantes',
+            
+        },
+        pageLength: 1000,
         lengthMenu: [[10, 15, 20, -1], [10, 15, 20, "Todos"]],
         language:spanishTranslation,
-        lengthChange: true,
-        info: false,
-        /*columnDefs: [
-            { targets: [0,1,2,3,5,6,7], searchable: false }
-        ],*/
-        paging: false,
-        displayLength: -1,
-        ordering: true, 
-        order: [],
-        search: true,
-        data: data.personal_postulacion,
-        responsive: true, 
-        /*columnDefs: [{
-            targets: 9,
-            orderable: false
-        }],*/
         columns:[
             {data: "nro",
                 render: function(data, type, full, meta){
@@ -237,8 +276,6 @@ function llenarVista(data){
             {data: "nombres"},
             {data: "apellido_paterno"},
             {data: "apellido_materno"},
-            {data: "email"},
-            {data: "telefono"},
             {data: "nivel_estudios"},
             {data: null,
                 render: function(data,type,row){
@@ -253,33 +290,9 @@ function llenarVista(data){
             {data: "opciones",className: "text-center",
                 render: function(data, type, row){  
                     return ''
-                    //console.log(strg)
-                  /*  return '<button type="button" id="persona_'+row.id_persona+'" onclick="modificar('+row.id_persona+','+row.id_persona_cargo+',true)" class="btn btn-primary btn-sm _btn-item"><i class="fa fa-pencil-alt"></i></button>'+
-                        '<button type="button" id="docPersona_'+row.id_persona+'"  class="ml-2 btn btn-primary btn-sm _btn-item"><i class="fas fa-file-alt"></i></button>'       */ 
                 }
             },
-            /*{data: "id_sexo"},
-            {data: "id_estado_civil"},
-            {data: "fecha_nacimiento"},
-            {data: "otra_nacionalidad"},
-            {data: "nacionalidad"},
-            {data: "id_comuna_nacimiento"},
-            {data: "id_comuna_residencia"},
-            {data: "domicilio"},
-            {data: "domicilio_sector"},
 
-            {data: "profesion"},
-            {data: "id_institucion"},
-            {data: "banco_nro_cuenta"},
-            {data: "banco_tipo_cuenta"},
-            {data: "banco_nombre"},*/
-        ],
-        "columnDefs": [
-            {
-                "targets": [ 8,9],
-                "visible": false,
-                "searchable": false
-            },
         ],
         "rowCallback": function( row, data ) {
             select = '<select class="form-control selectEstado" name="selectEstado">'
@@ -328,15 +341,17 @@ function llenarVista(data){
                             select +=   '<option value="rechazado">Rechazado</option>'
                         }
                     }else{
+                        console.log('acaaaaa')
                         select +=   '<option value="desertó" disabled>Desertó</option>'
                     }
 
                     select += '</select>'
 
 
+
             acciones='<button type="button" id="persona_'+data.id_persona+'" onclick="modificar('+data.id_persona+',true)" class="btn btn-primary btn-sm _btn-item"><i class="fa fa-pencil-alt"></i></button>'+
                          '<button type="button" id="docPersona_'+data.id_persona+'"  class="ml-2 btn btn-primary btn-sm _btn-item"><i class="fas fa-file-alt"></i></button>'  
-                        $('td:eq(11)', row).html(acciones)
+                        
 
 
 
@@ -353,17 +368,19 @@ function llenarVista(data){
                 $('td:eq(11)', row).find('#docPersona_'+data.id_persona).data('run',data.run);
                 $('td:eq(11)', row).find('#docPersona_'+data.id_persona).data('id_persona',data.id_persona);
                 $('td:eq(11)', row).find('#docPersona_'+data.id_persona).on('click',verDocs);
+                $('td:eq(11)', row).html(acciones)
    
             }else{
                 if(validarTabla ==  0){
+                    console.log('IF')
                     col = 9
                     col2 = 11
                 } else{
+                    console.log('ELSE')
                     col = 8
                     col2 = 10
                 }
-                console.log("ño")
-                console.log(col)
+ 
                 $('td:eq('+col+')', row).html(select)
                 $('td:eq('+col+')', row).find('select').val(data.estado)
                 if(data.estado=='contratado' || data.estado=='rechazado'){
@@ -375,8 +392,14 @@ function llenarVista(data){
                 $('td:eq('+col2+')', row).find('#docPersona_'+data.id_persona).data('run',data.run);
                 $('td:eq('+col2+')', row).find('#docPersona_'+data.id_persona).data('id_persona',data.id_persona);
                 $('td:eq('+col2+')', row).find('#docPersona_'+data.id_persona).on('click',verDocs);
+                $('td:eq('+col2+')', row).html(acciones)
 
             }
+        },
+        "preDrawCallback": function( oSettings ) {
+          $('#table-postulacion_paginate').on('click',function(){
+            filtroPersonal = true;
+          })
         },
         "initComplete": function(settings, json) {
             validarTabla++;
@@ -396,8 +419,8 @@ function llenarVista(data){
             $('#divRol').css('display','none')
             $('#divUsuario').css('display','none')
              
-            var placeholder = ["","Zona","Región","Comuna","","","","","","","","Estado","Cargo"]
-            this.api().columns([1,2,3,11,12]).every( function (index) {
+            var placeholder = ["","Zona","Región","Comuna","","","","","","Estado","Cargo"]
+            this.api().columns([1,2,3,9,10]).every( function (index) {
                 if(JSON.parse(localStorage.user).id_cargo == 1004 && index == 1){
                     return;
                 }else{
@@ -414,7 +437,7 @@ function llenarVista(data){
                                 .search( val ? '^'+val+'$' : '', true, false )
                                 .draw();
                         } );
-                    column.data().unique().each( function ( d, j ) {
+                    /*column.data().unique().each( function ( d, j ) {
                         if(d != null){
                             if(index == 11){
                                 if(d.deserta == false){
@@ -430,10 +453,47 @@ function llenarVista(data){
                             }
                         }
                         
-                    } );
+                    } );*/
+                    if(index == 1){
+                        for(i=0;i<filtros.zonas.length;i++){
+                            $('#select'+index).append( '<option value="'+filtros.zonas[i].nombre+'">'+filtros.zonas[i].nombre+'</option>' )     
+                        }     
+
+                    }
+                    if(index == 2){
+                        for(i=0;i<filtros.regiones.length;i++){
+                            $('#select'+index).append( '<option value="'+filtros.regiones[i].nombre+'">'+filtros.regiones[i].nombre+'</option>' )     
+                        }     
+
+                    }
+
+                    if(index == 3){
+                        for(i=0;i<filtros.comunas.length;i++){
+                            $('#select'+index).append( '<option value="'+filtros.comunas[i].nombre+'">'+filtros.comunas[i].nombre+'</option>' )     
+                        }     
+
+                    }
+                    if(index == 9){
+                        
+                        $('#select'+index).append( '<option value="reclutado">Reclutado</option>' )
+                        $('#select'+index).append( '<option value="preseleccionado">Preseleccionado</option>' )
+                        $('#select'+index).append( '<option value="capacitado">Capacitado</option>' )
+                        $('#select'+index).append( '<option value="seleccionado">Seleccionado</option>' )
+                        $('#select'+index).append( '<option value="contratado">Contratado</option>' )     
+                        $('#select'+index).append( '<option value="rechazado">Rechazado</option>' )
+                        $('#select'+index).append( '<option value="desertó">Desertó</option>' )
+
+                    }
+                    if(index == 10){
+                        
+                        $('#select'+index).append( '<option value="Examinador">Examinador</option>' )
+                        $('#select'+index).append( '<option value="Supervisor">Supervisor</option>' )
+                        $('#select'+index).append( '<option value="Anfitrión">Anfitrión</option>' )
+
+                    }
                      
                 }
-                const unique = (value, index, self) => {
+                /*const unique = (value, index, self) => {
                     return self.indexOf(value) === index
                 }
                 if(index == 11){
@@ -442,7 +502,7 @@ function llenarVista(data){
                     estadoUnico.forEach(function(item){
                         $('#select'+index).append( '<option value="'+item+'">'+item+'</option>' )     
                     });
-                }
+                }*/
                 $('#select'+index).niceSelect();   
 
             })   
@@ -455,8 +515,8 @@ function llenarVista(data){
                 var api = new $.fn.dataTable.Api(settings);
                 api.columns([1]).visible(false);
             }
-            var placeholder = ["","Zona","Región","Comuna","","","","","","","","Estado","Cargo"]
-            this.api().columns([1,2,3,11,12]).every( function (index) {
+            var placeholder = ["","Zona","Región","Comuna","","","","","","Estado","Cargo"]
+            this.api().columns([1,2,3,9,10]).every( function (index) {
                 if(JSON.parse(localStorage.user).id_cargo == 1004 && index == 1){
                     return;
                 }else{
@@ -465,7 +525,7 @@ function llenarVista(data){
                     if(selectFiltered.val()===''){
                         selectFiltered.empty()
                         selectFiltered.append('<option value="">'+placeholder[index]+'</option>')
-                        columnFiltered.column(index,{search:'applied'}).data().unique().each( function ( d, j ) {
+                        /*columnFiltered.column(index,{search:'applied'}).data().unique().each( function ( d, j ) {
                             if(d != null){
                                 if(index == 11){
                                     if(d.deserta == false){
@@ -481,7 +541,68 @@ function llenarVista(data){
                                 }                            
                             }                 
 
-                        } );
+                        } );*/
+                        if(filtroPersonal == true){
+                            if(index == 1){
+                                for(i=0;i<filtros.zonas.length;i++){
+                                    selectFiltered.append( '<option value="'+filtros.zonas[i].nombre+'">'+filtros.zonas[i].nombre+'</option>' )     
+                                }     
+
+                            }
+                            if(index == 2){
+                                for(i=0;i<filtros.regiones.length;i++){
+                                    selectFiltered.append( '<option value="'+filtros.regiones[i].nombre+'">'+filtros.regiones[i].nombre+'</option>' )     
+                                }     
+
+                            }
+
+                            if(index == 3){
+                                for(i=0;i<filtros.comunas.length;i++){
+                                    selectFiltered.append( '<option value="'+filtros.comunas[i].nombre+'">'+filtros.comunas[i].nombre+'</option>' )     
+                                }     
+
+                            }
+
+                            if(index == 9){
+                        
+                                selectFiltered.append( '<option value="reclutado">Reclutado</option>' )
+                                selectFiltered.append( '<option value="preseleccionado">Preseleccionado</option>' )
+                                selectFiltered.append( '<option value="capacitado">Capacitado</option>' )
+                                selectFiltered.append( '<option value="seleccionado">Seleccionado</option>' )
+                                selectFiltered.append( '<option value="contratado">Contratado</option>' )     
+                                selectFiltered.append( '<option value="rechazado">Rechazado</option>' )
+                                selectFiltered.append( '<option value="desertó">Desertó</option>' )
+
+                            }
+
+                            if(index == 10){
+                        
+                                selectFiltered.append( '<option value="Examinador">Examinador</option>' )
+                                selectFiltered.append( '<option value="Supervisor">Supervisor</option>' )
+                                selectFiltered.append( '<option value="Anfitrión">Anfitrión</option>' )
+
+                            }
+
+                        }else{
+            
+                            columnFiltered.column(index,{search:'applied'}).data().unique().each( function ( d, j ) {
+                                if(d != null){
+                                    if(index != 9){
+                                        selectFiltered.append( '<option value="'+d.charAt(0).toUpperCase() + d.slice(1)+'">'+d.charAt(0).toUpperCase() + d.slice(1)+'</option>' )    
+                                    }else{
+                                        if(d.deserta == false){
+                                            valor = d.estado.charAt(0).toUpperCase() + d.estado.slice(1)
+                                        }else{
+                                            valor = 'Desertó'   
+                                        }
+                                        if(valor != ''){     
+                                            arrayEstadoD.push(valor);
+                                        }
+                                    }
+                                }                 
+
+                            } );
+                        } 
                     } 
                 }
 
@@ -489,7 +610,7 @@ function llenarVista(data){
                     return self.indexOf(value) === index
                 }
 
-                if(index == 11){
+                if(index == 9 && filtroPersonal == false){
                     estadoUnico = arrayEstadoD.filter(unique)
                     estadoUnico.forEach(function(item){                      
                         $('#select'+index).append( '<option value="'+item+'">'+item+'</option>' )     
@@ -497,6 +618,10 @@ function llenarVista(data){
                 }
 
                 $('select').niceSelect('update');
+
+                if(filtroPersonal == true){
+                    filtroPersonal = false
+                }
             })
         }
     });
@@ -504,20 +629,20 @@ function llenarVista(data){
     $('#limpiar-filtros-postulacion').click(btnClearFilters);
     
     $("#descargar-listado").on("click", function() {
-         window.location='https://ecep2019.iie.cl/public/api/web/personal/descarga-listado';
+    	zona = $('#select1').val()
+    	region = $('#select2').val()
+    	comuna = $('#select3').val()
+    	estado = $('#select9').val()
+    	cargo = $('#select10').val()
+    	console.log('zona: '+zona+' region: '+region+ ' comuna: '+comuna+ ' estado: '+estado+' cargo: '+cargo)
+        window.location='https://ecep2019.iie.cl/public/api/web/personal/descarga-listado';
     });
-/*    $('#total_anfitrion').html(anfitrion+'/-')
-    $('#total_examinador').html(examinador+'/-')
-    $('#total_examinador_apoyo').html(eApoyo+'/-')
-    $('#tatal_supervisor').html(supervisor+'/-')*/
+
             
-    $('#total_personal').html(data.personal_postulacion.length)
+
     $("#table-postulacion").show();  
 
-    llenarSelects(data)
-    if(JSON.parse(localStorage.user).id_cargo != 1003 && JSON.parse(localStorage.user).id_cargo != 1004){
-        llenarVista2(data)
-    }
+
 
     $.unblockUI();
      
@@ -1170,12 +1295,13 @@ function cargarComunas(input,id){
 }
 
 function btnClearFilters(){
+    filtroPersonal = true;
     $('#select1').val("").niceSelect('update');
     $('#select2').val("").niceSelect('update'); 
     $('#select3').val("").niceSelect('update'); 
-    $('#select4').val("").niceSelect('update'); 
-    $('#select11').val("").niceSelect('update'); 
-    $('#select12').val("").niceSelect('update'); 
+    $('#select9').val("").niceSelect('update'); 
+    $('#select10').val("").niceSelect('update'); 
+   // $('#select12').val("").niceSelect('update'); 
 
     $('#selectZ_1').val("").niceSelect('update');
     $('#selectZ_2').val("").niceSelect('update'); 

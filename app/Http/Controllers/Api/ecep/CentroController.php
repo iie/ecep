@@ -5,6 +5,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Infraestructura\Centro;
 use App\Models\Infraestructura\Zona;
 use App\Models\Infraestructura\ZonaRegion;
+use App\Models\Infraestructura\Estimacion;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -446,6 +447,77 @@ class CentroController extends Controller
         DB::beginTransaction();
         try{
             $centro->save(); 
+        }catch (\Exception $e){
+            DB::rollback();
+            return response()->json(['resultado'=>'error','descripcion'=>'Error al guardar. ()'. $e->getMessage()]);
+        }
+
+        DB::commit();
+        return response()->json(["resultado"=>"ok","descripcion"=>"Se ha guardado con exito"]);
+    }
+
+    public function sedes(Request $request)
+    {
+        
+        $post = $request->all();    
+
+        $validacion = Validator::make($post, [
+            'id_usuario' => 'required|int', 
+        ]); 
+
+        if ($validacion->fails()) {
+            return response()->json(array("resultado"=>"error","descripcion"=>$validacion->errors()), 422); 
+        }
+
+        $sedes = DB::select('SELECT comuna.id_comuna,  
+                estimacion.id_estimacion, region.nombre as region, comuna.nombre as comuna, sede.rbd, 
+                sede.nombre as establecimiento, estimacion.id_sede_ecep, estimacion.id_sede,                            
+                infraestructura.zona.nombre as zona, infraestructura.zona.id_zona, estimacion.id_jefe_sede
+                FROM infraestructura.estimacion as estimacion
+                inner join infraestructura.sede on (estimacion.id_sede = sede.id_sede), core.comuna as comuna, core.region as region
+                inner join infraestructura.zona_region ON (infraestructura.zona_region.id_region = region.id_region)
+                inner join infraestructura.zona ON (infraestructura.zona_region.id_zona = infraestructura.zona.id_zona)
+                where estimacion.id_comuna = comuna.id_comuna 
+                and comuna.id_region = region.id_region
+                order by infraestructura.zona.id_zona, region.orden_geografico, comuna, establecimiento');
+
+        $jefeSede = DB::table('rrhh.persona')
+            ->leftJoin('rrhh.persona_cargo', 'rrhh.persona.id_persona','=','rrhh.persona_cargo.id_persona')
+            ->leftJoin('rrhh.cargo', 'rrhh.persona_cargo.id_cargo','=','rrhh.cargo.id_cargo')
+            ->leftJoin('core.comuna' , 'rrhh.persona.id_comuna_residencia','=','core.comuna.id_comuna')
+            ->leftJoin('core.region' , 'core.comuna.id_region','=','core.region.id_region')
+            ->select('rrhh.persona.nombres','rrhh.persona.apellido_paterno','rrhh.persona.apellido_materno','rrhh.persona.id_persona','rrhh.persona.id_usuario',
+                'core.comuna.id_comuna as comuna','rrhh.persona_cargo.id_persona_cargo','core.comuna.nombre as comuna','core.region.nombre as region')
+            ->where('rrhh.cargo.id_cargo','=', 1010)
+            ->where('rrhh.persona.borrado','=', false)
+            ->orderBy('rrhh.persona.nombres','asc')
+            ->get();
+
+        $datos['sedes'] = $sedes;
+        $datos['jefe_sede'] = $jefeSede;
+        return response()->json($datos);    
+    }
+
+    public function modificarJefeSede(Request $request)
+    {
+        
+        $post = $request->all();    
+
+        $validacion = Validator::make($post, [
+            'id_usuario' => 'required|int', 
+            'id_estimacion' => 'required|int', 
+            /*'id_coordinador' => 'required', */
+        ]); 
+
+        if ($validacion->fails()) {
+            return response()->json(array("resultado"=>"error","descripcion"=>$validacion->errors()), 422); 
+        }
+
+        $estimacion = Estimacion::where('id_estimacion',$post['id_estimacion'])->first();
+        $estimacion->id_jefe_sede = $post['id_jefe_sede'];
+        DB::beginTransaction();
+        try{
+            $estimacion->save(); 
         }catch (\Exception $e){
             DB::rollback();
             return response()->json(['resultado'=>'error','descripcion'=>'Error al guardar. ()'. $e->getMessage()]);
