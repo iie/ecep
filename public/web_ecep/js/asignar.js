@@ -91,8 +91,8 @@ function llenarVista(data){
             array1.push(data[h])	
         }
     }
-    console.log(array1)
-    $('#filtros-dia1').empty();
+
+    $('#filtros-postulacion').empty();
 
     if($.fn.dataTable.isDataTable('#table-asignados')){
         $('#table-asignados').DataTable().destroy();
@@ -155,14 +155,50 @@ function llenarVista(data){
             } 
         ],
         "rowCallback": function( row, data ) {
-        
         },
-        "initComplete": function(settings, json) {     
+        "initComplete": function(settings, json) {  
+            var placeholder = ["","Región","Comuna","","","","","Cargo"]
+            this.api().columns([1,2,7]).every( function (index) {
+                var column = this;
+                var select = $('<select class="form-control col-sm-2 small _filtros" id="select_asig_'+index+'" >'+
+                    '<option value="" selected="selected">'+placeholder[index]+'</option></select>')
+                    .appendTo( $('#filtros-postulacion'))
+                    .on( 'change', function () {
+                        var val = $.fn.dataTable.util.escapeRegex(
+                            $(this).val()
+                        );
+                        column
+                            .search( val ? '^'+val+'$' : '', true, false )
+                            .draw();
+                    } );
+                column.data().unique().each( function ( d, j ) {
+                    $('#select_asig_'+index).append( '<option value="'+d+'">'+d+'</option>' )
+                } );
+                 $('#select_asig_'+index).niceSelect();        
+            })   
+            $('.dataTables_length select').addClass('nice-select small');        
         },
         "drawCallback": function(){
+            var placeholder = ["","Región","Comuna","","","","","Cargo"]
+            this.api().columns([1,2,7]).every(function(index){
+                var columnFiltered = this;
+                var selectFiltered = $("#select_asig_"+index)
+                if(selectFiltered.val()===''){
+                    selectFiltered.empty()
+                    selectFiltered.append('<option value="">'+placeholder[index]+'</option>')
+                    columnFiltered.column(index,{search:'applied'}).data().unique().sort().each( function ( d, j ) {
+                        if (d != null) {
+                            selectFiltered.append( '<option value="'+d+'">'+d+'</option>' )
+                        }
+                    } );
+                }
+                $('select_asig_').niceSelect('update');
+            })
         }
     });
+    $('#limpiar-filtros-postulacion').click(btnClearFilters);
     $("#table-asignados").show(); 
+
 }
 
 function llenarVistaPostulantes(data){
@@ -305,6 +341,7 @@ function cargarComunas(id){
 }
 
 function btnClearFilters(){
+    console.log("Entro");
     $('#select1').val("").niceSelect('update');
     $('#select2').val("").niceSelect('update');
     $('#select8').val("").niceSelect('update');
@@ -314,6 +351,16 @@ function btnClearFilters(){
 
     $('#selectD22').val("").niceSelect('update');
     $('#selectD23').val("").niceSelect('update');
+
+    $('#select_asig_1').val("").niceSelect('update');
+    $('#select_asig_2').val("").niceSelect('update');
+    $('#select_asig_7').val("").niceSelect('update');
+
+    var table = $('#table-asignados').DataTable();
+        table
+         .search( '' )
+         .columns().search( '' )
+         .draw();
 
     var table = $('#table-sede').DataTable();
         table
@@ -330,7 +377,6 @@ function btnClearFilters(){
          .search( '' )
          .columns().search( '' )
          .draw();
-
 }
 
 function reloadPostulantes() { 

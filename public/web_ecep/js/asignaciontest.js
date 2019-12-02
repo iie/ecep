@@ -242,6 +242,7 @@ function llenarVistaEstamacion1(data){
     $('#total_reqAnfitrion_d1').html(contadores.anf_requeridos)
 
     $('#limpiar-filtros-dia1').click(btnClearFilters);
+    console.log("Aquí");
     $('#lista_items-dia1').on('click','._btn-item',redireccionarSede);
     $('#total-items-dia1').html(data.length);
     $("#table-dia1").show(); 
@@ -378,7 +379,6 @@ function llenarVistaAsignar(data){
     $('#lista_items-dia1').on('click','._btn-item',redireccionarSede);
     $('#total-items-dia1').html(data.length);
     $("#table-dia1").show(); 
- 
 }
 
 
@@ -554,6 +554,7 @@ function cargarComunas(id){
 }
 
 function btnClearFilters(){
+    console.log("Entro");
     $('#select1').val("").niceSelect('update');
     $('#select2').val("").niceSelect('update');
     $('#select8').val("").niceSelect('update');

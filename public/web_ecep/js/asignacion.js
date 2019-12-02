@@ -2,30 +2,13 @@ $(document).ready(function(){
     $('#nombre_usuario').html(JSON.parse(localStorage.user).nombres+' '+JSON.parse(localStorage.user).apellidos+' ')
     $('#redirect').css('display','');
     $('#redirect').on('click',redirectModulo);
-    
- /*    $('#guardar_asignacion').on('click',guardar) */
+
     if(JSON.parse(localStorage.user).id_cargo == 1004){
         getPersonalCoordinador();
 
-/*         $('#liZonal').remove();
-        $('#liRegion').remove();
-        $('#liCentro').remove();
-        $('#tabZonal').remove();
-        $('#tabRegional').remove();
-        $('#tabCentro').remove();
-        $('#btn-zonas').remove();
-        $('#btn-zonas-nuevaPersona').remove();
-        $('#btn-zonasRegion').remove();
-        $('#btn-region-nuevaPersona').remove(); */
-
     }else if(JSON.parse(localStorage.user).id_cargo == 1003){
         getPersonalCoordinadorZonal();
-/*         $('#liZonal').remove();
-        $('#liCentro').remove();
-        $('#tabZonal').remove();
-        $('#tabCentro').remove();
-        $('#btn-zonas').remove();
-        $('#btn-zonas-nuevaPersona').remove(); */
+
     }else{
         getPersonal();
     }
@@ -159,7 +142,7 @@ function llenarVistaPersonal(data){
             this.api().columns([1,2,7,8,10]).every( function (index) {
                /*  console.log(index) */
                 var column = this;
-                var select = $('<select class="form-control col-sm-2 btn-light _filtros _filtro'+index+' small"  id="selectR1'+index+'" onchange="exportarItems()" ><option value="" selected="selected">'+placeholder[index]+'</option></select>')
+                var select = $('<select class="form-control col-sm-2 btn-light _filtros _filtro'+index+' small" id="selectP'+index+'" onchange="exportarItems()" ><option value="" selected="selected">'+placeholder[index]+'</option></select>')
                     .appendTo( $('#filtros-postulacion'))
                     .on( 'change', function () {
                         var val = $.fn.dataTable.util.escapeRegex(
@@ -174,7 +157,7 @@ function llenarVistaPersonal(data){
                         select.append( '<option value="'+d+'">'+d+'</option>' ) 
                     }                          
                 } );             
-                $('#selectR1'+index+'').niceSelect();
+                $('#selectP'+index+'').niceSelect();
             })  
             $('.dataTables_length select').addClass('nice-select small');  
         },
@@ -182,7 +165,7 @@ function llenarVistaPersonal(data){
             var placeholder = ["","Región","Comuna","","","","","Día","Sede","","Cargo"]
             this.api().columns([1,2,7,8,10]).every(function(index){
                 var columnFiltered = this;
-                var selectFiltered = $("#selectR1"+index)
+                var selectFiltered = $("#selectP"+index)
                 if(selectFiltered.val()===''){
                     selectFiltered.empty()
                     selectFiltered.append('<option value="">'+placeholder[index]+'</option>')
@@ -192,7 +175,7 @@ function llenarVistaPersonal(data){
                         }
                     } );
                 }
-                $('selectR1').niceSelect('update');
+                $('selectP').niceSelect('update');
             })
         }
     });
@@ -208,33 +191,9 @@ function llenarVistaPersonal(data){
     
     
 
- /*    sedes = data.sedes;
-    salas = data.salas; */
+
 }
 
-/* function asignar(persona, comuna){
-    localStorage.id_persona_cargo = persona;
-    $('#inputSede').html('').append('<option value="-1" selected="">Elegir...</option>') 
-    if(sedes[comuna] != undefined){
-        for(i = 0; i < sedes[comuna].sedes.length; i++){
-            $('#inputSede').append('<option value="'+sedes[comuna].sedes[i].id_sede+'">'+sedes[comuna].sedes[i].nombre_sede+'</option>')   
-        }
-    }
-    
-    $('#asignacionModal').modal({backdrop: 'static', keyboard: false},'show')
-} */
-
-/* function cargarSalas(val){
-    console.log(val)
-    $('#inputSala').html('').append('<option value="-1" selected="">Elegir...</option>') 
-    if(salas[val] != undefined){
-        for(i = 0; i < salas[val].length; i++){
-            $('#inputSala').append('<option value="'+salas[val][i].id_sala+'">'+salas[val][i].nro_sala+'</option>')   
-        }
-        $('#inputSala').prop('disabled',false)
-    }
- 
-} */
 
 function guardar(){
 
@@ -280,11 +239,11 @@ function guardar(){
 
 
 function btnClearFilters(){
-    $('#select1').val("").niceSelect('update');
-    $('#select2').val("").niceSelect('update'); 
-    $('#select7').val("").niceSelect('update'); 
-    $('#select8').val("").niceSelect('update'); 
-    $('#select10').val("").niceSelect('update');
+    $('#selectP1').val("").niceSelect('update');
+    $('#selectP2').val("").niceSelect('update'); 
+    $('#selectP7').val("").niceSelect('update'); 
+    $('#selectP8').val("").niceSelect('update'); 
+    $('#selectP10').val("").niceSelect('update');
 
     var table = $('#table-postulacion').DataTable();
         table
