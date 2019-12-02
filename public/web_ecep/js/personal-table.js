@@ -350,12 +350,14 @@ function llenarVista(filtros){
 
 
             acciones='<button type="button" id="persona_'+data.id_persona+'" onclick="modificar('+data.id_persona+',true)" class="btn btn-primary btn-sm _btn-item"><i class="fa fa-pencil-alt"></i></button>'+
-                         '<button type="button" id="docPersona_'+data.id_persona+'"  class="ml-2 btn btn-primary btn-sm _btn-item"><i class="fas fa-file-alt"></i></button>'  
+                    '<button type="button" id="docPersona_'+data.id_persona+'"  class="ml-2 btn btn-primary btn-sm _btn-item"><i class="fas fa-file-alt"></i></button>'  
                         
 
 
 
             if(JSON.parse(localStorage.user).id_cargo != 1004){
+                $('td:eq(11)', row).html(acciones)
+
                 $('td:eq(9)', row).html(select)
                 $('td:eq(9)', row).find('select').val((data.deserta == false ? data.estado : 'desertó'))
                 if(data.estado=='contratado' || data.estado=='rechazado' || data.deserta == true){
@@ -368,15 +370,14 @@ function llenarVista(filtros){
                 $('td:eq(11)', row).find('#docPersona_'+data.id_persona).data('run',data.run);
                 $('td:eq(11)', row).find('#docPersona_'+data.id_persona).data('id_persona',data.id_persona);
                 $('td:eq(11)', row).find('#docPersona_'+data.id_persona).on('click',verDocs);
-                $('td:eq(11)', row).html(acciones)
+                
    
             }else{
+                $('td:eq('+col2+')', row).html(acciones)
                 if(validarTabla ==  0){
-                    console.log('IF')
                     col = 9
                     col2 = 11
                 } else{
-                    console.log('ELSE')
                     col = 8
                     col2 = 10
                 }
@@ -392,14 +393,17 @@ function llenarVista(filtros){
                 $('td:eq('+col2+')', row).find('#docPersona_'+data.id_persona).data('run',data.run);
                 $('td:eq('+col2+')', row).find('#docPersona_'+data.id_persona).data('id_persona',data.id_persona);
                 $('td:eq('+col2+')', row).find('#docPersona_'+data.id_persona).on('click',verDocs);
-                $('td:eq('+col2+')', row).html(acciones)
+                //$('td:eq('+col2+')', row).html(acciones)
 
             }
         },
         "preDrawCallback": function( oSettings ) {
-          $('#table-postulacion_paginate').on('click',function(){
-            filtroPersonal = true;
-          })
+            $('#table-postulacion_paginate').on('click',function(){
+                filtroPersonal = true;
+            })
+            $('#table-postulacion').find('thead th').on('click',function(){
+                filtroPersonal = true;
+            })
         },
         "initComplete": function(settings, json) {
             validarTabla++;
@@ -542,6 +546,7 @@ function llenarVista(filtros){
                             }                 
 
                         } );*/
+                          console.log('friltropero'+filtroPersonal)
                         if(filtroPersonal == true){
                             if(index == 1){
                                 for(i=0;i<filtros.zonas.length;i++){
@@ -550,6 +555,7 @@ function llenarVista(filtros){
 
                             }
                             if(index == 2){
+                                console.log('redibujo')
                                 for(i=0;i<filtros.regiones.length;i++){
                                     selectFiltered.append( '<option value="'+filtros.regiones[i].nombre+'">'+filtros.regiones[i].nombre+'</option>' )     
                                 }     
@@ -615,14 +621,13 @@ function llenarVista(filtros){
                     estadoUnico.forEach(function(item){                      
                         $('#select'+index).append( '<option value="'+item+'">'+item+'</option>' )     
                     });
-                }
-
-                $('select').niceSelect('update');
-
-                if(filtroPersonal == true){
-                    filtroPersonal = false
-                }
+                }  
             })
+            $('select').niceSelect('update');
+
+            if(filtroPersonal == true){
+                filtroPersonal = false
+            }
         }
     });
  //tablaD.columns( [10] ).visible( false );
@@ -647,6 +652,7 @@ function llenarVista(filtros){
     $.unblockUI();
      
 }
+
 
 function llenarVista2(data){
      
