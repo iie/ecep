@@ -145,7 +145,7 @@ function llenarVistaEstamacion1(data){
             {data: "region"},
             {data: "comuna"},
             {data: "nombre"},
-            {data: "rbd"},
+            {data: "rbd", className: "text-center"},
             {data: "salas", className: "text-center"},
             {data: "examinadores",
                 render: function(data, type, row){
@@ -167,12 +167,8 @@ function llenarVistaEstamacion1(data){
             },
             {data: "opciones",
                 render: function(data, type, row){
-                    
-                   if (row.id_sede!=null) {
-                        return  "<a type='button' id='modificar_"+row.id_sede_ecep+"' class='btn btn-primary btn-sm _btn-item mr-1' title='Asignar'  onclick='redirectAsignacionTest("+ row.dia+","+row.id_sede+","+row.id_estimacion +")' href='#'><i class='fas fa-plus'></i></a>"
-                    } else {
-                        return  "<button disabled type='button' id='modificar_"+row.id_sede_ecep+"' class='btn btn-primary btn-sm _btn-item mr-1' title='Asignar'  href='#'><i class='fas fa-plus'></i></button>"
-                    }
+                    // var idSede = row.id_sede != null ? row.id_sede : -1;
+                    return  "<a type='button' id='modificar_"+row.id_sede_ecep+"' class='btn btn-primary btn-sm _btn-item mr-1' title='Asignar'  onclick='redirectAsignacionTest("+ row.dia+","+row.id_sede+","+row.id_estimacion +","+row.id_comuna+")' href='#'><i class='fas fa-plus'></i></a>"
                 },
                 className: "text-center"
             } 
@@ -303,7 +299,7 @@ function llenarVistaAsignar(data){
             {data: "region"},
             {data: "comuna"},
             {data: "nombre"},
-            {data: "rbd"},
+            {data: "rbd", className: "text-center"},
             {data: "salas", className: "text-center"},
             {data: "opciones",
                 render: function(data, type, row){

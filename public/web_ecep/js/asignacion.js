@@ -5,7 +5,7 @@ $(document).ready(function(){
     
  /*    $('#guardar_asignacion').on('click',guardar) */
     if(JSON.parse(localStorage.user).id_cargo == 1004){
-        //getPersonalCoordinador();
+        getPersonalCoordinador();
 
 /*         $('#liZonal').remove();
         $('#liRegion').remove();
@@ -19,7 +19,7 @@ $(document).ready(function(){
         $('#btn-region-nuevaPersona').remove(); */
 
     }else if(JSON.parse(localStorage.user).id_cargo == 1003){
-        //getPersonalCoordinadorZonal();
+        getPersonalCoordinadorZonal();
 /*         $('#liZonal').remove();
         $('#liCentro').remove();
         $('#tabZonal').remove();
@@ -30,8 +30,6 @@ $(document).ready(function(){
         getPersonal();
     }
 });
-$('<div class="offset-sm-10 col-2 text-right"><button class="btn btn-primary datatable-excel" role="button" id="descargar-lista" type="button"><i class="fas fa-download"></i> Descargar Lista</button></div>')
-    .appendTo($('#table-postulacion_wrapper'));
 function getPersonal(){
      $.ajax({
         method:'POST',
@@ -105,12 +103,6 @@ function getPersonalCoordinador(){
     })
 }
 
-/* anfitrion = 0;
-examinador = 0;
-eApoyo = 0;
-supervisor = 0;
-sedes = '';
-salas = ''; */
 
 function llenarVistaPersonal(data){
 
@@ -123,6 +115,9 @@ function llenarVistaPersonal(data){
     }
 
     var tablaD = $("#table-postulacion").DataTable({
+        columnDefs: [
+            {"className": "dt-center", "targets": [7,9]}
+          ],
         dom: "<'search'f>",
          
         buttons: [
@@ -162,10 +157,10 @@ function llenarVistaPersonal(data){
         "initComplete": function(settings, json) {
             var placeholder = ["","Región","Comuna","","","","","Día","Sede","","Cargo"]
             this.api().columns([1,2,7,8,10]).every( function (index) {
-                // console.log(index)
+               /*  console.log(index) */
                 var column = this;
                 var select = $('<select class="form-control col-sm-2 btn-light _filtros _filtro'+index+' small"  id="selectR1'+index+'" onchange="exportarItems()" ><option value="" selected="selected">'+placeholder[index]+'</option></select>')
-                    .appendTo( $('#postulacion-Table_filters'))
+                    .appendTo( $('#filtros-postulacion'))
                     .on( 'change', function () {
                         var val = $.fn.dataTable.util.escapeRegex(
                             $(this).val()
@@ -173,7 +168,7 @@ function llenarVistaPersonal(data){
                         column
                             .search( val ? '^'+val+'$' : '', true, false )
                             .draw();
-                    } ).insertBefore( '#clear-filtros' );
+                    } ).insertBefore( '#clear-filtros-postulacion' );
                 column.data().unique().sort().each( function ( d, j ) {
                     if (d != null) {
                         select.append( '<option value="'+d+'">'+d+'</option>' ) 
@@ -200,27 +195,16 @@ function llenarVistaPersonal(data){
                 $('selectR1').niceSelect('update');
             })
         }
-/*         "rowCallback": function( row, data ) {
-            if(data.id_cargo == 1006){
-                anfitrion++; 
-            }else if(data.id_cargo == 8){
-                examinador++;
-            }else if(data.id_cargo == 1007){
-                eApoyo++;
-            }else if(data.id_cargo == 9){
-                supervisor++;
-            }
-        }, */
     });
 
     $('#limpiar-filtros-postulacion').click(btnClearFilters);
-    /*$("#descargar-lista").on("click", function() {
+    $("#descargar-lista-postulacion").on("click", function() {
         tablaD.button( '.buttons-excel' ).trigger();
-    });*/
-    $('#total').html(data.personal_postulacion.length)  
+    });
+    $('#total').html(data.personal_postulacion.length);  
     $("#table-postulacion").show();
-    $('#total_asignados').html(data.total_asignados - 1);
-    console.log(data.total_asignados);
+    $('#total_asignados').html(data.total_asignados.length);
+    $('#total_requeridos').html(data.total_requeridos[0].total_requeridos);
     
     
 

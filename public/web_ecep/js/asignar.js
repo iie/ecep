@@ -8,6 +8,23 @@ $(document).ready(function(){
     getDatosSede()
     $('#guardar_sede').click(validarCantidad); 
     loadPostulantes();
+    $('#asignar-sup').on('click',function () {
+        $('#titulo_modal').html('Asignar Supervisor');
+        localStorage.setItem("nom_cargo", "Supervisor");
+        localStorage.setItem("id_cargo", "9");
+    });
+
+    $('#asignar-exa').on('click',function () {
+        $('#titulo_modal').html('Asignar Examinador');
+        localStorage.setItem("nom_cargo", "Examinador");
+        localStorage.setItem("id_cargo", "8");
+    });
+
+    $('#asignar-anf').on('click',function () {
+        $('#titulo_modal').html('Asignar Anfitrión');
+        localStorage.setItem("nom_cargo", "Anfitrión");
+        localStorage.setItem("id_cargo", "1006");
+    });
 });
 
 var region = '';
@@ -23,36 +40,39 @@ function getDatosSede(){
         dataType:'text',
         data: {
             id_usuario: JSON.parse(localStorage.user).id_usuario,
-            id_sede: localStorage.getItem("id_sede")
-
+            id_sede: localStorage.getItem("id_sede"),
+            id_estimacion: localStorage.getItem("id_estimacion")
         },
         success: function(data, textStatus, jqXHR) {
-        data = JSON.parse(data)
-        localStorage.setItem("id_comuna", data.id_comuna);
-        console.log(data)
-        if(data.jefe_sede != null){
-            $('#nombre_jefe_sede').html(data.jefe_sede)
-        }
-        $('#nombre_lab').html(data.nombre)
-        $('#rbd_sede').html(data.rbd)
-        $('#dia_sede').html(localStorage.getItem("dia"))
-        $('#region_sede').html(data.region)
-        $('#comuna_sede').html(data.comuna)
-        sup_req=data.supervisores_requeridos==null?0:data.supervisores_requeridos
-        exa_req=data.examinadores_requeridos==null?0:data.examinadores_requeridos
-        exap_req=data.examinadores_apoyo_requeridos==null?0:data.examinadores_apoyo_requeridos
-        anf_req=data.anfitriones_requeridos==null?0:data.anfitriones_requeridos
-        $('#total_reqSupervisor').html(sup_req)
-        $('#total_reqExaminador').html(exa_req)
-        $('#total_reqExaAP').html(exap_req)
-        $('#total_reqAnfitrion').html(anf_req)
-        $('#total_cantSupervisor').html(data.supervisores_asignados)
-        $('#total_cantExaminador').html(data.examinadores_asignados)
-        $('#total_cantExaAP').html(data.examinadores_apoyo_asignados)
-        $('#total_cantAnfitrion').html(data.anfitriones_asignados)
-        reloadPostulantes()
-
-           // llenarVista(data)
+            data = JSON.parse(data)
+            if(data.respuesta == "error"){
+                showFeedback("error", data.descripcion ,"Obtener Sede");
+            }else{
+                if(data.id_sede == undefined){
+                    $('#nombre_lab').html(data.nombre)
+                }
+                if(data.jefe_sede != null){
+                    $('#nombre_jefe_sede').html(data.jefe_sede)
+                }
+                $('#nombre_lab').html(data.nombre)
+                $('#rbd_sede').html(data.rbd)
+                $('#dia_sede').html(localStorage.getItem("dia"))
+                $('#region_sede').html(data.region)
+                $('#comuna_sede').html(data.comuna)
+                sup_req=data.supervisores_requeridos==null?0:data.supervisores_requeridos
+                exa_req=data.examinadores_requeridos==null?0:data.examinadores_requeridos
+                exap_req=data.examinadores_apoyo_requeridos==null?0:data.examinadores_apoyo_requeridos
+                anf_req=data.anfitriones_requeridos==null?0:data.anfitriones_requeridos
+                $('#total_reqSupervisor').html(sup_req)
+                $('#total_reqExaminador').html(exa_req)
+                $('#total_reqExaAP').html(exap_req)
+                $('#total_reqAnfitrion').html(anf_req)
+                $('#total_cantSupervisor').html(data.supervisores_asignados)
+                $('#total_cantExaminador').html(data.examinadores_asignados)
+                $('#total_cantExaAP').html(data.examinadores_apoyo_asignados)
+                $('#total_cantAnfitrion').html(data.anfitriones_asignados)
+                reloadPostulantes()
+            }
         },
         error: function(jqXHR, textStatus, errorThrown) {
             showFeedback("error","Error en el servidor","Datos incorrectos");
@@ -67,23 +87,19 @@ function llenarVista(data){
     data = JSON.parse(data)
     array1=[]
     for(h = 0; h < data.length; h++){
-    	
-		if(data[h].nombre_rol == "Supervisor"){
-			
-        	if (data[h].id_estimacion == localStorage.getItem("id_estimacion")) {
-        		array1.push(data[h])	
-        	}
+        if (data[h].id_estimacion == localStorage.getItem("id_estimacion")) {
+            array1.push(data[h])	
         }
     }
-   
+    console.log(array1)
     $('#filtros-dia1').empty();
 
-    if($.fn.dataTable.isDataTable('#table-supervisor')){
-        $('#table-supervisor').DataTable().destroy();
-        $('#lista_supervisor').empty();
+    if($.fn.dataTable.isDataTable('#table-asignados')){
+        $('#table-asignados').DataTable().destroy();
+        $('#lista_asignados').empty();
     }
 
-    var tablaD = $("#table-supervisor").DataTable({
+    var tablaD = $("#table-asignados").DataTable({
         dom: "<'search'f>",
         buttons: [
             {
@@ -120,6 +136,7 @@ function llenarVista(data){
             {data: "nombres"},
             {data: "apellido_paterno"},
             {data: "apellido_materno"},
+            {data: "nombre_rol"},
             {data: "puntaje", className: "text-center",
                 render: function(data, type, row){
                     if (data==null) {
@@ -145,279 +162,9 @@ function llenarVista(data){
         "drawCallback": function(){
         }
     });
-    $("#table-supervisor").show(); 
+    $("#table-asignados").show(); 
 }
-function llenarVista2(data){
 
-    data = JSON.parse(data)
-    
-    array1=[]
-    for(h = 0; h < data.length; h++){
-		if(/*data[h].nombre_rol == localStorage.getItem("nom_cargo") || */data[h].nombre_rol == "Examinador"){
-        	if (data[h].id_estimacion == localStorage.getItem("id_estimacion")) {
-        		array1.push(data[h])	
-        	}
-        }
-    }
-    console.log(data)
-    $('#filtros-dia1').empty();
-    //if(array1.length != 0){
-        if($.fn.dataTable.isDataTable('#table-examinador')){
-            $('#table-examinador').DataTable().destroy();
-            $('#lista_examinador').empty();
-        }
-    //}
-
-    var tablaD = $("#table-examinador").DataTable({
-        dom: "<'search'f>",
-        buttons: [
-            {
-                extend: 'excel',
-                title: 'Aplicación día 1',
-                exportOptions: {
-                    modifier: {
-                        page: 'current'
-                    },
-                    columns: [ 0, 1, 2, 3, 4, 5, 6]
-                }
-            }
-        ],
-        lengthMenu: [[10, 15, 20, -1], [10, 15, 20, "Todos"]],
-        language:spanishTranslation,
-        lengthChange: true,
-        info: false,
-        /*columnDefs: [
-            { targets: [0,1,2,3,5,6,7], searchable: false }
-        ],*/
-        paging: false,
-        displayLength: -1,
-        ordering: true, 
-        order: [],
-        search: true,
-        data: array1,
-        responsive: true, 
-        columns:[
-            {data: "nro",
-                render: function(data, type, full, meta){
-                    return  meta.row + 1;
-                }
-            },
-            {data: "region"},
-            {data: "comuna"},
-            {data: "run"},
-            {data: "nombres"},
-            {data: "apellido_paterno"},
-            {data: "apellido_materno"},
-            {data: "puntaje", className: "text-center",
-                render: function(data, type, row){
-                    if (data==null) {
-                        return  '-' 
-                    }else{
-                       return  data  
-                    }
-                   
-                }
-            },
-            {data: "asignar",
-                render: function(data, type, row){
-                    
-                    return  '<button type="button" id="quitar_'+row.id_persona+'" onclick="quitarAsignacion('+row.id_persona_asignacion+')" class="btn btn-primary btn-sm _btn-item"><i class="fas fa-minus"></i></button>'
-                            //'        
-                },
-                className: "text-center"
-            } 
-        ],
-        "rowCallback": function( row, data ) {
-
-        
-        },
-        "initComplete": function(settings, json) {   
-        },
-        "drawCallback": function(){
-        }
-    });
-
-    
-    $("#table-examinador").show(); 
-
-}
-function llenarVista3(data){
-
-    data = JSON.parse(data)
-    
-   array1=[]
-    for(h = 0; h < data.length; h++){
-		if(data[h].nombre_rol == "Examinador de Apoyo"){
-        	if (data[h].id_estimacion == localStorage.getItem("id_estimacion")) {
-        		array1.push(data[h])	
-        	}
-        }
-    }
-    
-    $('#filtros-dia1').empty();
-
-    if($.fn.dataTable.isDataTable('#table-examap')){
-        $('#table-examap').DataTable().destroy();
-        $('#lista_examap').empty();
-    }
-
-    var tablaD = $("#table-examap").DataTable({
-        dom: "<'search'f>",
-        buttons: [
-            {
-                extend: 'excel',
-                title: 'Aplicación día 1',
-                exportOptions: {
-                    modifier: {
-                        page: 'current'
-                    },
-                    columns: [ 0, 1, 2, 3, 4, 5, 6]
-                }
-            }
-        ],
-        lengthMenu: [[10, 15, 20, -1], [10, 15, 20, "Todos"]],
-        language:spanishTranslation,
-        lengthChange: true,
-        info: false,
-        paging: false,
-        displayLength: -1,
-        ordering: true, 
-        order: [],
-        search: true,
-        data: array1,
-        responsive: true, 
-        columns:[
-            {data: "nro",
-                render: function(data, type, full, meta){
-                    return  meta.row + 1;
-                }
-            },
-            {data: "region"},
-            {data: "comuna"},
-            {data: "run"},
-            {data: "nombres"},
-            {data: "apellido_paterno"},
-            {data: "apellido_materno"},
-            {data: "puntaje", className: "text-center",
-                render: function(data, type, row){
-                    if (data==null) {
-                        return  '-' 
-                    }else{
-                       return  data  
-                    }
-                   
-                }
-            },
-            {data: "asignar",
-                render: function(data, type, row){
-                    
-                    return  '<button type="button" id="quitar_'+row.id_persona+'" onclick="quitarAsignacion('+row.id_persona_asignacion+')" class="btn btn-primary btn-sm _btn-item"><i class="fas fa-minus"></i></button>'      
-                },
-                className: "text-center"
-            } 
-        ],
-        "rowCallback": function( row, data ) {
-
-        
-        },
-        "initComplete": function(settings, json) {
-        },
-        "drawCallback": function(){
-        }
-    });
-
-    
-    $("#table-examap").show(); 
-
-}
-function llenarVista4(data){
-
-    data = JSON.parse(data)
-    
-   	array1=[]
-    for(h = 0; h < data.length; h++){
-		if(data[h].nombre_rol == "Anfitrión"){
-        	if (data[h].id_estimacion == localStorage.getItem("id_estimacion")) {
-        		array1.push(data[h])	
-        	}
-        }
-    }
-    
-    $('#filtros-dia1').empty();
-    if($.fn.dataTable.isDataTable('#table-anfitrion')){
-        $('#table-anfitrion').DataTable().destroy();
-        $('#lista_anfitrion').empty();
-    }
-
-    var tablaD = $("#table-anfitrion").DataTable({
-        dom: "<'search'f>",
-        buttons: [
-            {
-                extend: 'excel',
-                title: 'Aplicación día 1',
-                exportOptions: {
-                    modifier: {
-                        page: 'current'
-                    },
-                    columns: [ 0, 1, 2, 3, 4, 5, 6]
-                }
-            }
-        ],
-        lengthMenu: [[10, 15, 20, -1], [10, 15, 20, "Todos"]],
-        language:spanishTranslation,
-        lengthChange: true,
-        info: false,
-        paging: false,
-        displayLength: -1,
-        ordering: true, 
-        order: [],
-        search: true,
-        data: array1,
-        responsive: true, 
-        columns:[
-            {data: "nro",
-                render: function(data, type, full, meta){
-                    return  meta.row + 1;
-                }
-            },
-            {data: "region"},
-            {data: "comuna"},
-            {data: "run"},
-            {data: "nombres"},
-            {data: "apellido_paterno"},
-            {data: "apellido_materno"},
-            {data: "puntaje", className: "text-center",
-                render: function(data, type, row){
-                    if (data==null) {
-                        return  '-' 
-                    }else{
-                       return  data  
-                    }
-                   
-                }
-            },
-            {data: "asignar",
-                render: function(data, type, row){
-                    
-                    return  '<button type="button" id="quitar_'+row.id_persona+'" onclick="quitarAsignacion('+row.id_persona_asignacion+')" class="btn btn-primary btn-sm _btn-item"><i class="fas fa-minus"></i></button>'    
-                },
-                className: "text-center"
-            } 
-        ],
-        "rowCallback": function( row, data ) {
-
-        
-        },
-        "initComplete": function(settings, json) {
-        },
-        "drawCallback": function(){
-        }
-    });
-
-    
-    $("#table-anfitrion").show(); 
-
-}
 function llenarVistaPostulantes(data){
     data = JSON.parse(data)
 
@@ -538,15 +285,13 @@ function llenarVistaPostulantes(data){
     $("#table-dia1").show(); 
  
 }
+
 function asignarDesplegar(){
-    
     limpiarNueva()
-   
     loadPostulantes()
     $('#nuevaSedeModal').modal({backdrop: 'static', keyboard: false},'show')
 }
 
- 
 function cargarComunas(id){
     $('#inputComuna').html('')
     $('#inputComuna').append('<option value="-1" selected="">Elegir...</option>') 
@@ -588,8 +333,7 @@ function btnClearFilters(){
 
 }
 
-function reloadPostulantes() {
-    
+function reloadPostulantes() { 
     $.ajax({
         method:'POST',
         url: webservice+'/asignacion/obtenerCapacitados',
@@ -603,27 +347,7 @@ function reloadPostulantes() {
             id_comuna: localStorage.getItem("id_comuna")
         },
         success: function(data, textStatus, jqXHR) {
-            if ($(".active").attr('id')=='tab-supervisor') {
-                $('#titulo_modal').html('Asignar Supervisor');
-                localStorage.setItem("nom_cargo", "Supervisor");
-                localStorage.setItem("id_cargo", "9");
-                llenarVista(data)
-            }else if ($(".active").attr('id')=='tab-examinador') {
-                $('#titulo_modal').html('Asignar Examinador');
-                localStorage.setItem("nom_cargo", "Examinador");
-                localStorage.setItem("id_cargo", "8");
-                llenarVista2(data)
-            }else if ($(".active").attr('id')=='tab-ExaminadorAP') {
-                $('#titulo_modal').html('Asignar Examinador Apoyo');
-               localStorage.setItem("nom_cargo", "Examinador de Apoyo");
-               localStorage.setItem("id_cargo", "1007");
-               llenarVista3(data)
-            }else if ($(".active").attr('id')=='tab-anfitrion') {
-                $('#titulo_modal').html('Asignar Anfitrión');
-                localStorage.setItem("nom_cargo", "Anfitrión");
-                localStorage.setItem("id_cargo", "1006");
-                llenarVista4(data)
-            }
+            llenarVista(data)
         },
         error: function(jqXHR, textStatus, errorThrown) {
             showFeedback("error","Error en el servidor","Datos incorrectos");
@@ -632,8 +356,7 @@ function reloadPostulantes() {
     })
 }
 
-function loadPostulantes() {
-    
+function loadPostulantes() {  
     $.ajax({
         method:'POST',
         url: webservice+'/asignacion/obtenerCapacitados',
@@ -647,32 +370,7 @@ function loadPostulantes() {
             id_comuna: localStorage.getItem("id_comuna")
         },
         success: function(data, textStatus, jqXHR) {
-           llenarVista(data)
-           llenarVista2(data)
-           llenarVista3(data)
-           llenarVista4(data)
-            if ($(".active").attr('id')=='tab-supervisor') {
-            	$('#titulo_modal').html('Asignar Supervisor');
-                localStorage.setItem("nom_cargo", "Supervisor");
-                localStorage.setItem("id_cargo", "9");
-                // llenarVista(data)
-            }else if ($(".active").attr('id')=='tab-examinador') {
-            	$('#titulo_modal').html('Asignar Examinador');
-                localStorage.setItem("nom_cargo", "Examinador");
-                localStorage.setItem("id_cargo", "8");
-                // llenarVista2(data)
-            }else if ($(".active").attr('id')=='tab-ExaminadorAP') {
-            	$('#titulo_modal').html('Asignar Examinador Apoyo');
-               localStorage.setItem("nom_cargo", "Examinador de Apoyo");
-               localStorage.setItem("id_cargo", "1007");
-               // llenarVista3(data)
-            }else if ($(".active").attr('id')=='tab-anfitrion') {
-            	$('#titulo_modal').html('Asignar Anfitrión');
-                localStorage.setItem("nom_cargo", "Anfitrión");
-                localStorage.setItem("id_cargo", "1006");
-                // llenarVista4(data)
-            }
-            
+            llenarVista(data)
             llenarTablaAsignacion(data)
         },
         error: function(jqXHR, textStatus, errorThrown) {
@@ -765,38 +463,35 @@ function llenarTablaAsignacion(data){
     $("#table-postulados").show(); 
 }
 
-function llenarTablaAsignacion1(data){
-}
-
 function quitarAsignacion(data){
 	$.ajax({
-            method:'POST',
-            url: webservice+'/asignacion/desasignar',
-            headers:{
-               't': JSON.parse(localStorage.user).token
+        method:'POST',
+        url: webservice+'/asignacion/desasignar',
+        headers:{
+            't': JSON.parse(localStorage.user).token
+        },
+        crossDomain: true,
+        dataType:'text',
+        data :{ 
+                id_usuario: JSON.parse(localStorage.user).id_usuario,
+                id_persona_asignacion: data,
             },
-            crossDomain: true,
-            dataType:'text',
-            data :{ 
-                    id_usuario: JSON.parse(localStorage.user).id_usuario,
-                    id_persona_asignacion: data,
-                },
-            success: function(data, textStatus, jqXHR) {
-                console.log(data)
-                data = JSON.parse(data)
-                if (data.resultado == "ok") {
-                    showFeedback("success", data.descripcion, "OK");
-                    getDatosSede()
-                } else {
-                    showFeedback("error","Error al eliminar","Error");
-                    console.log("invalidos");
-                }
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-                showFeedback("error","Error en el servidor","Datos incorrectos");
-                console.log("error del servidor, datos incorrectos");
+        success: function(data, textStatus, jqXHR) {
+            console.log(data)
+            data = JSON.parse(data)
+            if (data.resultado == "ok") {
+                showFeedback("success", data.descripcion, "OK");
+                getDatosSede()
+            } else {
+                showFeedback("error","Error al eliminar","Error");
+                console.log("invalidos");
             }
-        })
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            showFeedback("error","Error en el servidor","Datos incorrectos");
+            console.log("error del servidor, datos incorrectos");
+        }
+    })
 }
 
 function searchRBD() {
@@ -860,7 +555,6 @@ function completarDatos(datos) {
 function validarCantidad(){
     array =[]
     $("input[type=checkbox]:checked").each(function(){
-     //cada elemento seleccionado
      
     array.push({id_persona:$(this).val()})
     });
@@ -881,28 +575,27 @@ function validarCantidad(){
             } else {
                 showFeedback("error","La cantidad selecionada excede a los requeridos", "No es posible asignar")	
             }
-                //console.log($('#total_reqSupervisor').text())
         } else {
             showFeedback("error","la cantidad de supervisores actuales ya se encuentra con todas las asignaciones necesarias", "No es posible asignar")
         }
      }
-     var cantidad_requeridos_ex=parseInt($('#total_reqExaminador').text());
-     var cantidad_asignados_ex=parseInt($('#total_cantExaminador').text());
-     
-     var cupo_ex=cantidad_requeridos_ex-cantidad_asignados_ex
+    var cantidad_requeridos_ex=parseInt($('#total_reqExaminador').text());
+    var cantidad_asignados_ex=parseInt($('#total_cantExaminador').text());
+    
+    var cupo_ex=cantidad_requeridos_ex-cantidad_asignados_ex
     if (localStorage.nom_cargo=="Examinador") {
         if (cantidad_asignados_ex<=cantidad_requeridos_ex) {
             if (array.length<=cantidad_requeridos_ex) {
                 if (array.length<=cupo_ex) {
                     guardarSede(array)
                 }else{
-                    showFeedback("error","la cantidad selecionada exede a los necesitados", "No es posible asignar")
+                    showFeedback("error","La cantidad selecionada excede a los requeridos", "No es posible asignar")
                 }
             } else {
-                showFeedback("error","la cantidad selecionada exede a los necesitados", "No es posible asignar")	
+                showFeedback("error","La cantidad selecionada excede a los requeridos", "No es posible asignar")	
             }
         } else {
-            showFeedback("error","la cantidad de supervisores actuales ya se encuentra con todas las asignaciones necesarias", "No es posible asignar")
+            showFeedback("error","La cantidad de supervisores actuales ya se encuentra con todas las asignaciones necesarias", "No es posible asignar")
         }
     }
 
@@ -917,13 +610,13 @@ function validarCantidad(){
                 if (array.length<=cupo_exap) {
                     guardarSede(array)
                 }else{
-                    showFeedback("error","la cantidad selecionada exede a los necesitados", "No es posible asignar")
+                    showFeedback("error","La cantidad selecionada excede a los requeridos", "No es posible asignar")
                 }
             } else {
-            showFeedback("error","la cantidad selecionada exede a los necesitados", "No es posible asignar")	
+            showFeedback("error","La cantidad selecionada excede a los requeridos", "No es posible asignar")	
             }
         } else {
-            showFeedback("error","la cantidad de supervisores actuales ya se encuentra con todas las asignaciones necesarias", "No es posible asignar")
+            showFeedback("error","La cantidad de supervisores actuales ya se encuentra con todas las asignaciones necesarias", "No es posible asignar")
         }
     }
     var cantidad_requeridos_anfi=parseInt($('#total_reqAnfitrion').text());
@@ -937,13 +630,13 @@ function validarCantidad(){
                 if (array.length<=cupo_anfi) {
                     guardarSede(array)
                 }else{
-                    showFeedback("error","la cantidad selecionada exede a los necesitados", "No es posible asignar")
+                    showFeedback("error","La cantidad selecionada excede a los requeridos", "No es posible asignar")
                 }
             } else {
-                showFeedback("error","la cantidad selecionada exede a los necesitados", "No es posible asignar")	
+                showFeedback("error","La cantidad selecionada excede a los requeridos", "No es posible asignar")	
             }
         } else {
-            showFeedback("error","la cantidad de supervisores actuales ya se encuentra con todas las asignaciones necesarias", "No es posible asignar")
+            showFeedback("error","La cantidad de supervisores actuales ya se encuentra con todas las asignaciones necesarias", "No es posible asignar")
         }
     }
 }
@@ -970,6 +663,7 @@ function guardarSede(data){
                 if (data.resultado == "ok") {
                     showFeedback("success", data.descripcion, "OK");
                     $('#nuevaSedeModal').modal('hide');
+                    loadPostulantes()
                     getDatosSede()
                 } else {
                     showFeedback("error","Error al guardar","Error");
@@ -1060,9 +754,7 @@ function cargarCentros(data){
 }
 
 function validar(){
-
     valida = true
-
     if($('#inputRBD').val().length < 1){
         valida = false
         $('#inputRBD').addClass('is-invalid')

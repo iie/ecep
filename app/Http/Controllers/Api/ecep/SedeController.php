@@ -444,28 +444,37 @@ class SedeController extends Controller
 
 		$validator = Validator::make($request->all(), [
             'id_usuario' => 'required|int',
-            'id_sede' => 'required',
+			'id_sede' => 'nullable',
+			'id_estimacion' => 'required|int',
         ]);
 
         if ($validator->fails()) {
             return response()->json(array("respuesta"=>"error","descripcion"=>$validator->errors()), 422);
-        }
+		}
+		
+		$est = Estimacion::find($post["id_estimacion"]);
 
-		$sede = Sede::find($post["id_sede"]);
-		$est = Estimacion::where('id_sede', $sede->id_sede)->first();
+		if(!isset($est->id_estimacion)){
+			return response()->json(array("respuesta"=>"error","descripcion"=>"Estimación no encontrada."));
+		}
+
+		if($post["id_sede"] != 'null'){
+			$sede = Sede::find($post["id_sede"]);
+		}
+
 		if($est->id_jefe_sede != null){
 			$pers_cargo = PersonaCargo::find($est->id_jefe_sede);
 			$pers = Persona::find($pers_cargo->id_persona);
 			if(isset($pers)){
 				$nombre_jefe = $pers->nombres . " " . $pers->apellido_paterno;
 			}else{
-				
+				$nombre_jefe = null;
 			}
 		}else{
 			$nombre_jefe = null;
 		}
 		
-		$comuna = Comuna::find($sede->id_comuna);
+		$comuna = Comuna::find($est->id_comuna);
 		$region = Region::find($comuna->id_region);
 
 		$sede["examinadores_requeridos"] = isset($est->examinadores) ? $est->examinadores : null;

@@ -34,7 +34,7 @@
 		<script type="text/javascript" src="vendor/bootstrap_v4.3.1/js/bootstrap.min.js"></script>
 		<script type="text/javascript" src="vendor/datatables/jquery.dataTables.min.js"></script>
 		<script type="text/javascript" src="vendor/utils.js"></script>
-		<script type="text/javascript" src="js/asignar_test.js"></script>
+		<script type="text/javascript" src="js/asignar.js"></script>
 		<script type="text/javascript" src="vendor/jquery-nice-select-1.1.0/js/jquery.nice-select.js"></script>
 
 		<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.1.2/js/dataTables.buttons.min.js"></script>
@@ -76,9 +76,9 @@
 		<div  class="_principal">
 			<div class="page-content _padding-pages"  >
 	            <div class="row pt-3 pb-3 _info2">
-	            	<div class="col-3 text-center">
+	            	<div class="col-2 text-center">
 	            		<h4 class="_text-dato">Sede</h4>
-	                    <h4 class="nombre_modulo" id="nombre_lab"> nom lab</h4>
+	                    <h4 class="nombre_modulo" id="nombre_lab">Sede no asignada</h4>
 	            	</div>
 	            	<div class="col-2 text-center">
 	            		<h4 class="_text-dato">Día</h4>
@@ -95,75 +95,51 @@
 	            	<div class="col-2 text-center">
 	            		<h4 class="_text-dato">RBD</h4>
 	                    <h4 class="nombre_modulo" id="rbd_sede"></h4>
-	            	</div>
+					</div>
+					<div class="col-2 text-center">
+						<h4 class="_text-dato">Jefe Sede</h4>
+						<h4 class="nombre_modulo" id="nombre_jefe_sede">No asignado</h4>
+					</div>
 	            </div>
 				<div  class="container-fluid _card-rounded mt-3 pt-4" >
 					<div class="row pt-3 pb-3 _info2">
 						<div class="col-2 text-center" >
-                            <label class="_text-legend">Supervisores Requeridos</label>
+                            <label class="_text-legend">Supervisores Asignados</label>
                             
                             <div class="row" style="margin-left: 39%;"> 
                              	<p class="_text-dato" id="total_cantSupervisor"></p> <p class="_text-dato" id="">/</p> <p class="_text-dato" id="total_reqSupervisor"></p>
                             </div>
                         </div>
 						<div class="col-2 text-center">
-                            <label class="_text-legend">Examinador Requeridos</label>
+                            <label class="_text-legend">Examinadores Asignados</label>
                             
                             <div class="row" style="margin-left: 39%;"> 
                              	<p class="_text-dato" id="total_cantExaminador"></p> <p class="_text-dato" id="">/</p> <p class="_text-dato" id="total_reqExaminador"></p>
                             </div>
                         </div>
                         <div class="col-2 text-center">
-                            <label class="_text-legend">Examinador AP Requeridos</label>
-                            
-                             <div class="row" style="margin-left: 39%;"> 
-                             	<p class="_text-dato" id="total_cantExaAP"></p> <p class="_text-dato" id="">/</p> <p class="_text-dato" id="total_reqExaAP"></p>
-                             </div>
-                        </div>
-                        <div class="col-2 text-center">
-                            <label class="_text-legend">Anfitrión Requeridos</label>
+                            <label class="_text-legend">Anfitriones Asignados</label>
                             <div class="row" style="margin-left: 39%;"> 
                             	<p class="_text-dato" id="total_cantAnfitrion"></p> <p class="_text-dato" id="">/</p> <p class="_text-dato" id="total_reqAnfitrion"></p>
                             </div>
-                            
                         </div>
 					</div>
-					<div class="col-12 text-center">
-						<label>Jefe de Sede: <span id="nombre_jefe_sede">No Asignado</span></label>
-						<!-- <select class="form-control custom-select" style="width: 20%;" name="select-view" id="select-view">
-                            <option value="">selecionar jefe de sede</option>
-                            <option value="1">Juan</option>
-                            <option value="2">pedro</option>
-                            
-                        </select> -->
-					</div>
-					<ul class="nav nav-tabs" id="myTab" role="tablist">
-                        <li class="nav-item">
-                            <a class="nav-link active" id="tab-supervisor" data-toggle="tab" href="#tabSupervisor" role="tab" aria-controls="tabSupervisor" aria-selected="true">Supervisor</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" id="tab-examinador" data-toggle="tab" href="#tabExaminador" role="tab" aria-controls="tabExaminador" aria-selected="false">Examinador</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" id="tab-ExaminadorAP" data-toggle="tab" href="#tabtabExaminadorAP" role="tab" aria-controls="tabtabExaminadorAP" aria-selected="false">Examinador AP</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" id="tab-anfitrion" data-toggle="tab" href="#tabanfitrion" role="tab" aria-controls="tabanfitrion" aria-selected="false">Anfitrión</a>
-                        </li>
-                    </ul>
+
                     <div class="tab-content pt-4" id="myTabContent">
                         <div class="tab-pane fade show active" id="tabSupervisor" role="tabpanel" aria-labelledby="tab-supervisor">
                         	<div class="row" id="supervisor-prueba-Table_filters">
-								<div class="row col-8 m-0" id="filtros"></div>
-								<div class="col-1 text-right" id="clear-filtros">
-									<button class="btn btn-primary btn-acciones" role="button" id="crear-items" type="button" onclick="asignarDesplegar()">
-										<i class="fas fa-plus-circle"></i>Asignar</button>
-									<!-- <button class="btn limpiar-filtros" role="button" id="limpiar-filtros" type="button">Limpiar Filtros</button> -->
+								<div class="offset-6 col-6 text-right" id="clear-filtros">
+										<button class="btn btn-primary btn-acciones" role="button" id="asignar-sup" type="button" onclick="asignarDesplegar()">
+											<i class="fas fa-plus-circle"></i>Asignar Supervisor</button>
+										<button class="btn btn-primary btn-acciones ml-1" role="button" id="asignar-exa" type="button" onclick="asignarDesplegar()">
+											<i class="fas fa-plus-circle"></i>Asignar Examinador</button>
+										<button class="btn btn-primary btn-acciones ml-2" role="button" id="asignar-anf" type="button" onclick="asignarDesplegar()">
+											<i class="fas fa-plus-circle"></i>Asignar Anfitrión</button>
 								</div>
 							</div>
 
 							<div class="col-sm-12 pt-5 pl-5 pr-5 mb-5" style="padding-top: 1.5rem!important; padding-left: 0px !important; padding-right: 0px !important;">										
-								<table id="table-supervisor" class="stripe table table-hover _table-link dataTable no-footer" style="width:100%;">
+								<table id="table-asignados" class="stripe table table-hover _table-link dataTable no-footer" style="width:100%;">
 									<thead>			
 										<tr>
 										  	<th>N°</th>
@@ -171,122 +147,19 @@
 											<th>COMUNA</th>								
 											<th>RUN</th>
 										  	<th>NOMBRE</th>		
-											
 											<th>APELLIDO PATERNO</th>	
-											
-											<th>APELLIDO MATERNO</th>	
+											<th>APELLIDO MATERNO</th>
+											<th>CARGO</th>
 											<th>PUNTAJE</th>
 											<th>ACCION</th>
 			
 										</tr>
 									</thead>
-									<tbody id="lista_supervisor">
+									<tbody id="lista_asignados">
 									</tbody>
 								</table>
 							</div>
- 						</div>
- 						<div class="tab-pane fade" id="tabExaminador" role="tabpanel" aria-labelledby="tab-examinador">
-                        	<div class="row" id="supervisor-prueba-Table_filters">
-								<div class="row col-8 m-0" id="filtros"></div>
-								<div class="col-1 text-right" id="clear-filtros">
-									<button class="btn btn-primary btn-acciones" role="button" id="crear-items" type="button" onclick="asignarDesplegar()">
-										<i class="fas fa-plus-circle"></i>Asignar</button>
-									<!-- <button class="btn limpiar-filtros" role="button" id="limpiar-filtros" type="button">Limpiar Filtros</button> -->
-								</div>
-							</div>
-
-							<div class="col-sm-12 pt-5 pl-5 pr-5 mb-5" style="padding-top: 1.5rem!important; padding-left: 0px !important; padding-right: 0px !important;">										
-								<table id="table-examinador" class="stripe table table-hover _table-link dataTable no-footer" style="width:100%;">
-									<thead>			
-										<tr>
-										  	<th>N°</th>
-										  	<th>REGION</th>	
-											<th>COMUNA</th>								
-											<th>RUN</th>
-										  	<th>NOMBRE</th>		
-											
-											<th>APELLIDO PATERNO</th>	
-											
-											<th>APELLIDO MATERNO</th>	
-											<th>PUNTAJE</th>
-											<th>ASIGNAR</th>
-			
-										</tr>
-									</thead>
-									<tbody id="lista_examinador">
-									</tbody>
-								</table>
-							</div>
- 						</div>
- 						<div class="tab-pane fade " id="tabtabExaminadorAP" role="tabpanel" aria-labelledby="tab-tabExaminador">
-                        	<div class="row" id="supervisor-prueba-Table_filters">
-								<div class="row col-8 m-0" id="filtros"></div>
-								<div class="col-1 text-right" id="clear-filtros">
-									<button class="btn btn-primary btn-acciones" role="button" id="crear-items" type="button" onclick="asignarDesplegar()">
-										<i class="fas fa-plus-circle"></i>Asignar</button>
-									<!-- <button class="btn limpiar-filtros" role="button" id="limpiar-filtros" type="button">Limpiar Filtros</button> -->
-								</div>
-							</div>
-
-							<div class="col-sm-12 pt-5 pl-5 pr-5 mb-5" style="padding-top: 1.5rem!important; padding-left: 0px !important; padding-right: 0px !important;">										
-								<table id="table-examap" class="stripe table table-hover _table-link dataTable no-footer" style="width:100%;">
-									<thead>			
-										<tr>
-										  	<th>N°</th>
-										  	<th>REGION</th>	
-											<th>COMUNA</th>								
-											<th>RUN</th>
-										  	<th>NOMBRE</th>		
-											
-											<th>APELLIDO PATERNO</th>	
-											
-											<th>APELLIDO MATERNO</th>	
-											<th>PUNTAJE</th>
-											<th>ASIGNAR</th>
-			
-										</tr>
-									</thead>
-									<tbody id="lista_examap">
-									</tbody>
-								</table>
-							</div>
- 						</div>
- 						<div class="tab-pane fade " id="tabanfitrion" role="tabpanel" aria-labelledby="tab-anfitrion">
-                        	<div class="row" id="supervisor-prueba-Table_filters">
-								<div class="row col-8 m-0" id="filtros"></div>
-								<div class="col-1 text-right" id="clear-filtros">
-									<button class="btn btn-primary btn-acciones" role="button" id="crear-items" type="button" onclick="asignarDesplegar()">
-										<i class="fas fa-plus-circle"></i>Asignar</button>
-									<!-- <button class="btn limpiar-filtros" role="button" id="limpiar-filtros" type="button">Limpiar Filtros</button> -->
-								</div>
-							</div>
-
-							<div class="col-sm-12 pt-5 pl-5 pr-5 mb-5" style="padding-top: 1.5rem!important; padding-left: 0px !important; padding-right: 0px !important;">										
-								<table id="table-anfitrion" class="stripe table table-hover _table-link dataTable no-footer" style="width:100%;">
-									<thead>			
-										<tr>
-										  <th>N°</th>
-										  	<th>REGION</th>	
-											<th>COMUNA</th>								
-											<th>RUN</th>
-										  	<th>NOMBRE</th>		
-											
-											<th>APELLIDO PATERNO</th>	
-											
-											<th>APELLIDO MATERNO</th>	
-											<th>PUNTAJE</th>
-											<th>ASIGNAR</th>	
-										</tr>
-									</thead>
-									<tbody id="lista_anfitrion">
-									</tbody>
-								</table>
-							</div>
- 						</div>
-
-
-                       
-						
+						</div>
 					</div>			
 				</div>
 			</div>	
@@ -294,7 +167,7 @@
 
 		<!-- Modal -->
 		<div class="modal fade" id="nuevaSedeModal" tabindex="-1" role="dialog" aria-hidden="true">
-		  	<div class="modal-dialog  modal-lg" role="document">
+		  	<div class="modal-dialog modal-dialog-scrollable modal-xl" role="document">
 		    	<div class="modal-content">
 		      	<div class="modal-header">
 		        	<h5 class="modal-title" id="titulo_modal">Asignar Supervisor</h5>
