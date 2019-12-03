@@ -3186,10 +3186,10 @@ function guardarEvaluacion(){
         var id_capacitacion  = $(this).data('id_capacitacion')
         var id_persona = $(this).data('id_persona')
         var id_capacitacion_persona = $(this).data('id_capacitacion_persona')
-        var asistencia = $(this).find('td:nth-child(2) select').val() == "" ? 0 : $(this).find('td:nth-child(2) select').val()
-        var puntaje_contenido = $(this).find('td:nth-child(3) input').val() == "" ? 0 : $(this).find('td:nth-child(3) input').val()
-        var puntaje_psicologica = $(this).find('td:nth-child(4) select').val() == "" ? 0 : $(this).find('td:nth-child(4) select').val()
-        var estado = $(this).find('td:nth-child(5) select').val() == "" ? 0 : $(this).find('td:nth-child(5) select').val()
+        var asistencia = $(this).find('td:nth-child(3) select').val() == "" ? 0 : $(this).find('td:nth-child(3) select').val()
+        var puntaje_contenido = $(this).find('td:nth-child(4) input').val() == "" ? 0 : $(this).find('td:nth-child(4) input').val()
+        var puntaje_psicologica = $(this).find('td:nth-child(5) select').val() == "" ? 0 : $(this).find('td:nth-child(5) select').val()
+        var estado = $(this).find('td:nth-child(6) select').val() == "" ? 0 : $(this).find('td:nth-child(6) select').val()
 
       
 
@@ -3223,74 +3223,74 @@ function guardarEvaluacion(){
         //VALIDAR QUE SI NO ASISTE NO PUEDE LLENAR CON INFORMACION LOS DEMAS DATOS
             if(asistencia  == 'false' && (puntaje_contenido > 0 || puntaje_psicologica != -1 || estado != 'false')){
                 if(puntaje_contenido > 0){
-                    $(this).find('td:nth-child(3) input').addClass('is-invalid')
+                    $(this).find('td:nth-child(4) input').addClass('is-invalid')
                     cumple = false
                 }else{
-                    $(this).find('td:nth-child(3) input').removeClass('is-invalid')
+                    $(this).find('td:nth-child(4) input').removeClass('is-invalid')
                 }
 
                 if(puntaje_psicologica != -1){
-                    $(this).find('td:nth-child(4) select').addClass('is-invalid')
-                    cumple = false
-                }else{
-                    $(this).find('td:nth-child(4) select').removeClass('is-invalid')
-                }
-
-                if(estado != 'false'){
                     $(this).find('td:nth-child(5) select').addClass('is-invalid')
                     cumple = false
                 }else{
                     $(this).find('td:nth-child(5) select').removeClass('is-invalid')
+                }
+
+                if(estado != 'false'){
+                    $(this).find('td:nth-child(6) select').addClass('is-invalid')
+                    cumple = false
+                }else{
+                    $(this).find('td:nth-child(6) select').removeClass('is-invalid')
                 }
             }
 
         // VALIDAR QUE APRUEBE CUANDO NO CUMPLE CON LAS CONDICIONES
             if(estado == 'true'){
                 if(asistencia  != 'true'){
-                    $(this).find('td:nth-child(2) select').addClass('is-invalid')
+                    $(this).find('td:nth-child(3) select').addClass('is-invalid')
                     cumple = false
                 }else{
-                    $(this).find('td:nth-child(2) select').removeClass('is-invalid')
+                    $(this).find('td:nth-child(3) select').removeClass('is-invalid')
                 }
 
                 if(puntaje_contenido < 90){
-                    $(this).find('td:nth-child(3) input').addClass('is-invalid')
+                    $(this).find('td:nth-child(4) input').addClass('is-invalid')
                     cumple = false
                 }else{
-                    $(this).find('td:nth-child(3) input').removeClass('is-invalid')
+                    $(this).find('td:nth-child(4) input').removeClass('is-invalid')
                 }
                 //VALIDAR QUE NO APRUEBE CUANDO NO CUMPLIO LA PRUEBA PSICOLOGICA
                 if(puntaje_psicologica == 0){
-                    $(this).find('td:nth-child(4) select').addClass('is-invalid')
                     $(this).find('td:nth-child(5) select').addClass('is-invalid')
+                    $(this).find('td:nth-child(6) select').addClass('is-invalid')
                     cumple = false
                 }else{
-                    $(this).find('td:nth-child(4) select').removeClass('is-invalid')
                     $(this).find('td:nth-child(5) select').removeClass('is-invalid')
+                    $(this).find('td:nth-child(6) select').removeClass('is-invalid')
                 }
             }
 
         // VALIDAR QUE RECHAZE CUANDO CUMPLE CON LAS CONDICIONES
             if(estado == 'false'){
                 if(asistencia  == '-1'){
-                    $(this).find('td:nth-child(2) select').addClass('is-invalid')
+                    $(this).find('td:nth-child(3) select').addClass('is-invalid')
                     cumple = false
                 }else{
-                    $(this).find('td:nth-child(2) select').removeClass('is-invalid')
+                    $(this).find('td:nth-child(3) select').removeClass('is-invalid')
                 }
 
                 if(puntaje_contenido > 89 && puntaje_psicologica == 1){
-                    $(this).find('td:nth-child(3) input').addClass('is-invalid')
+                    $(this).find('td:nth-child(4) input').addClass('is-invalid')
                     cumple = false
                 }else{
-                    $(this).find('td:nth-child(3) input').removeClass('is-invalid')
+                    $(this).find('td:nth-child(4) input').removeClass('is-invalid')
                 }
 
                 if(puntaje_psicologica != 0 && puntaje_contenido > 89){
-                    $(this).find('td:nth-child(4) select').addClass('is-invalid')
+                    $(this).find('td:nth-child(5) select').addClass('is-invalid')
                     cumple = false
                 }else{
-                    $(this).find('td:nth-child(4) select').removeClass('is-invalid')
+                    $(this).find('td:nth-child(5) select').removeClass('is-invalid')
                 }
             }
 
