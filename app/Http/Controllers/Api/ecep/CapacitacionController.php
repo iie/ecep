@@ -1418,7 +1418,7 @@ class CapacitacionController extends Controller
 				
 				union 
 				(
-				select rrhh_p.run, rrhh_p.nombres, rrhh_p.apellido_paterno, rrhh_p.apellido_materno, 
+				select rrhh_p.run, rrhh_p.nombres, rrhh_p.apellido_paterno, rrhh_p.apellido_materno, rrhh_p.telefono,
 					rrhh_p.id_persona, core.comuna.nombre as comuna, core.region.id_region,core.region.nombre as region, core.region.orden_geografico,
 					null as id_capacitacion, rrhh_p.estado_proceso, null as confirma_asistencia, null as estado,
 					(select count(id_persona) from rrhh.capacitacion_persona where estado = false AND rrhh.capacitacion_persona.id_persona = rrhh_p.id_persona 
@@ -2018,7 +2018,7 @@ class CapacitacionController extends Controller
 			$mail->Host = "mail.smtp2go.com"; 
 			$mail->Port = 2525;//2525; //443; 
 			$mail->Username = "no-reply@ecep2019.iie.cl";
-            $mail->Password = 'Z@@@@@;···;·;·;@@m#k1llk1ll@@@##bk1;;;####llTFmdjg2019@@@@wcnYw';
+            $mail->Password = 'Z@@@@@@········:·;·;:·:·;··$$%%@@@;···;·;·;@@m#k1llk1ll@@@##bk1;;;####ll···:;·;·;·;3;:·######····$$%··$%%·$·%&&$$$$$$@@@@@@';
 			$mail->setFrom("no-reply@ecep2019.iie.cl", "ECEP");
 			$mail->Subject = $subject;
 			$mail->MsgHTML($html);
