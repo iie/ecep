@@ -52,6 +52,8 @@ Route::get('inscritos-dia' , 'Api\ecep\SedeController@inscritosDia');
 	Route::middleware('auth:api')->post('web/personal/obtenerPersona' , 'Api\ecep\PersonalController@obtenerPersona');
 	Route::middleware('auth:api')->post('web/personal/obtenerJefeSede' , 'Api\ecep\PersonalController@obtenerJefeSede');
 	Route::middleware('auth:api')->post('web/personal/filtros' , 'Api\ecep\PersonalController@filtros');
+	Route::middleware('auth:api')->post('web/personal/guardarJefeSede' , 'Api\ecep\PersonalController@guardarJefeSede');
+
 
 	Route::middleware('auth:api')->post('web/personal/listaCoordinadorZonal' , 'Api\ecep\PersonalController@listaCoordinadorZonal');
 	Route::middleware('auth:api')->post('web/personal/listaCoordinador' , 'Api\ecep\PersonalController@listaCoordinador');
