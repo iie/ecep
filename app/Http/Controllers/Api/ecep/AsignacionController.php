@@ -134,10 +134,19 @@ class AsignacionController extends Controller
                 AND infraestructura.zona.id_zona in (".implode($zonas,",").")
         ");
 
-       
+        $totalRequeridos = DB::select("SELECT 
+                SUM(infraestructura.estimacion.examinadores + infraestructura.estimacion.anfitriones + infraestructura.estimacion.supervisores) 
+                    AS total_requeridos
+                    FROM infraestructura.estimacion
+                JOIN core.comuna on infraestructura.estimacion.id_comuna = core.comuna.id_comuna
+                JOIN core.region on core.comuna.id_region = core.region.id_region
+                JOIN infraestructura.zona_region on core.region.id_region = infraestructura.zona_region.id_region
+                JOIN infraestructura.zona on infraestructura.zona_region.id_zona = infraestructura.zona.id_zona
+                WHERE infraestructura.zona.id_zona in (".implode($zonas,",").")
+        ");
 
         $datos['total_asignados'] = $totalAsignados;
-
+        $datos['total_requeridos'] = $totalRequeridos;
         $datos['personal_postulacion'] = $personaP;
 
 
@@ -168,60 +177,11 @@ class AsignacionController extends Controller
  
         $zonas = array();
         $regiones = array();
-        /* $listaFinal = array();
-		$listaSede = array();
-        $listaAsignaciones = array(); */
+
         foreach($cargo as $cargoAux){
             $zonas[] = $cargoAux->id_zona;
             $regiones[] = $cargoAux->id_region;
         }
-       
-       /*  $reg = DB::select("SELECT r.numero as numero_region, r.nombre as nombre_region , co.id_comuna, co.nombre, se.id_sede, se.nombre as nombre_sede
-                        from core.region r
-                        INNER JOIN core.comuna co ON (r.id_region = co.id_region)
-                        INNER JOIN infraestructura.sede se ON (co.id_comuna = se.id_comuna)
-                        where r.numero != '-1' and se.estado = 2 and  r.id_region in (".implode($regiones,",").")
-
-                       order by r.orden_geografico, co.nombre"); */
- 
-        /* if(!empty($reg)){
-        	foreach ($reg as $key => $value) {
-	            $listaAnidada[$value->id_comuna][] = $value;
-	        }
-
-	        foreach ($listaAnidada as $id_comuna => $sede) {
-	            $comuna["id_comuna"]  = $sede[0]->id_comuna;
-	            $comuna["nombre"]  = $sede[0]->nombre;
-	            $_sede = array();
-	            foreach ($sede as $value) {
-	                $_sede[] = $value;
-	            }
-	            $comuna["sedes"]  = $_sede;
-	            $listaFinal[$sede[0]->id_comuna] = $comuna;
-	        }
-        } */
-
-/*         $salas = DB::select("SELECT sa.id_sala ,sa.nro_sala, se.id_sede
-                        from infraestructura.sede se
-                        LEFT JOIN infraestructura.sala sa ON (se.id_sede = sa.id_sede)
-                        LEFT JOIN core.comuna co ON (se.id_comuna = co.id_comuna)
-                        where  se.estado = 2 and co.id_region in (".implode($regiones,",").")
-                       order by sa.nro_sala, co.nombre");
-        if(!empty($salas)){
-
-	        foreach ($salas as $key => $value) {
-	         	if($value->id_sala != null){
-
-	         		$listaSede[$value->id_sede][] = $value;
-	         	}
-	         	if($value->id_sala != null){
-	         		$listaSede[$value->id_sede][] = $value;
-	         	}else{
-	         		$listaSede[$value->id_sede][$value->id_sala] = $value;
-	         	}
-	           
-	        }
-        } */
                 
         $personaP = array();
         $totalAsignados = array();
@@ -261,9 +221,22 @@ class AsignacionController extends Controller
                 AND zona_region.id_coordinador = ". $cargo[0]->id_persona_cargo."
             ");
 
+            $totalRequeridos = DB::select("SELECT 
+                SUM(infraestructura.estimacion.examinadores + infraestructura.estimacion.anfitriones + infraestructura.estimacion.supervisores) 
+                    AS total_requeridos
+                    FROM infraestructura.estimacion
+                JOIN core.comuna on infraestructura.estimacion.id_comuna = core.comuna.id_comuna
+                JOIN core.region on core.comuna.id_region = core.region.id_region
+                JOIN infraestructura.zona_region on core.region.id_region = infraestructura.zona_region.id_region
+                JOIN infraestructura.zona on infraestructura.zona_region.id_zona = infraestructura.zona.id_zona
+                WHERE infraestructura.zona.id_zona in (".implode($zonas,",").")
+                AND zona_region.id_coordinador = ". $cargo[0]->id_persona_cargo."
+            ");
+
         }   
 
         $datos['total_asignados'] = $totalAsignados;
+        $datos['total_requeridos'] = $totalRequeridos;
         $datos['personal_postulacion'] = $personaP;
 
         return response()->json($datos);    
@@ -366,8 +339,11 @@ class AsignacionController extends Controller
 
         $arr = [];
         foreach($sql as $valor){
-            $valor->puntaje = isset($puntajes[$valor->id_persona]) ? intval($puntajes[$valor->id_persona]) : null;
-            $arr[] = $valor;
+            //TODO: Quitar el 'if' si es que se repara el error de registros inexistentes de pruebas técnicas
+            if(isset($puntajes[$valor->id_persona])){
+                $valor->puntaje = isset($puntajes[$valor->id_persona]) ? intval($puntajes[$valor->id_persona]) : null;
+                $arr[] = $valor;
+            }
         }
         return response()->json($arr);    
     }

@@ -140,9 +140,9 @@ function llenarVista(data){
             {data: "puntaje", className: "text-center",
                 render: function(data, type, row){
                     if (data==null) {
-                        return  '-' 
+                        return '-' 
                     }else{
-                       return  data  
+                       return data  
                     }
                    
                 }
@@ -341,7 +341,6 @@ function cargarComunas(id){
 }
 
 function btnClearFilters(){
-    console.log("Entro");
     $('#select1').val("").niceSelect('update');
     $('#select2').val("").niceSelect('update');
     $('#select8').val("").niceSelect('update');
@@ -355,6 +354,15 @@ function btnClearFilters(){
     $('#select_asig_1').val("").niceSelect('update');
     $('#select_asig_2').val("").niceSelect('update');
     $('#select_asig_7').val("").niceSelect('update');
+
+    $('#select_modal_asig_1').val("").niceSelect('update');
+    $('#select_modal_asig_2').val("").niceSelect('update');
+
+    var table = $('#table-postulados').DataTable();
+        table
+         .search( '' )
+         .columns().search( '' )
+         .draw();
 
     var table = $('#table-asignados').DataTable();
         table
@@ -435,12 +443,13 @@ function llenarTablaAsignacion(data){
             array1.push(data[h])
         }
     }
-    console.log(array1)
-    $('#filtros-dia1').empty();
+
+    $('#filtros-asignacion').empty();
     if($.fn.dataTable.isDataTable('#table-postulados')){
         $('#table-postulados').DataTable().destroy();
         $('#lista_postulados').empty();
     }
+    
 
     var tablaD = $("#table-postulados").DataTable({
         dom: "<'search'f>",
@@ -479,6 +488,7 @@ function llenarTablaAsignacion(data){
             {data: "nombres"},
             {data: "apellido_paterno"},
             {data: "apellido_materno"},
+            {data: "telefono"},
             {data: "puntaje", className: "text-center",
                 render: function(data, type, row){
                     if (data==null) {
@@ -501,11 +511,46 @@ function llenarTablaAsignacion(data){
         
         },
         "initComplete": function(settings, json) {
+            var placeholder = ["","Región","Comuna"]
+            this.api().columns([1,2]).every( function (index) {
+                var column = this;
+                var select = $('<select class="form-control col-sm-2 small _filtros" id="select_modal_asig_'+index+'" >'+
+                    '<option value="" selected="selected">'+placeholder[index]+'</option></select>')
+                    .appendTo( $('#filtros-asignacion'))
+                    .on( 'change', function () {
+                        var val = $.fn.dataTable.util.escapeRegex(
+                            $(this).val()
+                        );
+                        column
+                            .search( val ? '^'+val+'$' : '', true, false )
+                            .draw();
+                    } );
+                column.data().unique().each( function ( d, j ) {
+                    $('#select_modal_asig_'+index).append( '<option value="'+d+'">'+d+'</option>' )
+                } );
+                 $('#select_modal_asig_'+index).niceSelect();        
+            })   
+            $('.dataTables_length select').addClass('nice-select small');     
         },
         "drawCallback": function(){
+            var placeholder = ["","Región","Comuna"]
+            this.api().columns([1,2]).every(function(index){
+                var columnFiltered = this;
+                var selectFiltered = $("#select_modal_asig_"+index)
+                if(selectFiltered.val()===''){
+                    selectFiltered.empty()
+                    selectFiltered.append('<option value="">'+placeholder[index]+'</option>')
+                    columnFiltered.column(index,{search:'applied'}).data().unique().sort().each( function ( d, j ) {
+                        if (d != null) {
+                            selectFiltered.append( '<option value="'+d+'">'+d+'</option>' )
+                        }
+                    } );
+                }
+                $('select_modal_asig_').niceSelect('update');
+            })
         }
     });
-
+    $('#limpiar-filtros-asignacion').click(btnClearFilters);
     $("#table-postulados").show(); 
 }
 
