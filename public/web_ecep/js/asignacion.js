@@ -1,4 +1,6 @@
 $(document).ready(function(){
+
+    loginvalid(localStorage.getItem('user'))
     $('#nombre_usuario').html(JSON.parse(localStorage.user).nombres+' '+JSON.parse(localStorage.user).apellidos+' ')
     $('#redirect').css('display','');
     $('#redirect').on('click',redirectModulo);

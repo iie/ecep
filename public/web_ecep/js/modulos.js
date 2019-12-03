@@ -17,9 +17,10 @@ function tipoUsuario(){
 		$('#card-infraestructura').remove();
 		$('#card-evaluados').remove();
 		$('#card-centros').remove();
+		$('#card-asignacion').remove();
 		$('#card-capacitacion').css('display','')
 		$('#card-rrhh').css('display','')
-		$('#card-asignacion').css('display','')
+		
 		
 	}else if(JSON.parse(localStorage.user).id_tipo_usuario == 1051){
 		$('#card-infraestructura').css('display','')
