@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="110" height="95" viewBox="0 0 110 95">
+  <g id="etapa4_off" transform="translate(1)">
+    <ellipse id="Elipse_22" data-name="Elipse 22" cx="35.5" cy="35" rx="35.5" ry="35" transform="translate(18)" fill="#f5f5f5"/>
+    <text id="Plan_de_Mejoramiento" data-name="Plan de Mejoramiento" transform="translate(54 90)" fill="#666695" font-size="12" font-family="gobCL"><tspan x="-54.486" y="0">Plan de Mejoramiento</tspan></text>
+    <g id="Grupo_2939" data-name="Grupo 2939" transform="translate(39.871 16.734)">
+      <path id="Trazado_3705" data-name="Trazado 3705" d="M32.779,4.355H27.286a1.328,1.328,0,0,0-.326.043V4.24a.917.917,0,0,0-.917-.917H22.835a2.226,2.226,0,0,0-4.321,0H15.306a.917.917,0,0,0-.917.917v.129a1.186,1.186,0,0,0-.138-.014H8.57A1.375,1.375,0,0,0,7.2,5.73V37.015A1.375,1.375,0,0,0,8.57,38.39h24.21a1.375,1.375,0,0,0,1.375-1.375V5.73A1.375,1.375,0,0,0,32.779,4.355ZM31.4,34.238a1.4,1.4,0,0,1-1.4,1.4H11.348a1.4,1.4,0,0,1-1.4-1.4V8.507a1.4,1.4,0,0,1,1.4-1.4h2.9c.048,0,.092-.01.138-.014V8.337a.917.917,0,0,0,.917.916H26.044a.917.917,0,0,0,.917-.916V7.062a1.371,1.371,0,0,0,.326.043H30a1.4,1.4,0,0,1,1.4,1.4Z" transform="translate(-7.195 -1.633)" fill="#666695"/>
+      <path id="Trazado_3706" data-name="Trazado 3706" d="M28.754,16.108h-14.9a1.375,1.375,0,1,0,0,2.75h14.9a1.375,1.375,0,1,0,0-2.75Z" transform="translate(-7.825 -3.359)" fill="#666695"/>
+      <path id="Trazado_3707" data-name="Trazado 3707" d="M24.915,23.264H18.9a1.375,1.375,0,0,0,0,2.75h6.017a1.375,1.375,0,0,0,0-2.75Z" transform="translate(-8.427 -4.213)" fill="#666695"/>
+      <path id="Trazado_3708" data-name="Trazado 3708" d="M24.915,30H18.9a1.375,1.375,0,0,0,0,2.75h6.017a1.375,1.375,0,0,0,0-2.75Z" transform="translate(-8.427 -5.016)" fill="#666695"/>
+      <path id="Trazado_3709" data-name="Trazado 3709" d="M14.057,23.036a1.576,1.576,0,1,0,1.576,1.576A1.578,1.578,0,0,0,14.057,23.036Z" transform="translate(-7.825 -4.186)" fill="#666695"/>
+      <path id="Trazado_3710" data-name="Trazado 3710" d="M14.057,29.981a1.575,1.575,0,1,0,1.576,1.575A1.577,1.577,0,0,0,14.057,29.981Z" transform="translate(-7.825 -5.014)" fill="#666695"/>
+    </g>
+  </g>
+</svg>

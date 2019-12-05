@@ -271,7 +271,6 @@ function llenarVista(filtros){
             {data: "nombre_zona"},
             {data: "region"},
             {data: "comuna"},
-            /*{data: "nombre_rol"},*/
             {data: "run"},
             {data: "nombres"},
             {data: "apellido_paterno"},
@@ -312,21 +311,18 @@ function llenarVista(filtros){
                             select +=   '<option value="capacitado" disabled>Capacitado</option>'+
                                         '<option value="seleccionado">Seleccionado</option>'
                                         if(JSON.parse(localStorage.user).id_cargo != 1003 && JSON.parse(localStorage.user).id_cargo != 1004){
-                                           select += '<option value="contratado">Contratado</option>'
-                                        }else{
-                                            select += '<option value="contratado" disabled>Contratado</option>'
-                                        }
-                            select += '<option value="rechazado">Rechazado</option>'
+                                            select += '<option value="contratado">Contratado</option>'
+                                            select += '<option value="rechazado">Rechazado</option>'
+                                        }                           
                         }
 
                         if(data.estado == 'seleccionado'){
                             select +=   '<option value="seleccionado">Seleccionado</option>'
                                         if(JSON.parse(localStorage.user).id_cargo != 1003 && JSON.parse(localStorage.user).id_cargo != 1004){
-                                           select += '<option value="contratado">Contratado</option>'
-                                        }else{
-                                            select += '<option value="contratado" disabled>Contratado</option>'
+                                            select += '<option value="contratado">Contratado</option>'
+                                            select += '<option value="rechazado">Rechazado</option>'
                                         }
-                            select +=   '<option value="rechazado">Rechazado</option>'
+
                         }
 
                         if(data.estado == 'contratado'){
@@ -341,7 +337,7 @@ function llenarVista(filtros){
                             select +=   '<option value="rechazado">Rechazado</option>'
                         }
                     }else{
-                        console.log('acaaaaa')
+
                         select +=   '<option value="desertó" disabled>Desertó</option>'
                     }
 
@@ -373,7 +369,7 @@ function llenarVista(filtros){
                 
    
             }else{
-                $('td:eq('+col2+')', row).html(acciones)
+                
                 if(validarTabla ==  0){
                     col = 9
                     col2 = 11
@@ -381,10 +377,12 @@ function llenarVista(filtros){
                     col = 8
                     col2 = 10
                 }
+
+                $('td:eq('+col2+')', row).html(acciones)
  
                 $('td:eq('+col+')', row).html(select)
-                $('td:eq('+col+')', row).find('select').val(data.estado)
-                if(data.estado=='contratado' || data.estado=='rechazado'){
+                $('td:eq('+col+')', row).find('select').val((data.deserta == false ? data.estado : 'desertó'))
+                if(data.estado=='contratado' || data.estado=='rechazado' || data.deserta == true){
                     $('td:eq('+col+')', row).find('select').prop('disabled',true)
                 }
                 $('td:eq('+col+')', row).find('select').data('id_persona',data.id_persona);
@@ -640,7 +638,8 @@ function llenarVista(filtros){
     	estado = $('#select9').val()
     	cargo = $('#select10').val()
     	console.log('zona: '+zona+' region: '+region+ ' comuna: '+comuna+ ' estado: '+estado+' cargo: '+cargo)
-        window.location='https://ecep2019.iie.cl/public/api/web/personal/descarga-listado';
+        window.location='https://ecep2019.iie.cl/public/api/web/personal/descarga-listado?'+
+            'z='+zona+'&r='+region+ '&c='+comuna+ '&e='+estado+'&ca='+cargo;
     });
 
             

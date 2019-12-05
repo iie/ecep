@@ -73,6 +73,10 @@ Route::get('inscritos-dia' , 'Api\ecep\SedeController@inscritosDia');
 	Route::middleware('auth:api')->post('web/capacitacion/deshabilitarCapacitacion' ,'Api\ecep\CapacitacionController@deshabilitarCapacitacion');
 	Route::middleware('auth:api')->post('web/capacitacion/desconvocar' ,'Api\ecep\CapacitacionController@desconvocar');
 	Route::middleware('auth:api')->post('web/capacitacion/desertar' ,'Api\ecep\CapacitacionController@desertar');
+	Route::middleware('auth:api')->post('web/capacitacion/obtenerNota' , 'Api\ecep\CapacitacionController@obtenerNota');
+	Route::middleware('auth:api')->post('web/capacitacion/guardarNota' , 'Api\ecep\CapacitacionController@guardarNota');
+	Route::middleware('auth:api')->post('web/capacitacion/obtenerPersonaCapacitacion' , 'Api\ecep\CapacitacionController@obtenerPersonaCapacitacion');
+
 	Route::middleware('auth:api')->post('web/capacitacion/listaPostulantes' ,'Api\ecep\CapacitacionController@listaPostulantes');
 	
 	Route::post('web/capacitacion/obtenerPersonalConvocado' , 'Api\ecep\CapacitacionController@obtenerPersonalConvocado');
@@ -84,6 +88,8 @@ Route::get('inscritos-dia' , 'Api\ecep\SedeController@inscritosDia');
 	Route::post('web/capacitacion/guarda-confirmacion' ,'Api\ecep\CapacitacionController@guardarConfirmacion');
 	Route::get('web/capacitacion/test-mailing' ,'Api\ecep\CapacitacionController@testCorreo');
 	Route::get('web/capacitacion/descarga-listado/' , 'Api\ecep\CapacitacionExcelController@descargaExcelCapacitacion');
+
+ 
 	
 //ASIGNACION
 	Route::middleware('auth:api')->post('web/asignacion/lista' , 'Api\ecep\AsignacionController@lista');

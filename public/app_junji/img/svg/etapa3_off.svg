@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="92" height="95.385" viewBox="0 0 92 95.385">
+  <g id="etapa3_off" transform="translate(1)">
+    <ellipse id="Elipse_19" data-name="Elipse 19" cx="35.5" cy="35" rx="35.5" ry="35" transform="translate(9.302)" fill="#f5f5f5"/>
+    <text id="Validación_Externa" data-name="Validación Externa" transform="translate(45 90.385)" fill="#666695" font-size="12" font-family="gobCL"><tspan x="-45.186" y="0">Validación Externa</tspan></text>
+    <g id="Grupo_2937" data-name="Grupo 2937" transform="translate(27.085 23.78)">
+      <g id="Grupo_2936" data-name="Grupo 2936" transform="translate(0 0)">
+        <path id="Trazado_3703" data-name="Trazado 3703" d="M18.622,32.331c-6.1-.867-11.883-5.52-14.786-8.218A4.548,4.548,0,0,1,3.2,18.2,18.9,18.9,0,0,1,21.82,9.79C30,10.95,35.58,15.732,37.544,23.254A4.541,4.541,0,0,1,35.216,28.5C31.658,30.3,24.771,33.2,18.622,32.331Zm2.734-19.274A15.662,15.662,0,0,0,5.933,20.048,1.266,1.266,0,0,0,6.082,21.7h0c2.619,2.434,7.791,6.629,13,7.369,5.449.773,12.053-2.2,14.638-3.51a1.265,1.265,0,0,0,.628-1.468C32.745,17.935,28.129,14.018,21.356,13.057Z" transform="translate(-2.393 -9.591)" fill="#666695"/>
+      </g>
+      <path id="Trazado_3704" data-name="Trazado 3704" d="M26.982,21.436a2.724,2.724,0,0,1,.766-5.394c.064.009.123.033.186.046a7.518,7.518,0,1,0,1.437,5.578,7.577,7.577,0,0,0,.065-1.167A2.717,2.717,0,0,1,26.982,21.436Z" transform="translate(-3.653 -10.008)" fill="#666695"/>
+    </g>
+  </g>
+</svg>

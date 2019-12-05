@@ -1,0 +1,17 @@
+<svg id="etapa1_on" xmlns="http://www.w3.org/2000/svg" width="79" height="97" viewBox="0 0 79 97">
+  <text id="Capacitación" transform="translate(0 91)" fill="#666695" font-size="14" font-family="gobCL-Bold, gobCL" font-weight="700"><tspan x="0" y="0">Capacitación</tspan></text>
+  <g id="Grupo_2953" data-name="Grupo 2953" transform="translate(-446 -288)">
+    <g id="Elipse_20" data-name="Elipse 20" transform="translate(449 288)" fill="#666695" stroke="#52c2c2" stroke-width="4">
+      <ellipse cx="35.5" cy="35" rx="35.5" ry="35" stroke="none"/>
+      <ellipse cx="35.5" cy="35" rx="33.5" ry="33" fill="none"/>
+    </g>
+    <g id="Grupo_2933" data-name="Grupo 2933" transform="translate(468.422 305.615)">
+      <path id="Trazado_3700" data-name="Trazado 3700" d="M22.964,9.013A10.416,10.416,0,0,1,24.792,29.05l-.531,3.077a1.735,1.735,0,0,1-2,1.415l-6.84-1.179A1.736,1.736,0,0,1,14,30.358l.531-3.077A10.416,10.416,0,0,1,22.964,9.013m-1,26.239-.3,1.71a1.735,1.735,0,0,1-2,1.415l-3.42-.59a1.735,1.735,0,0,1-1.415-2l.3-1.71,6.84,1.179" transform="translate(-4.4 -3.108)" fill="#fff"/>
+      <rect id="Rectángulo_1555" data-name="Rectángulo 1555" width="3.034" height="4.551" rx="1.517" transform="translate(28.405 20.26) rotate(-80.216)" fill="#fff"/>
+      <rect id="Rectángulo_1556" data-name="Rectángulo 1556" width="3.034" height="4.551" rx="1.517" transform="translate(0 15.362) rotate(-80.216)" fill="#fff"/>
+      <rect id="Rectángulo_1557" data-name="Rectángulo 1557" width="4.551" height="3.034" rx="1.517" transform="translate(17.27 4.485) rotate(-80.216)" fill="#fff"/>
+      <path id="Trazado_3701" data-name="Trazado 3701" d="M13.591,6.124l.882,1.257A1.516,1.516,0,0,1,14.1,9.494L14.1,9.5a1.517,1.517,0,0,1-2.108-.365L11.1,7.882a1.517,1.517,0,0,1,.358-2.114l.013-.01A1.517,1.517,0,0,1,13.591,6.124Z" transform="translate(-4.404 -2.705)" fill="#fff"/>
+      <path id="Trazado_3702" data-name="Trazado 3702" d="M34.081,10.778,35.326,9.9a1.516,1.516,0,0,1,2.116.362l.016.022a1.517,1.517,0,0,1-.367,2.116l-1.248.876a1.517,1.517,0,0,1-2.111-.366l-.011-.016A1.518,1.518,0,0,1,34.081,10.778Z" transform="translate(-7.102 -3.198)" fill="#fff"/>
+    </g>
+  </g>
+</svg>

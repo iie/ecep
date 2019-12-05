@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>
+        Junji Modelo de Gestión de Calidad
+    </title>
+    <link href="css/estilo_junjiintranet.css" rel="stylesheet" />
+    <link href="css/estilo_junji.css" rel="stylesheet" />
+    <link href="vendor/fontawesome/css/all.css" rel="stylesheet" />
+ 
+    <script src="vendor/jquery-3.2.1/jquery-3.2.1.min.js"></script>
+    <link rel="stylesheet" href="vendor/VenoBox-master/venobox/venobox.css" type="text/css" media="screen" />
+    <script type="text/javascript" src="vendor/VenoBox-master/venobox/venobox.min.js"></script>
+ 
+</head>
+
+<body>
+    <form method="post" action="Inicio.aspx" id="form1">
+        <!--inicio contenido-->
+        <div id="contenedor_general">
+            <div id="header_modelo">
+            </div>
+            <div id="menu_principal">
+                <table style="width: 100%" border="0">
+                    <tr>
+                        <td>
+                            <div class="jardin-left-titular">
+                                <h4 style="color:#666695"><span class="zona">Zona de Intranet - <strong><span id="LblTitulo"> Jardín Infantil: </span><span id="lblJardin">iie (Prueba)</span></strong></span></h4>
+
+                            </div>
+                        </td>
+                        <td>
+                            <div class="jardin-right-titular">
+                                <h4 style="color:#666695"><span class="avatar"></span><span class="zona">Perfil: <strong><span id="LblRol">Directora</span></strong></span></h4>
+                            </div>
+                        </td>
+                        <td style="text-align: right">
+                            <div style="float: right;">
+                                <a id="lbtnCerrarSesion">
+                                    <div class="botonSesionCerrar"></div>
+                                </a>
+
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <!--inicio contenido cambiable-->
+            <div id="contenedor">
+                <div id="menu_lateral">
+                    <div class="vertical-menu">
+                      <a href="inicio.html" class="color-inicio"><i class="fas fa-home"></i> Inicio</a>
+                      <a href="#" class="active color-capacitacion"><i class="fas fa-lightbulb"></i> Capacitación</a>
+                      <a href="autoevaluacion.html" class="color-autoevaluacion"><i class="fas fa-pen"></i> Autoevaluación</a>
+                      <a href="documentos.html" class="color-documentos"><i class="far fa-file-alt"></i> Documentos</a>
+                      <a href="#" class="color-sincronizar"><i class="fas fa-redo-alt"></i>Sincronizar</a>
+                    </div>
+                </div>
+                <div id="caja_derecha">
+                    <div id="informacion_capacitacion" style="float: right; width: 100%;">
+
+                        <p>
+                            En esta sección se encuentra disponible contenido técnico en formato de capacitación a distancia. La invitamos a revisar las cápsulas que hemos preparado, las cuales han sido agrupadas en 3 módulos temáticos. Además, puede acceder al Módulo 4 “Cuánto Aprendí”, espacio diseñado para rendir una prueba de conocimientos que le permitirá acceder a un Certificado de Aprobación o Certificado de Participación, según los resultados de su aprendizaje.
+                        </p>
+                    </div> 
+                   <div class="menuCapacita">
+                        <ul>
+                            <li id="MainContent_SubMainContent_liModulo1" class="active" onclick="modulo(1)"><a id="MainContent_SubMainContent_lbtnModulo1" href="#"><span class="mod">Módulo 1</span> <span class="modDesc">Modelo de Gestión de Calidad de la Educación Parvularia (MGCEP)</span></a></li>
+                            <li id="MainContent_SubMainContent_liModulo2" class="" onclick="modulo(2)"><a id="MainContent_SubMainContent_lbtnModulo2" href="#"><span class="mod">Módulo 2</span> <span class="modDesc">Liderazgo y comunidad educativa<br><br></span></a></li>
+                            <li id="MainContent_SubMainContent_liModulo3" class="" onclick="modulo(3)"><a id="MainContent_SubMainContent_lbtnModulo3" href="#"><span class="mod">Módulo 3</span> <span class="modDesc">Etapas de la implementación<br><br></span></a></li>
+                            <li id="MainContent_SubMainContent_liModulo5" class="" onclick="modulo(4)"><a id="MainContent_SubMainContent_lbtnModulo5" href="#"><span class="mod">Módulo 4</span> <span class="modDesc">Cuánto aprendí<br><br></span></a></li>
+                        </ul>
+                    </div>
+
+                    <div id="tab-modulo1" style="float: right; width: 100%; padding-top: 20px;">
+                        <section>
+                            <div class="capTitlemod">
+                                Modulo 1: Modelo de Gestión de Calidad de la Educación Parvularia (MGCEP)
+                            </div>
+                            <div class="boxcapMod">
+                                <table width="100%">        
+                                    <tbody><tr>
+                                        <td style="width:1%">
+                                        <div class="capItem">                                   
+                                            <img src="img/icono-video.png" alt=""> 
+                                        </div>   
+                                        </td>
+                                        <td>
+                                        <div class="capItem">                         
+                                            <a id="MainContent_SubMainContent_SubMainContentCap_LinkButton4" class="venobox" data-vbtype="iframe" href="https://pruebadeconocimientos.iie.cl/public/app_junji/videos/VIDEO_1.mp4">Presentación del MGCEP</a>                            
+                                        </div>
+                                        </td>
+                                    </tr>
+                                </tbody></table>
+                            </div>
+                            <div class="capRowdown">
+                                <img src="img/rowdown.png">
+                            </div>
+                            <div class="boxcapMod">
+                                <table width="100%">        
+                                    <tbody><tr>
+                                        <td style="width:1%">
+                                        <div class="capItem">                                   
+                                            <img src="img/icono-video.png" alt=""> 
+                                        </div>   
+                                        </td>
+                                        <td>
+                                        <div class="capItem">                         
+                                            <a id="MainContent_SubMainContent_SubMainContentCap_LinkButton10" href="#">Antecedentes del MGCEP</a>                            
+                                        </div>
+                                        </td>
+                                    </tr>
+                                </tbody></table>
+                            </div>
+                            <div class="capRowdown">
+                                <img src="img/rowdown.png">
+                            </div>
+                            <div class="boxcapMod">
+                                <table width="100%">        
+                                    <tbody><tr>
+                                        <td style="width:1%">
+                                        <div class="capItem">                                   
+                                            <img src="img/icono-video.png" alt=""> 
+                                        </div>   
+                                        </td>
+                                        <td>
+                                        <div class="capItem">                         
+                                            <a id="MainContent_SubMainContent_SubMainContentCap_LinkButton11" href="#">Principios y Características del MGCEP</a>                            
+                                        </div>
+                                        </td>
+                                    </tr>
+                                </tbody></table>
+                            </div>
+                            <div class="capRowdown">
+                                <img src="img/rowdown.png">
+                            </div>
+                        </section>
+                    </div>
+                    <div id="tab-modulo2" style="display: none; float: right; width: 100%; padding-top: 20px;">
+                        <section>
+                            <div class="capTitlemod">
+                                Modulo 2: Liderazgo y comunidad educativa
+                            </div>
+                            <div class="boxcapMod">
+                                <table width="100%">
+                                    <tbody><tr>
+                                        <td style="width:1%">
+                                        <div class="capItem">
+                                            <img src="img/icono-video.png" alt="">
+                                        </div>   
+                                        </td>
+                                        <td>
+                                        <div class="capItem">
+                                            <a id="MainContent_SubMainContent_SubMainContentCap_LinkButton2" href="#">Liderazgo y participación de la comunidad educativa en la implementación del MGCEP</a>                            
+                                        </div>
+                                        </td>
+                                    </tr>
+                                </tbody></table>
+                            </div>
+                            <div class="capRowdown">
+                                <img src="img/rowdown.png">
+                            </div>
+                          
+                      
+                          </section>
+                    </div>
+                    <div id="tab-modulo3" style="display: none; float: right; width: 100%; padding-top: 20px;">
+                        <section>
+                            <div class="capTitlemod">
+                               Modulo 3: Etapas de la implementación
+                            </div>
+                            <div class="boxcapMod">
+                               <table width="100%">
+                                  <tbody><tr>
+                                     <td style="width:1%">
+                                        <div class="capItem">
+                                           <img src="img/icono-video.png" alt="">
+                                        </div>   
+                                     </td>
+                                     <td>
+                                        <div class="capItem">
+                                           <a id="MainContent_SubMainContent_SubMainContentCap_LinkButton5" href="#">Etapa de Capacitación</a>                            
+                                        </div>
+                                     </td>
+                                  </tr>
+                               </tbody></table>
+                            </div>
+                            <div class="capRowdown">
+                               <img src="img/rowdown.png">
+                            </div>
+                            
+                            <div class="boxcapMod">
+                               <table width="100%">
+                                  <tbody><tr>
+                                     <td style="width:1%">
+                                        <div class="capItem">
+                                           <img src="img/icono-video.png" alt="">
+                                        </div>   
+                                     </td>
+                                     <td>
+                                        <div class="capItem">
+                                           <a id="MainContent_SubMainContent_SubMainContentCap_LinkButton1" href="#">Etapa de Autoevaluación</a>                            
+                                        </div>
+                                     </td>
+                                  </tr>
+                               </tbody></table>
+                            </div>
+                            <div class="capRowdown">
+                               <img src="img/rowdown.png">
+                            </div>
+                            <div class="boxcapMod">
+                               <table width="100%">
+                                  <tbody><tr>
+                                     <td style="width:1%">
+                                        <div class="capItem">
+                                           <img src="img/icono-video.png" alt="">
+                                        </div>   
+                                     </td>
+                                     <td>
+                                        <div class="capItem">
+                                           <a id="MainContent_SubMainContent_SubMainContentCap_LinkButton2" href="#">Etapa de Autoevaluación. Rubricas</a>                            
+                                        </div>
+                                     </td>
+                                  </tr>
+                               </tbody></table>
+                            </div>
+                            <div class="capRowdown">
+                               <img src="img/rowdown.png">
+                            </div>
+                            <div class="boxcapMod">
+                               <table width="100%">
+                                  <tbody><tr>
+                                     <td style="width:1%">
+                                        <div class="capItem">
+                                           <img src="img/icono-video.png" alt="">
+                                        </div>   
+                                     </td>
+                                     <td>
+                                        <div class="capItem">
+                                           <a id="MainContent_SubMainContent_SubMainContentCap_LinkButton3" href="#">Etapa de Autoevaluación. Resultados</a>                            
+                                        </div>
+                                     </td>
+                                  </tr>
+                               </tbody></table>
+                            </div>
+                            <div class="capRowdown">
+                               <img src="img/rowdown.png">
+                            </div>
+                            <div class="boxcapMod">
+                               <table width="100%">
+                                  <tbody><tr>
+                                     <td style="width:1%">
+                                        <div class="capItem">
+                                           <img src="img/icono-video.png" alt="">
+                                        </div>   
+                                     </td>
+                                     <td>
+                                        <div class="capItem">
+                                           <a id="MainContent_SubMainContent_SubMainContentCap_LinkButton4" href="#">Comité de Calidad Programa Clásicos</a>                            
+                                        </div>
+                                     </td>
+                                  </tr>
+                               </tbody></table>
+                            </div>
+                            <div class="capRowdown">
+                               <img src="img/rowdown.png">
+                            </div>
+                            <div class="boxcapMod">
+                               <table width="100%">
+                                  <tbody><tr>
+                                     <td style="width:1%">
+                                        <div class="capItem">
+                                           <img src="img/icono-video.png" alt="">
+                                        </div>   
+                                     </td>
+                                     <td>
+                                        <div class="capItem">
+                                           <a id="MainContent_SubMainContent_SubMainContentCap_LinkButton6" href="#">Plan de Mejoramiento</a>                            
+                                        </div>
+                                     </td>
+                                  </tr>
+                               </tbody></table>
+                            </div>
+                            <div class="capRowdown">
+                               <img src="img/rowdown.png">
+                            </div>      
+                        </section>
+                    </div>
+
+                    <div id="tab-modulo4" style="display: none; float: right; width: 100%; padding-top: 20px;">
+                        <h2 class="evaluacion-title"><span class="lapiz-icon">Evaluación</span></h2>
+
+                        <p>A continuación le invitamos a responder una evaluación de aprendizaje sobre los contenidos del Modelo de Gestión de Calidad de la Educación Parvularia.</p>
+                        <p>La prueba consta de 16 preguntas, las que son seleccionadas aleatoriamente dentro de un set mayor de preguntas. Para ser aprobada, debe responder correctivamente -al menos- el 75% de ellas (12 preguntas), para conseguirlo dispondrá de hasta 3 intentos. Si luego de los 3 intentos no logra aprobar, obtendrá un Certificado de Participación.</p>
+
+                        <div class="consola-evaluacion">
+                            <div class="segmento-resumen">
+                                <input type="submit" name="ctl00$ctl00$ctl00$MainContent$SubMainContent$SubMainContentCap$btnResumen" value="Resumen de Intentos" id="MainContent_SubMainContent_SubMainContentCap_btnResumen" disabled="disabled" class="aspNetDisabled" style="background-color:#CCCCCC;">
+                            </div>
+                            <div class="evaluacion-set">
+                                <a id="MainContent_SubMainContent_SubMainContentCap_lbtnPrueba" class="comenzar-la-evaluacion" href="#">Comenzar la Evaluación <img id="MainContent_SubMainContent_SubMainContentCap_imgBandera" src="img/banderita.png"></a>
+                                <p class="centrar">Queda(n) <span id="MainContent_SubMainContent_SubMainContentCap_lblIntentos" class="destacar-estado">3</span> intento(s) para relizar la evaluación</p>
+                            </div>
+                        </div>
+
+                        <div id="MainContent_SubMainContent_SubMainContentCap_pnlResumen" class="modalPanel" style="width: 750px; display: none; position: fixed; z-index: 10101;">
+
+                            <div id="MainContent_SubMainContent_SubMainContentCap_pnlResumenCabecera" class="panelHeader">
+
+                                <img id="MainContent_SubMainContent_SubMainContentCap_imgResumenCabecera" src="img/resumen-medios.png"> Resumen de Intentos
+                                <a id="MainContent_SubMainContent_SubMainContentCap_lbtnModalCerrar" class="panelClose" href="javascript:__doPostBack('ctl00$ctl00$ctl00$MainContent$SubMainContent$SubMainContentCap$lbtnModalCerrar','')">×</a>
+
+                            </div>
+                            <div id="MainContent_SubMainContent_SubMainContentCap_pnlResumenContenido" class="modalPanelContent" style="overflow:auto;">
+
+                                <div>
+                                    <table cellspacing="0" cellpadding="4" id="MainContent_SubMainContent_SubMainContentCap_gvResumen" style="color:#333333;width:100%;border-collapse:collapse;">
+                                        <tbody>
+                                            <tr style="color:White;background-color:#5D7B9D;font-weight:bold;">
+                                                <th scope="col">Intento</th>
+                                                <th scope="col">Estado</th>
+                                                <th scope="col">Cantidad de respuestas correctas</th>
+                                                <th scope="col">Cantidad total de preguntas</th>
+                                                <th scope="col">Porcentaje de respuestas correctas</th>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="5">No hay intentos registrados.</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                            </div>
+
+                        </div>
+                        <div style="display: none;">
+                            <input type="submit" name="ctl00$ctl00$ctl00$MainContent$SubMainContent$SubMainContentCap$btnDummy" value="Dummy" id="MainContent_SubMainContent_SubMainContentCap_btnDummy">
+                        </div>
+
+                        <div id="mpeResumen_backgroundElement" class="modalBackground" style="display: none; position: fixed; left: 0px; top: 0px; z-index: 10000;"></div>
+                    </div>
+
+                </div>
+                <!--fin contenido cambiable-->
+            </div>
+            <div id="fin_contenedor">
+                <div class="foot-logo">
+
+                </div>
+                <div class="rrss">
+                    <a href="http://www.junji.gob.cl/" target="_blank"><img id="imgUrl" src="img/url.png" align="middle" style="border-width:0px;" /><span class="linkrrss"></span></a>
+                    <a href="https://www.facebook.com/junjichilesitiooficial/" target="_blank"><img id="imgFB" src="img/facebook.png" align="middle" style="border-width:0px;" /><span class="linkrrss"></span></a>
+                </div>
+            </div>
+            <br />
+            <!--fin contenido-->
+        </div>
+        <div id="footer"></div>
+    </form>
+</body>
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('.venobox').venobox(); 
+    });
+    function modulo(mod) {
+        switch(mod){
+            case 1:
+                $('#MainContent_SubMainContent_liModulo1').addClass('active')
+                $('#MainContent_SubMainContent_liModulo2').removeClass('active')
+                $('#MainContent_SubMainContent_liModulo3').removeClass('active')
+                $('#MainContent_SubMainContent_liModulo5').removeClass('active')
+                $('#tab-modulo1').css('display','')
+                $('#tab-modulo2').css('display','none')
+                $('#tab-modulo3').css('display','none')
+                $('#tab-modulo4').css('display','none')
+                break;
+            case 2:
+                $('#MainContent_SubMainContent_liModulo2').addClass('active')
+                $('#MainContent_SubMainContent_liModulo1').removeClass('active')
+                $('#MainContent_SubMainContent_liModulo3').removeClass('active')
+                $('#MainContent_SubMainContent_liModulo5').removeClass('active')
+                $('#tab-modulo1').css('display','none')
+                $('#tab-modulo2').css('display','')
+                $('#tab-modulo3').css('display','none')
+                $('#tab-modulo4').css('display','none')
+                break;
+            case 3:
+                $('#MainContent_SubMainContent_liModulo3').addClass('active')
+                $('#MainContent_SubMainContent_liModulo1').removeClass('active')
+                $('#MainContent_SubMainContent_liModulo2').removeClass('active')
+                $('#MainContent_SubMainContent_liModulo5').removeClass('active')
+                $('#tab-modulo1').css('display','none')
+                $('#tab-modulo2').css('display','none')
+                $('#tab-modulo3').css('display','')
+                $('#tab-modulo4').css('display','none')
+                break;
+            case 4:
+                $('#MainContent_SubMainContent_liModulo5').addClass('active')
+                $('#MainContent_SubMainContent_liModulo1').removeClass('active')
+                $('#MainContent_SubMainContent_liModulo2').removeClass('active')
+                $('#MainContent_SubMainContent_liModulo3').removeClass('active')
+                $('#tab-modulo1').css('display','none')
+                $('#tab-modulo2').css('display','none')
+                $('#tab-modulo3').css('display','none')
+                $('#tab-modulo4').css('display','')
+                break;
+        }
+    }
+</script>
+</html>

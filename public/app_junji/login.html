@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>
+        Iniciar sesión
+    </title>
+    <link href="css/estilo_junjiintranet.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
+    <script src="js/login.js"></script>
+</head>
+
+<body>
+    <!--  <form method="post" action="Login.aspx" onsubmit="javascript:return WebForm_OnSubmit();" id="form1"> -->
+        <div id="contenedor_general">
+            <div id="header_modelo">
+            </div>
+            <!--inicio contenido cambiable-->
+            <div id="contenedor" style="margin-top: 30px;">
+                <div id="menu_lateral" style="width:55%;">
+                    <h2 class="bienvenidas-os">¡Bienvenidas y bienvenidos!</h2>
+                    <p>
+                        Esta es la aplicativo pendrive de la zona de intranet del Modelo de Gestión de Calidad de la Educación Parvularia, espacio de trabajo colaborativo en que se propicia la mejora continua.
+                    </p>
+
+                </div>
+                <div id="caja_derecha" style="width:40%; background-color: #FBFBFB">
+
+                    <!-- contenido -->
+                    <div id="wrap-content">
+                        <div id="contentMode">
+                            <table>
+                                <tr>
+                                    <td style="width:15%">&nbsp;</td>
+                                    <td>
+                                        <p style="color:#DC8182; font-weight: bold">Ingrese a continuación sus datos de acceso:</p>
+                                    </td>
+                                    <td style="width:15%">&nbsp;</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- End cointenido -->
+                    <div class="login-wrap">
+                        <table id="MainContent_lgnIngreso" cellspacing="0" cellpadding="0" style="font-family:Verdana;font-size:0.8em;border-collapse:collapse;">
+                            <tr>
+                                <td>
+                                    <table class="" border="0" style="height: 150px; width: 240px;">
+                                        <tr style="border-bottom-style: none;">
+                                            <td style="border-bottom-style: none;">
+                                                <label for="MainContent_lgnIngreso_UserName" id="MainContent_lgnIngreso_lblUserName" style="color:#666695;">Usuario:</label>
+                                            </td>
+                                            <td style="border-bottom-style: none;">
+                                                <input name="ctl00$MainContent$lgnIngreso$UserName" type="text" id="MainContent_lgnIngreso_UserName" tabindex="1" />
+                                                <span data-val-controltovalidate="MainContent_lgnIngreso_UserName" data-val-errormessage="El nombre de usuario es obligatorio." data-val-validationGroup="lgnIngreso" id="MainContent_lgnIngreso_rfvUserName" title="El nombre de usuario es obligatorio." data-val="true" data-val-evaluationfunction="RequiredFieldValidatorEvaluateIsValid" data-val-initialvalue="" style="visibility:hidden;">*</span>
+                                            </td>
+                                        </tr>
+                                        <tr style="border-bottom-style: none;">
+                                            <td style="border-bottom-style: none;">
+                                                <label for="MainContent_lgnIngreso_Password" id="MainContent_lgnIngreso_lblPassword" style="color:#666695;text-align: left">Contraseña:</label>
+                                            </td>
+                                            <td style="border-bottom-style: none;">
+                                                <input name="ctl00$MainContent$lgnIngreso$Password" type="password" id="MainContent_lgnIngreso_Password" tabindex="2" />
+                                                <span data-val-controltovalidate="MainContent_lgnIngreso_Password" data-val-errormessage="La contraseña es obligatoria." data-val-display="Dynamic" data-val-validationGroup="lgnIngreso" id="MainContent_lgnIngreso_rfvPassword" title="La contraseña es obligatoria." data-val="true" data-val-evaluationfunction="RequiredFieldValidatorEvaluateIsValid" data-val-initialvalue="" style="display:none;">*</span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2">
+
+                                                <br />
+                                                <br />
+                                                <div style="text-align: center">
+
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr style="border-bottom-style: none;">
+                                            <td style="border-bottom-style: none; text-align: center;" colspan="2">
+                                                <input type="submit" name="ctl00$MainContent$lgnIngreso$btnLogin" value="Inicio de Sesión" onclick="login()" id="MainContent_lgnIngreso_btnLogin" />
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                </div>
+                <!--fin caja derecha-->
+                <!--fin contenido cambiable-->
+            </div>
+            <div id="fin_contenedor">
+                <div>
+                </div>
+                <div class="rrss">
+                    <a href="http://www.junji.gob.cl/" target="_blank"><img id="imgUrl" src="img/url.png" align="middle" style="border-width:0px;" /><span class="linkrrss"></span></a>
+                    <a href="https://www.facebook.com/junjichilesitiooficial/" target="_blank"><img id="imgFB" src="img/facebook.png" align="middle" style="border-width:0px;" /><span class="linkrrss"></span></a>
+                </div>
+            </div>
+            <br />
+            <!--fin contenido-->
+        </div>
+        <div id="footer"></div>
+    <!-- </form> -->
+</body>
+
+    <!-- <form id="form_id" method="post" name="myform">
+        <label>Usuario :</label>
+        <input type="text" name="username" id="username"/>
+        <label>Clave :</label>
+        <input type="password" name="password" id="password"/>
+        <input type="button" value="Login" id="submit" onclick="login()"/>
+    </form> -->
+
+
+</html>

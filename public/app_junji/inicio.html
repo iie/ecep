@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>
+        Junji Modelo de Gestión de Calidad
+    </title>
+    <link href="css/estilo_junjiintranet.css" rel="stylesheet" />
+    <link href="css/estilo_junji.css" rel="stylesheet" />
+    <link href="vendor/fontawesome/css/all.css" rel="stylesheet" />
+    <script src="vendor/jquery-3.2.1/jquery-3.2.1.min.js"></script>
+    <link rel="stylesheet" href="vendor/VenoBox-master/venobox/venobox.css" type="text/css" media="screen" />
+    <script type="text/javascript" src="vendor/VenoBox-master/venobox/venobox.min.js"></script>
+    <script src="js/inicio.js"></script>
+
+    <style type="text/css">
+        .auto-style1 {
+            text-align: left;
+            color: #EA7D81;
+            font-weight: bold;
+            font-size: 19pt;
+            padding-bottom: 20px;
+            padding-top: 5px;
+            height: 1px;
+        }
+    </style>
+</head>
+
+<body>
+    <form method="post" action="Inicio.aspx" id="form1">
+        <!--inicio contenido-->
+        <div id="contenedor_general">
+            <div id="header_modelo">
+            </div>
+            <div id="menu_principal">
+                <table style="width: 100%" border="0">
+                    <tr>
+                        <td>
+                            <div class="jardin-left-titular">
+                                <h4 style="color:#666695"><span class="zona">Zona de Intranet - <strong><span id="LblTitulo"> Unidad Educativa: </span><span id="lblJardin">iie (Prueba)</span></strong></span></h4>
+
+                            </div>
+                        </td>
+                        <td>
+                            <div class="jardin-right-titular">
+                                <h4 style="color:#666695"><span class="avatar"></span><span class="zona">Perfil: <strong><span id="LblRol">Directora</span></strong></span></h4>
+                            </div>
+                        </td>
+                        <td style="text-align: right">
+                            <div style="float: right;">
+                                <a id="lbtnCerrarSesion"></a>
+                                    <div class="botonSesionCerrar" id="btncerrar"></div>
+                                </a>
+
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <!--inicio contenido cambiable-->
+            <div id="contenedor">
+                <div id="menu_lateral">
+                    <div class="vertical-menu">
+                      <a href="#" class="active color-inicio"><i class="fas fa-home"></i> Inicio</a>
+                      <a href="capacitacion.html" class="color-capacitacion"><i class="fas fa-lightbulb"></i> Capacitación</a>
+                      <a href="autoevaluacion.html" class="color-autoevaluacion"><i class="fas fa-pen"></i> Autoevaluación</a>
+                      <a href="documentos.html" class="color-documentos"><i class="far fa-file-alt"></i> Documentos</a>
+                      <a href="sincronizar.html" class="color-sincronizar"><i class="fas fa-redo-alt"></i>Sincronizar</a>
+                    </div>
+                </div>
+                <div id="caja_derecha">
+
+                    <div class="bajoTitle" style="text-align: justify;vertical-align:top;">
+                        <p class="auto-style1">¡Bienvenidas y bienvenidos! </p>
+                        <p>A través del aplicativo pendrive de la zona de intranet, podrá conocer, interactuar y trabajar sobre dos de las etapas que considera la 7ª. aplicación del Modelo de Gestión de Calidad de la Educación Parvularia (MGCEP).
+                            <br />
+                            <br /> La invitamos a que se apropie de este espacio, el cual ha sido especialmente diseñado y mejorado para que usted y su equipo de trabajo encuentren aquí todos los insumos y orientaciones para que la Capacitación y Autoevaluación puedan ser desarrollados de manera informada y oportuna. Revise de manera permanente las opciones del Menú, porque cada una de ellas está compuesta por contenidos de su interés.
+                            <br />
+                            <br /> Si tiene alguna consulta, duda o sugerencia -tanto técnica como de usabilidad de este aplicativo- no dude en expresarlas a través de los canales formales. En la sección inferior de esta página podrá encontrar la información de contacto.
+                            <br />
+                            <br /> La invitamos a ver un registro audiovisual que resume y reconoce el trabajo de todas/os en la anterior aplicación de este instrumento,  
+
+                            <a class="venobox" data-gall="gall-video" data-autoplay="true" data-vbtype="video" href="https://www.youtube.com/watch?v=18eTGsFISFA">
+                                Ver Video
+                            </a>
+                       
+
+                            <br />
+                            <br /> Deseamos que este proceso sea tan enriquecedor y motivante como el anterior. 
+                            <br />
+                            <br /> ¡Gracias por su participación!
+                            <br />
+                            <br />
+                        </p>
+
+                        <div style="padding: 1px 25px 1px 25px; background: #fcf4f4;">
+                            <p>Si tiene alguna consulta respecto a la implementación del MGCEP, favor contactar al equipo de implementación al número <b>800 100 116</b> o bien escribir al correo electrónico <b>consultas_mgceo@iie.cl</b></p>
+                        </div>
+                    </div>
+
+                </div>
+                <!--fin contenido cambiable-->
+            </div>
+            <div id="fin_contenedor">
+                <div class="foot-logo">
+
+                </div>
+                <div class="rrss">
+                    <a href="http://www.junji.gob.cl/" target="_blank"><img id="imgUrl" src="img/url.png" align="middle" style="border-width:0px;" /><span class="linkrrss"></span></a>
+                    <a href="https://www.facebook.com/junjichilesitiooficial/" target="_blank"><img id="imgFB" src="img/facebook.png" align="middle" style="border-width:0px;" /><span class="linkrrss"></span></a>
+                </div>
+            </div>
+            <br />
+            <!--fin contenido-->
+        </div>
+        <div id="footer"></div>
+    </form>
+</body>
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('.venobox').venobox(); 
+    });
+</script>
+</html>

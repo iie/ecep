@@ -510,6 +510,8 @@ class CapacitacionController extends Controller
                         and rrhh.persona.borrado = false
                         and rrhh.persona.modificado = true 
                         and rrhh.persona.estado_proceso = 'capacitado'
+                        or rrhh.persona.estado_proceso = 'seleccionado'
+                        or rrhh.persona.estado_proceso = 'contratado'
                         and rrhh.persona_cargo.borrado = false
                     and zona.id_zona in (".implode($zonas,",").")
                     GROUP BY rrhh.persona.id_persona,core.comuna.nombre,core.region.nombre, infraestructura.zona.nombre, rrhh.capacitacion_persona.id_capacitacion_persona, rrhh.capacitacion.lugar,
@@ -581,7 +583,10 @@ class CapacitacionController extends Controller
 	        }*/
 
 	    }
-        $totalCapacitado = Persona::where('estado_proceso','capacitado')->count(); 
+        $totalCapacitado = Persona::where('estado_proceso','capacitado')
+            ->orWhere('estado_proceso','seleccionado')
+            ->orWhere('estado_proceso','contratado')
+            ->count(); 
 
  
         $datos['personal_postulacion'] = $personaP;
@@ -804,6 +809,8 @@ class CapacitacionController extends Controller
                         and rrhh.persona.borrado = false
                         and rrhh.persona.modificado = true 
                         and rrhh.persona.estado_proceso = 'capacitado'
+                        or rrhh.persona.estado_proceso = 'seleccionado'
+                        or rrhh.persona.estado_proceso = 'contratado'
                         and rrhh.persona_cargo.borrado = false
                     and zona.id_zona in (".implode($zonas,",").")
                     GROUP BY rrhh.persona.id_persona,core.comuna.nombre,core.region.nombre, infraestructura.zona.nombre, rrhh.capacitacion_persona.id_capacitacion_persona, rrhh.capacitacion.lugar,
@@ -1289,6 +1296,8 @@ class CapacitacionController extends Controller
                     where  rrhh.persona.borrado = false
                         and rrhh.persona.modificado = true 
                         and rrhh.persona.estado_proceso = 'capacitado'
+                        or rrhh.persona.estado_proceso = 'seleccionado'
+                        or rrhh.persona.estado_proceso = 'contratado'
                         and rrhh.persona_cargo.borrado = false
                         and rrhh.capacitacion_persona.borrado = false
                         and rrhh.capacitacion.id_relator = ".$post['id_persona']."
@@ -1728,12 +1737,15 @@ class CapacitacionController extends Controller
                 return response()->json(array("resultado"=>"error","descripcion"=>"No puede desconvocar si ya fue evaluado en la capacitación.", 422));   
             }
 
-            if(date('Y-m-d H:i:s') > $capacitacionPersona->fecha_hora) {
+            /*if(date('Y-m-d H:i:s') > $capacitacionPersona->fecha_hora) {
                 return response()->json(array("resultado"=>"error","descripcion"=>"No puede desconvocar de una capacitación que ya se realizó.", 422));   
-            }
+            }*/
 
             if($capacitacionPersona->confirma_asistencia == 1) {
                 return response()->json(array("resultado"=>"error","descripcion"=>"No puede desconvocar ya que confirmo su asistencia.", 422));   
+            }
+            if($capacitacionPersona->estado == true) {
+                return response()->json(array("resultado"=>"error","descripcion"=>"No puede desconvocar ya que esta aprobado.", 422));   
             }
 
             try{
@@ -1836,25 +1848,27 @@ class CapacitacionController extends Controller
                 }else{
 
                     try{
-                        $capacitacionPrueba = new CapacitacionPrueba;
-                        //$capacitacionPrueba->nota = $evaluado['nota_psicologica'];
-                        
-                       // $capacitacionPrueba->estado = $evaluado['estado_psicologica'] == -1 ? null : $evaluado['estado_psicologica'] ;
-                        $capacitacionPrueba->puntaje = $evaluado['puntaje_psicologica'];
-                        $capacitacionPrueba->prueba = 'Psicologica';
-                        $capacitacionPrueba->id_capacitacion_persona = $evaluado['id_capacitacion_persona']; 
-                         
-                        $capacitacionPrueba->save();
-                        
-                        $capacitacionPrueba = new CapacitacionPrueba;
-                        //$capacitacionPrueba->nota = $evaluado['nota_contenido'];
-                       // $capacitacionPrueba->estado = $evaluado['estado_contenido'] == -1 ? null : $evaluado['estado_contenido'];
-                        $capacitacionPrueba->puntaje = $evaluado['puntaje_contenido'];
-                        $capacitacionPrueba->prueba = 'Técnica';
-                        $capacitacionPrueba->id_capacitacion_persona = $evaluado['id_capacitacion_persona'];
-                        
-                        $capacitacionPrueba->save();
 
+                        if($evaluado['asistencia'] == 1){
+                            $capacitacionPrueba = new CapacitacionPrueba;
+                            //$capacitacionPrueba->nota = $evaluado['nota_psicologica'];
+                            
+                           // $capacitacionPrueba->estado = $evaluado['estado_psicologica'] == -1 ? null : $evaluado['estado_psicologica'] ;
+                            $capacitacionPrueba->puntaje = $evaluado['puntaje_psicologica'];
+                            $capacitacionPrueba->prueba = 'Psicologica';
+                            $capacitacionPrueba->id_capacitacion_persona = $evaluado['id_capacitacion_persona']; 
+                             
+                            $capacitacionPrueba->save();
+                            
+                            $capacitacionPrueba = new CapacitacionPrueba;
+                            //$capacitacionPrueba->nota = $evaluado['nota_contenido'];
+                           // $capacitacionPrueba->estado = $evaluado['estado_contenido'] == -1 ? null : $evaluado['estado_contenido'];
+                            $capacitacionPrueba->puntaje = $evaluado['puntaje_contenido'];
+                            $capacitacionPrueba->prueba = 'Técnica';
+                            $capacitacionPrueba->id_capacitacion_persona = $evaluado['id_capacitacion_persona'];
+                            
+                            $capacitacionPrueba->save();
+                        }
                     }catch (\Exception $e){
                         DB::rollback();
                         return response()->json(['resultado'=>'error','descripcion'=>'Error al guardar Evaluación. ()'. $e->getMessage()]);
@@ -1903,6 +1917,124 @@ class CapacitacionController extends Controller
         DB::commit();
         return response()->json(["resultado"=>"ok","descripcion"=>"Se ha deshabilitado con exito"]);
     }
+
+    public function obtenerNota(Request $request){
+
+        $post = $request->all();   
+
+        $validacion = Validator::make($post, [
+            'id_usuario' => 'required|int',
+            'id_persona' => 'required|int',
+            'id_capacitacion_persona' => 'required|int',
+        ]); 
+
+        if ($validacion->fails()) {
+            return response()->json(array("resultado"=>"error","descripcion"=>$validacion->errors()), 422); 
+        }
+
+        $nota = CapacitacionPrueba::join('rrhh.capacitacion_persona',
+                'rrhh.capacitacion_prueba.id_capacitacion_persona' , '=' , 
+                'rrhh.capacitacion_persona.id_capacitacion_persona')
+            ->where('rrhh.capacitacion_persona.id_persona',$post['id_persona'])
+            ->where('rrhh.capacitacion_prueba.id_capacitacion_persona',$post['id_capacitacion_persona'])
+            ->where('rrhh.capacitacion_prueba.prueba','Técnica')
+            ->select('id_capacitacion_prueba','prueba','puntaje')
+            ->first();
+        
+        if(isset($nota)){            
+            return response()->json($nota);    
+        }else{
+            return response()->json(array("resultado"=>"error","descripcion"=>""), 422);
+        }
+
+    }
+
+    public function guardarNota(Request $request){
+
+        $post = $request->all();   
+
+        $validacion = Validator::make($post, [
+            'id_usuario' => 'required|int',
+            'id_persona' => 'required|int',
+            'id_capacitacion_prueba' => 'required|int',
+            'puntaje' => 'required|int',
+        ]); 
+
+        if ($validacion->fails()) {
+            return response()->json(array("resultado"=>"error","descripcion"=>$validacion->errors()), 422); 
+        }
+
+        $nota = CapacitacionPrueba::join('rrhh.capacitacion_persona',
+                'rrhh.capacitacion_prueba.id_capacitacion_persona' , '=' , 
+                'rrhh.capacitacion_persona.id_capacitacion_persona')
+            ->where('rrhh.capacitacion_persona.id_persona',$post['id_persona'])
+            ->where('rrhh.capacitacion_prueba.id_capacitacion_prueba',$post['id_capacitacion_prueba'])
+            ->first();
+
+        try{
+
+            $nota->puntaje = $post['puntaje'];
+            $nota->save();
+
+        }catch (\Exception $e){
+            DB::rollback();
+            return response()->json(['resultado'=>'error','descripcion'=>'Error al cambiar la nota. ()'. $e->getMessage()]);
+        }
+
+        DB::commit();
+        return response()->json(["resultado"=>"ok","descripcion"=>"Se ha guardado con exito"]);
+
+
+    }
+
+    public function obtenerPersonaCapacitacion(Request $request){
+
+        $post = $request->all();    
+
+        $validacion = Validator::make($post, [
+            'id_usuario' => 'required|int', 
+            'id_capacitacion' => 'required|int', 
+            'run' => 'required',    
+        ]); 
+
+        if ($validacion->fails()) {
+            return response()->json(array("resultado"=>"error","descripcion"=>$validacion->errors()), 422); 
+        }
+
+        $persona = Persona::where('rrhh.persona.run', $post['run'])
+            ->select('rrhh.persona.id_persona')
+            ->first();
+
+        if(!empty($persona)){
+
+            $capacitacionPersona = CapacitacionPersona::where('id_persona',$persona->id_persona)->get();
+
+            if(count($capacitacionPersona) == 0){   
+                try{
+                    $nuevaCapacitacionPersona = new CapacitacionPersona;
+                    $nuevaCapacitacionPersona->id_persona = $persona->id_persona;
+                    $nuevaCapacitacionPersona->id_capacitacion = $post['id_capacitacion'];
+                    $nuevaCapacitacionPersona->created_at = date("Y-m-d H:i:s");
+                    $nuevaCapacitacionPersona->save();
+
+                }catch (\Exception $e){
+                    DB::rollback();
+                    return response()->json(['resultado'=>'error','descripcion'=>'Error al asignar a la Capacitación. ()'. $e->getMessage()]);
+                }
+
+                DB::commit();
+                return response()->json(["resultado"=>"ok","descripcion"=>"Se ha guardado con exito"]);
+
+
+            }else{
+                return response()->json(['resultado'=>'existe','descripcion'=>'La Persona ya tiene Capacitaciones Asociadas']);
+            }
+             
+        }else{
+            return response()->json(['resultado'=>'error','descripcion'=>'No se encuentra la Persona']);
+        }
+    }
+
 
     public function infoConfirmacion($encrypt)
     {

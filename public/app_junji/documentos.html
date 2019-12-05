@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>
+        Junji Modelo de Gestión de Calidad
+    </title>
+    <link href="css/estilo_junjiintranet.css" rel="stylesheet" />
+    <link href="css/estilo_junji.css" rel="stylesheet" />
+    <link href="vendor/fontawesome/css/all.css" rel="stylesheet" />
+    <script src="vendor/jquery-3.2.1/jquery-3.2.1.min.js"></script>
+</head>
+
+<body>
+    <form method="post" action="Inicio.aspx" id="form1">
+        <!--inicio contenido-->
+        <div id="contenedor_general">
+            <div id="header_modelo">
+            </div>
+            <div id="menu_principal">
+                <table style="width: 100%" border="0">
+                    <tr>
+                        <td>
+                            <div class="jardin-left-titular">
+                                <h4 style="color:#666695"><span class="zona">Zona de Intranet - <strong><span id="LblTitulo"> Jardín Infantil: </span><span id="lblJardin">iie (Prueba)</span></strong></span></h4>
+
+                            </div>
+                        </td>
+                        <td>
+                            <div class="jardin-right-titular">
+                                <h4 style="color:#666695"><span class="avatar"></span><span class="zona">Perfil: <strong><span id="LblRol">Directora</span></strong></span></h4>
+                            </div>
+                        </td>
+                        <td style="text-align: right">
+                            <div style="float: right;">
+                                <a id="lbtnCerrarSesion">
+                                    <div class="botonSesionCerrar"></div>
+                                </a>
+
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <!--inicio contenido cambiable-->
+            <div id="contenedor">
+                <div id="menu_lateral">
+                    <div class="vertical-menu">
+                      <a href="inicio.html" class="color-inicio"><i class="fas fa-home"></i> Inicio</a>
+                      <a href="capacitacion.html" class="color-capacitacion"><i class="fas fa-lightbulb"></i> Capacitación</a>
+                      <a href="autoevaluacion.html" class="color-autoevaluacion"><i class="fas fa-pen"></i> Autoevaluación</a>
+                      <a href="#" class="activecolor-documentos"><i class="far fa-file-alt"></i> Documentos</a>
+                      <a href="sincronizar.html" class="color-sincronizar"><i class="fas fa-redo-alt"></i>Sincronizar</a>
+                    </div>
+                </div>
+                <div id="caja_derecha">
+                    <table style="width: 100%" class="documentoTable">
+                        <tbody>
+                            <tr style="height:5px;">
+                                <td colspan="3" style="background-color:darkturquoise"></td>
+                            </tr>
+                            <tr style="height:60px;">
+                                <td id="MainContent_tdManuales" class="doc-active" style="text-align:center; cursor: pointer;" onclick="tipoDoc(1)"><a id="MainContent_lbManuales" href="#" style="color: #666;">Manuales y guías</a></td>
+                                <td id="MainContent_tdLectura" style="text-align:center; cursor: pointer;"  onclick="tipoDoc(2)"><a id="MainContent_lbLectura" href="#" style="color: #666;">Lectura Complementaria</a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div id="MainContent_pnlManuales">
+                        <table style="width: 100%" class="documentoTable" cellspacing="0">
+                            <tbody>
+                                <tr>
+                                    <td style="text-align: justify;" class="documentoGrey">
+                                        <span class="documentoCont"><a id="MainContent_HyperLink18" class="documentoCont" href="#" target="_blank">Manual Modelo de Gestión de Calidad de la Educación Parvularia</a></span>
+                                    </td>
+                                    <td class="documentoIcon documentoGrey">
+                                        <a id="MainContent_hlDocumento1" href="#" target="_blank"><img src="img/icono-ver.png" alt=""></a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: justify;">
+                                        <span class="documentoCont"><a id="MainContent_hlnkDoc1" class="documentoCont" href="#" target="_blank">Guía de Autoevaluación Jardines Infantiles Clásicos.</a></span>
+                                    </td>
+                                    <td class="documentoIcon">
+                                        <a id="MainContent_hlDocumento2" href="#" target="_blank"><img src="img/icono-ver.png" alt=""></a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: justify;" class="documentoGrey">
+                                        <span class="documentoCont"><a id="MainContent_HyperLink8" class="documentoCont" href="#" target="_blank">Guía de Autoevaluación: Jardines Infantiles Alternativos</a></span>
+                                    </td>
+                                    <td class="documentoIcon documentoGrey">
+                                        <a id="MainContent_hlDocumento3" href="#" target="_blank"><img src="img/icono-ver.png" alt=""></a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                    </div>
+
+                    <div id="MainContent_pnlLectura" style="display: none">
+                        <table style="width: 100%" class="documentoTable" cellspacing="0">
+                            <tbody>
+                                <tr>
+                                    <td style="text-align: justify;" class="documentoGrey">
+                                        <span class="documentoCont"><a id="MainContent_HyperLink1" class="documentoCont" href="#" target="_blank">Bases Curriculares para la Educación Parvularia</a></span>
+                                    </td>
+                                    <td class="documentoIcon documentoGrey">
+                                        <a id="MainContent_HyperLink2" href="#" target="_blank"><img src="img/icono-ver.png" alt=""></a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: justify;">
+                                        <span class="documentoCont"><a id="MainContent_HyperLink3" class="documentoCont" href="#" target="_blank">Hacia un Sistema de Acreditación de Calidad</a></span>
+                                    </td>
+                                    <td class="documentoIcon">
+                                        <a id="MainContent_HyperLink4" href="#" target="_blank"><img src="img/icono-ver.png" alt=""></a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: justify;" class="documentoGrey">
+                                        <span class="documentoCont"><a id="MainContent_HyperLink5" class="documentoCont" href="#" target="_blank">Marco para Buena Enseñanza de Educación Parvularia</a></span>
+                                    </td>
+                                    <td class="documentoIcon documentoGrey">
+                                        <a id="MainContent_HyperLink6" href="#" target="_blank"><img src="img/icono-ver.png" alt=""></a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                    </div>
+
+                </div>
+                <!--fin contenido cambiable-->
+            </div>
+            <div id="fin_contenedor">
+                <div class="foot-logo">
+
+                </div>
+                <div class="rrss">
+                    <a href="http://www.junji.gob.cl/" target="_blank"><img id="imgUrl" src="img/url.png" align="middle" style="border-width:0px;" /><span class="linkrrss"></span></a>
+                    <a href="https://www.facebook.com/junjichilesitiooficial/" target="_blank"><img id="imgFB" src="img/facebook.png" align="middle" style="border-width:0px;" /><span class="linkrrss"></span></a>
+                </div>
+            </div>
+            <br />
+            <!--fin contenido-->
+        </div>
+        <div id="footer"></div>
+    </form>
+</body>
+
+<script type="text/javascript">
+    function tipoDoc(tipo) {
+        switch(tipo){
+            case 1:
+                $('#MainContent_tdManuales').addClass('doc-active')
+                $('#MainContent_tdLectura').removeClass('doc-active')
+                $('#MainContent_pnlManuales').css('display','')
+                $('#MainContent_pnlLectura').css('display','none')
+                break;
+            case 2:
+                $('#MainContent_tdLectura').addClass('doc-active')
+                $('#MainContent_tdManuales').removeClass('doc-active')
+                $('#MainContent_pnlLectura').css('display','')   
+                $('#MainContent_pnlManuales').css('display','none')              
+                break;
+ 
+        }
+    }
+</script>
+</html>

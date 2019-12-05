@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="cache-control" content="max-age=0" />
+        <meta http-equiv="cache-control" content="no-cache" />
+        <meta http-equiv="expires" content="0" />
+        <meta http-equiv="expires" content="Tue, 01 Jan 1980 1:00:00 GMT" />
+        <meta http-equiv="pragma" content="no-cache" />
+        <!-- Required meta tags-->
+        
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta name="description" content="">
+        <meta name="author" content="">
+        <meta name="keywords" content="">
+
+        <!-- Title Page-->
+        <title>ECEP</title>
+
+        <!-- Main CSS-->
+        <link href="css/estilos.css" rel="stylesheet" media="all">
+        <link rel="stylesheet" media="all" href="vendor/bootstrap_v4.3.1/css/bootstrap.css">
+        <link
+        href='https://fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,400italic,500,500italic,700,700italic,900italic,900'
+        rel='stylesheet' type='text/css'>
+        <link href="vendor/jquery-nice-select-1.1.0/css/nice-select.css" rel='stylesheet' type='text/css'>
+        <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
+
+        <!-- Jquery JS-->
+        <script src="vendor/jquery-3.2.1/jquery-3.2.1.min.js"></script>
+
+        <!-- JS-->  
+        <script type="text/javascript" src="vendor/popper/popper.min.js"></script> 
+        <script type="text/javascript" src="vendor/jquery.blockUI.js"></script>
+        <script type="text/javascript" src="vendor/bootstrap_v4.3.1/js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="vendor/datatables/jquery.dataTables.min.js"></script>
+        <script type="text/javascript" src="vendor/utils.js"></script>
+        <script type="text/javascript" src="js/personal.js"></script>
+        <script type="text/javascript" src="vendor/jquerrut.js"></script>
+        <script type="text/javascript" src="vendor/sweetalert/sweetalert2.all.min.js"></script>
+        <script type="text/javascript" src="vendor/jquery-nice-select-1.1.0/js/jquery.nice-select.js"></script>
+
+
+        <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.1.2/js/dataTables.buttons.min.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/2.5.0/jszip.min.js"></script>
+        <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.1.2/js/buttons.html5.min.js"></script>
+ 
+
+        <!-- Toastr -->
+        <script  type="text/javascript" src="vendor/toastr/toastr.js"></script>
+        <link href="vendor/toastr/toastr.css" rel='stylesheet' type='text/css'>
+        <link href="vendor/datatables/jquery.dataTables.min.css" rel='stylesheet' type='text/css'>
+    </head>
+
+    <body>
+        <div class="row encabezado">
+            <div class="col-sm-1">
+                <a id="redirect" href="#" class="text-white" style="font-size: 27px; display: none;">
+                    <i class="fas fa-arrow-left"></i>
+                </a>
+                <div style="border:1px solid; width:40px; height:40px; border-radius:50px; float:right">&nbsp;</div>
+            </div>
+            <div class="col-sm-6" style="padding-top:8px; text-align: left;">
+                ECEP
+            </div>
+            <div class="col-sm-5 pr-4" style="padding-top:8px; ">
+                <div class="dropdown show text-left" style="float:right; font-size: 15px;">
+                    Bienvenido, <strong><span id="nombre_usuario"></span></strong>
+                    <a class="dropdown-toggle _hide-arrow text-white" href="#" role="button" id="dropdownMenuLink2"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="fas fa-user-circle"></i>
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink2" style="font-size: 15px;">    
+                        <!-- <a class="dropdown-item" href="#" onclick="redirectModulo()">Módulos</a> -->   
+                        <a class="dropdown-item" href="#" onclick="redirectLogin()">Cerrar sesión</a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div  class="_principal">
+            <div class="page-content _padding-pages"  >
+                <div class="row m-0">
+                    <div class="col-6 form-row align-items-center">
+                       <!--  <h2><i class="far fa-building"></i></h2> -->
+                        <h4 class="nombre_modulo">RRHH</h4>
+                    </div>
+                </div>
+                <div  class="container-fluid _card-rounded mt-3 pt-4" >
+                    <ul class="nav nav-tabs" id="myTab" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" id="tab-postulacion" data-toggle="tab" href="#tabPostulacion" role="tab" aria-controls="tabPostulacion" aria-selected="true">Personal Postulación</a>
+                        </li>
+                        <li class="nav-item" id="liZonal">
+                            <a class="nav-link" id="tab-zonal" data-toggle="tab" href="#tabZonal" role="tab" aria-controls="tabZonal" aria-selected="false">Coordinador Zonal</a>
+                        </li>
+                        <li class="nav-item" id="liRegion">
+                            <a class="nav-link" id="tab-regional" data-toggle="tab" href="#tabRegional" role="tab" aria-controls="tabRegional" aria-selected="false">Encargado Regional</a>
+                        </li>
+                        <li class="nav-item" id="liCentro">
+                            <a class="nav-link" id="tab-centro" data-toggle="tab" href="#tabCentro" role="tab" aria-controls="tabCentro" aria-selected="false">Encargado Centro</a>
+                        </li>
+                        <li class="nav-item" id="liJefeSede">
+                            <a class="nav-link" id="tab-jefeSede" data-toggle="tab" href="#tabJefeSede" role="tab" aria-controls="tabJefeSede" aria-selected="false">Jefe Sede</a>
+                        </li>
+                    </ul>
+                    <div class="tab-content pt-4" id="myTabContent">
+                        <div class="tab-pane fade show active" id="tabPostulacion" role="tabpanel" aria-labelledby="tab-postulacion">
+                            <div class="row pt-3 pb-3 _info">
+							<!--<div class="col-2 text-center">
+                                    <label class="_text-legend">Supervisor</label>
+                                    <p class="_text-dato" id="tatal_supervisor"></label>
+                                </div>
+                                <div class="col-2 text-center">
+                                    <label class="_text-legend">Examinador</label>
+                                    <p class="_text-dato" id="total_examinador"></label>
+                                </div>
+                                <div class="col-2 text-center">
+                                    <label class="_text-legend">Examinador de Apoyo</label>
+                                    <p class="_text-dato" id="total_examinador_apoyo"></label>
+                                </div>
+                                <div class="col-2 text-center">
+                                    <label class="_text-legend">Anfitrión</label>
+                                    <p class="_text-dato" id="total_anfitrion"></p>
+                                </div> -->
+                                <div class="col-2 text-center">
+                                    <label class="_text-legend">Total</label>
+                                    <p class="_text-dato" id="total_personal"></p>
+                                </div>
+                                <div class="offset-sm-8 col-2 text-right">                                      
+                                    <button class="btn btn-primary datatable-excel" role="button" id="descargar-listado" type="button"><i class="fas fa-download"></i> Descargar Lista</button>
+                                             
+                                </div>       
+                            </div>
+                            <div class="row pb-4" id="postulacion-Table_filters">
+                                <div class="row col-8 m-0" id="filtros-postulacion"></div>
+                                <div class="col-4 text-right" id="clear-filtros">
+                                    <button class="btn limpiar-filtros" role="button" id="limpiar-filtros-postulacion" type="button">Limpiar Filtros</button>
+                                </div>
+                            </div>
+
+                            <table id="table-postulacion" class="stripe table table-hover _table-link dataTable no-footer" style="width:100%;">
+                                <thead>         
+                                    <tr>
+                                        <th>N°</th>
+                                        <th>ZONA</th>
+                                        <th width="8%">REGION</th>
+                                        <th width="8%">COMUNA</th> 
+                                      <!--   <th>CARGO</th> -->
+                                        <th width="8%">RUN</th>    
+                                        <th>NOMBRES</th>
+                                        <th>APELLIDO PATERNO</th>
+                                        <th>APELLIDO MATERNO</th>            
+                                        <th style="display: none;">MAIL</th>
+                                        <th style="display: none;">TELEFONO</th>                                        
+                                        <th>NIVEL DE ESTUDIOS</th> 
+                                        <th>ESTADO</th>
+                                        <th>CARGO</th>
+                                        <th>ACCIONES</th>         
+                                    </tr>
+                                </thead>
+                                
+                                <tbody id="lista-postulacion">
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="tab-pane fade" id="tabZonal" role="tabpanel" aria-labelledby="tab-zonal">
+                            <div class="row pt-3 pb-3 _info">
+                                <div class="col-2 text-center">
+                                    <label class="_text-legend">Coordinador Zonal</label>
+                                    <p class="_text-dato" id="total_zonal"></label>
+                                </div>
+                                <div class="offset-sm-6 col-4 text-right">                                       
+                                    <button class="btn btn-primary" role="button" id="btn-zonas" type="button">Asignación de Zonas</button>
+                                    <button class="btn btn-primary btn-acciones"  id="btn-zonas-nuevaPersona" role="button"  type="button" onclick="nuevaPersona()">
+                                        <i class="fas fa-plus-circle"></i> Agregar Persona
+                                    </button>                                            
+                                </div>       
+                            </div>
+                            <div class="row pb-4" id="zonal-Table_filters">
+                                <div class="row col-8 m-0" id="filtros-zonal"></div>
+                                <div class="col-4 text-right" id="clear-filtros">
+                                    <button class="btn limpiar-filtros" role="button" id="limpiar-filtros-zonal" type="button">Limpiar Filtros</button>
+                                </div>
+                            </div>
+
+                            <table id="table-zonal" class="stripe table table-hover _table-link dataTable no-footer" style="width:100%;">
+                                <thead>         
+                                    <tr>
+                                        <th>N°</th>
+                                        <!-- <th width="8%">REGION</th>  -->
+                                        <!-- <th>CARGO</th> -->
+                                        <th width="8%">RUN</th>    
+                                        <th>NOMBRES</th>
+                                        <th>APELLIDO PATERNO</th>
+                                        <th>APELLIDO MATERNO</th>                                           
+                                        <th width="8%">ZONA</th>           
+                                        <!-- <th width="10%">MAIL</th>
+                                        <th>TELEFONO</th> -->
+                                       <!--  <th>ESTADO</th> -->
+                                        <th>ACCIONES</th>       
+                                    </tr>
+                                </thead>
+                                <tbody id="lista-zonal">
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="tab-pane fade" id="tabRegional" role="tabpanel" aria-labelledby="tab-regional">
+                            <div class="row pt-3 pb-3 _info">
+                                <div class="col-2 text-center">
+                                    <label class="_text-legend">Encargado Regional</label>
+                                    <p class="_text-dato" id="total_regional"></label>
+                                </div>
+                                <div class="offset-sm-6 col-4 text-right">                                       
+                                    <button class="btn btn-primary" role="button" id="btn-zonasRegion" type="button">Asignación de Regiones</button>
+                                    <button class="btn btn-primary btn-acciones" role="button" id="btn-region-nuevaPersona" type="button" onclick="nuevaPersona()">
+                                        <i class="fas fa-plus-circle"></i> Agregar Persona</button>                                        
+                                </div>       
+                            </div>
+                            <div class="row pb-4" id="regional-Table_filters">
+                                <div class="row col-8 m-0" id="filtros-regional"></div>
+                                <div class="col-4 text-right" id="clear-filtros">
+                                    <button class="btn limpiar-filtros" role="button" id="limpiar-filtros-regional" type="button">Limpiar Filtros</button>
+                                </div>
+                            </div>
+
+                            <table id="table-regional" class="stripe table table-hover _table-link dataTable no-footer" style="width:100%;">
+                                <thead>         
+                                    <tr>
+                                        <th>N°</th>
+                                        <!-- <th width="8%">COMUNA</th>  -->
+                                        <!-- <th>CARGO</th> -->
+                                        <th width="8%">RUN</th>    
+                                        <th>NOMBRES</th>
+                                        <th>APELLIDO PATERNO</th>
+                                        <th>APELLIDO MATERNO</th>    
+                                        <th width="8%">ZONA</th> 
+                                        <th width="8%">REGION</th>        
+                                        <!-- <th width="10%">MAIL</th>
+                                        <th>TELEFONO</th> -->
+                                       <!--  <th>ESTADO</th> -->
+                                        <th>ACCIONES</th>       
+                                    </tr>
+                                </thead>
+                                <tbody id="lista-regional">
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="tab-pane fade" id="tabCentro" role="tabpanel" aria-labelledby="tab-centro">
+                            <div class="row pt-3 pb-3 _info">
+                                <div class="col-2 text-center">
+                                    <label class="_text-legend">Encargados de Centro</label>
+                                    <p class="_text-dato" id="total_centro"></label>
+                                </div>
+                                <div class="offset-sm-6 col-4 text-right">                                      
+                                    <button class="btn btn-primary" role="button" id="btn-centros" type="button">Asignación de Centros</button>
+                                    <button class="btn btn-primary btn-acciones" role="button" id="crear-items" type="button" onclick="nuevaPersona()">
+                                        <i class="fas fa-plus-circle"></i> Agregar Persona</button>
+                                </div>       
+                            </div>
+                            <div class="row pb-4" id="centro-Table_filters">
+                                <div class="row col-8 m-0" id="filtros-centro"></div>
+                                <div class="col-4 text-right" id="clear-filtros">
+                                    <button class="btn limpiar-filtros" role="button" id="limpiar-filtros-centro" type="button">Limpiar Filtros</button>
+                                </div>
+                            </div>
+
+                            <table id="table-centro" class="stripe table table-hover _table-link dataTable no-footer" style="width:100%;">
+                                <thead>         
+                                    <tr>
+                                        <th>N°</th>
+                                        <th width="8%">REGION</th>
+                                        <th width="8%">COMUNA</th> 
+                                       <!--  <th>CARGO</th> -->
+                                        <th width="8%">RUN</th>    
+                                        <th>NOMBRES</th>
+                                        <th>APELLIDO PATERNO</th>
+                                        <th>APELLIDO MATERNO</th>            
+                                        <th width="10%">MAIL</th>
+                                        <th>TELEFONO</th>
+                                       <!--  <th>ESTADO</th> -->
+                                        <th>ACCIONES</th>       
+                                    </tr>
+                                </thead>
+                                <tbody id="lista-centro">
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="tab-pane fade" id="tabJefeSede" role="tabpanel" aria-labelledby="tab-jefeSede">
+                            <div class="row pt-3 pb-3 _info">
+                                <div class="col-2 text-center">
+                                    <label class="_text-legend">Jefes de Sede</label>
+                                    <p class="_text-dato" id="total_jefeSede"></label>
+                                </div>
+                                <div class="offset-sm-6 col-4 text-right">                                      
+                                    <button class="btn btn-primary" role="button" id="btn-jefeSede" type="button">Asignación de Sedes</button>
+                                    <button class="btn btn-primary btn-acciones" role="button" id="asignar-jefeSede" type="button" onclick="agregarJefeSede()">
+                                        <i class="fas fa-plus-circle"></i> Agregar Jefe Sede</button>
+                                </div>       
+                            </div>
+                            <div class="row pb-4" id="jefeSede-Table_filters">
+                                <div class="row col-8 m-0" id="filtros-jefeSede"></div>
+                                <div class="col-4 text-right" id="clear-filtros">
+                                    <button class="btn limpiar-filtros" role="button" id="limpiar-filtros-jefeSede" type="button">Limpiar Filtros</button>
+                                </div>
+                            </div>
+
+                            <table id="table-jefeSede" class="stripe table table-hover _table-link dataTable no-footer" style="width:100%;">
+                                <thead>         
+                                    <tr>
+                                        <th>N°</th>
+                                        <th>ZONA</th>
+                                        <th width="8%">REGION</th>
+                                        <th width="8%">COMUNA</th> 
+                                        <th>ESTABLECIMIENTO</th>
+                                        <th width="8%">RUN</th>    
+                                        <th>NOMBRES</th>
+                                        <th>APELLIDO PATERNO</th>
+                                        <th>APELLIDO MATERNO</th>            
+                                        <th width="10%">MAIL</th>
+                                        <th>TELEFONO</th>
+                                        <th>ACCIONES</th>       
+                                    </tr>
+                                </thead>
+                                <tbody id="lista-jefeSede">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>          
+                </div>
+            </div>  
+        </div>
+
+    <!-- Modal PERSONA-->
+        <div class="modal fade" id="personalModal" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog  modal-xl" role="document">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="titulo_modal">Modificar Persona</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="container-fluid">
+                        <div class="form-row">
+                            <div class="form-group col-3">
+                                <label for="inputRun">RUN:</label>
+                                <div class="input-group mb-3">
+                                    <input type="text" class="form-control" id="inputRun">
+                                    <div class="input-group-append" id="div-search">
+                                        <button class="btn btn-outline-primary" type="button"  id="btn-search-run" onclick="searchRUN()"><i class="fa fa-search" disabled=""></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-3">
+                                <label for="inputNombres">Nombres:</label>
+                                <input type="text" class="form-control" id="inputNombres" oninput="this.value=NumText(this.value)" >
+                            </div>
+
+                            <div class="form-group col-3">
+                                <label for="inputApellidoPaterno">Apellido Paterno:</label>
+                                <input type="text" class="form-control" id="inputApellidoPaterno" oninput="this.value=NumText(this.value)" >
+                            </div>
+
+                            <div class="form-group col-3">
+                                <label for="inputApellidoMaterno">Apellido Materno:</label>
+                                <input type="text" class="form-control" id="inputApellidoMaterno" oninput="this.value=NumText(this.value)" >
+                            </div>
+
+                            <div class="form-group col-3">
+                                <label for="inputSexo">Sexo:</label>
+                                <select class="form-control" id="inputSexo">
+                                </select>
+                            </div>
+
+                            <div class="form-group col-3">
+                                <label for="inputEstadoCivil">Estado Civil:</label>
+                                <select class="form-control" id="inputEstadoCivil">
+                                </select>
+                            </div>
+                            <div class="form-group col-3">
+                                <label for="inputFechaNacimiento">Fecha Nacimiento:</label>
+                                <input type="date" class="form-control" id="inputFechaNacimiento">
+                            </div>
+                            <div class="form-group col-3">
+                                <label for="inputExtranjero">Extranjero:</label>
+                                <div>
+                                    <div class="form-check form-check-inline custom-radio col-4">
+                                        <input type="radio" id="inputExtranjero_si" name="inputExtranjero" value="Si" class="form-check-input custom-control-input">
+                                        <label class="form-check-label custom-control-label" for="inputExtranjero_si">SI</label>
+                                    </div>
+                                    <div class="form-check form-check-inline custom-radio">
+                                        <input type="radio" id="inputExtranjero_no" name="inputExtranjero" value="No" class="form-check-input custom-control-input">
+                                        <label class="form-check-label custom-control-label" for="inputExtranjero_no">NO</label>
+                                    </div>
+                                </div>
+                            </div>
+                             <div class="form-group col-3">
+                                <label for="inputNacionalidad">Nacionalidad:</label>
+                                <input type="text" class="form-control" id="inputNacionalidad">
+                            </div>
+                            <div class="form-group col-3" id="reginNacimiento">
+                                <label for="inputRegionNacimiento">Región Nacimiento:</label>
+                                <select class="form-control" id="inputRegionNacimiento" onchange="cargarComunas('inputComunaNacimiento',this.value)">
+                                </select>
+                            </div>
+                            <div class="form-group col-3" id="comunaNacimiento">
+                                <label for="inputComunaNacimiento">Comuna Nacimiento:</label>
+                                <select class="form-control" id="inputComunaNacimiento">
+                                </select>
+                            </div>
+                            <div class="form-group col-3">
+                                <label for="inputRegionResidencia">Región Residencia:</label>
+                                <select class="form-control" id="inputRegionResidencia" onchange="cargarComunas('inputComunaResidencia',this.value)">
+                                </select>
+                            </div>
+                            <div class="form-group col-3">
+                                <label for="inputComunaResidencia">Comuna Residencia:</label>
+                                <select class="form-control" id="inputComunaResidencia">
+                                </select>
+                            </div>
+                            <div class="form-group col-3">
+                                <label for="inputDireccion">Dirección Residencia:</label>
+                                <input type="text" class="form-control" id="inputDireccion" oninput="this.value=NumText(this.value)" >
+                            </div>
+                            <div class="form-group col-3">
+                                <label for="inputSector">Sector/Villa/Población:</label>
+                                <input type="text" class="form-control" id="inputSector" oninput="this.value=NumText(this.value)" >
+                            </div>
+
+                            <div class="form-group col-3">
+                                <label for="inputMail">Mail:</label>
+                                <input type="email" class="form-control" id="inputMail" oninput="this.value=NumText(this.value)" >
+                            </div>
+                             <div class="form-group col-3">
+                                <label for="inputTelefono">Teléfono:</label>
+                                <input type="text" class="form-control" id="inputTelefono" oninput="this.value=NumText(this.value)" >
+                            </div>
+                             <div class="form-group col-3">
+                                <label for="inputNivelEstudios">Nivel de Estudios:</label>
+                                <!-- <input type="text" class="form-control" id="inputNivelEstudios" oninput="this.value=NumText(this.value)" > -->
+                                <select name="nivel_estudios" id="inputNivelEstudios" class="form-control custom-select">
+                                    <option value="-1">Elegir...</option>
+                                    <option value="Estudiante Educación Media">Estudiante Educación Media</option>
+                                    <option value="Educación Media Incompleta">Educación Media Incompleta</option>
+                                    <option value="Educación Media Completa">Educación Media Completa</option>
+                                    <option value="Estudiante Educación Superior">Estudiante Educación Superior</option>
+                                    <option value="Educación Superior Incompleta">Educación Superior Incompleta</option>
+                                    <option value="Educación Superior Completa">Educación Superior Completa</option>
+                                    <option value="Estudiante Postgrado">Estudiante Postgrado</option>
+                                    <option value="Postgrado Incompleto">Postgrado Incompleto</option>
+                                    <option value="Postgrado Completo">Postgrado Completo</option>
+                                </select>
+                            </div>
+                             <div class="form-group col-3">
+                                <label for="inputProfesion">Profesión:</label>
+                                <input type="text" class="form-control" id="inputProfesion" oninput="this.value=NumText(this.value)" >
+                            </div>
+
+                            <div class="form-group col-3">
+                                <label for="inputUniversidad">Universidad:</label>
+                                <select class="form-control" id="inputUniversidad">
+                                </select>
+                            </div>
+                            <div class="form-group col-3">
+                                <label for="inputNroCuenta">N° Cuenta:</label>
+                                <input type="text" class="form-control" id="inputNroCuenta" oninput="this.value=NumText(this.value)" >
+                            </div>
+                            <div class="form-group col-3">
+                                <label for="inputTipoCuenta">Tipo Cuenta:</label>
+                                <input type="text" class="form-control" id="inputTipoCuenta" oninput="this.value=NumText(this.value)" >
+                            </div>
+                            <div class="form-group col-3">
+                                <label for="inputBanco">Banco:</label>
+                                <input type="text" class="form-control" id="inputBanco" oninput="this.value=NumText(this.value)" >
+                            </div>
+                            <div class="form-group col-3" id="divRegionPostulacion" style="display: none">
+                                <label for="inputRegionPostulacion">Región Postulacion:</label>
+                                <select class="form-control" id="inputRegionPostulacion" disabled="disabled" onchange="cargarComunas('inputComunaPostulacion',this.value)">
+                                </select>
+                            </div>
+                            <div class="form-group col-3" id="divComunaPostulacion"  style="display: none">
+                                <label for="inputComunaPostulacion">Comuna Postulacion:</label>
+                                <select class="form-control" id="inputComunaPostulacion"  disabled="disabled">
+                                </select>
+                            </div>
+                            <div class="form-group col-12" id="divRolPostulante">
+                                <label class="col-2 pl-0" for="inputRolAsignadoPostulante">Rol Asignado:</label>
+                                <label class="col-6 ml-2 invalid-feedback" id="rol-no-select" style=""> Debe seleccionar al menos 1 rol.</label>
+                                <div class="pl-1">
+                                    <div class="form-check form-check-inline custom-checkbox col-2 m-0">
+                                        <input type="checkbox" id="examinadorPostulante" name="inputRolAsignadoPostulante" value="9" class="form-check-input custom-control-input">
+                                        <label class="form-check-label custom-control-label" for="examinadorPostulante">Supervisor</label>
+                                    </div>
+                                    <div class="form-check form-check-inline custom-checkbox col-2 m-0">
+                                        <input type="checkbox" id="tecnicoAplicacionPostulante" name="inputRolAsignadoPostulante" value="8" class="form-check-input custom-control-input">
+                                        <label class="form-check-label custom-control-label" for="tecnicoAplicacionPostulante">Examinador</label>
+                                    </div>     
+                                    <div class="form-check form-check-inline custom-checkbox col-2 m-0">
+                                        <input type="checkbox" id="tecnicoVisitaPostulante" name="inputRolAsignadoPostulante" value="1007" class="form-check-input custom-control-input">
+                                        <label class="form-check-label custom-control-label" for="tecnicoVisitaPostulante">Examinador de Apoyo</label>
+                                    </div>
+                                    <div class="form-check form-check-inline custom-checkbox col-2 m-0">
+                                        <input type="checkbox" id="supervisorPostulante" name="inputRolAsignadoPostulante" value="1006" class="form-check-input custom-control-input">
+                                        <label class="form-check-label custom-control-label" for="supervisorPostulante">Anfitrión</label>
+                                    </div>           
+
+                                </div>
+                            </div>
+                            <div class="form-group col-12" id="divRol">
+                                <label class="col-2 pl-0" for="inputRolAsignado">Rol Asignado:</label>
+                                <label class="col-6 ml-2 invalid-feedback" id="rol-no-select" style=""> Debe seleccionar al menos 1 rol.</label>
+                                <!-- <select class="form-control" id="inputRolAsignado" disabled="disabled">
+                                </select> -->
+                                <div class="pl-1">
+                                    <div class="form-check form-check-inline custom-checkbox col-3">
+                                        <input type="checkbox" id="coordinadorZonal" name="inputRolAsignado" value="1003" class="form-check-input custom-control-input">
+                                        <label class="form-check-label custom-control-label" for="coordinadorZonal">Coordinador Zonal</label>
+                                    </div>
+                                    <div class="form-check form-check-inline custom-checkbox col-3">
+                                        <input type="checkbox" id="encargadoRegional" name="inputRolAsignado" value="1004" class="form-check-input custom-control-input">
+                                        <label class="form-check-label custom-control-label" for="encargadoRegional">Encargado Regional</label>
+                                    </div>
+                                    <div class="form-check form-check-inline custom-checkbox col-3">
+                                        <input type="checkbox" id="encargadoCetro" name="inputRolAsignado" value="13" class="form-check-input custom-control-input">
+                                        <label class="form-check-label custom-control-label" for="encargadoCetro">Encargados de Centro</label>
+                                    </div>                             
+
+                                </div>
+                            </div>
+                            <div class="row col-12" id="divUsuario">
+                                <div class="form-group col-3">
+                                    <label for="inputUsuario">Usuario:</label>
+                                    <input type="text" class="form-control" id="inputUsuario" oninput="this.value=NumText(this.value)" >
+                                </div>
+                                <div class="form-group col-3">
+                                    <label for="inputContrasena">Contraseña:</label>
+                                    <input type="text" class="form-control" id="inputContrasena" oninput="this.value=NumText(this.value)" >
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" id="guardar_persona">Guardar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+    <!-- Modal Jefe SEDE-->
+        <div class="modal fade" id="infoJefeSedeModal" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog  modal-xl" role="document">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="titulo_modal-info_jefeSede">Buscar Jefe Sede</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="container-fluid">
+                        <div class="form-row">
+                            <div class="form-group col-3">
+                                <label for="inputRunJefeSede">RUN:</label>
+                                <div class="input-group mb-3">
+                                    <input type="text" class="form-control" id="inputRunJefeSede">
+                                    <div class="input-group-append" id="div-search">
+                                        <button class="btn btn-outline-primary" type="button"  id="btn-search-run" onclick="searchRUNJefeSede()"><i class="fa fa-search" disabled=""></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-3">
+                                <label for="inputNombresJefeSede">Nombres:</label>
+                                <input type="text" class="form-control" id="inputNombresJefeSede" oninput="this.value=NumText(this.value)" >
+                            </div>
+
+                            <div class="form-group col-3">
+                                <label for="inputApellidoPaternoJefeSede">Apellido Paterno:</label>
+                                <input type="text" class="form-control" id="inputApellidoPaternoJefeSede" oninput="this.value=NumText(this.value)" >
+                            </div>
+
+                            <div class="form-group col-3">
+                                <label for="inputApellidoMaternoJefeSede">Apellido Materno:</label>
+                                <input type="text" class="form-control" id="inputApellidoMaternoJefeSede" oninput="this.value=NumText(this.value)" >
+                            </div>
+                            <div class="form-group col-3">
+                                <label for="inputMailJefeSede">Mail:</label>
+                                <input type="email" class="form-control" id="inputMailJefeSede" oninput="this.value=NumText(this.value)" >
+                            </div>
+                             <div class="form-group col-3">
+                                <label for="inputTelefonoJefeSede">Teléfono:</label>
+                                <input type="text" class="form-control" id="inputTelefonoJefeSede" oninput="this.value=NumText(this.value)" >
+                            </div>
+                            <div class="form-group col-3">
+                                <label for="inputNivelEstudiosJefeSede">Nivel de Estudios:</label>
+                                <!-- <input type="text" class="form-control" id="inputNivelEstudiosJefeSede" oninput="this.value=NumText(this.value)" > -->
+                                <select name="nivel_estudios" id="inputNivelEstudiosJefeSede" class="form-control custom-select">
+                                    <option value="-1">Elegir...</option>
+                                    <option value="Estudiante Educación Media">Estudiante Educación Media</option>
+                                    <option value="Educación Media Incompleta">Educación Media Incompleta</option>
+                                    <option value="Educación Media Completa">Educación Media Completa</option>
+                                    <option value="Estudiante Educación Superior">Estudiante Educación Superior</option>
+                                    <option value="Educación Superior Incompleta">Educación Superior Incompleta</option>
+                                    <option value="Educación Superior Completa">Educación Superior Completa</option>
+                                    <option value="Estudiante Postgrado">Estudiante Postgrado</option>
+                                    <option value="Postgrado Incompleto">Postgrado Incompleto</option>
+                                    <option value="Postgrado Completo">Postgrado Completo</option>
+                                </select>
+                            </div>
+                            <div class="form-group col-3">
+                                <label for="inputProfesionJefeSede">Profesión:</label>
+                                <input type="text" class="form-control" id="inputProfesionJefeSede" oninput="this.value=NumText(this.value)" >
+                            </div>
+                            <div class="form-group col-3">
+                                <label for="inputRegionPostulacionJefeSede">Región Postulacion:</label>
+                                <select class="form-control" id="inputRegionPostulacionJefeSede" disabled="disabled" onchange="cargarComunas('inputRegionPostulacionJefeSede',this.value)">
+                                </select>
+                            </div>
+                            <div class="form-group col-3">
+                                <label for="inputComunaPostulacionJefeSede">Comuna Postulacion:</label>
+                                <select class="form-control" id="inputComunaPostulacionJefeSede"  disabled="disabled">
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-12">
+                                <h5>Evaluación</h5>
+                            </div>
+ 
+                            <div class="form-group col-3">
+                                <label for="inputEstadoJefeSede">Estado Capacitación:</label>
+                                <input type="text" class="form-control" id="inputEstadoJefeSede" disabled="disabled" >
+                            </div>
+                            <div class="form-group col-3">
+                                <label for="inputPruebaTecnica">Puntaje Técnico:</label>
+                                <input type="email" class="form-control" id="inputPruebaTecnica" disabled="disabled" >
+                            </div>
+                            <div class="form-group col-3">
+                                <label for="inputPruebaPsicologica">Prueba Psicologica:</label>
+                                <input type="text" class="form-control" id="inputPruebaPsicologica" disabled="disabled">
+                            </div>
+                        </div>
+                    </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" id="guardar_jefeSede" disabled="disabled">Crear Jefe Sede</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+    <!-- Modal -->
+        <div class="modal fade" id="docsModal" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog  modal-xl" role="document">
+                <div class="modal-content" style="max-width:none!important;">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="titulo_modal">Documentos</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <table id="table-documentos" class="stripe table table-hover _table-link dataTable no-footer" style="width:100%;">
+                            <thead>
+                                <tr>
+                                    <th>DOCUMENTO</th>
+                                    <th>FECHA</th>
+                                    <th>DESCARGAR</th>
+                                </tr>
+                            </thead>
+                            <tbody id="lista-documentos">
+                                
+                            </tbody>
+                        </table>
+                        <label type="hidden" id="idUsuario">
+                        <label type="hidden" id="idPersona">
+                  </div>
+                </div>
+            </div>
+        </div>    
+
+    <!-- Modal -->
+        <div class="modal fade" id="verDocModal" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog  modal-xl" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="titulo_modal_doc">Documento</h5>
+                        <button type="button" class="close" onclick="cerrarDoc()">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body" id="content-doc">
+                         
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    <!-- Modal -->
+        <div class="modal fade" id="zonaModal" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog  modal-xl" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="titulo_modal-zona">Zonas</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <table id="table-zonas" class="stripe table table-hover _table-link dataTable no-footer" style="width:100%;">
+                            <thead>
+                                <tr>
+                                    <th>ZONA</th>
+                                    <th>ENCARGADO</th>
+                                </tr>
+                            </thead>
+                            <tbody id="lista-zonas">
+                                
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    <!-- Modal -->
+        <div class="modal fade" id="zonaRegionModal" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-scrollable modal-xl" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="titulo_modal-zona">Regiones</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row pb-4" id="regionalModal-Table_filters">
+                            <div class="row col-8 m-0" id="filtros-modalRegion"></div>
+                            <div class="col-4 text-right" id="clear-filtros-modalRegion">
+                                <button class="btn limpiar-filtros" role="button" id="limpiar-filtros-modalRegion" type="button">Limpiar Filtros</button>
+                            </div>
+                        </div>
+                        <table id="table-zonasRegion" class="stripe table table-hover _table-link dataTable no-footer" style="width:100%;">
+                            <thead>
+                                <tr>
+                                    <th>ZONA</th>
+                                    <th>REGION</th>
+                                    <th>ENCARGADO</th>
+                                </tr>
+                            </thead>
+                            <tbody id="lista-zonasRegion">
+                                
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+     <!-- Modal -->
+        <div class="modal fade" id="centrosModal" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-scrollable modal-xl" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="titulo_modal-zona">Centros</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row pb-4" id="centroModal-Table_filters">
+                            <div class="row col-8 m-0" id="filtros-modalCentro"></div>
+                            <div class="col-4 text-right" id="clear-filtros-modalCentro">
+                                <button class="btn limpiar-filtros" role="button" id="limpiar-filtros-modalCentro" type="button">Limpiar Filtros</button>
+                            </div>
+                        </div>
+                        <table id="table-centros" class="stripe table table-hover _table-link dataTable no-footer" style="width:100%;">
+                            <thead>
+                                <tr>
+                                    <th>ZONA</th>
+                                    <th>REGION</th>
+                                    <th>COMUNA</th>
+                                    <th>ENCARGADO</th>
+                                </tr>
+                            </thead>
+                            <tbody id="lista-centros">
+                                
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    <!-- Modal -->
+        <div class="modal fade" id="jefeSedeModal" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-scrollable modal-xl" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="titulo_modal-sedes">Sedes</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row pb-4" id="jefeSedeModal-Table_filters">
+                            <div class="row col-8 m-0" id="filtros-modalJefeSede"></div>
+                            <div class="col-4 text-right" id="clear-filtros-modalJefeSede">
+                                <button class="btn limpiar-filtros" role="button" id="limpiar-filtros-modalJefeSede" type="button">Limpiar Filtros</button>
+                            </div>
+                        </div>
+                        <table id="table-sedes" class="stripe table table-hover _table-link dataTable no-footer" style="width:100%;">
+                            <thead>
+                                <tr>
+                                    <th>ZONA</th>
+                                    <th>REGION</th>
+                                    <th>COMUNA</th>
+                                    <th>ESTABLECIMIENTO</th>
+                                    <th>ENCARGADO</th>
+                                </tr>
+                            </thead>
+                            <tbody id="lista-sedes">
+                                
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </body>
+</html>

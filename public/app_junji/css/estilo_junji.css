@@ -1,0 +1,97 @@
+.messagePanel, .modalPanel {
+    border-width: 2px;
+    border-style: solid;
+    background-color: #FFFFFF;
+    min-width: 400px;
+    min-height: 100px;
+    width: 50%;
+    z-index: 1020 !important;
+    position: absolute;
+}
+
+.messagePanelContent, .modalPanelContent {
+    padding: 10px;
+    background-color: #FFFFFF;
+}
+
+.panelHeader {
+    background-color: #69CBCA;
+    color: #FFF0AB;
+    margin: 0 0 10px 0;
+    padding: 7px 10px;
+    font-weight: bold;
+}
+
+.panelHeaderAzul {
+    background-color: #5560AB;
+    color: #FFF0AB;
+    margin: 0 0 10px 0;
+    padding: 7px 10px;
+    font-weight: bold;
+}
+
+.messageHeaderError {
+    background-color: #FF5F06;
+    color: #FFF0AB;
+    padding: 7px 10px;
+    margin: 0 0 10px 0;
+    font-weight: bold;
+}
+
+.modalBackground {
+    background-color: Gray;
+    filter: alpha(opacity=60);
+    opacity: 0.60;
+    z-index: 1010 !important;
+    position: absolute;
+}
+
+.CssBackCargando {
+    background-color: Gray;
+    filter: alpha(opacity=60);
+    opacity: 0.60;
+    z-index: 1000 !important;
+    position: absolute;
+}
+
+.CargandoBackground {
+    background-color: Gray;
+    filter: alpha(opacity=60);
+    opacity: 0.60;
+    z-index: 10010 !important;
+    position: absolute;
+}
+
+.Cargando {
+    border-width: 2px;
+    border-style: solid;
+    background-color: #FFFFFF;
+    position: absolute;
+    width: 560px;
+    z-index: 10020 !important;
+    position: absolute;
+}
+
+.messageClose, .panelClose {
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    border-radius: 20px;
+    -moz-border-radius: 20px;
+    -webkit-border-radius: 20px;
+    background-color: #FFF;
+    padding: 3px;
+    width: 30px;
+    text-align: center;
+    color: #D30017 !important;
+    position: absolute;
+    right: -10px;
+    top: -5px;
+    text-decoration: none;
+}
+
+.messageClose:hover, .panelClose:hover, .messageClose:focus, .panelClose:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}

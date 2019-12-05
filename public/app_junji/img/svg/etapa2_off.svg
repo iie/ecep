@@ -1,0 +1,14 @@
+<svg id="etapa2_off" xmlns="http://www.w3.org/2000/svg" width="77" height="95.385" viewBox="0 0 77 95.385">
+  <ellipse id="Elipse_21" data-name="Elipse 21" cx="35.5" cy="35" rx="35.5" ry="35" transform="translate(2.87)" fill="#f5f5f5"/>
+  <text id="Autoevaluación" transform="translate(0 90.385)" fill="#666695" font-size="12" font-family="gobCL"><tspan x="0" y="0">Autoevaluación</tspan></text>
+  <g id="Grupo_2930" data-name="Grupo 2930" transform="translate(18.029 15.853)">
+    <g id="Grupo_2928" data-name="Grupo 2928" transform="translate(0 27.604)">
+      <path id="Trazado_3696" data-name="Trazado 3696" d="M1.186,39.229,1,40.944A2.223,2.223,0,0,0,3.453,43.4l2.108-.236Z" transform="translate(-0.982 -32.269)" fill="#666695"/>
+      <path id="Trazado_3697" data-name="Trazado 3697" d="M9.111,38.641a3.189,3.189,0,0,0-1.086-3.1,3.057,3.057,0,0,0-3.6-.419s-.535-3.037-2.258-3.791L1.5,36l6.607,5.947,4.6-1.129C12.415,38.714,9.111,38.641,9.111,38.641Z" transform="translate(-1.044 -31.327)" fill="#666695"/>
+    </g>
+    <g id="Grupo_2929" data-name="Grupo 2929" transform="translate(2.488)">
+      <path id="Trazado_3698" data-name="Trazado 3698" d="M24.04,7.337,3.807,27.1c1.436.625,1.936,1.354,2.3,3.092a4.63,4.63,0,0,1,5.213,3.934,3.41,3.41,0,0,1,3.419,2.392L34.981,16.984Z" transform="translate(-3.807 -0.862)" fill="#666695"/>
+      <path id="Trazado_3699" data-name="Trazado 3699" d="M38.239,14.91l1.95-1.939a6.349,6.349,0,0,0-.27-9.257l-1.247-1.1a6.349,6.349,0,0,0-8.71.279L27.609,5.255Z" transform="translate(-5.737 -1.016)" fill="#666695"/>
+    </g>
+  </g>
+</svg>
