@@ -1287,6 +1287,8 @@ function llenarVistaRelator(data){
     llenarVistaCapacitacionRelator(data.lista_capacitacion)
     llenarVistaCapacitados(data.lista_capacitados)
 
+    $('#label_total').css('display','none')
+
     $.unblockUI();
 }
  
@@ -1371,6 +1373,11 @@ function llenarVistaCapacitacionRelator(data){
             $('td:eq(12)', row).find('#modificarCapacitacion_'+data.id_capacitacion).on('click',modificarCapacitacion);
 
             $('td:eq(12)', row).find('#notas_'+data.id_capacitacion).data('id_capacitacion',data.id_capacitacion);
+            $('td:eq(12)', row).find('#notas_'+data.id_capacitacion).data('region',data.region);
+            $('td:eq(12)', row).find('#notas_'+data.id_capacitacion).data('comuna',data.comuna);
+            $('td:eq(12)', row).find('#notas_'+data.id_capacitacion).data('lugar',data.lugar);
+            $('td:eq(12)', row).find('#notas_'+data.id_capacitacion).data('fecha',moment(data.fecha_hora).format('DD-MM-YYYY'));
+            $('td:eq(12)', row).find('#notas_'+data.id_capacitacion).data('hora',moment(row.fecha_hora).format('HH:mm'));
             $('td:eq(12)', row).find('#notas_'+data.id_capacitacion).on('click',agregarNotas);
 
             if(data.borrado == true){
@@ -1379,28 +1386,11 @@ function llenarVistaCapacitacionRelator(data){
            
         },
         "initComplete": function(settings, json) {
-            //$('#inputRolAsignado').prop('disabled',true)
-            /* if(JSON.parse(localStorage.user).id_cargo == 1004){
-                var api = new $.fn.dataTable.Api(settings);
-                api.columns([1]).visible(false);
-            }*/
-
-            var checkbox = $('input:checkbox[name=inputRolAsignado]')
-            for (var i = 0; i < checkbox.length; i++) {
-                checkbox[i].disabled = true;
-          
-            }
-            $('#inputUsuario').prop('disabled',true)
-            $('#inputContrasena').prop('disabled',true)
-            $('#divRol').css('display','none')
-            $('#divUsuario').css('display','none')
              
             var placeholder = ["","Región","Comuna","Lugar"]
             this.api().columns([1,2,3]).every( function (index) {
-                if(JSON.parse(localStorage.user).id_cargo == 1004 && index == 1){
-                    return;
-                }else{
-                    var column = this;
+                var column = this;
+
                     var select = $('<select class="form-control col-sm-2 small _filtros"  id="selectCR'+index+'" >'+
                         '<option value="" selected="selected">'+placeholder[index]+'</option></select>')
                         .appendTo( $('#filtros-capacitacion'))
@@ -1413,20 +1403,23 @@ function llenarVistaCapacitacionRelator(data){
                                 .search( val ? '^'+val+'$' : '', true, false )
                                 .draw();
                         } );
+                             console.log(column.data())
                     column.data().unique().each( function ( d, j ) {
                         if(d != null){
-                            $('#selectCR'+index).append( '<option value="'+d.charAt(0).toUpperCase() + d.slice(1)+'">'+d.charAt(0).toUpperCase() + d.slice(1)+'</option>' )     
+                        	$('#selectCR'+index).append( '<option value="'+d.charAt(0).toUpperCase() + d.slice(1)+'">'+d.charAt(0).toUpperCase() + d.slice(1)+'</option>' )     
                         }
                         
                     } );
-                    $('#selectCR'+index).niceSelect();    
-                }
+
+                $('#selectCR'+index).niceSelect(); 
+
+ 
             })   
 
             $('.dataTables_length select').addClass('nice-select small');         
         },
         "drawCallback": function(settings){
- 
+ 	 		arrayFechasD = []
             var placeholder = ["","Región","Comuna","Lugar"]
             this.api().columns([1,2,3]).every( function (index) {
                 if(JSON.parse(localStorage.user).id_cargo == 1004 && index == 1){
@@ -1439,13 +1432,14 @@ function llenarVistaCapacitacionRelator(data){
                         selectFiltered.append('<option value="">'+placeholder[index]+'</option>')
                         columnFiltered.column(index,{search:'applied'}).data().unique().each( function ( d, j ) {
                             if(d != null){
-                                selectFiltered.append( '<option value="'+d.charAt(0).toUpperCase() + d.slice(1)+'">'+d.charAt(0).toUpperCase() + d.slice(1)+'</option>' )    
+                            	selectFiltered.append( '<option value="'+d.charAt(0).toUpperCase() + d.slice(1)+'">'+d.charAt(0).toUpperCase() + d.slice(1)+'</option>' )          
                             }                 
 
                         } );
                     }
                     $('select').niceSelect('update');
                 }
+
             })
         }
  
@@ -1947,7 +1941,7 @@ function cargarDatosCapacitacionRelator(region,comuna,data){
     $("#inputFechaR").html(moment(data.fecha_hora, "YYYY-MM-DD HH:mm:ss").format("DD-MM-YYYY") )
     $("#inputHoraR").html(moment(data.fecha_hora, "YYYY-MM-DD HH:mm:ss").format("HH:mm") )
     $('#inputCapacidadR').html(data.capacidad)
-    $('#inputAsistentesR').html(data.asistentes)
+    $('#inputAsistentesR').val(data.asistentes)
     $('#inputLugarR').html(data.lugar)
     $('#inputObservacionR').html(data.observacion)
  
@@ -2131,6 +2125,7 @@ function guardarCapacitacionR(){
             data :{ 
                     id_usuario: JSON.parse(localStorage.user).id_usuario,
                     id_capacitacion : localStorage.id_capacitacion,
+                    asistentes: $('#inputAsistentesR').val(),
                     documento: docO_b64,
                     nombre_archivo: doc0_name
                 },
@@ -3194,6 +3189,13 @@ function desconvocar(){
 
 function agregarNotas(){
     localStorage.id_capacitacion =  $(this).data('id_capacitacion');
+
+    $('#labelRegionCapacitacionRelator').html($(this).data('region'))
+    $('#labelRegionComunaCapacitacionRelator').html($(this).data('comuna'))
+    $('#labelRegionLugarCapacitacionRelator').html($(this).data('lugar'))
+    $('#labelFechaCapacitacionRelator').html($(this).data('fecha'))
+    $('#labelHoraCapacitacionRelator').html($(this).data('hora'))
+
     $.ajax({
             method:'POST',
             url: webservice+'/capacitacion/modificarPersona',
@@ -3229,6 +3231,7 @@ function agregarNotas(){
 }
 
 function cargarNotas(data){
+
     $('#body-evaluacion').empty();
     $('#nombreCapacitacion').html(data)
  
@@ -3271,11 +3274,42 @@ function cargarNotas(data){
             '</tr>'
         $('#body-evaluacion').append(tr);
 
+        $('#asistencia_'+i).on('change',function(){
+            id = $(this).attr('id').replace('asistencia_','')
+            if($(this).val() == 'false'){
+
+                $('#tr-'+id).find('td:nth-child(4) input').prop('disabled',true)
+                $('#tr-'+id).find('td:nth-child(5) select').prop('disabled',true)
+                $('#tr-'+id).find('td:nth-child(6) select').val('-1')
+                $('#tr-'+id).find('td:nth-child(6) select').prop('disabled',true)
+ 
+            }else{
+                $('#tr-'+id).find('td:nth-child(4) input').prop('disabled',false)
+                $('#tr-'+id).find('td:nth-child(5) select').prop('disabled',false)
+                $('#tr-'+id).find('td:nth-child(6) select').val('-1')
+                $('#tr-'+id).find('td:nth-child(6) select').prop('disabled',false)  
+            }
+        })
         $('#asistencia_'+i).val(data[i].asistencia == null ? -1 : ''+data[i].asistencia+'')
 
         $('#psicologica_'+i).val(data[i].capacitacion_prueba == null ? -1 : ''+data[i].capacitacion_prueba[0].puntaje+'')
       
         $('#estado_'+i).val(data[i].estado == null ? -1 : ''+data[i].estado+'')
+
+        if(data[i].asistencia == false){
+            $('#tr-'+i).find('td:nth-child(4) input').prop('disabled',true)
+            $('#tr-'+i).find('td:nth-child(5) select').prop('disabled',true)
+            $('#tr-'+i).find('td:nth-child(6) select').val('-1')
+            $('#tr-'+i).find('td:nth-child(6) select').prop('disabled',true)
+
+        }
+        if(data[i].estado == true){
+            $('#tr-'+i).find('td:nth-child(3) select').prop('disabled',true)
+            $('#tr-'+i).find('td:nth-child(4) input').prop('disabled',true)
+            $('#tr-'+i).find('td:nth-child(5) select').prop('disabled',true)
+            $('#tr-'+i).find('td:nth-child(6) select').prop('disabled',true)
+
+        }
 
         $('#tr-'+i).data('id_persona',data[i].id_persona);
         $('#tr-'+i).data('id_persona_cargo',data[i].id_persona_cargo); 
@@ -3285,10 +3319,10 @@ function cargarNotas(data){
     }
 
     var tablaD = $("#table-evaluarPersonas").DataTable({
-        dom: "<'search'f>",
+        dom: "<'search'f><'top'i>",
         language:spanishTranslation,
         lengthChange: true,
-        info: false,
+        info: true,
         paging: false,
         displayLength: -1,
         ordering: true, 
@@ -3370,7 +3404,7 @@ function guardarEvaluacion(){
 
 
         //VALIDAR QUE SI NO ASISTE NO PUEDE LLENAR CON INFORMACION LOS DEMAS DATOS
-            if(asistencia  == 'false' && (puntaje_contenido > 0 || puntaje_psicologica != -1 || estado != 'false')){
+            if(asistencia  == 'false' && (puntaje_contenido > 0 || puntaje_psicologica != -1 || estado != -1)){
                 if(puntaje_contenido > 0){
                     $(this).find('td:nth-child(4) input').addClass('is-invalid')
                     cumple = false
@@ -3385,7 +3419,7 @@ function guardarEvaluacion(){
                     $(this).find('td:nth-child(5) select').removeClass('is-invalid')
                 }
 
-                if(estado != 'false'){
+                if(estado != -1){
                     $(this).find('td:nth-child(6) select').addClass('is-invalid')
                     cumple = false
                 }else{

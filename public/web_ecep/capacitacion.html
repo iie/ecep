@@ -578,8 +578,8 @@
                                 <h4 id="inputCapacidadR"></h4>                            
                             </div>
                             <div class="form-group col-2">
-                                <label for="inputAsistentesR">Asistentes:</label>
-                                <h4 id="inputAsistentesR"></h4>                            
+                                <label for="inputAsistentesR">Asistentes:</label>     
+                                <input type="text" id="inputAsistentesR" class="form-control" oninput="this.value=Numeros(this.value)"/>                      
                             </div>                           
                             <div class="form-group col-12">
                                 <label for="inputLugarR">Lugar:</label>
@@ -867,6 +867,28 @@
                                                 <button class="btn limpiar-filtros" role="button" id="limpiar-filtros-evaluarPersonas" type="button">Limpiar Filtros</button>
                                             </div>
                                         </div> -->
+                                        <div class="form-row" id="info_cap">
+                                            <div class="form-group col-3 mb-1">
+                                                <label for="labelRegionCapacitacionRelator" class="mb-0">Región:</label>
+                                                <h4 id="labelRegionCapacitacionRelator"></h4>
+                                            </div>
+                                            <div class="form-group col-3 mb-1">
+                                                <label for="labelComunaCapacitacionRelator" class="mb-0">Comuna:</label>
+                                                <h4 id="labelRegionComunaCapacitacionRelator"></h4>
+                                            </div>
+                                            <div class="form-group col-6 mb-1">
+                                                <label for="labelLugarCapacitacionRelator" class="mb-0">Lugar:</label>
+                                                <h4 id="labelRegionLugarCapacitacionRelator"></h4>
+                                            </div>
+                                            <div class="form-group col-3 mb-1">
+                                                <label for="labelFechaCapacitacionRelator" class="mb-0">Fecha:</label>
+                                                <h4 id="labelFechaCapacitacionRelator"></h4>
+                                            </div>
+                                            <div class="form-group col-3 mb-1">
+                                                <label for="labelHoraCapacitacionRelator" class="mb-0">Hora:</label>
+                                                <h4 id="labelHoraCapacitacionRelator"></h4>
+                                            </div>
+                                        </div>
                                         <table id="table-evaluarPersonas" class="stripe table table-hover _table-link dataTable no-footer" style="width:100%;">
                                             <thead class="text-center"> 
                                                 <tr> 

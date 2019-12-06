@@ -392,7 +392,7 @@ class SedeController extends Controller
 		$contadores["sup_requeridos"] = $cont_total_sup_req;
 		$contadores["anf_requeridos"] = $cont_total_anf_req;
 		$contadores["exa_ap_requeridos"] = $cont_total_exa_ap_req;
-		$sede["contadores"] = $contadores;
+		//$sede["contadores"] = $contadores;
 		return response()->json($sede);	
 	}		
 	

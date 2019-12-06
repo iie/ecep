@@ -1062,7 +1062,8 @@ class CapacitacionController extends Controller
         }
         DB::beginTransaction();
         try{
-           $capacitacion->save();
+            $capacitacion->asistentes = $post['asistentes'];
+            $capacitacion->save();
         }catch (\Exception $e){
             DB::rollback();
             return response()->json(['resultado'=>'error','descripcion'=>'Error al guardar. ()'. $e->getMessage()]);
@@ -1132,7 +1133,7 @@ class CapacitacionController extends Controller
                         'rrhh.capacitacion_persona.id_capacitacion_persona','rrhh.capacitacion.id_capacitacion')
                     //->where('rrhh.persona_cargo.id_cargo','=',$post['id_cargo'])
                     ->where('rrhh.capacitacion_persona.id_capacitacion','=',$post['id_capacitacion'])
-                    ->where('rrhh.persona.estado_proceso','=', 'preseleccionado')
+                    /*->where('rrhh.persona.estado_proceso','=', 'preseleccionado')*/
                      ->where('rrhh.persona.deserta','=', false)
                     ->where('rrhh.capacitacion_persona.borrado','=',false)
                     ->orderBy('rrhh.persona.nombres','asc')
@@ -1741,7 +1742,7 @@ class CapacitacionController extends Controller
                 return response()->json(array("resultado"=>"error","descripcion"=>"No puede desconvocar de una capacitación que ya se realizó.", 422));   
             }*/
 
-            if($capacitacionPersona->confirma_asistencia == 1) {
+            if($capacitacionPersona->confirma_asistencia == 1 && (date('Y-m-d H:i:s') < $capacitacionPersona->fecha_hora)) {
                 return response()->json(array("resultado"=>"error","descripcion"=>"No puede desconvocar ya que confirmo su asistencia.", 422));   
             }
             if($capacitacionPersona->estado == true) {
@@ -1797,7 +1798,16 @@ class CapacitacionController extends Controller
                 }
 
                 $capacitacionPersona->asistencia  = $evaluado['asistencia'] == -1 ? null : $evaluado['asistencia'];
-                $capacitacionPersona->estado  = $evaluado['estado'] == -1 ? null : $evaluado['estado'];
+
+                if($evaluado['asistencia'] == 'false'){
+                    $capacitacionPersona->estado = false;
+                }else if( $evaluado['estado'] == -1){
+                    $capacitacionPersona->estado = null;
+                }else if($evaluado['puntaje_contenido'] > 0 && $evaluado['puntaje_contenido'] < 90){
+                    $capacitacionPersona->estado = false;
+                }else{
+                    $capacitacionPersona->estado = $evaluado['estado'];
+                }
 
                 $capacitacionPrueba = CapacitacionPrueba::where('id_capacitacion_persona',$evaluado['id_capacitacion_persona'])
                     ->get();
@@ -1813,6 +1823,7 @@ class CapacitacionController extends Controller
 
 					}else if($evaluado['puntaje_psicologica'] == 0){
                         $_p->estado_proceso = 'rechazado';
+                        $capacitacionPersona->estado = false;
 
                     }else{
 						$_p->estado_proceso = 'preseleccionado';	
@@ -1849,7 +1860,7 @@ class CapacitacionController extends Controller
 
                     try{
 
-                        if($evaluado['asistencia'] == 1){
+                        if($evaluado['asistencia'] == 'true'){
                             $capacitacionPrueba = new CapacitacionPrueba;
                             //$capacitacionPrueba->nota = $evaluado['nota_psicologica'];
                             

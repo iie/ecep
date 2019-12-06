@@ -80,7 +80,6 @@ function getListaEstimacion2(){
             dia: 2,
         },
         success: function(data, textStatus, jqXHR) {
-            console.log(data)
             llenarVistaEstamacion2(data)
         },
         error: function(jqXHR, textStatus, errorThrown) {
@@ -113,7 +112,7 @@ function llenarVista(data){
                     modifier: {
                         page: 'current'
                     },
-                    columns: [ 0, 1]
+                    columns: [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
                 }
             }
         ],
@@ -139,7 +138,7 @@ function llenarVista(data){
             },
             {data: "region"},
             {data: "comuna"},
-            {data: "centro",
+           /* {data: "centro",
                 render: function(data, type, row){
                     if(row.id_centro_operaciones == null){
                         return ""
@@ -148,12 +147,12 @@ function llenarVista(data){
                     }
                      
                 }
-            },
+            },*/
             {data: "rbd"},
+            /*{data: "nombre"},*/
             {data: "nombre"},
-            {data: "contacto_nombre"},
             {data: "contacto_email", className: "word-break"},
-            {data: "contacto_fono"},
+            /*{data: "contacto_fono"},*/
             {data: "salas_requeridas", className: "text-center"},
             {data: "salas_disponibles", className: "text-center"},
             {data: "estado", className: "text-center",
@@ -167,6 +166,26 @@ function llenarVista(data){
                     }
                 }
             },
+            {data: "dia",
+                render: function(data, type, row){
+                    if(row.dia == 1){
+                        return row.id_sede_ecep
+                    }else{
+                        return "";
+                    }
+                     
+                }
+            },
+            {data: "dia",
+                render: function(data, type, row){
+                    if(row.dia == 2){
+                        return row.id_sede_ecep
+                    }else{
+                        return "";
+                    }
+                     
+                }
+            },
             {data: "opciones",
                 render: function(data, type, row){
                     return  '<button type="button" id="modificar_'+row.id_sede+'" onclick="modificar('+row.id_sede+')" class="btn btn-primary btn-sm _btn-item mr-1"><i class="fa fa-pencil-alt"></i></button>'
@@ -176,8 +195,8 @@ function llenarVista(data){
             } 
         ],
         "initComplete": function(settings, json) {
-            var placeholder = ["","Región","Comuna","Centro","","","","","","","","Confirmado"]
-            this.api().columns([1,2,3,11]).every( function (index) {
+            var placeholder = ["","Región","Comuna","","","","","","Confirmado"]
+            this.api().columns([1,2,8]).every( function (index) {
                 var column = this;
                 var select = $('<select class="form-control col-sm-2 small _filtros"  id="select'+index+'" >'+
                     '<option value="" selected="selected">'+placeholder[index]+'</option></select>')
@@ -192,7 +211,7 @@ function llenarVista(data){
                             .draw();
                     } );
                 column.data().unique().each( function ( d, j ) {
-                    if(index == 11){
+                    if(index == 8){
                         confirmado = null
                         if(d == 0){
                             confirmado = "S/I"
@@ -212,15 +231,15 @@ function llenarVista(data){
             $('.dataTables_length select').addClass('nice-select small');         
         },
         "drawCallback": function(){
-            var placeholder = ["","Región","Comuna","Centro","","","","","","","","Confirmado"]
-            this.api().columns([1,2,3,11]).every( function (index) {
+            var placeholder = ["","Región","Comuna","","","","","","Confirmado"]
+            this.api().columns([1,2,8]).every( function (index) {
                 var columnFiltered = this;
                 var selectFiltered = $("#select"+index)
                 if(selectFiltered.val()===''){
                     selectFiltered.empty()
                     selectFiltered.append('<option value="">'+placeholder[index]+'</option>')
                     columnFiltered.column(index,{search:'applied'}).data().unique().each( function ( d, j ) {
-                        if(index == 11){
+                        if(index == 8){
                             confirmado = null
                             if(d == 0){
                                 confirmado = "S/I"
@@ -264,7 +283,7 @@ function llenarVista(data){
 
 function llenarVistaEstamacion1(data){
     data = JSON.parse(data)
-
+    console.log(data)
     $('#filtros-dia1').empty();
     if(data.length != 0){
         if($.fn.dataTable.isDataTable('#table-dia1')){
@@ -278,12 +297,12 @@ function llenarVistaEstamacion1(data){
         buttons: [
             {
                 extend: 'excel',
-                title: 'Sedes',
+                title: 'Aplicación día 1',
                 exportOptions: {
                     modifier: {
                         page: 'current'
                     },
-                    columns: [ 0, 1]
+                    columns: [ 0, 1, 2, 3, 4, 5, 6]
                 }
             }
         ],
@@ -307,6 +326,7 @@ function llenarVistaEstamacion1(data){
                     return  meta.row + 1;
                 }
             },
+            {data: "id_sede_ecep",className: "text-center"},
             {data: "region"},
             {data: "comuna"},
             {data: "nombre"},
@@ -314,25 +334,35 @@ function llenarVistaEstamacion1(data){
             {data: "salas", className: "text-center"},
             {data: "opciones",
                 render: function(data, type, row){
-                    return  '<button type="button" id="modificar_'+row.id_sede+'" class="btn btn-primary btn-sm _btn-item mr-1"><i class="fa fa-pencil-alt"></i></button>'
-                            //'<button type="button" id="ver_'+row.id_sede+'" onclick="redireccionarSede('+row.id_sede+')" class="btn btn-primary btn-sm _btn-item"><i class="fas fa-search"></i></button>'        
+                    if(row.id_sede == null){
+                        return  '<button type="button" id="modificar_'+row.id_estimacion+'" class="btn btn-primary btn-sm _btn-item mr-1"><i class="fa fa-pencil-alt"></i></button>'
+
+                    }else{
+                        return  '<button type="button" id="quitar_'+row.id_estimacion+'" class="btn btn-danger btn-sm _btn-item mr-1"><i class="fas fa-times"></i></button>'
+
+                    }
                 },
                 className: "text-center"
             } 
         ],
         "rowCallback": function( row, data ) {
 
-            $('td:eq(6)', row).find('button').data('id_estimacion',data.id_estimacion);
-            $('td:eq(6)', row).find('button').data('id_comuna',data.id_comuna);
-            $('td:eq(6)', row).find('button').data('id_sede',data.id_sede);
-            $('td:eq(6)', row).find('button').data('comuna',data.comuna);
-            $('td:eq(6)', row).find('button').on('click',asignar);
-        
- 
+            $('td:eq(7)', row).find('#modificar_'+data.id_estimacion).data('id_estimacion',data.id_estimacion);
+            $('td:eq(7)', row).find('#modificar_'+data.id_estimacion).data('id_comuna',data.id_comuna);
+            $('td:eq(7)', row).find('#modificar_'+data.id_estimacion).data('id_sede',data.id_sede);
+            $('td:eq(7)', row).find('#modificar_'+data.id_estimacion).data('comuna',data.comuna);
+            $('td:eq(7)', row).find('#modificar_'+data.id_estimacion).data('dia',1);
+            $('td:eq(7)', row).find('#modificar_'+data.id_estimacion).on('click',asignar);
+
+            $('td:eq(7)', row).find('#quitar_'+data.id_estimacion).data('id_estimacion',data.id_estimacion);
+            $('td:eq(7)', row).find('#quitar_'+data.id_estimacion).data('id_sede',data.id_sede);
+            $('td:eq(7)', row).find('#quitar_'+data.id_estimacion).data('dia',1);
+            $('td:eq(7)', row).find('#quitar_'+data.id_estimacion).on('click',quitar);
+         
         },
         "initComplete": function(settings, json) {
-            var placeholder = ["","Región","Comuna","Centro"]
-            this.api().columns([1,2,3]).every( function (index) {
+            var placeholder = ["","","Región","Comuna"]
+            this.api().columns([2,3]).every( function (index) {
                 var column = this;
                 var select = $('<select class="form-control col-sm-2 small _filtros"  id="selectD1'+index+'" >'+
                     '<option value="" selected="selected">'+placeholder[index]+'</option></select>')
@@ -347,19 +377,9 @@ function llenarVistaEstamacion1(data){
                             .draw();
                     } );
                 column.data().unique().each( function ( d, j ) {
-                    if(index == 11){
-                        confirmado = null
-                        if(d == 0){
-                            confirmado = "S/I"
-                        }else if(d == 1){
-                            confirmado = "NO"
-                        }else if(d == 2){
-                            confirmado = "SI"
-                        }
-                        $('#selectD1'+index).append( '<option value="'+confirmado+'">'+confirmado+'</option>' )
-                    }else{
-                        $('#selectD1'+index).append( '<option value="'+d+'">'+d+'</option>' )
-                    }
+
+                    $('#selectD1'+index).append( '<option value="'+d+'">'+d+'</option>' )
+                    
                 } );
                  $('#selectD1'+index).niceSelect();        
             })   
@@ -367,27 +387,17 @@ function llenarVistaEstamacion1(data){
             $('.dataTables_length select').addClass('nice-select small');         
         },
         "drawCallback": function(){
-            var placeholder = ["","Región","Comuna","Centro"]
-            this.api().columns([1,2,3]).every( function (index) {
+            var placeholder = ["","","Región","Comuna"]
+            this.api().columns([2,3]).every( function (index) {
                 var columnFiltered = this;
                 var selectFiltered = $("#selectD1"+index)
                 if(selectFiltered.val()===''){
                     selectFiltered.empty()
                     selectFiltered.append('<option value="">'+placeholder[index]+'</option>')
                     columnFiltered.column(index,{search:'applied'}).data().unique().each( function ( d, j ) {
-                        if(index == 11){
-                            confirmado = null
-                            if(d == 0){
-                                confirmado = "S/I"
-                            }else if(d == 1){
-                                confirmado = "NO"
-                            }else if(d == 2){
-                                confirmado = "SI"
-                            }
-                            selectFiltered.append( '<option value="'+confirmado+'">'+confirmado+'</option>' )
-                        }else{
-                            selectFiltered.append( '<option value="'+d+'">'+d+'</option>' )
-                        }
+
+                        selectFiltered.append( '<option value="'+d+'">'+d+'</option>' )
+                        
 
                     } );
                 }
@@ -408,7 +418,7 @@ function llenarVistaEstamacion1(data){
 }
 function llenarVistaEstamacion2(data){
     data = JSON.parse(data)
-    $('#filtros').empty();
+    $('#filtros-dia2').empty();
     if(data.length != 0){
         if($.fn.dataTable.isDataTable('#table-dia2')){
             $('#table-dia2').DataTable().destroy();
@@ -421,12 +431,12 @@ function llenarVistaEstamacion2(data){
         buttons: [
             {
                 extend: 'excel',
-                title: 'Sedes',
+                title: 'Aplicación día 2',
                 exportOptions: {
                     modifier: {
                         page: 'current'
                     },
-                    columns: [ 0, 1]
+                    columns: [ 0, 1, 2, 3, 4, 5, 6]
                 }
             }
         ],
@@ -442,7 +452,7 @@ function llenarVistaEstamacion2(data){
         ordering: true, 
         order: [],
         search: true,
-        data: data.sedes,
+        data: data,
         responsive: true, 
         columns:[
             {data: "nro",
@@ -450,6 +460,7 @@ function llenarVistaEstamacion2(data){
                     return  meta.row + 1;
                 }
             },
+            {data: "id_sede_ecep",className: "text-center"},
             {data: "region"},
             {data: "comuna"},
             {data: "nombre"},
@@ -457,24 +468,36 @@ function llenarVistaEstamacion2(data){
             {data: "salas", className: "text-center"},
             {data: "opciones",
                 render: function(data, type, row){
-                    return  '<button type="button" id="modificar_'+row.id_sede+'" class="btn btn-primary btn-sm _btn-item mr-1"><i class="fa fa-pencil-alt"></i></button>'
-                            //'<button type="button" id="ver_'+row.id_sede+'" onclick="redireccionarSede('+row.id_sede+')" class="btn btn-primary btn-sm _btn-item"><i class="fas fa-search"></i></button>'        
+                    if(row.id_sede == null){
+                        return  '<button type="button" id="modificar_'+row.id_estimacion+'" class="btn btn-primary btn-sm _btn-item mr-1"><i class="fa fa-pencil-alt"></i></button>'
+
+                    }else{
+                        return  '<button type="button" id="quitar_'+row.id_estimacion+'" class="btn btn-danger btn-sm _btn-item mr-1"><i class="fas fa-times"></i></button>'
+
+                    }
                 },
                 className: "text-center"
             }
         ],
         "rowCallback": function( row, data ) {
 
-            $('td:eq(6)', row).find('button').data('id_estimacion',data.id_estimacion);
-            $('td:eq(6)', row).find('button').data('id_comuna',data.id_comuna);
-            $('td:eq(6)', row).find('button').data('comuna',data.comuna);
-            $('td:eq(6)', row).find('button').on('click',asignar);
+            $('td:eq(7)', row).find('#modificar_'+data.id_estimacion).data('id_estimacion',data.id_estimacion);
+            $('td:eq(7)', row).find('#modificar_'+data.id_estimacion).data('id_comuna',data.id_comuna);
+            $('td:eq(7)', row).find('#modificar_'+data.id_estimacion).data('id_sede',data.id_sede);
+            $('td:eq(7)', row).find('#modificar_'+data.id_estimacion).data('comuna',data.comuna);
+            $('td:eq(7)', row).find('#modificar_'+data.id_estimacion).data('dia',2);
+            $('td:eq(7)', row).find('#modificar_'+data.id_estimacion).on('click',asignar);
+
+            $('td:eq(7)', row).find('#quitar_'+data.id_estimacion).data('id_estimacion',data.id_estimacion);
+            $('td:eq(7)', row).find('#quitar_'+data.id_estimacion).data('id_sede',data.id_sede);
+            $('td:eq(7)', row).find('#quitar_'+data.id_estimacion).data('dia',2);
+            $('td:eq(7)', row).find('#quitar_'+data.id_estimacion).on('click',quitar);
         
  
         },
         "initComplete": function(settings, json) {
-            var placeholder = ["","Región","Comuna","Centro"]
-            this.api().columns([1,2,3]).every( function (index) {
+            var placeholder = ["","","Región","Comuna"]
+            this.api().columns([2,3]).every( function (index) {
                 var column = this;
                 var select = $('<select class="form-control col-sm-2 small _filtros"  id="selectD2'+index+'" >'+
                     '<option value="" selected="selected">'+placeholder[index]+'</option></select>')
@@ -489,19 +512,8 @@ function llenarVistaEstamacion2(data){
                             .draw();
                     } );
                 column.data().unique().each( function ( d, j ) {
-                    if(index == 11){
-                        confirmado = null
-                        if(d == 0){
-                            confirmado = "S/I"
-                        }else if(d == 1){
-                            confirmado = "NO"
-                        }else if(d == 2){
-                            confirmado = "SI"
-                        }
-                        $('#selectD2'+index).append( '<option value="'+confirmado+'">'+confirmado+'</option>' )
-                    }else{
-                        $('#selectD2'+index).append( '<option value="'+d+'">'+d+'</option>' )
-                    }
+                    $('#selectD2'+index).append( '<option value="'+d+'">'+d+'</option>' )
+                    
                 } );
                  $('#selectD2'+index).niceSelect();        
             })   
@@ -509,27 +521,16 @@ function llenarVistaEstamacion2(data){
             $('.dataTables_length select').addClass('nice-select small');         
         },
         "drawCallback": function(){
-            var placeholder = ["","Región","Comuna","Centro"]
-            this.api().columns([1,2,3]).every( function (index) {
+            var placeholder = ["","","Región","Comuna"]
+            this.api().columns([2,3]).every( function (index) {
                 var columnFiltered = this;
                 var selectFiltered = $("#selectD2"+index)
                 if(selectFiltered.val()===''){
                     selectFiltered.empty()
                     selectFiltered.append('<option value="">'+placeholder[index]+'</option>')
                     columnFiltered.column(index,{search:'applied'}).data().unique().each( function ( d, j ) {
-                        if(index == 11){
-                            confirmado = null
-                            if(d == 0){
-                                confirmado = "S/I"
-                            }else if(d == 1){
-                                confirmado = "NO"
-                            }else if(d == 2){
-                                confirmado = "SI"
-                            }
-                            selectFiltered.append( '<option value="'+confirmado+'">'+confirmado+'</option>' )
-                        }else{
-                            selectFiltered.append( '<option value="'+d+'">'+d+'</option>' )
-                        }
+                        
+                        selectFiltered.append( '<option value="'+d+'">'+d+'</option>' )                    
 
                     } );
                 }
@@ -563,15 +564,15 @@ function cargarComunas(id){
 function btnClearFilters(){
     $('#select1').val("").niceSelect('update');
     $('#select2').val("").niceSelect('update');
-    $('#select3').val("").niceSelect('update');
+    $('#select8').val("").niceSelect('update');
     
-    $('#selectD11').val("").niceSelect('update');
     $('#selectD12').val("").niceSelect('update');
     $('#selectD13').val("").niceSelect('update');
+   // $('#selectD13').val("").niceSelect('update');
 
-    $('#selectD21').val("").niceSelect('update');
     $('#selectD22').val("").niceSelect('update');
     $('#selectD23').val("").niceSelect('update');
+    //$('#selectD23').val("").niceSelect('update');
 
     var table = $('#table-sede').DataTable();
         table
@@ -784,7 +785,7 @@ function cargarDatos(data){
     $('#inputEstado').val(data.sede.estado).prop('disabled',false);
  
     if(data.sede.id_estimacion != null){
-    	$('#inputEstado').prop('disabled',true);
+        $('#inputEstado').prop('disabled',true);
     }
     $('#inputDireccionEstablecimiento').val(data.sede.direccion).prop('disabled',false);
     $('#inputNroEstablecimiento').val(data.sede.nro_direccion).prop('disabled',false);
@@ -943,11 +944,11 @@ function redireccionarSede(id){
 }
 
 
-function asignar( ){
-	localStorage.id_estimacion = $(this).data('id_estimacion')
-	localStorage.id_sede = $(this).data('id_sede')
-	 
-	$('#nombreComuna').html($(this).data('comuna'))
+function asignar(){
+    localStorage.id_estimacion = $(this).data('id_estimacion')
+    localStorage.id_sede = $(this).data('id_sede')
+     
+    $('#nombreComuna').html($(this).data('comuna'))
     $.ajax({
         method:'POST',
         url: webservice+'/sede/lista-sedes-comuna',
@@ -958,7 +959,8 @@ function asignar( ){
         dataType:'text',
         data :{ 
             id_usuario: JSON.parse(localStorage.user).id_usuario,
-            id_comuna :  $(this).data('id_comuna')
+            id_comuna :  $(this).data('id_comuna'),
+            dia:$(this).data('dia'),
         },
         success: function(data, textStatus, jqXHR) {
             data = JSON.parse(data) 
@@ -980,27 +982,83 @@ function asignar( ){
  
 }
 
-function cargarCupo(data){
-	$('#footer-asignar').css('display','')
- 	$('#mensajeSede').css('display','none')
-    $('#inputSede').html('')
-	    $('#inputSede').append('<option value="-1" selected="">Sin Sede...</option>') 
-	    if( data.length > 0){
-	    	$('#inputSede').css('display','')
-	    	for(i = 0; i < data.length; i++){
-		        $('#inputSede').append('<option value="'+data[i].id_sede+'">'+data[i].nombre+'</option>') 
-		    }
-		    $('#inputSede').val(localStorage.id_sede == 'null' ? '-1' : localStorage.id_sede)	
-		     
-	    }else{
-	    	$('#inputSede').css('display','none')
-	    	$('#mensajeSede').css('display','')
-	    	$('#footer-asignar').css('display','none')
-	    	 
-	    	
-	    }
+function quitar(){
+    Swal.fire({
+          title: '¿Está seguro que desea quitar el establecimiento asignado?',
+          type: 'warning',
+          reverseButtons: true,
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Confirmar'
+        }).then((result) => {
+            if (result.value) {
+                quitarAsignacion($(this).data('id_estimacion'),$(this).data('dia'))
 
-	     
+            }
+        })
+
+    function quitarAsignacion(id_estimacion,dia){
+        $.ajax({
+            method:'POST',
+            url: webservice+'/sede/quitar-liceo-cupo',
+            headers: {
+                't': JSON.parse(localStorage.user).token
+            },
+            crossDomain: true,
+            dataType:'text',
+            data :{ 
+                id_usuario: JSON.parse(localStorage.user).id_usuario,
+                id_estimacion: id_estimacion
+            },
+            success: function(data, textStatus, jqXHR) {
+                data = JSON.parse(data) 
+                console.log(data)
+
+                if (data.respuesta == "ok") {
+                    showFeedback("success", data.descripcion, "OK");
+                    if(dia == 1){
+                        getListaEstimacion1();
+                    }else if(dia == 2){
+                        getListaEstimacion2();
+                    }
+                    
+                } else {
+                    showFeedback("error","Error al guardar","Error");
+                    console.log("invalidos");
+                }
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                showFeedback("error","Error en el servidor","Datos incorrectos");
+                console.log("error del servidor, datos incorrectos");
+     
+            }
+        })
+    }
+}
+
+function cargarCupo(data){
+    $('#footer-asignar').css('display','')
+    $('#mensajeSede').css('display','none')
+    $('#inputSede').html('')
+        $('#inputSede').append('<option value="-1" selected="">Sin Sede...</option>') 
+        if( data.length > 0){
+            $('#inputSede').css('display','')
+            for(i = 0; i < data.length; i++){
+                $('#inputSede').append('<option value="'+data[i].id_sede+'">'+data[i].nombre+'</option>') 
+            }
+            console.log(localStorage.id_sede)
+            $('#inputSede').val(localStorage.id_sede == 'null' ? '-1' : localStorage.id_sede)   
+             
+        }else{
+            $('#inputSede').css('display','none')
+            $('#mensajeSede').css('display','')
+            $('#footer-asignar').css('display','none')
+             
+            
+        }
+
+         
 
     $('#asignarModal').modal({backdrop: 'static', keyboard: false},'show')
     
@@ -1008,39 +1066,47 @@ function cargarCupo(data){
 
 function guardarAsignacion(){
 
-	$('#inputSede').removeClass('is-invalid')
-	$.ajax({
-        method:'POST',
-        url: webservice+'/sede/guarda-liceo-cupo',
-        headers: {
-            't': JSON.parse(localStorage.user).token
-        },
-        crossDomain: true,
-        dataType:'text',
-        data :{ 
-            id_usuario: JSON.parse(localStorage.user).id_usuario,
-            id_sede :  $('#inputSede').val() == '-1' ? localStorage.id_sede : $('#inputSede').val() ,
-            id_estimacion: $('#inputSede').val() == '-1' ? '-1' : localStorage.id_estimacion 
-        },
-        success: function(data, textStatus, jqXHR) {
-            data = JSON.parse(data) 
-            console.log(data)
+    $('#inputSede').removeClass('is-invalid')
+    if($('#inputSede').val() != -1){
+        $.ajax({
+            method:'POST',
+            url: webservice+'/sede/guarda-liceo-cupo',
+            headers: {
+                't': JSON.parse(localStorage.user).token
+            },
+            crossDomain: true,
+            dataType:'text',
+            data :{ 
+                id_usuario: JSON.parse(localStorage.user).id_usuario,
+                id_sede : $('#inputSede').val(),// $('#inputSede').val() == '-1' ? localStorage.id_sede : $('#inputSede').val() ,
+                id_estimacion: localStorage.id_estimacion //$('#inputSede').val() == '-1' ? '-1' : localStorage.id_estimacion 
+            },
+            success: function(data, textStatus, jqXHR) {
+                data = JSON.parse(data) 
+                console.log(data)
 
-            if (data.resultado == undefined) {
-                getListaEstimacion1()
-				getListaEstimacion2()
-            }else {
-                showFeedback("error",data.resultado,"Error");
-                console.log("invalidos");
+                if (data.respuesta == 'ok') {
+                    showFeedback("success",data.descripcion,"OK");
+                    $('#asignarModal').modal('hide')
+                    getListaEstimacion1()
+                    getListaEstimacion2()
+
+                }else if(data.respuesta == 'error'){
+                     showFeedback("error",data.descripcion,"Error");
+                }else {
+                    showFeedback("error",data.descripcion,"Error");
+                    console.log("invalidos");
+                }
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                showFeedback("error","Error en el servidor","Datos incorrectos");
+                console.log("error del servidor, datos incorrectos");
+     
             }
-        },
-        error: function(jqXHR, textStatus, errorThrown) {
-            showFeedback("error","Error en el servidor","Datos incorrectos");
-            console.log("error del servidor, datos incorrectos");
- 
-        }
-    })
+        })
 
- 
+    }else{
+        $('#inputSede').addClass('is-invalid')
+    }
  
 }
