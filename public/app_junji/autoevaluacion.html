@@ -10,8 +10,21 @@
     <link href="css/estilo_junjiintranet.css" rel="stylesheet" />
     <link href="css/estilo_junji.css" rel="stylesheet" />
     <link href="vendor/fontawesome/css/all.css" rel="stylesheet" />
+    <link rel="stylesheet" media="all" href="vendor/bootstrap_v4.3.1/css/bootstrap.css">
+    <script src="vendor/jquery-3.2.1/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript" src="vendor/bootstrap_v4.3.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="vendor/jquery.blockUI.js"></script>
+    <script src="js/autoevaluacion.js"></script>
+    <script src="vendor/utils.js"></script>
+    <script type="text/javascript" src="vendor/sweetalert/sweetalert2.all.min.js"></script>
 
+    <script  type="text/javascript" src="vendor/toastr/toastr.js"></script>
+    <link href="vendor/toastr/toastr.css" rel='stylesheet' type='text/css'>
     <style type="text/css">
+        .right{
+            float: right;
+        }
+
         .auto-style1 {
             text-align: left;
             color: #EA7D81;
@@ -20,6 +33,29 @@
             padding-bottom: 20px;
             padding-top: 5px;
             height: 1px;
+        }
+        .collapsible {
+            background-color: white;
+            color: black;
+            cursor: pointer;
+            width: 100%;
+            border: 1px solid;
+            border-color: gray;
+            border-radius: 5px;
+            text-align: left;
+            outline: none;
+            font-size: 15px;
+        }
+
+        .active, .collapsible:hover {
+            background-color: white;
+        }
+
+        .content {
+            padding: 0 18px;
+            display: none;
+            overflow: hidden;
+            background-color: white;
         }
     </style>
 </head>
@@ -30,34 +66,31 @@
         <div id="contenedor_general">
             <div id="header_modelo">
             </div>
-            <div id="menu_principal">
-                <table style="width: 100%" border="0">
-                    <tr>
-                        <td>
-                            <div class="jardin-left-titular">
-                                <h4 style="color:#666695"><span class="zona">Zona de Intranet - <strong><span id="LblTitulo"> Jardín Infantil: </span><span id="lblJardin">iie (Prueba)</span></strong></span></h4>
+            <div class="row m-0" style="background-color: #FBFBFB;padding: 20px;">
+                <div class="col-6">
+                    <div class="jardin-left-titular">
+                        <h4 style="color:#666695"><span class="zona">Zona de Intranet - <strong><span id="LblTitulo"> Unidad Educativa: </span><span id="lblJardin">Jardín Inicial</span></strong></span></h4>
 
-                            </div>
-                        </td>
-                        <td>
-                            <div class="jardin-right-titular">
-                                <h4 style="color:#666695"><span class="avatar"></span><span class="zona">Perfil: <strong><span id="LblRol">Directora</span></strong></span></h4>
-                            </div>
-                        </td>
-                        <td style="text-align: right">
-                            <div style="float: right;">
-                                <a id="lbtnCerrarSesion">
-                                    <div class="botonSesionCerrar"></div>
-                                </a>
-
-                            </div>
-                        </td>
-                    </tr>
-                </table>
+                    </div>
+                </div>
+                            
+                      
+                <div class="row col-6 m-0">                 
+                    <div class="col-9 p-0 text-right">
+                        <h4 class="labelDirector">
+                            <span class="avatar"></span><span class="zona">Perfil: <strong>
+                                <span id="LblRol">Directora/Encargada</span></strong></span>
+                        </h4>
+                    </div>
+                    <div class="col-3 p-0" style="text-align: right;">
+                        <a id="lbtnCerrarSesion" style="float: right;"></a>
+                        <div class="botonSesionCerrar" id="btncerrar" style="float: right;"></div>
+                    </div>
+                </div>
             </div>
             <!--inicio contenido cambiable-->
-            <div id="contenedor">
-                <div id="menu_lateral">
+            <div class="row col-12 pr-0">
+                <div class="col-2 p-0" id="menu_lateral">
                     <div class="vertical-menu">
                       <a href="inicio.html" class="color-inicio"><i class="fas fa-home"></i> Inicio</a>
                       <a href="capacitacion.html" class="color-capacitacion"><i class="fas fa-lightbulb"></i> Capacitación</a>
@@ -66,12 +99,14 @@
                       <a href="sincronizar.html" class="color-sincronizar"><i class="fas fa-redo-alt"></i>Sincronizar</a>
                     </div>
                 </div>
-                <div id="caja_derecha">
+                <div class="col-10 pl-5 pr-0">
 
-                    <div id="MainContent_SubMainContent_pnlAutoEvaluacion">
+                    <!-- <div id="MainContent_SubMainContent_pnlAutoEvaluacion"> -->
 
-                        <div class="estado-autoevaluacion">
-                            <div class="comentario-estado">Estado elaboración Guía de Autoevaluación<img id="MainContent_SubMainContent_imgEstado" src="img/Circle_Yellow.png"> <span id="MainContent_SubMainContent_lblEstado">En Curso</span></div>
+                        <div class="estado-autoevaluacion" style="margin-top: 10px;">
+                            <p class="p-2 mt-2 text-center" style="padding-right: 20px !important; background: #fbfbfb; border-radius: 20px !important;     width: max-content; float: right; padding-left: 20px !important; font-size: 12px;">
+                                        ESTADO DE AUTOEVALUACIÓN: <strong id="MainContent_SubMainContent_lblEstado" style="color: rgb(251, 84, 118);">No iniciado</strong></p>
+                            <!-- <div class="comentario-estado">Estado elaboración Guía de Autoevaluación<img id="MainContent_SubMainContent_imgEstado" src="img/Circle_Yellow.png"> <span id="MainContent_SubMainContent_lblEstado">En Curso</span></div> -->
                         </div>
                         <p>En esta sección se encuentran disponibles los recursos que le permitirán a su unidad educativa desarrollar el proceso de Autoevaluación. La invitamos a que desarrolle su trabajo de la siguiente manera:
                             <br>
@@ -84,17 +119,17 @@
                             <br>
 
                         </p>
-                        <br>
+                        
                         <div id="MainContent_SubMainContent_pnlMenu" class="menuAutoevaluacion" style="width:100%;">
 
                             <ul>
-                                <li><a id="MainContent_SubMainContent_lnkbSubirMV" class="aspNetDisabled btnEtapa2"><span class="mod">Subir medios de verificación</span></a></li>
+                                <li><a id="MainContent_SubMainContent_lnkbSubirMV" class="aspNetDisabled btnEtapa2" style="cursor: pointer;"><span class="mod">Subir medios de verificación</span></a></li>
                                 <li><a id="MainContent_SubMainContent_HlAutoevaluacionPrueba" class="aspNetDisabled btnEtapa2" href="evaluacion.html"><span class="mod">Guía de Autoevaluación</span></a></li>
                             </ul>
 
                         </div>
 
-                    </div>
+                   <!--  </div> -->
 
                 </div>
                 <!--fin contenido cambiable-->
@@ -113,5 +148,64 @@
         </div>
         <div id="footer"></div>
     </form>
+    <!-- Modal -->
+    <div class="modal fade" id="docsModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-xl" role="document">
+            <div class="modal-content" style="max-width:none!important;">
+                <div class="modal-header">
+                    <h6 style="color: #666695" class="modal-title" id="titulo_modal">Subir Medios de Verificación</h6>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div>
+                        <p>En esta Sección deberá subir todos los medios de verificación que avalan los puntajes asignados en su Guía de Autoevaluación. Considere que más adelante deberá asociar estos medios a los elementos de gestión que correspondan.
+El peso máximo permitido para cada medio de verificación es de 5 MB.</p>
+                    </div>
+                    <button type="button" class="collapsible">Instrucciones</button>
+                    <div class="content">
+                        <p style="font-size: 10pt; margin-top: 0px;">Para <b>SUBIR</b> los medios de verificación deberá seguir los siguientes pasos:<br>
+                        Paso 1: Presione el botón "Seleccionar archivo".<br>
+                        Paso 2: Busque en su computador la carpeta que contiene todos los medios de verificación digitales.<br>
+                        Paso 3: Seleccione el archivo que desea cargar.<br>
+                        Paso 4: Presione el botón "Abrir".<br>
+                        Paso 5: Presione "Subir".<br>
+                        Paso 6: Revise que su medio de verificación esté cargado en la tabla "Listado de medios de verificación disponibles".</p>
+                                
+                        <p style="font-size: 10pt; margin-bottom: 0px;">Considere que:<br>
+                        - Sólo podrá subir archivos como imágenes (formato jpg, gif), power point (formato ppt, pptx), word (formato doc, docx), PDF.<br>
+                        - Debe presionar el botón eliminar para sacar un archivo del listado de medios de verificación disponibles.<br></p>
+                    </div>
+                    <br>
+                    <div style= "margin-top: 10px;" class="input-group"><input type="hidden" id="_token" value="{{ csrf_token() }}">
+                        <input type="file" class="form-control documento" id="inp_documento" accept=".doc, .docx, .pdf, .png, .jpg">
+                    </div>
+                    <div class="right" style= "margin-top: 10px; padding-bottom: 10px;">
+                        <td style="text-align: right; white-space: nowrap;">
+                            <input type="submit" name="btnMVCerrar" value="Cancelar" data-dismiss="modal" id="cancelar-subir" style="border-radius: 20px;width: 140px;height: 30px;padding: 0px; border: none; background-color: #EF266B; margin-right: 5px;">
+                            <input type="submit" name="btnMVSubir" value="Subir" onclick="guardarConfirm()" id="aceptar_subir" style="border-radius: 20px;width: 140px;height: 30px;padding: 0px; border: none; background-color: #52C2C2;">
+                        </td>
+                    </div>
+                    <br><br>
+                    <hr>
+                    <div>
+                        <p>Listado de medios de verificación disponibles</p>
+                        <table id="table-documentos" class="stripe table table-hover _table-link dataTable no-footer" style="width:100%;">
+                            <thead style="color: #fff; background-color: #82d5d2;">
+                                <tr>
+                                    <th></th>
+                                    <th>MEDIOS DE VERIFICACIÓN</th>
+                                    <th>ACCIONES</th>
+                                </tr>
+                            </thead>
+                            <tbody id="lista-documentos">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>   
 </body>
 </html>
