@@ -2816,11 +2816,11 @@ function mostrarSedes(data){
                 select+= '<option value="'+jefe_sede[i].id_persona_cargo+'">'+jefe_sede[i].nombres+' '+jefe_sede[i].apellido_paterno+'</option>'
             }
             select+='</select>';
-            $('td:eq(4)', row).html(select)
-            $('td:eq(4)', row).find('select').val(data.id_jefe_sede == null ? -1 : data.id_jefe_sede)
-            $('td:eq(4)', row).find('select').data('id_estimacion',data.id_estimacion);
-            //$('td:eq(4)', row).find('select').data('id_zona_region',data.id_zona_region);
-            $('td:eq(4)', row).find('select').on('change',cambiarEncargadoCentro);
+            $('td:eq(5)', row).html(select)
+            $('td:eq(5)', row).find('select').val(data.id_jefe_sede == null ? -1 : data.id_jefe_sede)
+            $('td:eq(5)', row).find('select').data('id_estimacion',data.id_estimacion);
+            //$('td:eq(5)', row).find('select').data('id_zona_region',data.id_zona_region);
+            $('td:eq(5)', row).find('select').on('change',cambiarEncargadoCentro);
         },
         "initComplete": function(settings, json) {
             var placeholder = ["Zona","Región","Comuna"]
