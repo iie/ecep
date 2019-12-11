@@ -52,8 +52,6 @@ Route::get('inscritos-dia' , 'Api\ecep\SedeController@inscritosDia');
 	Route::middleware('auth:api')->post('web/personal/obtenerPersona' , 'Api\ecep\PersonalController@obtenerPersona');
 	Route::middleware('auth:api')->post('web/personal/obtenerJefeSede' , 'Api\ecep\PersonalController@obtenerJefeSede');
 	Route::middleware('auth:api')->post('web/personal/filtros' , 'Api\ecep\PersonalController@filtros');
-	Route::middleware('auth:api')->post('web/personal/guardarJefeSede' , 'Api\ecep\PersonalController@guardarJefeSede');
-
 
 	Route::middleware('auth:api')->post('web/personal/listaCoordinadorZonal' , 'Api\ecep\PersonalController@listaCoordinadorZonal');
 	Route::middleware('auth:api')->post('web/personal/listaCoordinador' , 'Api\ecep\PersonalController@listaCoordinador');
@@ -73,10 +71,6 @@ Route::get('inscritos-dia' , 'Api\ecep\SedeController@inscritosDia');
 	Route::middleware('auth:api')->post('web/capacitacion/deshabilitarCapacitacion' ,'Api\ecep\CapacitacionController@deshabilitarCapacitacion');
 	Route::middleware('auth:api')->post('web/capacitacion/desconvocar' ,'Api\ecep\CapacitacionController@desconvocar');
 	Route::middleware('auth:api')->post('web/capacitacion/desertar' ,'Api\ecep\CapacitacionController@desertar');
-	Route::middleware('auth:api')->post('web/capacitacion/obtenerNota' , 'Api\ecep\CapacitacionController@obtenerNota');
-	Route::middleware('auth:api')->post('web/capacitacion/guardarNota' , 'Api\ecep\CapacitacionController@guardarNota');
-	Route::middleware('auth:api')->post('web/capacitacion/obtenerPersonaCapacitacion' , 'Api\ecep\CapacitacionController@obtenerPersonaCapacitacion');
-
 	Route::middleware('auth:api')->post('web/capacitacion/listaPostulantes' ,'Api\ecep\CapacitacionController@listaPostulantes');
 	
 	Route::post('web/capacitacion/obtenerPersonalConvocado' , 'Api\ecep\CapacitacionController@obtenerPersonalConvocado');
@@ -88,8 +82,6 @@ Route::get('inscritos-dia' , 'Api\ecep\SedeController@inscritosDia');
 	Route::post('web/capacitacion/guarda-confirmacion' ,'Api\ecep\CapacitacionController@guardarConfirmacion');
 	Route::get('web/capacitacion/test-mailing' ,'Api\ecep\CapacitacionController@testCorreo');
 	Route::get('web/capacitacion/descarga-listado/' , 'Api\ecep\CapacitacionExcelController@descargaExcelCapacitacion');
-
- 
 	
 //ASIGNACION
 	Route::middleware('auth:api')->post('web/asignacion/lista' , 'Api\ecep\AsignacionController@lista');

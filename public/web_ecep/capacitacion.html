@@ -275,8 +275,7 @@
                                         <th>HORA</th> 
                                         <th>PRUEBA TECNICA</th> 
                                         <th>PRUEBA PSICOLOGICA</th>   
-                                        <th>ESTADO CAPACITACION</th>
-                                        <th>ACCIONES</th>                                                
+                                        <th>ESTADO CAPACITACION</th>                                                
                                     </tr>
                                 </thead>
                                 <tbody id="lista-capacitados">
@@ -578,8 +577,8 @@
                                 <h4 id="inputCapacidadR"></h4>                            
                             </div>
                             <div class="form-group col-2">
-                                <label for="inputAsistentesR">Asistentes:</label>     
-                                <input type="text" id="inputAsistentesR" class="form-control" oninput="this.value=Numeros(this.value)"/>                      
+                                <label for="inputAsistentesR">Asistentes:</label>
+                                <h4 id="inputAsistentesR"></h4>                            
                             </div>                           
                             <div class="form-group col-12">
                                 <label for="inputLugarR">Lugar:</label>
@@ -692,17 +691,9 @@
                                     <div class="pl-1">
                                         <div class="col-12" id="div_personas"></div>
                                         <div class="row pb-4" id="personasVarias-Table_filters">
-                                            <div class="row col-7 m-0" id="filtros-personasVarias"></div>
-                                            <div class="col-5 row m-0 text-right" id="clear-filtros-personasVarias">    
-                                                <div class="col-6" id="div-filtro">
-                                                    <button class="btn limpiar-filtros" role="button" id="limpiar-filtros-personasVarias" type="button">Limpiar Filtros</button>
-                                                </div>                                     
-                                                <div class="input-group mb-3 col-6" id="agregar-persona">
-                                                    <input type="text" class="form-control" id="inputRunCapacitado">
-                                                    <div class="input-group-append" id="div-search">
-                                                        <button class="btn btn-outline-primary" type="button"  id="btn-search-run" onclick="searchRUNCapacitacion()"><i class="fa fa-search" disabled=""></i></button>
-                                                    </div>
-                                                </div>
+                                            <div class="row col-8 m-0" id="filtros-personasVarias"></div>
+                                            <div class="col-4 text-right" id="clear-filtros-personasVarias">
+                                                <button class="btn limpiar-filtros" role="button" id="limpiar-filtros-personasVarias" type="button">Limpiar Filtros</button>
                                             </div>
                                         </div>
                                         <table id="table-personasVarias" class="stripe table table-hover _table-link dataTable no-footer" style="width:100%;">
@@ -867,28 +858,6 @@
                                                 <button class="btn limpiar-filtros" role="button" id="limpiar-filtros-evaluarPersonas" type="button">Limpiar Filtros</button>
                                             </div>
                                         </div> -->
-                                        <div class="form-row" id="info_cap">
-                                            <div class="form-group col-3 mb-1">
-                                                <label for="labelRegionCapacitacionRelator" class="mb-0">Región:</label>
-                                                <h4 id="labelRegionCapacitacionRelator"></h4>
-                                            </div>
-                                            <div class="form-group col-3 mb-1">
-                                                <label for="labelComunaCapacitacionRelator" class="mb-0">Comuna:</label>
-                                                <h4 id="labelRegionComunaCapacitacionRelator"></h4>
-                                            </div>
-                                            <div class="form-group col-6 mb-1">
-                                                <label for="labelLugarCapacitacionRelator" class="mb-0">Lugar:</label>
-                                                <h4 id="labelRegionLugarCapacitacionRelator"></h4>
-                                            </div>
-                                            <div class="form-group col-3 mb-1">
-                                                <label for="labelFechaCapacitacionRelator" class="mb-0">Fecha:</label>
-                                                <h4 id="labelFechaCapacitacionRelator"></h4>
-                                            </div>
-                                            <div class="form-group col-3 mb-1">
-                                                <label for="labelHoraCapacitacionRelator" class="mb-0">Hora:</label>
-                                                <h4 id="labelHoraCapacitacionRelator"></h4>
-                                            </div>
-                                        </div>
                                         <table id="table-evaluarPersonas" class="stripe table table-hover _table-link dataTable no-footer" style="width:100%;">
                                             <thead class="text-center"> 
                                                 <tr> 
@@ -915,41 +884,5 @@
             </div>
         </div>
 
-    <!-- Modal -->
-        <div class="modal fade" id="modalNotaCapacitado" tabindex="-1" role="dialog" aria-hidden="true">
-                <div class="modal-dialog  modal-lg modal-dialog-scrollable" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title">Modificar Puntaje</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="container-fluid">
-                                <div class="form-row" id="info_cap">
-                                    <div class="form-group col-3 mb-1">
-                                        <label for="labelComunaCapacitacionCorreo" class="mb-0">Run:</label>
-                                        <h4 id="labelRunCapacitado"></h4>
-                                    </div>
-                                    <div class="form-group col-6 mb-1">
-                                        <label for="labelRegionCapacitacionCorreo" class="mb-0">Nombre:</label>
-                                        <h4 id="labelNombreCapacitado"></h4>
-                                    </div>
-                                    <div class="form-group col-3 mb-1">
-                                        <label>Puntaje Prueba Técnica:</label>
-                                        <input id="inputNotaTecnica" class="form-control" oninput="this.value=porcentaje(this.value)">
-                                    </div>
-                                </div>
-                            </div>                         
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                            <button type="button" class="btn btn-primary" id="guardar_nueva_nota">Guardar</button>
-                            <!-- <button type="button" class="btn btn-danger" id="eliminar_asignacion">Eliminar convocación</button> -->
-                        </div>
-                    </div>
-                </div>
-            </div>
     </body>
 </html>

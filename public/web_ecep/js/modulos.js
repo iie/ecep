@@ -17,7 +17,7 @@ function tipoUsuario(){
 		$('#card-infraestructura').remove();
 		$('#card-evaluados').remove();
 		$('#card-centros').remove();
-		$('#card-asignacion').css('display','')
+		$('#card-asignacion').remove();
 		$('#card-capacitacion').css('display','')
 		$('#card-rrhh').css('display','')
 		

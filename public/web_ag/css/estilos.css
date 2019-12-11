@@ -748,34 +748,3 @@ h6, .h6 {
     background: #f1f7ff;
 }
 	
-.dataTables_scrollBody {
-    transform:rotateX(180deg);
-}
-.dataTables_scrollBody table {
-    transform:rotateX(180deg);
-}
-
-.blockUI.blockMsg.blockPage {
-    z-index: 99999 !important;
-    border-radius: 15px;
-    background-color: #262626 !important;
-    color: #ffffffb3 !important;
-    cursor: default !important;
-    border: none !important;
-
-}
-.blockUI.blockMsg.blockPage>h1 {
-    padding: 20px;
-
-}
-
-.blockUI .blockMsg .blockPage{
-    z-index: 9999 !important;
-}
-.blockOverlay{
-    z-index: 9999 !important;
-}
-.blockUI.blockMsg.blockPage {
-
-    background-color: transparent !important;
-}

@@ -38,8 +38,6 @@ $(document).ready(function(){
     $('#guardar_capacitacion').click(guardarCapacitacion);
 
     $('#guardar_capacitacionR').click(guardarCapacitacionR);
-    $('#guardar_nueva_nota').click(guardarNota);
-     
 
     $('#eliminar_asignacion').css('display','none')
     $('#eliminar_asignacion').click(desconvocar);
@@ -243,15 +241,7 @@ function llenarVista(data){
                     } 
                 } 
             },
-            {data: "lugar",
-                render: function(data, type,row){
-                    if(row.borrado_capacitacion == false){
-                        return  data;
-                    }else{
-                        return '';
-                    } 
-                } 
-            },
+            {data: 'lugar'},
             {data: null,
                 render: function(data, type,row){
                     if(row.id_capacitacion_persona != null && data.borrado_capacitacion == false){
@@ -1287,8 +1277,6 @@ function llenarVistaRelator(data){
     llenarVistaCapacitacionRelator(data.lista_capacitacion)
     llenarVistaCapacitados(data.lista_capacitados)
 
-    $('#label_total').css('display','none')
-
     $.unblockUI();
 }
  
@@ -1373,11 +1361,6 @@ function llenarVistaCapacitacionRelator(data){
             $('td:eq(12)', row).find('#modificarCapacitacion_'+data.id_capacitacion).on('click',modificarCapacitacion);
 
             $('td:eq(12)', row).find('#notas_'+data.id_capacitacion).data('id_capacitacion',data.id_capacitacion);
-            $('td:eq(12)', row).find('#notas_'+data.id_capacitacion).data('region',data.region);
-            $('td:eq(12)', row).find('#notas_'+data.id_capacitacion).data('comuna',data.comuna);
-            $('td:eq(12)', row).find('#notas_'+data.id_capacitacion).data('lugar',data.lugar);
-            $('td:eq(12)', row).find('#notas_'+data.id_capacitacion).data('fecha',moment(data.fecha_hora).format('DD-MM-YYYY'));
-            $('td:eq(12)', row).find('#notas_'+data.id_capacitacion).data('hora',moment(row.fecha_hora).format('HH:mm'));
             $('td:eq(12)', row).find('#notas_'+data.id_capacitacion).on('click',agregarNotas);
 
             if(data.borrado == true){
@@ -1386,11 +1369,28 @@ function llenarVistaCapacitacionRelator(data){
            
         },
         "initComplete": function(settings, json) {
+            //$('#inputRolAsignado').prop('disabled',true)
+            /* if(JSON.parse(localStorage.user).id_cargo == 1004){
+                var api = new $.fn.dataTable.Api(settings);
+                api.columns([1]).visible(false);
+            }*/
+
+            var checkbox = $('input:checkbox[name=inputRolAsignado]')
+            for (var i = 0; i < checkbox.length; i++) {
+                checkbox[i].disabled = true;
+          
+            }
+            $('#inputUsuario').prop('disabled',true)
+            $('#inputContrasena').prop('disabled',true)
+            $('#divRol').css('display','none')
+            $('#divUsuario').css('display','none')
              
             var placeholder = ["","Región","Comuna","Lugar"]
             this.api().columns([1,2,3]).every( function (index) {
-                var column = this;
-
+                if(JSON.parse(localStorage.user).id_cargo == 1004 && index == 1){
+                    return;
+                }else{
+                    var column = this;
                     var select = $('<select class="form-control col-sm-2 small _filtros"  id="selectCR'+index+'" >'+
                         '<option value="" selected="selected">'+placeholder[index]+'</option></select>')
                         .appendTo( $('#filtros-capacitacion'))
@@ -1403,23 +1403,20 @@ function llenarVistaCapacitacionRelator(data){
                                 .search( val ? '^'+val+'$' : '', true, false )
                                 .draw();
                         } );
-                             console.log(column.data())
                     column.data().unique().each( function ( d, j ) {
                         if(d != null){
-                        	$('#selectCR'+index).append( '<option value="'+d.charAt(0).toUpperCase() + d.slice(1)+'">'+d.charAt(0).toUpperCase() + d.slice(1)+'</option>' )     
+                            $('#selectCR'+index).append( '<option value="'+d.charAt(0).toUpperCase() + d.slice(1)+'">'+d.charAt(0).toUpperCase() + d.slice(1)+'</option>' )     
                         }
                         
                     } );
-
-                $('#selectCR'+index).niceSelect(); 
-
- 
+                    $('#selectCR'+index).niceSelect();    
+                }
             })   
 
             $('.dataTables_length select').addClass('nice-select small');         
         },
         "drawCallback": function(settings){
- 	 		arrayFechasD = []
+ 
             var placeholder = ["","Región","Comuna","Lugar"]
             this.api().columns([1,2,3]).every( function (index) {
                 if(JSON.parse(localStorage.user).id_cargo == 1004 && index == 1){
@@ -1432,14 +1429,13 @@ function llenarVistaCapacitacionRelator(data){
                         selectFiltered.append('<option value="">'+placeholder[index]+'</option>')
                         columnFiltered.column(index,{search:'applied'}).data().unique().each( function ( d, j ) {
                             if(d != null){
-                            	selectFiltered.append( '<option value="'+d.charAt(0).toUpperCase() + d.slice(1)+'">'+d.charAt(0).toUpperCase() + d.slice(1)+'</option>' )          
+                                selectFiltered.append( '<option value="'+d.charAt(0).toUpperCase() + d.slice(1)+'">'+d.charAt(0).toUpperCase() + d.slice(1)+'</option>' )    
                             }                 
 
                         } );
                     }
                     $('select').niceSelect('update');
                 }
-
             })
         }
  
@@ -1569,35 +1565,12 @@ function llenarVistaCapacitados(data){
                     }
                 }      
             },
-            {data: null,
-                render: function(data, type,row){
-                    return '';
-                }
-            },
         ],
-        "rowCallback": function( row, data ) {
-
-            if(JSON.parse(localStorage.user).id_tipo_usuario == 1051 && data.estado == true){
-                btn = '<button type="button" id="capacitado_'+data.id_persona+'"  class="btn btn-primary btn-sm _btn-item"><i class="fa fa-pencil-alt"></i></button>'
-                $('td:eq(14)', row).html(btn)
-                $('td:eq(14)', row).find('#capacitado_'+data.id_persona).data('id_persona',data.id_persona);
-                $('td:eq(14)', row).find('#capacitado_'+data.id_persona).data('id_capacitacion_persona',data.id_capacitacion_persona);
-                $('td:eq(14)', row).find('#capacitado_'+data.id_persona).data('nombres',data.nombres+' '+data.apellido_paterno);
-                $('td:eq(14)', row).find('#capacitado_'+data.id_persona).data('run',data.run);
-                $('td:eq(14)', row).find('#capacitado_'+data.id_persona).on('click',obtenerNota); 
-            }
-             
-           
-        },
         "initComplete": function(settings, json) {
             //$('#inputRolAsignado').prop('disabled',true)
             if(JSON.parse(localStorage.user).id_cargo == 1004){
                 var api = new $.fn.dataTable.Api(settings);
                 api.columns([1]).visible(false);
-            }
-            if(JSON.parse(localStorage.user).id_tipo_usuario != 1051){
-                var api = new $.fn.dataTable.Api(settings);
-                api.columns([14]).visible(false);
             }
 
             var checkbox = $('input:checkbox[name=inputRolAsignado]')
@@ -1650,16 +1623,16 @@ function llenarVistaCapacitados(data){
                         
                     } );
 
-                    /* const unique = (value, index, self) => {
-                                    return self.indexOf(value) === index
-                                }
+        /*            const unique = (value, index, self) => {
+                        return self.indexOf(value) === index
+                    }
 
-                                capacitadosUnica = arrayCapacitados.filter(unique)
-                                 
-                                capacitadosUnica.forEach(function(item){
-                                    $('#selectCA'+index).append( '<option value="'+item+'">'+item+'</option>' )     
-                                });
-                    */
+                    capacitadosUnica = arrayCapacitados.filter(unique)
+                     
+                    capacitadosUnica.forEach(function(item){
+                        $('#selectCA'+index).append( '<option value="'+item+'">'+item+'</option>' )     
+                    });
+        */
                     $('#selectCA'+index).niceSelect();    
                 }
             })   
@@ -1727,86 +1700,6 @@ function llenarVistaCapacitados(data){
  
 }
 
-function obtenerNota (){
-    $('#labelRunCapacitado').html($(this).data('run'))
-    $('#labelNombreCapacitado').html($(this).data('nombres'))
-    id = $(this).data('id_persona')
-    $.ajax({
-        method:'POST',
-        url: webservice+'/capacitacion/obtenerNota',
-        headers:{
-           't': JSON.parse(localStorage.user).token
-        },
-        crossDomain: true,
-        dataType:'text',
-        data :{ 
-                id_usuario: JSON.parse(localStorage.user).id_usuario,
-                id_persona : id,
-                id_capacitacion_persona: $(this).data('id_capacitacion_persona')
-            },
-        success: function(data, textStatus, jqXHR) {
-            data = JSON.parse(data) 
-            console.log(data)
-
-            if (data.resultado != "error") {
-                $('#inputNotaTecnica').val(data.puntaje)
-                $('#inputNotaTecnica').data('id_capacitacion_prueba',data.id_capacitacion_prueba)
-                $('#inputNotaTecnica').data('id_persona',id)
-                $('#modalNotaCapacitado').modal({backdrop: 'static', keyboard: false},'show')
-            } else {
-                showFeedback("error","Error al guardar","Error");
-                console.log("invalidos");
-                $.unblockUI();
-            }
-            
-        },
-        error: function(jqXHR, textStatus, errorThrown) {
-            showFeedback("error","Error en el servidor","Datos incorrectos");
-            console.log("error del servidor, datos incorrectos");
-            $.unblockUI();
-
-        }
-    })
-}
- 
-function guardarNota(){
-    if($('#inputNotaTecnica').val() >= 90){
-        $.ajax({
-            method:'POST',
-            url: webservice+'/capacitacion/guardarNota',
-            headers:{
-               't': JSON.parse(localStorage.user).token
-            },
-            crossDomain: true,
-            dataType:'text',
-            data :{ 
-                id_usuario: JSON.parse(localStorage.user).id_usuario,
-                id_persona: $('#inputNotaTecnica').data('id_persona'),
-                id_capacitacion_prueba: $('#inputNotaTecnica').data('id_capacitacion_prueba'),
-                puntaje: $('#inputNotaTecnica').val()
-            },
-            success: function(data, textStatus, jqXHR) {
-                data = JSON.parse(data) 
-                if (data.resultado == "ok") {
-                    showFeedback("success", data.descripcion, "Guardado");
-                    $('#modalNotaCapacitado').modal('hide')
-                    getPersonal();
-                }else {
-                    showFeedback("error",data.descripcion,"Error");
-                    console.log("invalidos");
-                    $.unblockUI();
-                }  
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-                showFeedback("error","Error en el servidor","Datos incorrectos");
-                console.log("error del servidor, datos incorrectos");
-                $.unblockUI();
-            }
-        })
-    }else{
-        showFeedback("error",'No puede agregar un Nota menor a 90',"Error");
-    } 
-}
 function cargarComunas(id){
  
     $('#selectComuna').html('')
@@ -1941,7 +1834,7 @@ function cargarDatosCapacitacionRelator(region,comuna,data){
     $("#inputFechaR").html(moment(data.fecha_hora, "YYYY-MM-DD HH:mm:ss").format("DD-MM-YYYY") )
     $("#inputHoraR").html(moment(data.fecha_hora, "YYYY-MM-DD HH:mm:ss").format("HH:mm") )
     $('#inputCapacidadR').html(data.capacidad)
-    $('#inputAsistentesR').val(data.asistentes)
+    $('#inputAsistentesR').html(data.asistentes)
     $('#inputLugarR').html(data.lugar)
     $('#inputObservacionR').html(data.observacion)
  
@@ -2058,53 +1951,53 @@ function guardarCapacitacion(){
             console.log(docO_b64)
             console.log('guardarCapacitacion')
             $.ajax({
-                method:'POST',
-                url: webservice+'/capacitacion/guardar',
-                headers:{
-                   't': JSON.parse(localStorage.user).token
+            method:'POST',
+            url: webservice+'/capacitacion/guardar',
+            headers:{
+               't': JSON.parse(localStorage.user).token
+            },
+            crossDomain: true,
+            dataType:'text',
+            data :{ 
+                    id_usuario: JSON.parse(localStorage.user).id_usuario,
+                    id_capacitacion : localStorage.id_capacitacion,
+                    id_comuna:  $('#selectComuna').val(),
+                    id_relator: $('#selectRelator').val(),
+                    lugar: $('#inputLugar').val(),
+                    fecha:moment($("#inputFecha").val(), "DD-MM-YYYY").format("YYYY-MM-DD") + ' ' + $("#inputHora").val(),
+                    capacidad: $('#inputCapacidad').val(),
+                    asistentes: $('#inputAsistentes').val(),
+                    observacion: $('#inputObservacion').val(),
+                    documento: docO_b64,
+                    nombre_archivo: doc0_name
                 },
-                crossDomain: true,
-                dataType:'text',
-                data :{ 
-                        id_usuario: JSON.parse(localStorage.user).id_usuario,
-                        id_capacitacion : localStorage.id_capacitacion,
-                        id_comuna:  $('#selectComuna').val(),
-                        id_relator: $('#selectRelator').val(),
-                        lugar: $('#inputLugar').val(),
-                        fecha:moment($("#inputFecha").val(), "DD-MM-YYYY").format("YYYY-MM-DD") + ' ' + $("#inputHora").val(),
-                        capacidad: $('#inputCapacidad').val(),
-                        asistentes: $('#inputAsistentes').val(),
-                        observacion: $('#inputObservacion').val(),
-                        documento: docO_b64,
-                        nombre_archivo: doc0_name
-                    },
-                success: function(data, textStatus, jqXHR) {
-                    data = JSON.parse(data) 
-                    console.log(data)
+            success: function(data, textStatus, jqXHR) {
+                data = JSON.parse(data) 
+                console.log(data)
 
-                    if (data.resultado != "error") {
-                        showFeedback("success", data.descripcion, "Guardado");
-                        $('#capacitacionModal').modal('hide');
-                        if(JSON.parse(localStorage.user).id_cargo == 1004){
-                            getPersonalRegional();
-                        }else{
-                            getPersonal()
-                        }
-
-                    } else {
-                        showFeedback("error","Error al guardar","Error");
-                        console.log("invalidos");
-                        $.unblockUI();
+                if (data.resultado != "error") {
+                    showFeedback("success", data.descripcion, "Guardado");
+                    $('#capacitacionModal').modal('hide');
+                    if(JSON.parse(localStorage.user).id_cargo == 1004){
+                        getPersonalRegional();
+                    }else{
+                        getPersonal()
                     }
-                    
-                },
-                error: function(jqXHR, textStatus, errorThrown) {
-                    showFeedback("error","Error en el servidor","Datos incorrectos");
-                    console.log("error del servidor, datos incorrectos");
+
+                } else {
+                    showFeedback("error","Error al guardar","Error");
+                    console.log("invalidos");
                     $.unblockUI();
-         
                 }
-            })
+                
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                showFeedback("error","Error en el servidor","Datos incorrectos");
+                console.log("error del servidor, datos incorrectos");
+                $.unblockUI();
+     
+            }
+        })
         }
          
     }
@@ -2125,7 +2018,6 @@ function guardarCapacitacionR(){
             data :{ 
                     id_usuario: JSON.parse(localStorage.user).id_usuario,
                     id_capacitacion : localStorage.id_capacitacion,
-                    asistentes: $('#inputAsistentesR').val(),
                     documento: docO_b64,
                     nombre_archivo: doc0_name
                 },
@@ -2412,15 +2304,6 @@ function asignarVarios(){
     $('#labelHora').html(moment($(this).data('fecha_hora')).format('HH:mm'))
     $('#labelFecha').html(moment($(this).data('fecha_hora')).format('DD-MM-YYYY'))
 
-    if(moment(moment().format('YYYY-MM-DD, HH:mm:ss')).isAfter($(this).data('fecha_hora'))){
-        $('#agregar-persona').css('display','')
-        $('#div-filtro').removeClass('col-12').addClass('col-6')
-       
-    }else{
-        $('#agregar-persona').css('display','none')
-        $('#div-filtro').removeClass('col-6').addClass('col-12')
-    }
-
     $('#selectCapacitacionAll').html('')
 
     id =  $(this).data('id_region') 
@@ -2433,6 +2316,7 @@ function asignarVarios(){
         $('#selectCapacitacionAll').val(localStorage.id_capacitacion)
         
         if(entro == 0){
+            console.log('holas')
             verPersonal()
             entro++;
         }
@@ -2480,6 +2364,7 @@ function notificarVarios(){
         $('#selectCapacitacionAll').val(localStorage.id_capacitacion)
         
         if(entro == 0){
+            console.log('holas')
             verPersonalConvocado()
             entro++;
         }
@@ -3189,13 +3074,6 @@ function desconvocar(){
 
 function agregarNotas(){
     localStorage.id_capacitacion =  $(this).data('id_capacitacion');
-
-    $('#labelRegionCapacitacionRelator').html($(this).data('region'))
-    $('#labelRegionComunaCapacitacionRelator').html($(this).data('comuna'))
-    $('#labelRegionLugarCapacitacionRelator').html($(this).data('lugar'))
-    $('#labelFechaCapacitacionRelator').html($(this).data('fecha'))
-    $('#labelHoraCapacitacionRelator').html($(this).data('hora'))
-
     $.ajax({
             method:'POST',
             url: webservice+'/capacitacion/modificarPersona',
@@ -3231,7 +3109,6 @@ function agregarNotas(){
 }
 
 function cargarNotas(data){
-
     $('#body-evaluacion').empty();
     $('#nombreCapacitacion').html(data)
  
@@ -3252,8 +3129,8 @@ function cargarNotas(data){
                     '<option value="false">Ausente</option>'+
                 '</select></td>'+
                 
-                '<td><input class="form-control" value="'+(data[i].capacitacion_prueba == null ? 0 
-                    : (data[i].capacitacion_prueba[1] == undefined ? 0 : data[i].capacitacion_prueba[1].puntaje))+'" oninput="this.value=porcentaje(this.value)"></input></td>'+
+                '<td><input class="form-control" value="'+(data[i].capacitacion_prueba != null ? 
+                    data[i].capacitacion_prueba[1].puntaje : "")+'" oninput="this.value=porcentaje(this.value)"></input></td>'+
 
                 /*'<td><input class="form-control" value="'+(data[i].capacitacion_prueba != null ? 
                     data[i].capacitacion_prueba[0].puntaje : "" )+'" oninput="this.value=Numeros(this.value)"></input></td>'+*/
@@ -3274,42 +3151,11 @@ function cargarNotas(data){
             '</tr>'
         $('#body-evaluacion').append(tr);
 
-        $('#asistencia_'+i).on('change',function(){
-            id = $(this).attr('id').replace('asistencia_','')
-            if($(this).val() == 'false'){
-
-                $('#tr-'+id).find('td:nth-child(4) input').prop('disabled',true)
-                $('#tr-'+id).find('td:nth-child(5) select').prop('disabled',true)
-                $('#tr-'+id).find('td:nth-child(6) select').val('-1')
-                $('#tr-'+id).find('td:nth-child(6) select').prop('disabled',true)
- 
-            }else{
-                $('#tr-'+id).find('td:nth-child(4) input').prop('disabled',false)
-                $('#tr-'+id).find('td:nth-child(5) select').prop('disabled',false)
-                $('#tr-'+id).find('td:nth-child(6) select').val('-1')
-                $('#tr-'+id).find('td:nth-child(6) select').prop('disabled',false)  
-            }
-        })
         $('#asistencia_'+i).val(data[i].asistencia == null ? -1 : ''+data[i].asistencia+'')
 
         $('#psicologica_'+i).val(data[i].capacitacion_prueba == null ? -1 : ''+data[i].capacitacion_prueba[0].puntaje+'')
       
         $('#estado_'+i).val(data[i].estado == null ? -1 : ''+data[i].estado+'')
-
-        if(data[i].asistencia == false){
-            $('#tr-'+i).find('td:nth-child(4) input').prop('disabled',true)
-            $('#tr-'+i).find('td:nth-child(5) select').prop('disabled',true)
-            $('#tr-'+i).find('td:nth-child(6) select').val('-1')
-            $('#tr-'+i).find('td:nth-child(6) select').prop('disabled',true)
-
-        }
-        if(data[i].estado == true){
-            $('#tr-'+i).find('td:nth-child(3) select').prop('disabled',true)
-            $('#tr-'+i).find('td:nth-child(4) input').prop('disabled',true)
-            $('#tr-'+i).find('td:nth-child(5) select').prop('disabled',true)
-            $('#tr-'+i).find('td:nth-child(6) select').prop('disabled',true)
-
-        }
 
         $('#tr-'+i).data('id_persona',data[i].id_persona);
         $('#tr-'+i).data('id_persona_cargo',data[i].id_persona_cargo); 
@@ -3319,10 +3165,10 @@ function cargarNotas(data){
     }
 
     var tablaD = $("#table-evaluarPersonas").DataTable({
-        dom: "<'search'f><'top'i>",
+        dom: "<'search'f>",
         language:spanishTranslation,
         lengthChange: true,
-        info: true,
+        info: false,
         paging: false,
         displayLength: -1,
         ordering: true, 
@@ -3340,140 +3186,111 @@ function guardarEvaluacion(){
         var id_capacitacion  = $(this).data('id_capacitacion')
         var id_persona = $(this).data('id_persona')
         var id_capacitacion_persona = $(this).data('id_capacitacion_persona')
-        var asistencia = $(this).find('td:nth-child(3) select').val() == "" ? 0 : $(this).find('td:nth-child(3) select').val()
-        var puntaje_contenido = $(this).find('td:nth-child(4) input').val() == "" ? 0 : $(this).find('td:nth-child(4) input').val()
-        var puntaje_psicologica = $(this).find('td:nth-child(5) select').val() == "" ? 0 : $(this).find('td:nth-child(5) select').val()
-        var estado = $(this).find('td:nth-child(6) select').val() == "" ? 0 : $(this).find('td:nth-child(6) select').val()
+        var asistencia = $(this).find('td:nth-child(2) select').val() == "" ? 0 : $(this).find('td:nth-child(2) select').val()
+        var puntaje_contenido = $(this).find('td:nth-child(3) input').val() == "" ? 0 : $(this).find('td:nth-child(3) input').val()
+        var puntaje_psicologica = $(this).find('td:nth-child(4) select').val() == "" ? 0 : $(this).find('td:nth-child(4) select').val()
+        var estado = $(this).find('td:nth-child(5) select').val() == "" ? 0 : $(this).find('td:nth-child(5) select').val()
 
       
 
-        //VALIDAR QUE SI PUSO ALGUNA NOTA TIENE QUE LLENAR TODO
-            if(puntaje_contenido > 0 || puntaje_psicologica != -1){
+        //VALIDAR QUE NO APRUEBE O REPRUEBE SIN LLENAR TODA LA INFORMACION
+        /*  if(estado != -1 && (asistencia  == -1 || puntaje_contenido == 0  || puntaje_psicologica == -1)){
+                console.log('VALIDAR QUE NO APRUEBE O REPRUEBE SIN LLENAR TODA LA INFORMACION')
                 if(asistencia  == -1){
-                    $(this).find('td:nth-child(3) select').addClass('is-invalid')
+                    $(this).find('td:nth-child(2) select').addClass('is-invalid')
                     cumple = false
                 }else{
-                    $(this).find('td:nth-child(3) select').removeClass('is-invalid')
+                    $(this).find('td:nth-child(2) select').removeClass('is-invalid')
                 }
 
-                if(puntaje_contenido == 0 || puntaje_contenido.length == 0){
-                    $(this).find('td:nth-child(4) input').addClass('is-invalid')
+                if(puntaje_contenido == 0){
+                    $(this).find('td:nth-child(3) input').addClass('is-invalid')
                     cumple = false
                 }else{
-                    $(this).find('td:nth-child(4) input').removeClass('is-invalid')
-                }
-
-                if(puntaje_psicologica == -1){
-                    $(this).find('td:nth-child(5) select').addClass('is-invalid')
-                    cumple = false
-                }else{
-                    $(this).find('td:nth-child(5) select').removeClass('is-invalid')
-                }
-
-                if(estado == -1){
-                    $(this).find('td:nth-child(6) select').addClass('is-invalid')
-                    cumple = false
-                }else{
-                    $(this).find('td:nth-child(6) select').removeClass('is-invalid')
-                }
-
-            }
-        //VALIDAR QUE SI ASISTE DEBE LLENAR TODA LA INFORMACION
-            if(asistencia  == 'true' && (puntaje_contenido == 0 || puntaje_contenido.length == 0 || puntaje_psicologica == -1 || estado == -1)){
-                if(puntaje_contenido == 0 || puntaje_contenido.length == 0){
-                    $(this).find('td:nth-child(4) input').addClass('is-invalid')
-                    cumple = false
-                }else{
-                    $(this).find('td:nth-child(4) input').removeClass('is-invalid')
+                    $(this).find('td:nth-child(3) input').removeClass('is-invalid')
                 }
 
                 if(puntaje_psicologica == -1){
-                    $(this).find('td:nth-child(5) select').addClass('is-invalid')
+                    $(this).find('td:nth-child(4) select').addClass('is-invalid')
                     cumple = false
                 }else{
-                    $(this).find('td:nth-child(5) select').removeClass('is-invalid')
+                    $(this).find('td:nth-child(4) select').removeClass('is-invalid')
                 }
 
-                if(estado == -1){
-                    $(this).find('td:nth-child(6) select').addClass('is-invalid')
-                    cumple = false
-                }else{
-                    $(this).find('td:nth-child(6) select').removeClass('is-invalid')
-                }
-            }
+            }*/
 
 
         //VALIDAR QUE SI NO ASISTE NO PUEDE LLENAR CON INFORMACION LOS DEMAS DATOS
-            if(asistencia  == 'false' && (puntaje_contenido > 0 || puntaje_psicologica != -1 || estado != -1)){
+            if(asistencia  == 'false' && (puntaje_contenido > 0 || puntaje_psicologica != -1 || estado != 'false')){
                 if(puntaje_contenido > 0){
-                    $(this).find('td:nth-child(4) input').addClass('is-invalid')
+                    $(this).find('td:nth-child(3) input').addClass('is-invalid')
                     cumple = false
                 }else{
-                    $(this).find('td:nth-child(4) input').removeClass('is-invalid')
+                    $(this).find('td:nth-child(3) input').removeClass('is-invalid')
                 }
 
                 if(puntaje_psicologica != -1){
+                    $(this).find('td:nth-child(4) select').addClass('is-invalid')
+                    cumple = false
+                }else{
+                    $(this).find('td:nth-child(4) select').removeClass('is-invalid')
+                }
+
+                if(estado != 'false'){
                     $(this).find('td:nth-child(5) select').addClass('is-invalid')
                     cumple = false
                 }else{
                     $(this).find('td:nth-child(5) select').removeClass('is-invalid')
-                }
-
-                if(estado != -1){
-                    $(this).find('td:nth-child(6) select').addClass('is-invalid')
-                    cumple = false
-                }else{
-                    $(this).find('td:nth-child(6) select').removeClass('is-invalid')
                 }
             }
 
         // VALIDAR QUE APRUEBE CUANDO NO CUMPLE CON LAS CONDICIONES
             if(estado == 'true'){
                 if(asistencia  != 'true'){
-                    $(this).find('td:nth-child(3) select').addClass('is-invalid')
+                    $(this).find('td:nth-child(2) select').addClass('is-invalid')
                     cumple = false
                 }else{
-                    $(this).find('td:nth-child(3) select').removeClass('is-invalid')
+                    $(this).find('td:nth-child(2) select').removeClass('is-invalid')
                 }
 
                 if(puntaje_contenido < 90){
-                    $(this).find('td:nth-child(4) input').addClass('is-invalid')
+                    $(this).find('td:nth-child(3) input').addClass('is-invalid')
                     cumple = false
                 }else{
-                    $(this).find('td:nth-child(4) input').removeClass('is-invalid')
+                    $(this).find('td:nth-child(3) input').removeClass('is-invalid')
                 }
                 //VALIDAR QUE NO APRUEBE CUANDO NO CUMPLIO LA PRUEBA PSICOLOGICA
                 if(puntaje_psicologica == 0){
+                    $(this).find('td:nth-child(4) select').addClass('is-invalid')
                     $(this).find('td:nth-child(5) select').addClass('is-invalid')
-                    $(this).find('td:nth-child(6) select').addClass('is-invalid')
                     cumple = false
                 }else{
+                    $(this).find('td:nth-child(4) select').removeClass('is-invalid')
                     $(this).find('td:nth-child(5) select').removeClass('is-invalid')
-                    $(this).find('td:nth-child(6) select').removeClass('is-invalid')
                 }
             }
 
         // VALIDAR QUE RECHAZE CUANDO CUMPLE CON LAS CONDICIONES
             if(estado == 'false'){
                 if(asistencia  == '-1'){
-                    $(this).find('td:nth-child(3) select').addClass('is-invalid')
+                    $(this).find('td:nth-child(2) select').addClass('is-invalid')
                     cumple = false
                 }else{
-                    $(this).find('td:nth-child(3) select').removeClass('is-invalid')
+                    $(this).find('td:nth-child(2) select').removeClass('is-invalid')
                 }
 
                 if(puntaje_contenido > 89 && puntaje_psicologica == 1){
-                    $(this).find('td:nth-child(4) input').addClass('is-invalid')
+                    $(this).find('td:nth-child(3) input').addClass('is-invalid')
                     cumple = false
                 }else{
-                    $(this).find('td:nth-child(4) input').removeClass('is-invalid')
+                    $(this).find('td:nth-child(3) input').removeClass('is-invalid')
                 }
 
                 if(puntaje_psicologica != 0 && puntaje_contenido > 89){
-                    $(this).find('td:nth-child(5) select').addClass('is-invalid')
+                    $(this).find('td:nth-child(4) select').addClass('is-invalid')
                     cumple = false
                 }else{
-                    $(this).find('td:nth-child(5) select').removeClass('is-invalid')
+                    $(this).find('td:nth-child(4) select').removeClass('is-invalid')
                 }
             }
 
@@ -4017,61 +3834,4 @@ function ValidateEmail(mail) {
         return mailState=false
     }else{
         return mailState=true}
-}
-
-
-function searchRUNCapacitacion(){
-    if($("#inputRunCapacitado").val().trim() == ""){
-        showFeedback('error', 'Debe ingresar un RUN para realizar solicitud.', 'Error');
-        return;
-    }
-
-    if($.validateRut($("#inputRunCapacitado").val().trim()) == false) {
-        showFeedback('error', 'Debe ingresar un RUN válido.', 'Error');
-        return;
-    }
-
-    var run = ($('#inputRunCapacitado').val().trim().toUpperCase()).replace(/\./g,'');
-    $('#inputRunCapacitado').val($.formatRut(run))
-    $.blockUI({
-        message: '<h1>Espere por favor</h1>',
-        baseZ: 2000
-    });
-
-    $.ajax({
-        method: 'POST',
-        url: webservice+'/capacitacion/obtenerPersonaCapacitacion',
-        headers: {
-            't': JSON.parse(localStorage.user).token
-        },
-        crossDomain: true,
-        dataType: 'text',
-        data: { 
-            id_usuario: JSON.parse(localStorage.user).id_usuario,
-            id_capacitacion: localStorage.id_capacitacion,
-            run: run,
-        },
-        success: function(data, textStatus, jqXHR) {
-            var mensaje = JSON.parse(data);
-            if(mensaje["resultado"] == 'ok'){
-                console.log("correcto!")
-                showFeedback("success", data.descripcion, "Guardado");
-                verPersonal()
-                $.unblockUI();
-            }else{
-
-                showFeedback("error", mensaje["descripcion"], "");
-                $.unblockUI();
-                console.log("error!")
-                
-            }
-        },
-        error: function(jqXHR, textStatus, errorThrown) {
-            //feedback
-            console.log(textStatus)
-            showFeedback("error","Error en el servidor","Error");
-            $.unblockUI();
-            console.log(textStatus);
-        }
-    });   
 }
