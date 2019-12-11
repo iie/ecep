@@ -1,4 +1,5 @@
 $(document).ready(function(){
+
     $('#nombre_usuario').html(JSON.parse(localStorage.user).nombres+' '+JSON.parse(localStorage.user).apellidos+' ')
     if(JSON.parse(localStorage.user).id_tipo_usuario != 1042){
         $('#redirect').css('display','');
@@ -9,25 +10,26 @@ $(document).ready(function(){
     $('#guardar_sede').click(validarCantidad); 
     loadPostulantes();
     $('#asignar-sup').on('click',function () {
-        $('#titulo_modal').html('Asignar Supervisor');
+        $('#titulo_modal').html('Asignar Supervisor ');
         localStorage.setItem("nom_cargo", "Supervisor");
         localStorage.setItem("id_cargo", "9");
     });
 
     $('#asignar-exa').on('click',function () {
-        $('#titulo_modal').html('Asignar Examinador');
+        $('#titulo_modal').html('Asignar Examinador ');
         localStorage.setItem("nom_cargo", "Examinador");
         localStorage.setItem("id_cargo", "8");
     });
 
     $('#asignar-anf').on('click',function () {
-        $('#titulo_modal').html('Asignar Anfitrión');
+        $('#titulo_modal').html('Asignar Anfitrión ');
         localStorage.setItem("nom_cargo", "Anfitrión");
         localStorage.setItem("id_cargo", "1006");
     });
 });
 
 var region = '';
+
 function getDatosSede(){
 
     $.ajax({
@@ -43,17 +45,24 @@ function getDatosSede(){
             id_sede: localStorage.getItem("id_sede"),
             id_estimacion: localStorage.getItem("id_estimacion")
         },
-        success: function(data, textStatus, jqXHR) {
+        function:  console.log(localStorage.getItem("id_sede")),
+        function:  console.log(localStorage.getItem("id_estimacion")),
+        function:  console.log(JSON.parse(localStorage.user).id_usuario),
+
+        success: function(data, textStatus, jqXHR) {        
             data = JSON.parse(data)
+            console.log(data)
             if(data.respuesta == "error"){
                 showFeedback("error", data.descripcion ,"Obtener Sede");
             }else{
                 if(data.id_sede == undefined){
-                    $('#nombre_lab').html(data.nombre)
+                    $('#nombre_lab').html(data.nombre) 
                 }
                 if(data.jefe_sede != null){
                     $('#nombre_jefe_sede').html(data.jefe_sede)
                 }
+                localStorage.setItem('nombreSede', data.nombre)
+                localStorage.setItem('rbdSedeEcep', data.rbd)
                 $('#nombre_lab').html(data.nombre)
                 $('#rbd_sede').html(data.rbd)
                 $('#dia_sede').html(localStorage.getItem("dia"))
@@ -71,13 +80,13 @@ function getDatosSede(){
                 $('#total_cantExaminador').html(data.examinadores_asignados)
                 $('#total_cantExaAP').html(data.examinadores_apoyo_asignados)
                 $('#total_cantAnfitrion').html(data.anfitriones_asignados)
+                
                 reloadPostulantes()
             }
         },
         error: function(jqXHR, textStatus, errorThrown) {
             showFeedback("error","Error en el servidor","Datos incorrectos");
             console.log("error del servidor, datos incorrectos");
- 
         }
     })
 
@@ -140,7 +149,7 @@ function llenarVista(data){
             {data: "puntaje", className: "text-center",
                 render: function(data, type, row){
                     if (data==null) {
-                        return '-' 
+                        return '<b style="color: red;">Sin Nota</b>' 
                     }else{
                        return data  
                     }
@@ -203,7 +212,6 @@ function llenarVista(data){
 
 function llenarVistaPostulantes(data){
     data = JSON.parse(data)
-
     $('#filtros-dia1').empty();
     if($.fn.dataTable.isDataTable('#table-dia1')){
         $('#table-dia1').DataTable().destroy();
@@ -262,7 +270,6 @@ function llenarVistaPostulantes(data){
             $('td:eq(7)', row).find('button').data('comuna',data.comuna);
             $('td:eq(7)', row).find('button').data('dia',1);
             $('td:eq(7)', row).find('button').on('click',asignar);
-        
  
         },
         "initComplete": function(settings, json) {
@@ -325,7 +332,7 @@ function llenarVistaPostulantes(data){
 function asignarDesplegar(){
     limpiarNueva()
     loadPostulantes()
-    $('#nuevaSedeModal').modal({backdrop: 'static', keyboard: false},'show')
+    $('#nuevaSedeModal').modal({backdrop: 'static', keyboard: false},'show');
 }
 
 function cargarComunas(id){
@@ -435,6 +442,11 @@ function loadPostulantes() {
 }
 
 function llenarTablaAsignacion(data){
+
+    if (localStorage.getItem('nombreSede') != 'undefined') {
+        $('#titulo_modal').append(' - ' + localStorage.getItem('nombreSede') + ' - (' + localStorage.getItem('rbdSedeEcep') + ')');
+    }
+
     data = JSON.parse(data)
     array1=[]
     for(h = 0; h < data.length; h++){
@@ -443,7 +455,7 @@ function llenarTablaAsignacion(data){
             array1.push(data[h])
         }
     }
-
+    console.log(array1);
     $('#filtros-asignacion').empty();
     if($.fn.dataTable.isDataTable('#table-postulados')){
         $('#table-postulados').DataTable().destroy();
@@ -492,13 +504,14 @@ function llenarTablaAsignacion(data){
             {data: "puntaje", className: "text-center",
                 render: function(data, type, row){
                     if (data==null) {
-                        return  '-' 
+                        return '<b style="color: red;">Sin Nota</b>' 
                     }else{
                        return  data  
                     }
                    
                 }
             },
+            {data: "lista_cargos"},
             {data: "asignar",
                 render: function(data, type, row){
                     return  '<input id="modificar_'+row.id_persona+'" name="'+row.nombres+'" value="'+row.id_persona+'"  type="checkbox">'     
@@ -551,7 +564,8 @@ function llenarTablaAsignacion(data){
         }
     });
     $('#limpiar-filtros-asignacion').click(btnClearFilters);
-    $("#table-postulados").show(); 
+    $("#table-postulados").show();
+
 }
 
 function quitarAsignacion(data){

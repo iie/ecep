@@ -42,7 +42,7 @@ function getListaEstimacion1(){
 
     $.ajax({
         method:'POST',
-        url: webservice+'/sede/lista-estimacion',
+        url: webservice+'/asignacion/lista-estimacion',
         headers: {
                 't': JSON.parse(localStorage.user).token
         },
@@ -167,6 +167,7 @@ function llenarVistaEstamacion1(data){
             },
             {data: "opciones",
                 render: function(data, type, row){
+                    console.log(row.dia+","+row.id_sede+","+row.id_estimacion +","+row.id_comuna);
                     // var idSede = row.id_sede != null ? row.id_sede : -1;
                     return  "<a type='button' id='modificar_"+row.id_sede_ecep+"' class='btn btn-primary btn-sm _btn-item mr-1' title='Asignar'  onclick='redirectAsignacionTest("+ row.dia+","+row.id_sede+","+row.id_estimacion +","+row.id_comuna+")' href='#'><i class='fas fa-plus'></i></a>"
                 },
@@ -304,7 +305,7 @@ function llenarVistaAsignar(data){
             {data: "salas", className: "text-center"},
             {data: "opciones",
                 render: function(data, type, row){
-                    console.log(row)
+                    console.log(row.dia+","+row.id_sede+","+row.id_estimacion +","+row.id_comuna);
                      if (row.id_sede!=null) {
                         return  "<a type='button' id='modificar_"+row.id_sede_ecep+"' class='btn btn-primary btn-sm _btn-item mr-1' title='Asignar'  onclick='redirectAsignacionTest("+ row.dia+","+row.id_sede+","+row.id_estimacion +")' href='#'><i class='fas fa-plus'></i></a>"
                     } else {
@@ -455,9 +456,9 @@ function llenarVistaEstamacion2(data){
                 }, 
                 className: "text-center"
             },
-            {data: "opciones",
+           /*  {data: "opciones",
                 render: function(data, type, row){
-                    
+                    console.log(row);
                     if (row.id_sede!=null) {
                         return  "<a type='button' id='modificar_"+row.id_sede_ecep+"' class='btn btn-primary btn-sm _btn-item mr-1' title='Asignar'  onclick='redirectAsignacionTest("+ row.dia+","+row.id_sede+","+row.id_estimacion +")' href='#'><i class='fas fa-plus'></i></a>"
                     } else {
@@ -467,7 +468,16 @@ function llenarVistaEstamacion2(data){
                             //'<button type="button" id="ver_'+row.id_sede+'" onclick="redireccionarSede('+row.id_sede+')" class="btn btn-primary btn-sm _btn-item"><i class="fas fa-search"></i></button>'        
                 },
                 className: "text-center"
-            }
+            } */
+            {data: "opciones",
+            
+            render: function(data, type, row){
+                console.log(row.dia+","+row.id_sede+","+row.id_estimacion +","+row.id_comuna);
+                // var idSede = row.id_sede != null ? row.id_sede : -1;
+                return  "<a type='button' id='modificar_"+row.id_sede_ecep+"' class='btn btn-primary btn-sm _btn-item mr-1' title='Asignar'  onclick='redirectAsignacionTest("+ row.dia+","+row.id_sede+","+row.id_estimacion +","+row.id_comuna+")' href='#'><i class='fas fa-plus'></i></a>"
+            },
+            className: "text-center"
+        } 
         ],
         "rowCallback": function( row, data ) {
 

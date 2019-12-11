@@ -18,6 +18,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
+use Maatwebsite\Excel\Facades\Excel;
+
 class AsignacionController extends Controller
 {
      
@@ -26,6 +28,52 @@ class AsignacionController extends Controller
         $this->fields = array();    
     }   
 
+    public function descargaExcelAsignacion()
+    {
+        
+		
+		$personaP = DB::select('
+			SELECT * FROM 
+			(
+				SELECT core.region.orden_geografico, core.region.nombre AS region, core.comuna.nombre as comuna, infraestructura.estimacion.id_sede_ecep as id, infraestructura.estimacion.dia, infraestructura.sede.nombre , rrhh.cargo.nombre_rol , rrhh.persona.run , rrhh.persona.nombres, rrhh.persona.apellido_materno, rrhh.persona.apellido_paterno, rrhh.persona.email, rrhh.persona.telefono
+				FROM infraestructura.estimacion left join infraestructura.sede on (infraestructura.estimacion.id_sede = infraestructura.sede.id_sede), 
+				rrhh.persona_asignacion, rrhh.persona, core.comuna, rrhh.cargo, core.region
+				where rrhh.persona_asignacion.id_persona = rrhh.persona.id_persona
+				and infraestructura.estimacion.id_comuna = core.comuna.id_comuna
+				and infraestructura.estimacion.id_estimacion = rrhh.persona_asignacion.id_estimacion
+				and rrhh.cargo.id_cargo = rrhh.persona_asignacion.id_cargo
+				and core.region.id_region = core.comuna.id_region
+				and rrhh.persona.borrado = false
+				and rrhh.persona.deserta = false
+				
+			
+			UNION
+			
+				SELECT core.region.orden_geografico, core.region.nombre AS region, core.comuna.nombre as comuna, infraestructura.estimacion.id_sede_ecep as id, infraestructura.estimacion.dia, infraestructura.sede.nombre , rrhh.cargo.nombre_rol , rrhh.persona.run , rrhh.persona.nombres, rrhh.persona.apellido_materno, rrhh.persona.apellido_paterno, rrhh.persona.email, rrhh.persona.telefono
+				FROM infraestructura.estimacion 
+				left join infraestructura.sede on (infraestructura.estimacion.id_sede = infraestructura.sede.id_sede), 
+				rrhh.persona_cargo, core.comuna,  core.region, rrhh.persona, rrhh.cargo
+				where infraestructura.estimacion.id_jefe_sede = rrhh.persona_cargo.id_persona_cargo
+				and infraestructura.estimacion.id_comuna = core.comuna.id_comuna
+				and core.region.id_region = core.comuna.id_region
+				and rrhh.persona.borrado = false
+				and rrhh.persona.deserta = false
+				and rrhh.persona.id_persona = rrhh.persona_cargo.id_persona
+				and rrhh.persona_cargo.id_cargo = rrhh.cargo.id_cargo			
+			) as res
+			order by res.orden_geografico, res.comuna, res.id,res.nombre_rol , res.nombres
+
+		');
+
+        
+
+		$personaP = json_decode(json_encode($personaP),1);
+
+		$cols = array_keys($personaP[0]);
+		$export = new ExcelExport([$cols, $personaP]);
+		return Excel::download($export, 'listadoCompletoAsignacion_('.date('Y-m-d h:i:s').').xlsx');			
+	}
+	
     public function lista(Request $request){
         
         $post = $request->all();    
@@ -78,6 +126,173 @@ class AsignacionController extends Controller
           
         return response()->json($datos);    
     }
+
+    public function listaEstimacion(Request $request)
+    {
+		$post = $request->all();	
+
+		$validacion = Validator::make($post, [
+			'id_usuario' => 'int|required',
+			'dia' => 'int|required',
+		]);
+
+		if ($validacion->fails()) {
+			return response()->json(array("respuesta"=>"error","descripcion"=>$validacion->errors()), 422); 
+		}
+
+		$pers = Persona::where("id_usuario", $post["id_usuario"])->first();
+		$pers_cargo = PersonaCargo::where("id_persona", $pers->id_persona)->where("borrado", false)->get();
+
+		$cargos["zonal"] = false;
+		$cargos["regional"] = false;
+		$cargos["admin"] = false;
+		if(sizeof($pers_cargo) == 0){
+			$cargos["admin"] = true;
+		}else{
+			foreach ($pers_cargo as $_cargo) {
+				if($_cargo["id_cargo"] == 1003){
+					$cargos["zonal"] = true;
+					$id_persona_cargo = $_cargo["id_persona_cargo"];
+				}elseif($_cargo["id_cargo"] == 1004){
+					$id_persona_cargo = $_cargo["id_persona_cargo"];
+					$cargos["regional"] = true;
+				}else{
+					$cargos["admin"] = true;
+				}
+			}
+		}
+		
+		
+		if($cargos["admin"] == true){
+			$sede = DB::select('SELECT comuna.id_comuna,  
+								estimacion.id_estimacion, 
+								estimacion.docentes, 
+								estimacion.dia, 
+								region.nombre as region, 
+								comuna.nombre as comuna, 
+								salas, 
+								docentes, 
+								sede.rbd, 
+								sede.nombre, 
+								sede.direccion, 
+								estimacion.id_sede_ecep, 
+								estimacion.id_sede,
+								examinadores,
+								anfitriones,
+								supervisores,
+								examinador_apoyo
+								FROM infraestructura.estimacion as estimacion 
+								left join infraestructura.sede on (estimacion.id_sede = sede.id_sede), core.comuna as comuna , core.region as region
+								where estimacion.id_comuna = comuna.id_comuna 
+								and comuna.id_region = region.id_region
+								and estimacion.dia = '.$post['dia'].'
+								order by  region, comuna');
+		}elseif($cargos["zonal"] == true){
+			$zona = Zona::where("id_coordinador", $id_persona_cargo)->first();
+			$zona_region = ZonaRegion::where("id_zona", $zona->id_zona)->get();
+			$str_sql = "";
+			foreach ($zona_region as $z_regs) {
+				$str_sql .= " region.id_region = " . $z_regs["id_region"] . " OR";
+			}
+			$str_sql = substr($str_sql,0,-2);
+
+			$sede = DB::select('SELECT comuna.id_comuna,  
+								estimacion.id_estimacion, 
+								estimacion.docentes, 
+								estimacion.dia, 
+								region.nombre as region, 
+								comuna.nombre as comuna, 
+								salas, 
+								docentes, 
+								sede.rbd, 
+								sede.nombre, 
+								sede.direccion, 
+								estimacion.id_sede_ecep, 
+								estimacion.id_sede,
+								examinadores,
+								anfitriones,
+								supervisores,
+								examinador_apoyo
+								FROM infraestructura.estimacion as estimacion 
+								left join infraestructura.sede on (estimacion.id_sede = sede.id_sede), core.comuna as comuna , core.region as region
+								where estimacion.id_comuna = comuna.id_comuna 
+								and comuna.id_region = region.id_region 
+								AND (' . $str_sql . ')
+								and estimacion.dia = '.$post['dia'].'
+								order by  region, comuna');
+		}elseif($cargos["regional"] == true){
+			$zona_region = ZonaRegion::where("id_coordinador", $id_persona_cargo)->get();
+			$str_sql = "";
+			foreach ($zona_region as $z_regs) {
+				$str_sql .= " region.id_region = " . $z_regs["id_region"] . " OR";
+			}
+			$str_sql = substr($str_sql,0,-2);
+
+			$sede = DB::select('SELECT comuna.id_comuna,  
+								estimacion.id_estimacion, 
+								estimacion.docentes, 
+								estimacion.dia, 
+								region.nombre as region, 
+								comuna.nombre as comuna, 
+								salas, 
+								docentes, 
+								sede.rbd, 
+								sede.nombre, 
+								sede.direccion, 
+								estimacion.id_sede_ecep, 
+								estimacion.id_sede,
+								examinadores,
+								anfitriones,
+								supervisores,
+								examinador_apoyo
+								FROM infraestructura.estimacion as estimacion 
+								left join infraestructura.sede on (estimacion.id_sede = sede.id_sede), core.comuna as comuna , core.region as region
+								where estimacion.id_comuna = comuna.id_comuna 
+								and comuna.id_region = region.id_region 
+								AND (' . $str_sql . ')
+								and estimacion.dia = '.$post['dia'].'
+								order by  region, comuna');
+		}
+
+		$cont_total_exa = 0;
+		$cont_total_anf = 0;
+		$cont_total_exa_ap = 0;
+		$cont_total_sup = 0;
+		$cont_total_exa_req = 0;
+		$cont_total_anf_req = 0;
+		$cont_total_exa_ap_req = 0;
+		$cont_total_sup_req = 0;
+		foreach ($sede as $value) {
+			$count_examinadores = PersonaAsignacion::where("id_estimacion", $value->id_estimacion)->where("id_cargo", 8)->count();
+			$cont_total_exa += $count_examinadores;
+			$count_supervisores = PersonaAsignacion::where("id_estimacion", $value->id_estimacion)->where("id_cargo", 9)->count();
+			$cont_total_sup += $count_supervisores;
+			$count_anfitriones = PersonaAsignacion::where("id_estimacion", $value->id_estimacion)->where("id_cargo", 1006)->count();
+			$cont_total_anf += $count_anfitriones;
+			$count_ex_apoyo = PersonaAsignacion::where("id_estimacion", $value->id_estimacion)->where("id_cargo", 1007)->count();
+			$cont_total_exa_ap += $count_ex_apoyo;
+
+			$value->examinadores_asignados = $count_examinadores;
+			$value->supervisores_asignados = $count_supervisores;
+			$value->anfitriones_asignados = $count_anfitriones;
+			$value->ex_apoyo_asignados = $count_ex_apoyo;
+
+			$cont_total_exa_req += $value->examinadores;
+			$cont_total_anf_req += $value->anfitriones;
+			$cont_total_exa_ap_req += $value->examinador_apoyo != null ? $value->examinador_apoyo : 0;
+			$cont_total_sup_req += $value->supervisores;
+		}
+		$contadores["exa_asignados"] = $cont_total_exa;
+		$contadores["sup_asignados"] = $cont_total_sup;
+		$contadores["anf_asignados"] = $cont_total_anf;
+		$contadores["exa_ap_asignados"] = $cont_total_exa_ap;
+		$contadores["exa_requeridos"] = $cont_total_exa_req;
+		$contadores["sup_requeridos"] = $cont_total_sup_req;
+		$contadores["anf_requeridos"] = $cont_total_anf_req;
+		$contadores["exa_ap_requeridos"] = $cont_total_exa_ap_req;
+		$sede["contadores"] = $contadores;
+		return response()->json($sede);	
+	}		
 
     public function listaCoordinadorZonal(Request $request){
         
@@ -316,7 +531,7 @@ class AsignacionController extends Controller
                                     INNER JOIN rrhh.capacitacion_persona ON (rrhh.capacitacion_persona.id_capacitacion_persona = cap_prueba.id_capacitacion_persona)
                                     INNER JOIN rrhh.persona ON (rrhh.capacitacion_persona.id_persona = rrhh.persona.id_persona) 
                                     INNER JOIN rrhh.capacitacion ON (rrhh.capacitacion_persona.id_capacitacion = rrhh.capacitacion.id_capacitacion)
-                                    INNER JOIN core.comuna ON (rrhh.capacitacion.id_comuna = core.comuna.id_comuna)
+                                    INNER JOIN core.comuna ON (rrhh.persona.id_comuna_postulacion = core.comuna.id_comuna)
                                     WHERE cap_prueba.prueba = 'Técnica'
                                     AND core.comuna.id_region= ". $id_region ."
                                     GROUP BY rrhh.persona.id_persona
@@ -327,7 +542,7 @@ class AsignacionController extends Controller
             $puntajes[$value->id_persona] = $value->puntaje;
         }
 
-        $sql = DB::select("SELECT rrhh.persona.*, rrhh.persona_asignacion.id_estimacion, rrhh.persona_asignacion.id_persona_asignacion, rrhh.cargo.nombre_rol, rrhh.persona.estado_proceso, core.comuna.nombre as comuna, core.region.nombre as region
+      /*   $sql = DB::select("SELECT rrhh.persona.*, rrhh.persona_asignacion.id_estimacion, rrhh.persona_asignacion.id_persona_asignacion, rrhh.cargo.nombre_rol, rrhh.persona.estado_proceso, core.comuna.nombre as comuna, core.region.nombre as region
                             FROM rrhh.persona
                             LEFT JOIN rrhh.persona_asignacion ON (rrhh.persona_asignacion.id_persona = rrhh.persona.id_persona)
                             LEFT JOIN rrhh.cargo ON (rrhh.persona_asignacion.id_cargo = rrhh.cargo.id_cargo)
@@ -335,15 +550,31 @@ class AsignacionController extends Controller
                             INNER JOIN core.region ON (core.region.id_region = core.comuna.id_region)
                             WHERE (rrhh.persona.estado_proceso = 'capacitado' OR rrhh.persona.estado_proceso = 'seleccionado')
                             AND rrhh.persona.borrado = false
-                            AND core.region.id_region = " . $id_region);
+                            AND core.region.id_region = " . $id_region); */
+
+        $sql = DB::select("SELECT rrhh.persona.*, rrhh.persona_asignacion.id_estimacion, rrhh.persona_asignacion.id_persona_asignacion, cargoAsignacion.nombre_rol,
+                            STRING_AGG(cargoPersona.nombre_rol,', ') lista_cargos, rrhh.persona.estado_proceso, core.comuna.nombre as comuna, core.region.nombre as region
+                            FROM rrhh.persona
+                            LEFT JOIN rrhh.persona_asignacion ON (rrhh.persona_asignacion.id_persona = rrhh.persona.id_persona)
+                            LEFT JOIN rrhh.persona_cargo ON (rrhh.persona_cargo.id_persona = rrhh.persona.id_persona)
+                            LEFT JOIN rrhh.cargo as cargoAsignacion ON (rrhh.persona_asignacion.id_cargo = cargoAsignacion.id_cargo)
+                            LEFT JOIN rrhh.cargo as cargoPersona ON (rrhh.persona_cargo.id_cargo = cargoPersona.id_cargo)
+                            INNER JOIN core.comuna ON (rrhh.persona.id_comuna_postulacion = core.comuna.id_comuna)
+                            INNER JOIN core.region ON (core.region.id_region = core.comuna.id_region)
+                            WHERE (rrhh.persona.estado_proceso = 'capacitado' OR rrhh.persona.estado_proceso = 'seleccionado')
+                            AND rrhh.persona.id_persona NOT IN (SELECT rrhh.persona_cargo.id_persona FROM infraestructura.estimacion, rrhh.persona_cargo WHERE infraestructura.estimacion.id_jefe_sede = rrhh.persona_cargo.id_persona_cargo)
+                            AND rrhh.persona.borrado = false
+                            AND core.region.id_region = 9
+                            GROUP BY rrhh.persona.id_persona, rrhh.persona_asignacion.id_estimacion, rrhh.persona_asignacion.id_persona_asignacion, cargoAsignacion.nombre_rol, rrhh.persona.estado_proceso, core.comuna.nombre, core.region.nombre
+                            ");
 
         $arr = [];
         foreach($sql as $valor){
             //TODO: Quitar el 'if' si es que se repara el error de registros inexistentes de pruebas técnicas
-            if(isset($puntajes[$valor->id_persona])){
+            //if(isset($puntajes[$valor->id_persona])){
                 $valor->puntaje = isset($puntajes[$valor->id_persona]) ? intval($puntajes[$valor->id_persona]) : null;
                 $arr[] = $valor;
-            }
+            //}
         }
         return response()->json($arr);    
     }

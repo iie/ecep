@@ -139,52 +139,61 @@ function llenarVistaPersonal(data){
             {data: "id_sede_ecep"},
             {data: "cargo"},
         ],
-        "initComplete": function(settings, json) {
+        "initComplete": function (settings, json) {
+            var checkbox = $('input:checkbox[name=inputRolAsignado]')
+            for (var i = 0; i < checkbox.length; i++) {
+                checkbox[i].disabled = true;
+            }
+            $('#divRol').css('display', 'none')
             var placeholder = ["","Región","Comuna","","","","","Día","Sede","","Cargo"]
-            this.api().columns([1,2,7,8,10]).every( function (index) {
-               /*  console.log(index) */
+            this.api().columns([1,2,7,8,10]).every(function (index) {
                 var column = this;
-                var select = $('<select class="form-control col-sm-2 btn-light _filtros _filtro'+index+' small" id="selectP'+index+'" onchange="exportarItems()" ><option value="" selected="selected">'+placeholder[index]+'</option></select>')
-                    .appendTo( $('#filtros-postulacion'))
-                    .on( 'change', function () {
+                var select = $('<select class="form-control col-sm-2 small _filtros"  id="select' + index + '" >' +
+                    '<option value="" selected="selected">' + placeholder[index] + '</option></select>')
+                    .appendTo($('#filtros-postulacion'))
+                    .on('change', function () {
                         var val = $.fn.dataTable.util.escapeRegex(
                             $(this).val()
                         );
+
                         column
-                            .search( val ? '^'+val+'$' : '', true, false )
+                            .search(val ? '^' + val + '$' : '', true, false)
                             .draw();
-                    } ).insertBefore( '#clear-filtros-postulacion' );
-                column.data().unique().sort().each( function ( d, j ) {
+                    });
+                column.data().unique().each(function (d, j) {
                     if (d != null) {
-                        select.append( '<option value="'+d+'">'+d+'</option>' ) 
-                    }                          
-                } );             
-                $('#selectP'+index+'').niceSelect();
-            })  
-            $('.dataTables_length select').addClass('nice-select small');  
+                        $('#select' + index).append('<option value="' + d.charAt(0).toUpperCase() + d.slice(1) + '">' + d.charAt(0).toUpperCase() + d.slice(1) + '</option>')
+                    }
+                });
+                $('#select' + index).niceSelect();
+            })
+            $('.dataTables_length select').addClass('nice-select small');
         },
-        "drawCallback": function(){
+
+        "drawCallback": function () {
             var placeholder = ["","Región","Comuna","","","","","Día","Sede","","Cargo"]
-            this.api().columns([1,2,7,8,10]).every(function(index){
+            this.api().columns([1,2,7,8,10]).every(function (index) {
                 var columnFiltered = this;
-                var selectFiltered = $("#selectP"+index)
-                if(selectFiltered.val()===''){
+                var selectFiltered = $("#select" + index)
+                if (selectFiltered.val() === '') {
                     selectFiltered.empty()
-                    selectFiltered.append('<option value="">'+placeholder[index]+'</option>')
-                    columnFiltered.column(index,{search:'applied'}).data().unique().sort().each( function ( d, j ) {
+                    selectFiltered.append('<option value="">' + placeholder[index] + '</option>')
+                    columnFiltered.column(index, { search: 'applied' }).data().unique().each(function (d, j) {
                         if (d != null) {
-                            selectFiltered.append( '<option value="'+d+'">'+d+'</option>' )
+                            selectFiltered.append('<option value="' + d.charAt(0).toUpperCase() + d.slice(1) + '">' + d.charAt(0).toUpperCase() + d.slice(1) + '</option>')
                         }
-                    } );
+                    });
                 }
-                $('selectP').niceSelect('update');
+                $('select').niceSelect('update');
             })
         }
+        
+        
     });
 
     $('#limpiar-filtros-postulacion').click(btnClearFilters);
     $("#descargar-lista-postulacion").on("click", function() {
-        tablaD.button( '.buttons-excel' ).trigger();
+        window.location='https://ecep2019.iie.cl/public/api/web/asignacion/descargar-excel'
     });
     $('#total').html(data.personal_postulacion.length);  
     $("#table-postulacion").show();
