@@ -471,7 +471,8 @@ class CentroController extends Controller
 
         $sedes = DB::select('SELECT comuna.id_comuna,  
                 estimacion.id_estimacion, region.nombre as region, comuna.nombre as comuna, sede.rbd, 
-                sede.nombre as establecimiento, estimacion.id_sede_ecep, estimacion.id_sede,                            
+                sede.nombre as establecimiento, estimacion.id_sede_ecep, estimacion.id_sede,
+                estimacion.dia,                            
                 infraestructura.zona.nombre as zona, infraestructura.zona.id_zona, estimacion.id_jefe_sede
                 FROM infraestructura.estimacion as estimacion
                 inner join infraestructura.sede on (estimacion.id_sede = sede.id_sede), core.comuna as comuna, core.region as region

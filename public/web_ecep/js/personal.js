@@ -2804,6 +2804,7 @@ function mostrarSedes(data){
             {data: "zona"},
             {data: "region"},
             {data: "comuna"},
+            {data: "dia", className: "text-center"},
             {data: "establecimiento"},
             {data: "id_jefe_sede"},
         ],
