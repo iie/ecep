@@ -474,7 +474,7 @@ class PostulacionController extends Controller
 
 			//si es una persona que ya existe, verificamos si ya envió sus datos
 			if(isset($persona->modificado)){
-				if($persona->modificado == true){
+				if($persona->modificado == true && $persona->estado_proceso != 'capacitado'){
 					$this->enviarNotificacionError("Usuario ya modificó su formulario de postulación", "Guardar usuario", $post);
 					return response()->json(array("respuesta"=>"error","descripcion"=>"Usted ya envió una postulación.")); 
 				}
