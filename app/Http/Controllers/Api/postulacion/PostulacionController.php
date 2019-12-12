@@ -92,7 +92,8 @@ class PostulacionController extends Controller
 
 		$validacion = Validator::make($post, [
             'id_comuna_n' => 'int|nullable',
-            'id_comuna_r' => 'int|nullable'
+			'id_comuna_r' => 'int|nullable',
+			'id_comuna_p' => 'int|nullable',
         ]);	
         
         if($validacion->fails()){
@@ -100,12 +101,14 @@ class PostulacionController extends Controller
         }
 
         $comuna_n = Comuna::find($post["id_comuna_n"]);
-        $comuna_r = Comuna::find($post["id_comuna_r"]);
-        // if(!isset($comuna_n->id_comuna) || !isset($comuna_r->id_comuna)){
-        //     return response()->json(array("respuesta"=>"error","descripcion"=>"El id de comuna no corresponde.")); 
-        // }
+		$comuna_r = Comuna::find($post["id_comuna_r"]);
+		if(isset($post["id_comuna_p"])){
+			$comuna_p = Comuna::find($post["id_comuna_p"]);
+		}
+
         $arr["id_region_nacimiento"] = isset($comuna_n->id_region) ? $comuna_n->id_region : null;
-        $arr["id_region_residencia"] = isset($comuna_r->id_region) ? $comuna_r->id_region : null;
+		$arr["id_region_residencia"] = isset($comuna_r->id_region) ? $comuna_r->id_region : null;
+		$arr["id_region_postulacion"] = isset($comuna_p->id_region) ? $comuna_p->id_region : null;
         
         return response()->json(array("respuesta"=>"OK", "descripcion" => $arr));
 	}
