@@ -104,6 +104,8 @@ Route::get('inscritos-dia' , 'Api\ecep\SedeController@inscritosDia');
 	Route::get('web/asignacion/descargar-excel' , 'Api\ecep\AsignacionController@descargaExcelAsignacion');
 
 	Route::post('web/asignacion/obtenerCapacitados' , 'Api\ecep\AsignacionController@obtenerCapacitados');
+	Route::post('web/asignacion/obtenerCapacitadosD2' , 'Api\ecep\AsignacionController@obtenerCapacitadosD2');
+	Route::post('web/asignacion/obtenerAsignados' , 'Api\ecep\AsignacionController@obtenerAsignados');
 	Route::post('web/asignacion/asignarCargoSede' , 'Api\ecep\AsignacionController@asignarCargoSede');
 	Route::post('web/asignacion/desasignar' , 'Api\ecep\AsignacionController@desasignar');
 
@@ -131,4 +133,6 @@ Route::get('inscritos-dia' , 'Api\ecep\SedeController@inscritosDia');
 //MONITOREO APLICACION
 	Route::get('web/monitoreo/aplicacion/lista' , 'Api\ecep\MonitoreoAplicacionController@lista');
 	Route::get('web/monitoreo/aplicacion/prueba' , 'Api\ecep\MonitoreoAplicacionController@prueba');
+
+	Route::get('web/monitoreo/aplicacion/monitoreoExcel/' , 'Api\ecep\MonitoreoAplicacionController@monitoreoExcel');
 ?>

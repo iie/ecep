@@ -1,5 +1,5 @@
+var arrayAsignados = [];
 $(document).ready(function(){
-
     $('#nombre_usuario').html(JSON.parse(localStorage.user).nombres+' '+JSON.parse(localStorage.user).apellidos+' ')
     if(JSON.parse(localStorage.user).id_tipo_usuario != 1042){
         $('#redirect').css('display','');
@@ -8,7 +8,7 @@ $(document).ready(function(){
     
     getDatosSede()
     $('#guardar_sede').click(validarCantidad); 
-    loadPostulantes();
+    // loadPostulantes();
     $('#asignar-sup').on('click',function () {
         $('#titulo_modal').html('Asignar Supervisor ');
         localStorage.setItem("nom_cargo", "Supervisor");
@@ -97,6 +97,7 @@ function llenarVista(data){
     array1=[]
     for(h = 0; h < data.length; h++){
         if (data[h].id_estimacion == localStorage.getItem("id_estimacion")) {
+            arrayAsignados.push(data[h])
             array1.push(data[h])	
         }
     }
@@ -329,9 +330,13 @@ function llenarVistaPostulantes(data){
  
 }
 
-function asignarDesplegar(){
+function asignarDesplegar(idCargo){
     limpiarNueva()
-    loadPostulantes()
+    if(localStorage.getItem("dia") == 2){
+        loadCapacitadosD2(idCargo);
+    }else{
+        loadPostulantes()
+    }
     $('#nuevaSedeModal').modal({backdrop: 'static', keyboard: false},'show');
 }
 
@@ -433,6 +438,46 @@ function loadPostulantes() {
         success: function(data, textStatus, jqXHR) {
             llenarVista(data)
             llenarTablaAsignacion(data)
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            showFeedback("error","Error en el servidor","Datos incorrectos");
+            console.log("error del servidor, datos incorrectos");
+        }
+    })
+}
+
+function loadCapacitadosD2(idCargo) {  
+    $.ajax({
+        method:'POST',
+        url: webservice+'/asignacion/obtenerCapacitadosD2',
+        headers: {
+                't': JSON.parse(localStorage.user).token
+        },
+        crossDomain: true,
+        dataType:'text',
+        data: {
+            id_usuario: JSON.parse(localStorage.user).id_usuario,
+            id_comuna: localStorage.getItem("id_comuna"),
+            id_cargo: idCargo,
+        },
+        success: function(data, textStatus, jqXHR) {
+            var data1 = JSON.parse(data)
+            var arrayIdsPersona = [];
+            var arrayD2 = [];
+            
+            for (var i = 0; i < arrayAsignados.length; i++) {
+                arrayIdsPersona.push(arrayAsignados[i].id_persona)
+            }
+
+            for (var j = 0; j < data1.length; j++) {
+                var includes = arrayIdsPersona.indexOf(data1[j].id_persona)
+                console.log(arrayIdsPersona)
+                if(includes == -1){
+                    arrayD2.push(data1[j]);
+                }
+                console.log(arrayD2)
+            }
+            llenarTablaAsignacionD2(JSON.stringify(arrayD2))
         },
         error: function(jqXHR, textStatus, errorThrown) {
             showFeedback("error","Error en el servidor","Datos incorrectos");
@@ -568,6 +613,133 @@ function llenarTablaAsignacion(data){
 
 }
 
+function llenarTablaAsignacionD2(data){
+
+    if (localStorage.getItem('nombreSede') != 'undefined') {
+        $('#titulo_modal').append(' - ' + localStorage.getItem('nombreSede') + ' - (' + localStorage.getItem('rbdSedeEcep') + ')');
+    }
+
+    // console.log(data);return;
+    data = JSON.parse(data)
+    array1=[]
+    for(h = 0; h < data.length; h++){
+        if(data[h].id_estimacion != localStorage.getItem("id_estimacion")){
+            array1.push(data[h])
+        }
+    }
+    console.log(array1);
+    $('#filtros-asignacion').empty();
+    if($.fn.dataTable.isDataTable('#table-postulados')){
+        $('#table-postulados').DataTable().destroy();
+        $('#lista_postulados').empty();
+    }
+    
+
+    var tablaD = $("#table-postulados").DataTable({
+        dom: "<'search'f>",
+        buttons: [
+            {
+                extend: 'excel',
+                title: 'Aplicación día 1',
+                exportOptions: {
+                    modifier: {
+                        page: 'current'
+                    },
+                    columns: [ 0, 1, 2, 3, 4, 5, 6]
+                }
+            }
+        ],
+        lengthMenu: [[10, 15, 20, -1], [10, 15, 20, "Todos"]],
+        language:spanishTranslation,
+        lengthChange: true,
+        info: false,
+        paging: false,
+        displayLength: -1,
+        ordering: true, 
+        order: [],
+        search: true,
+        data: array1,
+        responsive: true, 
+        columns:[
+            {data: "nro",
+                render: function(data, type, full, meta){
+                    return  meta.row + 1;
+                }
+            },
+            {data: "region"},
+            {data: "comuna"},
+            {data: "run"},
+            {data: "nombres"},
+            {data: "apellido_paterno"},
+            {data: "apellido_materno"},
+            {data: "telefono"},
+            {data: "puntaje", className: "text-center",
+                render: function(data, type, row){
+                    if (data==null) {
+                        return '<b style="color: red;">Sin Nota</b>' 
+                    }else{
+                       return  data  
+                    }
+                   
+                }
+            },
+            {data: "lista_cargos"},
+            {data: "asignar",
+                render: function(data, type, row){
+                    return  '<input id="modificar_'+row.id_persona+'" name="'+row.nombres+'" value="'+row.id_persona+'"  type="checkbox">'     
+                },
+                className: "text-center"
+            } 
+        ],
+        "rowCallback": function( row, data ) {
+
+        
+        },
+        "initComplete": function(settings, json) {
+            var placeholder = ["","Región","Comuna"]
+            this.api().columns([1,2]).every( function (index) {
+                var column = this;
+                var select = $('<select class="form-control col-sm-2 small _filtros" id="select_modal_asig_'+index+'" >'+
+                    '<option value="" selected="selected">'+placeholder[index]+'</option></select>')
+                    .appendTo( $('#filtros-asignacion'))
+                    .on( 'change', function () {
+                        var val = $.fn.dataTable.util.escapeRegex(
+                            $(this).val()
+                        );
+                        column
+                            .search( val ? '^'+val+'$' : '', true, false )
+                            .draw();
+                    } );
+                column.data().unique().each( function ( d, j ) {
+                    $('#select_modal_asig_'+index).append( '<option value="'+d+'">'+d+'</option>' )
+                } );
+                 $('#select_modal_asig_'+index).niceSelect();        
+            })   
+            $('.dataTables_length select').addClass('nice-select small');     
+        },
+        "drawCallback": function(){
+            var placeholder = ["","Región","Comuna"]
+            this.api().columns([1,2]).every(function(index){
+                var columnFiltered = this;
+                var selectFiltered = $("#select_modal_asig_"+index)
+                if(selectFiltered.val()===''){
+                    selectFiltered.empty()
+                    selectFiltered.append('<option value="">'+placeholder[index]+'</option>')
+                    columnFiltered.column(index,{search:'applied'}).data().unique().sort().each( function ( d, j ) {
+                        if (d != null) {
+                            selectFiltered.append( '<option value="'+d+'">'+d+'</option>' )
+                        }
+                    } );
+                }
+                $('select_modal_asig_').niceSelect('update');
+            })
+        }
+    });
+    $('#limpiar-filtros-asignacion').click(btnClearFilters);
+    $("#table-postulados").show();
+
+}
+
 function quitarAsignacion(data){
 	$.ajax({
         method:'POST',
@@ -586,6 +758,7 @@ function quitarAsignacion(data){
             data = JSON.parse(data)
             if (data.resultado == "ok") {
                 showFeedback("success", data.descripcion, "OK");
+                arrayAsignados = [];
                 getDatosSede()
             } else {
                 showFeedback("error","Error al eliminar","Error");
@@ -667,7 +840,11 @@ function validarCantidad(){
     var cantidad_asignados=parseInt($('#total_cantSupervisor').text());
      
     var cupo=cantidad_requeridos-cantidad_asignados
-     
+    if(localStorage.getItem("dia") == 2){
+        guardarSede(array);
+        return;
+    }
+    
     if (localStorage.nom_cargo=="Supervisor") {
         if (cantidad_asignados<=cantidad_requeridos) {
 
@@ -763,7 +940,6 @@ function guardarSede(data){
                     personal: array,
                 },
             success: function(data, textStatus, jqXHR) {
-                console.log(data)
                 data = JSON.parse(data)
                 if (data.resultado == "ok") {
                     showFeedback("success", data.descripcion, "OK");

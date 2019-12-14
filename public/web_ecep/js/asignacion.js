@@ -140,54 +140,100 @@ function llenarVistaPersonal(data){
             {data: "cargo"},
         ],
         "initComplete": function (settings, json) {
-            var checkbox = $('input:checkbox[name=inputRolAsignado]')
-            for (var i = 0; i < checkbox.length; i++) {
-                checkbox[i].disabled = true;
-            }
-            $('#divRol').css('display', 'none')
+            arrayEstado=[];
             var placeholder = ["","Región","Comuna","","","","","Día","Sede","","Cargo"]
             this.api().columns([1,2,7,8,10]).every(function (index) {
                 var column = this;
-                var select = $('<select class="form-control col-sm-2 small _filtros"  id="select' + index + '" >' +
+                var select = $('<select class="form-control col-sm-2 small _filtros"  id="selectPos_' + index + '" >' +
                     '<option value="" selected="selected">' + placeholder[index] + '</option></select>')
                     .appendTo($('#filtros-postulacion'))
                     .on('change', function () {
                         var val = $.fn.dataTable.util.escapeRegex(
                             $(this).val()
                         );
-
                         column
                             .search(val ? '^' + val + '$' : '', true, false)
                             .draw();
                     });
                 column.data().unique().each(function (d, j) {
                     if (d != null) {
-                        $('#select' + index).append('<option value="' + d.charAt(0).toUpperCase() + d.slice(1) + '">' + d.charAt(0).toUpperCase() + d.slice(1) + '</option>')
+                        
+                       if(index == 7){
+                            if(d == 1){
+                                        
+                                        valor = '1'
+                                    
+                                    }else{
+                                        console.log(d)
+                                        valor = '2'
+                                    }
+
+                                if(valor != ''){     
+                                    arrayEstado.push(valor);
+                                }
+                        }else{
+                           $('#selectPos_' + index).append('<option value="' + d.charAt(0).toUpperCase() + d.slice(1) + '">' + d.charAt(0).toUpperCase() + d.slice(1) + '</option>')  
+                        }
+                       
                     }
                 });
-                $('#select' + index).niceSelect();
+                const unique = (value, index, self) => {
+                    return self.indexOf(value) === index
+                }
+                if(index == 7){
+                        capacitacionUnica = arrayEstado.filter(unique)
+                         
+                        capacitacionUnica.forEach(function(item){
+                            $('#selectPos_'+index).append( '<option value="'+item+'">'+item+'</option>' )     
+                        });    
+
+                 }
+                $('#selectPos_' + index).niceSelect();
             })
             $('.dataTables_length select').addClass('nice-select small');
         },
 
         "drawCallback": function () {
+            arrayEstadoR=[];
             var placeholder = ["","Región","Comuna","","","","","Día","Sede","","Cargo"]
             this.api().columns([1,2,7,8,10]).every(function (index) {
                 var columnFiltered = this;
-                var selectFiltered = $("#select" + index)
+                var selectFiltered = $("#selectPos_" + index)
                 if (selectFiltered.val() === '') {
                     selectFiltered.empty()
                     selectFiltered.append('<option value="">' + placeholder[index] + '</option>')
                     columnFiltered.column(index, { search: 'applied' }).data().unique().each(function (d, j) {
                         if (d != null) {
-                            selectFiltered.append('<option value="' + d.charAt(0).toUpperCase() + d.slice(1) + '">' + d.charAt(0).toUpperCase() + d.slice(1) + '</option>')
+                            if(index == 7){
+                            if(d == 1){
+                                        valor = '1'
+                                    }else{
+                                        valor = '2'
+                                    }
+
+                                if(valor != ''){     
+                                    arrayEstadoR.push(valor);
+                                }
+                            }else{
+                              selectFiltered.append('<option value="' + d.charAt(0).toUpperCase() + d.slice(1) + '">' + d.charAt(0).toUpperCase() + d.slice(1) + '</option>')
+                            }
                         }
                     });
+                    const unique = (value, index, self) => {
+                    return self.indexOf(value) === index
+                    }
+                    if(index == 7){
+                        capacitacionUnica = arrayEstadoR.filter(unique)
+                         
+                        capacitacionUnica.forEach(function(item){
+                            $('#selectPos_'+index).append( '<option value="'+item+'">'+item+'</option>' )     
+                        });    
+
+                 }
                 }
                 $('select').niceSelect('update');
             })
         }
-        
         
     });
 

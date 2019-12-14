@@ -8,6 +8,7 @@ use App\Models\RRHH\PersonaArchivo;
 use App\Models\RRHH\PersonaAsignacion;
 use App\Models\Infraestructura\Institucion;
 use App\Models\Infraestructura\Zona;
+use App\Models\Infraestructura\ZonaRegion;
 use App\Models\Infraestructura\Estimacion;
 use App\Models\Core\TablaMaestra;
 use App\Models\Core\Comuna;
@@ -100,7 +101,7 @@ class AsignacionController extends Controller
                 LEFT JOIN infraestructura.sede on infraestructura.estimacion.id_sede = infraestructura.sede.id_sede
                 WHERE rrhh.persona.borrado = false
                 AND (rrhh.persona.estado_proceso = 'seleccionado' 
-                OR rrhh.persona.estado_proceso = 'capacitado')
+                OR rrhh.persona.estado_proceso = 'capacitado'  OR rrhh.persona.estado_proceso = 'contratado')
                 ORDER BY infraestructura.zona.nombre asc, core.region.orden_geografico asc, core.comuna.nombre asc"
             );
 
@@ -109,7 +110,7 @@ class AsignacionController extends Controller
                 INNER JOIN rrhh.persona_asignacion on rrhh.persona.id_persona = rrhh.persona_asignacion.id_persona
                 WHERE rrhh.persona.borrado = false
                 AND (rrhh.persona.estado_proceso = 'seleccionado' 
-                OR rrhh.persona.estado_proceso = 'capacitado')
+                OR rrhh.persona.estado_proceso = 'capacitado'  OR rrhh.persona.estado_proceso = 'contratado')
         ");
 
         $totalRequeridos = DB::select("SELECT 
@@ -331,7 +332,7 @@ class AsignacionController extends Controller
                 LEFT JOIN infraestructura.estimacion on rrhh.persona_asignacion.id_estimacion = infraestructura.estimacion.id_estimacion
                 LEFT JOIN infraestructura.sede on infraestructura.estimacion.id_sede = infraestructura.sede.id_sede
                 WHERE rrhh.persona.borrado = false
-                AND (rrhh.persona.estado_proceso = 'seleccionado' OR rrhh.persona.estado_proceso = 'capacitado')
+                AND (rrhh.persona.estado_proceso = 'seleccionado' OR rrhh.persona.estado_proceso = 'capacitado'  OR rrhh.persona.estado_proceso = 'contratado')
                 AND infraestructura.zona.id_zona in (".implode($zonas,",").")
                 ORDER BY infraestructura.zona.nombre asc, core.region.orden_geografico asc, core.comuna.nombre asc"
             );
@@ -345,7 +346,7 @@ class AsignacionController extends Controller
                 LEFT JOIN infraestructura.zona on infraestructura.zona_region.id_zona = infraestructura.zona.id_zona
                 WHERE rrhh.persona.borrado = false
                 AND (rrhh.persona.estado_proceso = 'seleccionado' 
-                OR rrhh.persona.estado_proceso = 'capacitado')
+                OR rrhh.persona.estado_proceso = 'capacitado'  OR rrhh.persona.estado_proceso = 'contratado')
                 AND infraestructura.zona.id_zona in (".implode($zonas,",").")
         ");
 
@@ -416,7 +417,7 @@ class AsignacionController extends Controller
                 LEFT JOIN infraestructura.estimacion on rrhh.persona_asignacion.id_estimacion = infraestructura.estimacion.id_estimacion
                 LEFT JOIN infraestructura.sede on infraestructura.estimacion.id_sede = infraestructura.sede.id_sede
                 WHERE rrhh.persona.borrado = false
-                AND (rrhh.persona.estado_proceso = 'seleccionado' OR rrhh.persona.estado_proceso = 'capacitado')
+                AND (rrhh.persona.estado_proceso = 'seleccionado' OR rrhh.persona.estado_proceso = 'capacitado'  OR rrhh.persona.estado_proceso = 'contratado')
                 AND infraestructura.zona.id_zona in (".implode($zonas,",").")
                 AND zona_region.id_coordinador = ". $cargo[0]->id_persona_cargo."
                 ORDER BY infraestructura.zona.nombre asc, core.region.orden_geografico asc, core.comuna.nombre asc"
@@ -431,7 +432,7 @@ class AsignacionController extends Controller
                 LEFT JOIN infraestructura.zona on infraestructura.zona_region.id_zona = infraestructura.zona.id_zona
                 WHERE rrhh.persona.borrado = false
                 AND (rrhh.persona.estado_proceso = 'seleccionado' 
-                OR rrhh.persona.estado_proceso = 'capacitado')
+                OR rrhh.persona.estado_proceso = 'capacitado'  OR rrhh.persona.estado_proceso = 'contratado')
                 AND infraestructura.zona.id_zona in (".implode($zonas,",").")
                 AND zona_region.id_coordinador = ". $cargo[0]->id_persona_cargo."
             ");
@@ -517,6 +518,7 @@ class AsignacionController extends Controller
         $validacion = Validator::make($post, [
             'id_comuna' => 'required|int',
         ]); 
+        $post["dia"] = 1;
 
         if ($validacion->fails()) {
             return response()->json(array("resultado"=>"error","descripcion"=>$validacion->errors()), 422); 
@@ -524,6 +526,12 @@ class AsignacionController extends Controller
         $id_region = Comuna::find($post["id_comuna"])->id_region;
         if(!isset($id_region)){
             return response()->json(array("resultado"=>"error","descripcion"=>"id_comuna no tiene comuna asociada.")); 
+        }
+
+        $sql_estimacion = DB::select("SELECT * FROM infraestructura.estimacion WHERE dia = " . $post["dia"]);
+        $estimaciones = [];
+        foreach ($sql_estimacion as $value) {
+            $estimaciones[$value->id_estimacion] = $value->dia;
         }
 
         $sql_pruebas = DB::select("SELECT MAX(cap_prueba.puntaje) as puntaje, rrhh.persona.id_persona
@@ -561,10 +569,10 @@ class AsignacionController extends Controller
                             LEFT JOIN rrhh.cargo as cargoPersona ON (rrhh.persona_cargo.id_cargo = cargoPersona.id_cargo)
                             INNER JOIN core.comuna ON (rrhh.persona.id_comuna_postulacion = core.comuna.id_comuna)
                             INNER JOIN core.region ON (core.region.id_region = core.comuna.id_region)
-                            WHERE (rrhh.persona.estado_proceso = 'capacitado' OR rrhh.persona.estado_proceso = 'seleccionado')
+                            WHERE (rrhh.persona.estado_proceso = 'capacitado' OR rrhh.persona.estado_proceso = 'seleccionado' OR rrhh.persona.estado_proceso = 'contratado')
                             AND rrhh.persona.id_persona NOT IN (SELECT rrhh.persona_cargo.id_persona FROM infraestructura.estimacion, rrhh.persona_cargo WHERE infraestructura.estimacion.id_jefe_sede = rrhh.persona_cargo.id_persona_cargo)
                             AND rrhh.persona.borrado = false
-                            AND core.region.id_region = 9
+                            AND core.region.id_region = ". $id_region ."
                             GROUP BY rrhh.persona.id_persona, rrhh.persona_asignacion.id_estimacion, rrhh.persona_asignacion.id_persona_asignacion, cargoAsignacion.nombre_rol, rrhh.persona.estado_proceso, core.comuna.nombre, core.region.nombre
                             ");
 
@@ -573,6 +581,169 @@ class AsignacionController extends Controller
             //TODO: Quitar el 'if' si es que se repara el error de registros inexistentes de pruebas técnicas
             //if(isset($puntajes[$valor->id_persona])){
                 $valor->puntaje = isset($puntajes[$valor->id_persona]) ? intval($puntajes[$valor->id_persona]) : null;
+                $valor->dia = isset($estimaciones[$valor->id_estimacion]) ? $estimaciones[$valor->id_estimacion] : null;
+                $arr[] = $valor;
+            //}
+        }
+        return response()->json($arr);    
+    }
+
+    public function obtenerCapacitadosD2(Request $request){
+        
+        $post = $request->all();    
+
+        $validacion = Validator::make($post, [
+            'id_comuna' => 'required|int',
+            'id_cargo' => 'required|int',
+        ]); 
+
+        if ($validacion->fails()) {
+            return response()->json(array("resultado"=>"error","descripcion"=>$validacion->errors()), 422); 
+        }
+        $id_region = Comuna::find($post["id_comuna"])->id_region;
+        if(!isset($id_region)){
+            return response()->json(array("resultado"=>"error","descripcion"=>"id_comuna no tiene comuna asociada.")); 
+        }
+
+        $sql_pruebas = DB::select("SELECT MAX(cap_prueba.puntaje) as puntaje, rrhh.persona.id_persona
+                                    FROM rrhh.capacitacion_prueba as cap_prueba
+                                    INNER JOIN rrhh.capacitacion_persona ON (rrhh.capacitacion_persona.id_capacitacion_persona = cap_prueba.id_capacitacion_persona)
+                                    INNER JOIN rrhh.persona ON (rrhh.capacitacion_persona.id_persona = rrhh.persona.id_persona) 
+                                    INNER JOIN rrhh.capacitacion ON (rrhh.capacitacion_persona.id_capacitacion = rrhh.capacitacion.id_capacitacion)
+                                    INNER JOIN core.comuna ON (rrhh.persona.id_comuna_postulacion = core.comuna.id_comuna)
+                                    WHERE cap_prueba.prueba = 'Técnica'
+                                    AND core.comuna.id_region= ". $id_region ."
+                                    GROUP BY rrhh.persona.id_persona
+                                    order by id_persona");
+
+        $puntajes = [];
+        foreach ($sql_pruebas as $value) {
+            $puntajes[$value->id_persona] = $value->puntaje;
+        }
+
+        $sql = DB::select("SELECT
+                                rrhh.persona.*,
+                                rrhh.persona_asignacion.id_estimacion,
+                                rrhh.persona_asignacion.id_persona_asignacion,
+                                cargoAsignacion.nombre_rol,
+                                STRING_AGG ( cargoPersona.nombre_rol, ', ' ) lista_cargos,
+                                rrhh.persona.estado_proceso,
+                                core.comuna.nombre AS comuna,
+                                core.region.nombre AS region 
+                            FROM
+                                rrhh.persona
+                                LEFT JOIN rrhh.persona_asignacion ON ( rrhh.persona_asignacion.id_persona = rrhh.persona.id_persona )
+                                LEFT JOIN rrhh.persona_cargo ON ( rrhh.persona_cargo.id_persona = rrhh.persona.id_persona )
+                                LEFT JOIN rrhh.cargo AS cargoAsignacion ON ( rrhh.persona_asignacion.id_cargo = cargoAsignacion.id_cargo )
+                                LEFT JOIN rrhh.cargo AS cargoPersona ON ( rrhh.persona_cargo.id_cargo = cargoPersona.id_cargo )
+                                INNER JOIN core.comuna ON ( rrhh.persona.id_comuna_postulacion = core.comuna.id_comuna )
+                                INNER JOIN core.region ON ( core.region.id_region = core.comuna.id_region ) 
+                            WHERE
+                                ( rrhh.persona.estado_proceso = 'capacitado' OR rrhh.persona.estado_proceso = 'seleccionado' OR rrhh.persona.estado_proceso = 'contratado' ) 
+                                AND rrhh.persona.id_persona NOT IN (
+                                SELECT
+                                    rrhh.persona_cargo.id_persona 
+                                FROM
+                                    infraestructura.estimacion,
+                                    rrhh.persona_cargo 
+                                WHERE
+                                    infraestructura.estimacion.id_jefe_sede = rrhh.persona_cargo.id_persona_cargo 
+                                ) 
+                                AND rrhh.persona.borrado = FALSE 
+                                AND core.region.id_region = " . $id_region . "
+                                AND rrhh.persona.id_persona IN (
+                                SELECT
+                                    id_persona 
+                                FROM
+                                    rrhh.persona_asignacion AS persona_asignacion,
+                                    infraestructura.estimacion AS estimacion 
+                                WHERE
+                                    persona_asignacion.id_estimacion = estimacion.id_estimacion 
+                                    AND dia = 1 
+                                    AND persona_asignacion.id_cargo = " . $post["id_cargo"] . "
+                                ) 
+                            GROUP BY
+                                rrhh.persona.id_persona,
+                                rrhh.persona_asignacion.id_estimacion,
+                                rrhh.persona_asignacion.id_persona_asignacion,
+                                cargoAsignacion.nombre_rol,
+                                rrhh.persona.estado_proceso,
+                                core.comuna.nombre,
+                                core.region.nombre");
+
+        $arr = [];
+        foreach($sql as $valor){
+            //TODO: Quitar el 'if' si es que se repara el error de registros inexistentes de pruebas técnicas
+            //if(isset($puntajes[$valor->id_persona])){
+                $valor->puntaje = isset($puntajes[$valor->id_persona]) ? intval($puntajes[$valor->id_persona]) : null;
+                // $valor->dia = isset($estimaciones[$valor->id_estimacion]) ? $estimaciones[$valor->id_estimacion] : null;
+                $arr[] = $valor;
+            //}
+        }
+        return response()->json($arr);    
+    }
+
+    public function obtenerAsignados(Request $request){
+        $post = $request->all();    
+
+        $validacion = Validator::make($post, [
+            'id_estimacion' => 'required|int',
+        ]); 
+
+        if ($validacion->fails()) {
+            return response()->json(array("resultado"=>"error","descripcion"=>$validacion->errors()), 422); 
+        }
+        $id_region = Comuna::find($post["id_comuna"])->id_region;
+        if(!isset($id_region)){
+            return response()->json(array("resultado"=>"error","descripcion"=>"id_comuna no tiene comuna asociada.")); 
+        }
+
+        $sql_pruebas = DB::select("SELECT MAX(cap_prueba.puntaje) as puntaje, rrhh.persona.id_persona
+                                    FROM rrhh.capacitacion_prueba as cap_prueba
+                                    INNER JOIN rrhh.capacitacion_persona ON (rrhh.capacitacion_persona.id_capacitacion_persona = cap_prueba.id_capacitacion_persona)
+                                    INNER JOIN rrhh.persona ON (rrhh.capacitacion_persona.id_persona = rrhh.persona.id_persona) 
+                                    INNER JOIN rrhh.capacitacion ON (rrhh.capacitacion_persona.id_capacitacion = rrhh.capacitacion.id_capacitacion)
+                                    INNER JOIN core.comuna ON (rrhh.persona.id_comuna_postulacion = core.comuna.id_comuna)
+                                    WHERE cap_prueba.prueba = 'Técnica'
+                                    AND core.comuna.id_region= ". $id_region ."
+                                    GROUP BY rrhh.persona.id_persona
+                                    order by id_persona");
+
+        $puntajes = [];
+        foreach ($sql_pruebas as $value) {
+            $puntajes[$value->id_persona] = $value->puntaje;
+        }
+
+        $sql = DB::select("SELECT
+                            rrhh.persona.id_persona,
+                            rrhh.persona.run,
+                            rrhh.persona.nombres,
+                            rrhh.persona.apellido_paterno,
+                            rrhh.persona.apellido_materno,
+                            rrhh.persona.email,
+                            rrhh.persona.telefono,
+                            rrhh.persona.estado_proceso,
+                            rrhh.persona.deserta,
+                            rrhh.cargo.nombre_rol,
+                            infraestructura.estimacion.dia,
+                            infraestructura.estimacion.id_estimacion,
+                            core.comuna.nombre as comuna,
+                            core.region.nombre as region
+                            FROM
+                            rrhh.persona
+                            INNER JOIN rrhh.persona_asignacion ON rrhh.persona_asignacion.id_persona = rrhh.persona.id_persona
+                            INNER JOIN rrhh.cargo ON rrhh.persona_asignacion.id_cargo = rrhh.cargo.id_cargo
+                            INNER JOIN infraestructura.estimacion ON rrhh.persona_asignacion.id_estimacion = infraestructura.estimacion.id_estimacion
+                            INNER JOIN core.comuna ON (rrhh.persona.id_comuna_postulacion = core.comuna.id_comuna)
+                            INNER JOIN core.region ON (core.region.id_region = core.comuna.id_region)
+                            WHERE infraestructura.estimacion.id_estimacion = " .$post["id_estimacion"]);
+
+        $arr = [];
+        foreach($sql as $valor){
+            //TODO: Quitar el 'if' si es que se repara el error de registros inexistentes de pruebas técnicas
+            //if(isset($puntajes[$valor->id_persona])){
+                $valor->puntaje = isset($puntajes[$valor->id_persona]) ? intval($puntajes[$valor->id_persona]) : null;
+                $valor->dia = isset($estimaciones[$valor->id_estimacion]) ? $estimaciones[$valor->id_estimacion] : null;
                 $arr[] = $valor;
             //}
         }
